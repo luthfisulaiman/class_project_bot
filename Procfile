@@ -1,1 +1,1 @@
-web: gunicorn csuibot:app --log-file -
+web: gunicorn csuibot:app --preload --log-file -
