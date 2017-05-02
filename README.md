@@ -1,7 +1,7 @@
 # CSUIBot
 
-[![build status](https://gitlab.com/addianto/csui-bot-template/badges/master/build.svg)](https://gitlab.com/addianto/csui-bot-template/commits/master)
-[![coverage report](https://gitlab.com/addianto/csui-bot-template/badges/master/coverage.svg)](https://gitlab.com/addianto/csui-bot-template/commits/master)
+[![build status](https://gitlab.com/CSUI-AdvProg-2017/csui-bot-template/badges/master/build.svg)](https://gitlab.com/CSUI-AdvProg-2017/csui-bot-template/commits/master)
+[![coverage report](https://gitlab.com/CSUI-AdvProg-2017/csui-bot-template/badges/master/coverage.svg)](https://gitlab.com/CSUI-AdvProg-2017/csui-bot-template/commits/master)
 
 ## How the Bot Works
 
