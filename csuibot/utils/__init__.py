@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, loremipsum as li
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def call_lorem_ipsum():
-    pass
+    return li.LoremIpsum().get_loripsum()

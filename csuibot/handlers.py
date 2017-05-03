@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, call_lorem_ipsum
+from requests.exceptions import ConnectionError
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -48,4 +49,11 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/loremipsum$')
 def loremipsum(message):
-    pass
+    app.logger.debug("'loremipsum' command detected")
+    try:
+        loripsum = call_lorem_ipsum()
+        loripsum = loripsum[3:len(loripsum) - 7]
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to loripsum.net API')
+    else:
+        bot.reply_to(message, loripsum)
