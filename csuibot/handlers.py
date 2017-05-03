@@ -44,3 +44,8 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/is_palindrome (.*)$')
+def is_palindrome(message):
+    pass
