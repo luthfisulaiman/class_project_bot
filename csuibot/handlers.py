@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, check_palindrome
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -48,4 +48,10 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/is_palindrome (.*)$')
 def is_palindrome(message):
-    pass
+    app.logger.debug("'is_palindrome' command detected")
+    try:
+        palindrome = check_palindrome(message)
+    except ValueError:
+        bot.reply_to(message, 'You can only submit a word')
+    else:
+        bot.reply_to(message, palindrome)

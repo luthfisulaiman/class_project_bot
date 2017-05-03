@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, palindrome as p
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +46,5 @@ def lookup_chinese_zodiac(year):
 
 
 def check_palindrome(message):
-    pass
+    _, text = message.text.split(' ')
+    return p.Palindrome(text).is_palindrome()
