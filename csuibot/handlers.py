@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, make_hipster
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -40,6 +40,20 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+@bot.message_handler(regexp=r'^/hipsteripsum \d{1,}$')
+def hipsteripsum(message):
+    app.logger.debug("'hipsteripsum' command detected")
+    _, paras_str = message.text.split(' ')
+
+    try:
+        hipster = make_hipster(int(paras_str))
+    except TypeError:
+        bot.reply_to(message, 'Number of paragraph is invalid')
+    except ValueError:
+        bot.reply_to(message, 'Number of paragraph exceed the limit, please ensure input a number between 1-99')
+    else:
+        bot.reply_to(message, hipster)
 
 
 def parse_date(text):

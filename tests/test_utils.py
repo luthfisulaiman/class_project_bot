@@ -253,3 +253,15 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+class test_hipster():
+
+    def test_make_one_paragraph(self):
+        res = utils.make_hipster(1)
+        length = res.count("\n")
+        assert length = 1
+
+    def test_make_four_paragraph(self):
+        res = utils.make_hipster(4)
+        length = res.count("\n")
+        assert length = 4
