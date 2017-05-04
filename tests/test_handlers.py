@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, password, password_16
 
 
 def test_help(mocker):
@@ -61,3 +61,55 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_password_with_input(mocker):
+    fake_password = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_password', return_value=fake_password)
+    mock_message = Mock(text='/password 10')
+
+    password(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_password
+
+
+def test_password(mocker):
+    fake_password = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_password', return_value=fake_password)
+    mock_message = Mock(text='/password')
+
+    password_16(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_password
+
+
+def test_password_too_long(mocker):
+    expected = (
+        'Password would be too long.'
+        'Maximum allowed length is 128.'
+    )
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/password 500')
+
+    password(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == expected
+
+
+def test_password_too_short(mocker):
+    expected = (
+        'Password would be nonexistent.'
+        'Minimum allowed length is 1.'
+    )
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/password 0')
+
+    password(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == expected

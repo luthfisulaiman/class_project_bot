@@ -253,3 +253,22 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestPassword:
+
+    def test_minimum_length(self):
+        res = utils.generate_password(1)
+        assert len(res) == 1
+
+    def test_average_length(self):
+        res = utils.generate_password()
+        assert len(res) == 16
+
+    def test_average_length_with_input(self):
+        res = utils.generate_password(16)
+        assert len(res) == 16
+
+    def test_maximum_length(self):
+        res = utils.generate_password(128)
+        assert len(res) == 128
