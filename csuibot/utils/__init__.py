@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, ip
 
 
 def lookup_zodiac(month, day):
@@ -45,5 +45,8 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def get_public_ip:
-    pass
+def get_public_ip():
+    try:
+        return ip.IP.ip()
+    except URLError:
+        return 'Error connecting to ipify'
