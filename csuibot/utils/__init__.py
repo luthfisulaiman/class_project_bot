@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z, import FunFasilkom as f
+from csuibot.utils import zodiac as z, funFasilkom as f
 
 
 def lookup_zodiac(month, day):
