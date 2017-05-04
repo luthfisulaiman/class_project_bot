@@ -1,6 +1,8 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, wiki
+
+import wikipedia
 
 
 def test_help(mocker):
@@ -61,3 +63,37 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_wiki(mocker):
+    fake_wiki = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', return_value=fake_wiki)
+    mock_message = Mock(text='/wiki Joko Widodo')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_wiki
+
+
+def test_wiki_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=ValueError)
+    mock_message = Mock(text='/wiki')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /wiki need an argument'
+
+
+def test_wiki_page_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=wikipedia.exceptions.PageError)
+    mock_message = Mock(text='/wiki nama_nama_ikan')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Page id "nama_nama_ikan" does not match any pages. Try another id!'
