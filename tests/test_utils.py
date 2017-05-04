@@ -1,4 +1,5 @@
 from csuibot import utils
+import re
 
 
 class TestZodiac:
@@ -256,4 +257,8 @@ class TestChineseZodiac:
 
 
 class TestIP:
-    pass
+
+    def test_wellformed_ip(self):
+        res = utils.get_public_ip()
+        pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+        assert pattern.match(res)
