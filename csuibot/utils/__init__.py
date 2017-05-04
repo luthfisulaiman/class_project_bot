@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, xkcd as x
 
 
 def lookup_zodiac(month, day):
@@ -45,5 +45,5 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def fetch_xkcd(number):
-    pass
+def fetch_latest_xkcd():
+    return x.Comic.get_latest_comic()

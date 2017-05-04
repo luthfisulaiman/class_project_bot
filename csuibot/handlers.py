@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, fetch_latest_xkcd
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -48,4 +48,10 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/xkcd$')
 def xkcd(message):
-    pass
+    app.logger.debug("'xkcd' command detected")
+    try:
+        comic = fetch_latest_xkcd()
+    except ValueError:
+        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command')
+    else:
+        bot.reply_to(message, comic)
