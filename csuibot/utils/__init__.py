@@ -43,3 +43,7 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def generate_custom_chuck_joke(first_name, last_name):
+    pass
