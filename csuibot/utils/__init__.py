@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, reminder as rm
 
 
 def lookup_zodiac(month, day):
@@ -43,3 +43,7 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+def remind_me(time, message) :
+    return rm.Reminder(time, message).remind_text()
+    

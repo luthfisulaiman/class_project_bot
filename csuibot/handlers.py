@@ -44,3 +44,15 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^\/remindme (\d+) (.*)$')
+def remind(message):
+    app.logger.debug("'remindme' command detected")
+    _, time_str, text = message.text.split(' ')
+    try :
+        reminder_text = remind_me(time_str, text)
+    except ValueError :
+        bot.reply_to(message, 'Time is invalid')
+    else :
+        bot.reply_to(message, reminder_text)
+    
