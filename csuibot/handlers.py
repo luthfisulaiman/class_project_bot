@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +44,8 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/yelkomputer')
+def yelkomputer(message):
+    pass
