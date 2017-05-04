@@ -259,47 +259,38 @@ class TestChineseZodiac:
 
 class TestWiki:
 
-    def __init__(self):
-        self.wikipedia = 'Wikipedia (/ˌwɪkᵻˈpiːdiə/ or /ˌwɪkiˈpiːdiə/ WIK-i-PEE-dee-ə)'
-        ' is a free online encyclopedia with the aim to allow anyone to edit'
-        ' articles. Wikipedia is the largest and most popular general reference'
-        ' work on the Internet and is ranked among the ten most popular websites.'
-        ' Wikipedia is owned by the nonprofit Wikimedia Foundation.\n'
-        'Wikipedia was launched on January 15, 2001, by Jimmy Wales and Larry'
-        ' Sanger. Sanger coined its name, a portmanteau of wiki and encyclopedia.'
-        ' There was only the English language version initially, but it quickly'
-        ' developed similar versions in other languages, which differ in content'
-        ' and in editing practices. With 5,398,123 articles, the English Wikipedia'
-        ' is the largest of the more than 290 Wikipedia encyclopedias. Overall,'
-        ' Wikipedia consists of more than 40 million articles in more than 250'
-        ' different languages and, as of February 2014, it had 18 billion page'
-        ' views and nearly 500 million unique visitors each month.\n'
-        'As of March 2017, Wikipedia has about forty thousand high-quality'
-        ' articles known as Featured Articles and Good Articles that cover vital'
-        ' topics. In 2005, Nature published a peer review comparing 42 science'
-        ' articles from Encyclopædia Britannica and Wikipedia, and found that'
-        ' Wikipedia\'s level of accuracy approached Encyclopædia Britannica\'s.'
-        ' Criticism of Wikipedia includes claims that it exhibits systemic bias,'
-        ' presents a mixture of "truths, half truths, and some falsehoods", and'
-        ' that, in controversial topics, it is subject to manipulation and spin.'
+    wikipedia_summary = (
+        'The Ukrainian revolution of 2014 (also known as the'
+        ' Euromaidan Revolution or Revolution of Dignity; Ukrainian:'
+        ' Революція гідності, Revoliutsiia hidnosti) took place in'
+        ' Ukraine in February 2014, when a series of violent events'
+        ' involving protesters, riot police, and unknown shooters in'
+        ' the capital, Kiev, culminated in the ousting of Ukrainian'
+        ' President, Viktor Yanukovych. This was followed by a series'
+        ' of changes in Ukraine\'s sociopolitical system, including'
+        ' the formation of a new interim government, the restoration'
+        ' of the previous constitution, and a call to hold impromptu'
+        ' presidential elections within months.\n\n'
+        'source: https://en.wikipedia.org/wiki/2014_Ukrainian_revolution'
+    )
 
     def test_wiki_wikipedia(self):
-        res = utils.lookup_wiki('Wikipedia')
-        assert res == self.wikipedia
+        res = utils.lookup_wiki('The Ukrainian revolution of 2014')
+        assert res == self.wikipedia_summary
 
     def test_wiki_tongkol(self):
         res = utils.lookup_wiki('Tongkol')
-        assert res != self.wikipedia
+        assert res != self.wikipedia_summary
 
     def test_wiki_value_error(self):
         try:
-            utils.lookup_yelkomputer('/wiki')
+            utils.lookup_wiki('')
         except ValueError as e:
             assert str(e) == 'Command /wiki need an argument'
 
-    def test_wiki_key_error(self):
+    def test_wiki_page_error(self):
         try:
-            utils.lookup_yelkomputer('/wiki nama_nama_ikan')
+            utils.lookup_wiki('nama_nama_ikan')
         except wikipedia.exceptions.PageError as e:
             assert str(e) == (
                 'Page id "nama_nama_ikan" does not match any pages.'

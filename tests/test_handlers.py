@@ -2,8 +2,6 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, wiki
 
-import wikipedia
-
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -88,12 +86,14 @@ def test_wiki_none_term(mocker):
     assert args[1] == 'Command /wiki need an argument'
 
 
-def test_wiki_page_not_found(mocker):
+def test_wiki_page_error(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=wikipedia.exceptions.PageError)
-    mock_message = Mock(text='/wiki nama_nama_ikan')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=IndexError)
+    mock_message = Mock(text='/wiki Wikipedia')
 
     wiki(mock_message)
-
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Page id "nama_nama_ikan" does not match any pages. Try another id!'
+    assert args[1] == (
+        'Page id "Wikipedia" does not match any pages.'
+        ' Try another id!'
+    )
