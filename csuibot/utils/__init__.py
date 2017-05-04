@@ -49,4 +49,4 @@ def get_public_ip():
     try:
         return ip.IP.ip()
     except URLError:
-        return 'Error connecting to ipify'
+        return 'Error connecting to ipify, please try again later'
