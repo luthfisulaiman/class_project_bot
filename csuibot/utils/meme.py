@@ -25,7 +25,7 @@ class Meme:
 	def __init__():
 		raise NotImplementedError
 
-	def geyID():
+	def getID():
 		raise NotImplementedError
 
 	def getBottomCaption():
