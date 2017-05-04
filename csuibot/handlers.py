@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_message_dist
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +44,13 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^/messagedist')
+def message_dist(message):
+    app.logger.debug("'messagedist' command detected")
+    try :
+        message_dist = lookup_message_dist()
+    except ValueError:
+        bot.reply_to(message, 'Internal server error')
+    else :
+        bot.reply_to(message, message_dist)

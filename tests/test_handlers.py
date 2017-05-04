@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, message_dist
 
 
 def test_help(mocker):
@@ -61,3 +61,14 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_message_dist(mocker):
+    fake_message_dist = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_message_dist', return_value=fake_message_dist)
+    mock_message = Mock(text='/messagedit')
+
+    message_dist(mock_message)
+
+    args = mocked_reply_to.call_args
+    assert args is not None
