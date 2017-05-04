@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, calculate_binary
+import re
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +45,44 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^\/compute ([01]+[\/\+\-\*][01]+)$')
+def compute(message) :
+    app.logger.debug("'compute' command detected")
+    _, calculate_str = message.text.split(' ')
+    if '+' in calculate_str :
+            binA, binB = calculate_str.split('+')
+            op = '+'
+    elif '-' in calculate_str :
+        binA, binB = calculate_str.split('-')
+        op = '-'
+    elif '*' in calculate_str :
+        binA, binB = calculate_str.split('*')
+        op = '*'
+    elif '/' in calculate_str :
+        binA, binB = calculate_str.split('/')
+        op = '/'
+    try :
+        result = calculate_binary(binA, op, binB)
+    except ValueError:
+        bot.reply_to(message, 'Not a binary number or operator is invalid!')
+    else :
+        bot.reply_to(message, result)
+            
+         
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

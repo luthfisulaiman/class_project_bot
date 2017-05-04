@@ -15,3 +15,4 @@ class CalculateBinary :
 
     def division(self):
         return self._numA / self._numB
+
