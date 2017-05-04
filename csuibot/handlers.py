@@ -44,7 +44,9 @@ def shio(message):
 
 @bot.message_handler(regexp=r'^/bot ip$')
 def ip(message):
-    pass
+    app.logger.debug("'bot' command detected")
+    public_ip = get_public_ip()
+    bot.reply_to(message, public_ip)
 
 
 def parse_date(text):
