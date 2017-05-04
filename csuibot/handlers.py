@@ -42,5 +42,15 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+@bot.message_handler(regexp=r'^/password \d+$')
+def password(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/password$')
+def password_16(message):
+    pass
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
