@@ -47,4 +47,7 @@ def lookup_chinese_zodiac(year):
 
 
 def lookup_yelkomputer(message_text):
-    pass
+    if message_text == '/yelkomputer':
+        return yelkomputer.YelKomputer.get_yel_komputer()
+    else:
+        raise ValueError('Command /yelkomputer doesn\'t need any arguments')

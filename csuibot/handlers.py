@@ -48,4 +48,11 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/yelkomputer')
 def yelkomputer(message):
-    pass
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
