@@ -44,5 +44,5 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def call_kelaskata():
+def lookup_kelaskata():
     pass
