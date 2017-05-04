@@ -64,7 +64,6 @@ def test_shio_invalid_year(mocker):
 
 def test_contain_fasilkom(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    
     mock_message = Mock(text='/saya kuliah di Fasilkom')
 
     funFasilkom(mock_message)
