@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, remind
 
 
 def test_help(mocker):
@@ -61,3 +61,23 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_remind_valid_input(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', return_value='WakeUp')
+    mock_message = Mock(text='/remindme 1 WakeUp')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'WakeUp'
+
+def test_remind_invalid_input(mocker) :
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', side_effect=ValueError)
+    mock_message = Mock(text='/shio sial sial')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Time is invalid'
