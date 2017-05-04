@@ -62,11 +62,3 @@ def wiki(message):
         )
     else:
         bot.reply_to(message, wiki_summary)
-
-
-bot.remove_webhook()
-while True:
-    try:
-        bot.polling(none_stop=True)
-    except Exception as e:
-        app.logger.debug(str(e))
