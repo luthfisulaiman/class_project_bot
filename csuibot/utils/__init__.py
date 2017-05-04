@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, calculate_binary as cb
 
 
 def lookup_zodiac(month, day):
@@ -43,3 +43,17 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+def calculate_binary(binA, operand, binB) :
+    if operand == '+' :
+        return cb.CalculateBinary(binA, binB).addition()
+    elif operand == '-' :
+        return cb.CalculateBinary(binA, binB).subtraction()
+    elif operand == '*' :
+        return cb.CalculateBinary(binA, binB).multiplication()
+    else operand == '/' :
+        return cb.CalculateBinary(binA, binB).division()
+
+
+
+    
