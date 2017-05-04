@@ -44,3 +44,7 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^/kelaskata (.*)$')
+def kelaskata(message):
+    pass
