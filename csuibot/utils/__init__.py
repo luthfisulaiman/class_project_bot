@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, hex2rgb as h
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def convert_hex2rgb(hex_str):
-    pass
+    return h.Hex2RGB(hex_str).convert()

@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, convert_hex2rgb
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,7 +44,17 @@ def shio(message):
 
 @bot.message_handler(regexp=r'^/colou?r #[\dA-Fa-f]{6}$')
 def colour(message):
-    pass
+    app.logger.debug("'colour' command detected")
+    _, hex_str = message.text.split(' ')
+    app.logger.debug('hex = {}'.format(hex_str))
+
+    try:
+        rgb = convert_hex2rgb(hex_str)
+    except ValueError:
+        bot.reply_to(message, 'Invalid command. '
+                     'Please use either /color #HEXSTR or /colour #HEXSTR')
+    else:
+        bot.reply_to(message, rgb)
 
 
 def parse_date(text):
