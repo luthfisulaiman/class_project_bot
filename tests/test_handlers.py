@@ -1,3 +1,5 @@
+import requests
+
 from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, colour
@@ -84,3 +86,42 @@ def test_colour_invalid(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_rgb_invalid
+
+
+def test_colour_connection_error(mocker):
+    fake_colour_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_colour_http_error(mocker):
+    fake_colour_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_colour_error(mocker):
+    fake_colour_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error

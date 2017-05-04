@@ -10,6 +10,8 @@ class Hex2RGB:
 
     def convert(self):
         r = requests.get('{}{}'.format(self.API_URL, self.hex.strip('#')))
+        # Check the response status
+        r.raise_for_status()
 
         # Based on thecolorapi. Format: 'RGB(R, G, B)'
         rgb = r.json()['rgb']['value'].upper()

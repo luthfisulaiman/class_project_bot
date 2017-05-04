@@ -1,3 +1,4 @@
+import requests
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, convert_hex2rgb
 
@@ -53,6 +54,12 @@ def colour(message):
     except ValueError:
         bot.reply_to(message, 'Invalid command. '
                      'Please use either /color #HEXSTR or /colour #HEXSTR')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, rgb)
 
