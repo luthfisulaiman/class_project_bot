@@ -8,4 +8,4 @@ class Reminder :
 
     def remind_text(self) :
         time.sleep(self._second)
-        return text
+        return self._text
