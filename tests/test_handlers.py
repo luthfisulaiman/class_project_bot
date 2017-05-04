@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, ip
 
 
 def test_help(mocker):
@@ -64,16 +64,12 @@ def test_shio_invalid_year(mocker):
 
 
 def test_ip(mocker):
-    pass
-
-
-def test_ip(mocker):
     fake_ip = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', return_value=fake_ip)
+    mocker.patch('csuibot.handlers.get_public_ip', return_value=fake_ip)
     mock_message = Mock()
 
-    get_public_ip(mock_message)
+    ip(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_ip

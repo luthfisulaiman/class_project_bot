@@ -46,7 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def get_public_ip():
-    try:
-        return ip.IP.ip()
-    except URLError:
-        return 'Error connecting to ipify, please try again later'
+    return ip.IP.ip()

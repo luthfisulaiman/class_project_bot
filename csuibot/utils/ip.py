@@ -1,6 +1,11 @@
-import urllib.request
+from urllib.request import urlopen, URLError
+
 
 class IP:
 
+    @classmethod
     def ip(self):
-        return urllib.request.urlopen("https://api.ipify.org").read()
+        try:
+            return urlopen("https://api.ipify.org").read().decode('utf-8')
+        except URLError:
+            return 'Error connecting to ipify, please try again later'
