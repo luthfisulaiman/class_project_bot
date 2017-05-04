@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import wiki
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +47,8 @@ def lookup_chinese_zodiac(year):
 
 
 def lookup_wiki(term):
-    pass
+    if term == '':
+        raise ValueError('Command /wiki need an argument')
+    else:
+        object_wiki = wiki.Wiki(term)
+        return object_wiki.get_result()

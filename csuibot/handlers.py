@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_wiki
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -48,4 +48,25 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/wiki')
 def wiki(message):
-    pass
+    app.logger.debug("'wiki' command detected")
+    term = " ".join(message.text.split()[1:])
+
+    try:
+        wiki_summary = lookup_wiki(term)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /wiki need an argument')
+    except IndexError as e:
+        bot.reply_to(
+            message,
+            'Page id "' + term + '" does not match any pages. Try another id!'
+        )
+    else:
+        bot.reply_to(message, wiki_summary)
+
+
+bot.remove_webhook()
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except Exception as e:
+        app.logger.debug(str(e))

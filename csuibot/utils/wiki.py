@@ -1,7 +1,13 @@
+import wikipedia
+
+
 class Wiki:
 
     def __init__(self, term):
-        pass
+        self.term = term
 
     def get_result(self):
-        pass
+        summary = wikipedia.summary(self.term)
+        wikis = wikipedia.search(self.term)
+        wiki = wikipedia.page(wikis[0])
+        return summary + '\n\nsource: ' + wiki.url
