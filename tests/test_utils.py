@@ -253,3 +253,16 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestXkcd:
+
+    def test_xkcd(self):
+        res = utils.xkcd.Comic.get_latest_comic()
+
+        assert res is not None
+
+    def test_fetch(self):
+        res = utils.fetch_latest_xkcd()
+
+        assert res is not None
