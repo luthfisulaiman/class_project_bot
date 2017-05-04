@@ -1,3 +1,4 @@
+import requests
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, fetch_latest_xkcd
 
@@ -52,6 +53,12 @@ def xkcd(message):
     try:
         comic = fetch_latest_xkcd()
     except ValueError:
-        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command')
+        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, comic)
