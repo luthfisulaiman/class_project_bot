@@ -62,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_dayofdate(mocker):
     fake_day = 'boink'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -73,6 +74,7 @@ def test_dayofdate(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_day
 
+
 def test_dayofdate_invalid_command(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
@@ -81,7 +83,10 @@ def test_dayofdate_invalid_command(mocker):
     dayofdate(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Incorrect use of dayofdate command. Please write a valid date in the form of yyyy-mm-dd, such as 2016-05-13'
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
 
 def test_dayofdate_no_argument(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -91,4 +96,6 @@ def test_dayofdate_no_argument(mocker):
     dayofdate(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Incorrect use of dayofdate command. Please write a valid date in the form of yyyy-mm-dd, such as 2016-05-13'
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')

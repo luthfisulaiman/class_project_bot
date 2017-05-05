@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import dayofdate
 
 
 def lookup_zodiac(month, day):
@@ -44,5 +45,11 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def lookup_dayofdate(date): 
-    pass 
+
+def lookup_dayofdate(year, month, day):
+    try:
+        return dayofdate.dayoutput(year, month, day)
+    except ValueError:
+        return ('Incorrect use of dayofdate command. '
+                'Please write a valid date in the form of yyyy-mm-dd, '
+                'such as 2016-05-13')
