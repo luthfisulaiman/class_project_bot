@@ -258,11 +258,11 @@ class TestChineseZodiac:
 class TestKelaskata:
 
     def test_kelaskata_intan(self):
-        res = utils.lookup_kelaskata('intan')
+        res = utils.lookup_kelaskata('/kelaskata intan')
         assert res == 'intan/n'
 
     def test_kelaskata_membaca(self):
-        res = utils.lookup_kelaskata('membaca')
+        res = utils.lookup_kelaskata('/kelaskata membaca')
         assert res == 'membaca/v'
 
     def test_kelaskata_value_error(self):

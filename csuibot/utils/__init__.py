@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import kelaskata as k
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +47,8 @@ def lookup_chinese_zodiac(year):
 
 
 def lookup_kelaskata(message):
-    pass
+    if message == '':
+        raise ValueError('Try /kelaskata [word]')
+    else:
+        kelaskata_object = k.kelaskata(message)
+        return kelaskata_object.getKelasKata()

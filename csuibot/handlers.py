@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_kelaskata
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -48,4 +48,23 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/kelaskata (.*)$')
 def kelaskata(message):
-    pass
+    app.logger.debug("'kelaskata' command detected")
+    command = " ".join(message.text.split()[1:])
+
+    try:
+        kelas_kata = lookup_kelaskata(command)
+    except ValueError as e:
+        bot.reply_to(message, 'Try /kelaskata [word]')
+    except IndexError as e:
+        bot.reply_to(
+            message,
+            command + ' is not a word, try another word!')
+    else:
+        bot.reply_to(message, kelas_kata)
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         app.logger.debug(str(e))
