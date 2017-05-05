@@ -1,6 +1,6 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_dayofdate
-import datetime
+# import datetime
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -43,8 +43,14 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-def parse_date(text):
-    return tuple(map(int, text.split('-')))
+# empty dayofdate args
+@bot.message_handler(regexp=r'^/dayofdate$')
+def empty_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
 
 
 @bot.message_handler(regexp=r'^/dayofdate \d{4}\-\d{2}\-\d{2}$')
@@ -55,14 +61,15 @@ def dayofdate(message):
     app.logger.debug('year = {}, month = {}, day = {}'.format(year, month, day))
 
     try:
+        datetime.datetime(year, month, day)
+        # if (newDate):
         # check invalid date such as leap year, month 13 etc
-        __newDate__ = datetime.datetime(year, month, day)
         dayofdate = lookup_dayofdate(year, month, day)
     except ValueError:
         bot.reply_to(message,
                      'Incorrect use of dayofdate command. '
                      'Please write a valid date in the form of yyyy-mm-dd, '
-                     'such as 2016-05-13', __newDate__)
+                     'such as 2016-05-13')
     else:
         bot.reply_to(message, dayofdate)
 
@@ -75,3 +82,7 @@ def invalid_dayofdate(message):
                  'Incorrect use of dayofdate command. '
                  'Please write a valid date in the form of yyyy-mm-dd, '
                  'such as 2016-05-13')
+
+
+def parse_date(text):
+    return tuple(map(int, text.split('-')))

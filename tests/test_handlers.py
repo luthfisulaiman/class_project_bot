@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, dayofdate
+from csuibot.handlers import help, zodiac, shio, dayofdate, invalid_dayofdate, empty_dayofdate
 
 
 def test_help(mocker):
@@ -78,9 +78,9 @@ def test_dayofdate(mocker):
 def test_dayofdate_invalid_command(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
-    mock_message = Mock(text='/dayofdate 2016-15-43')
+    mock_message = Mock(text='/dayofdate invalid')
 
-    dayofdate(mock_message)
+    invalid_dayofdate(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == ('Incorrect use of dayofdate command. '
@@ -93,7 +93,7 @@ def test_dayofdate_no_argument(mocker):
     mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
     mock_message = Mock(text='/dayofdate')
 
-    dayofdate(mock_message)
+    empty_dayofdate(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == ('Incorrect use of dayofdate command. '

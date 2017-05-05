@@ -1,5 +1,5 @@
 from csuibot.utils import zodiac as z
-from csuibot.utils import dayofdate
+from csuibot.utils import dayofdate as d
 
 
 def lookup_zodiac(month, day):
@@ -48,7 +48,7 @@ def lookup_chinese_zodiac(year):
 
 def lookup_dayofdate(year, month, day):
     try:
-        return dayofdate.dayoutput(year, month, day)
+        return d.dayofdate.dayoutput(year, month, day)
     except ValueError:
         return ('Incorrect use of dayofdate command. '
                 'Please write a valid date in the form of yyyy-mm-dd, '
