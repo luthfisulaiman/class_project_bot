@@ -1,6 +1,6 @@
 import requests
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, convert_hex2rgb
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer, convert_hex2rgb
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -66,3 +66,15 @@ def colour(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
