@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, discretemath as dm
 
 
 def test_help(mocker):
@@ -61,3 +61,16 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_discrete_material(mocker):
+    pass
+
+def test_discrete_material_no_connection(mocker):
+    test_noconnection = 'Cannot connect to API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='')
+
+    dm(mock_message)
+
+    args,_ = mocked_reply_to.call_args
+    assert args[1] = test_noconnection
