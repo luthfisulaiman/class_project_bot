@@ -279,7 +279,4 @@ class TestMessageDist:
 
         assert result.get('09')['percentage'] == '83%'
         result = utils.lookup_message_dist(-195514957)
-        message_dist = ''
-        for key, value in result.items():
-            message_dist += '{} -> {} \n'.format(key, value['percentage'])
-        assert message_dist != ''
+        assert result != ''

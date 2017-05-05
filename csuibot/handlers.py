@@ -50,7 +50,7 @@ def message_dist(message):
     app.logger.debug("'messagedist' command detected", message)
     try :
         # get group id
-        message_dist = lookup_message_dist(message)
+        message_dist = lookup_message_dist(message.chat.id)
     except ValueError:
         bot.reply_to(message, 'Internal server error')
     else :

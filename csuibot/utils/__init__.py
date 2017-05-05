@@ -46,7 +46,12 @@ def lookup_chinese_zodiac(year):
 
 def lookup_message_dist(group_id):
     m = md.MessageDist()
-    group_message_timestamp_list = m.get_message_dist(group_id)
-    if group_message_timestamp_list is None:
+    result = m.get_message_dist(group_id)
+    message_dist = ''
+    if result is None:
         return "Connection error"
-    return group_message_timestamp_list
+    for key, value in result.items():
+        message_dist += '{} -> {} \n'.format(key, value['percentage'])
+    if message_dist == '':
+        message_dist = 'Unknown error'
+    return message_dist

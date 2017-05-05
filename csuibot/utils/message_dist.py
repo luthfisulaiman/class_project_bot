@@ -10,16 +10,21 @@ class MessageDist:
         return message_dist
 
     def get_group_message_timestamp_update(self, group_id):
-        telebot_update_url = 'https://api.telegram.org/{}/getUpdates'.format(app.config['TELEGRAM_BOT_TOKEN'])
+        telebot_update_url = 'https://api.telegram.org/bot{}/getUpdates'.format(app.config['TELEGRAM_BOT_TOKEN'])
         try :
             telebot_updates = requests.post(telebot_update_url).json()
         except requests.exceptions.Timeout:
-            return None
+            return []
         status = telebot_updates['ok']
         if (status == False):
-            return telebot_update_url
+            return []
         results = telebot_updates['result']
-        group_message_updates = [f ['message']['date'] for f in results if f['message']['chat']['id'] == group_id]
+        group_message_updates = []
+        for f in results:
+            if f.get('edited_message', None) != None:
+                group_message_updates.append(f['edited_message']['date'])
+            else:
+                group_message_updates.append(f['message']['date'])
         return group_message_updates
 
     def calc_message_dist(self, timestamp_message):
