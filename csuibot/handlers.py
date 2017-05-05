@@ -52,7 +52,6 @@ def loremipsum(message):
     app.logger.debug("'loremipsum' command detected")
     try:
         loripsum = call_lorem_ipsum()
-        loripsum = loripsum[3:len(loripsum) - 7]
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to loripsum.net API')
     else:

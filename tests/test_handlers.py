@@ -66,16 +66,11 @@ def test_shio_invalid_year(mocker):
 
 
 def test_lorem_ipsum(mocker):
-    fake_loripsum = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' \
-                    'Vitiosum est enim in dividendo partem in genere numerare. ' \
-                    'Bonum negas esse divitias, praeposìtum esse dicis? ' \
-                    'Duo Reges: constructio interrete. ' \
-                    'Non est ista, inquam, Piso, magna dissensio. ' \
-                    'Cur tantas regiones barbarorum pedibus obiit, tot maria transmisit? ' \
-                    'Itaque his sapiens semper vacabit. ' \
-                    'Totum autem id externum est, et quod externum, id in casu est. ' \
-                    'In his igitur partibus duabus nihil erat, ' \
-                    'quod Zeno commutare gestiret. </p>'
+    fake_loripsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' \
+                    'Proclivi currit oratio. ' \
+                    'Honesta oratio, Socratica, Platonis etiam. ' \
+                    'Aliter homines, aliter philosophos loqui putas oportere? ' \
+                    'Quid ergo?'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_lorem_ipsum', return_value=fake_loripsum)
     mock_message = Mock(text='/loremipsum')
@@ -83,7 +78,7 @@ def test_lorem_ipsum(mocker):
     loremipsum(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_loripsum[3:len(fake_loripsum) - 7]
+    assert args[1] == fake_loripsum
 
 
 def test_lorem_ipsum_no_connection(mocker):
