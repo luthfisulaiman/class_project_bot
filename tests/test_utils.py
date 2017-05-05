@@ -1,5 +1,4 @@
 from csuibot import utils
-import kelaskata
 
 
 class TestZodiac:
@@ -255,6 +254,7 @@ class TestChineseZodiac:
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
 
+
 class TestKelaskata:
 
     def test_kelaskata_intan(self):
@@ -274,7 +274,5 @@ class TestKelaskata:
     def test_kelaskata_page_not_found(self):
         try:
             utils.lookup_kelaskata('/kelaskata akugantengsekali')
-        except kelaskata.exceptions.PageError as e:
-            assert str(e) == ('akugantengsekali is not a word, try another word! \n example : /kelaskata intan')
-
-
+        except ValueError as e:
+            assert str(e) == ('akugantengsekali is not a word, try another word!')

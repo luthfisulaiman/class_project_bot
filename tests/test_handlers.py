@@ -62,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_kelaskata(mocker):
     fake_kata = 'intan/n'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -73,6 +74,7 @@ def test_kelaskata(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_kata
 
+
 def test_kelaskata_none_term(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=ValueError)
@@ -83,6 +85,7 @@ def test_kelaskata_none_term(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Try /kelaskata [word]'
 
+
 def test_kelaskata_page_not_found(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=ValueError)
@@ -91,8 +94,4 @@ def test_kelaskata_page_not_found(mocker):
     kelaskata(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'akugantengsekali is not a word, try another word! \n example : /kelaskata intan'
-
-
-
-
+    assert args[1] == 'akugantengsekali is not a word, try another word!'
