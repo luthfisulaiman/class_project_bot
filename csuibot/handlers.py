@@ -45,7 +45,7 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
-@bot.message_handler(regexp=r'^/messagedist')
+@bot.message_handler(regexp=r'^/message_dist')
 def message_dist(message):
     app.logger.debug("'messagedist' command detected", message)
     try :
