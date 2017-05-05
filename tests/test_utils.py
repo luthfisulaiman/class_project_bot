@@ -276,7 +276,8 @@ class TestMessageDist:
             if dist_hour is None:
                 result[c_hour] = {'total': 0, 'percentage': '0%'}
             result[c_hour]['total'] += 1
-            result[c_hour]['percentage'] = '{}%'.format(int(result[c_hour]['total'] / size * 100))
+            value = int(result[c_hour]['total'] / size * 100)
+            result[c_hour]['percentage'] = '{}%'.format(value)
 
         assert result.get('09')['percentage'] == '83%'
         result = utils.lookup_message_dist(-195514957)
