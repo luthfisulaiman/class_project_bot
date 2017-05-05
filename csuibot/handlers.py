@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, generate_password
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,12 +44,15 @@ def shio(message):
 
 @bot.message_handler(regexp=r'^/password \d+$')
 def password(message):
+    app.logger.debug("'password' command detected")
     pass
 
 
 @bot.message_handler(regexp=r'^/password$')
 def password_16(message):
-    pass
+    app.logger.debug("'password' command detected")
+    password = generate_password(16)
+    bot.reply_to(message, password)
 
 
 def parse_date(text):

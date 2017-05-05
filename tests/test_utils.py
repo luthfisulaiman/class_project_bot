@@ -262,10 +262,6 @@ class TestPassword:
         assert len(res) == 1
 
     def test_average_length(self):
-        res = utils.generate_password()
-        assert len(res) == 16
-
-    def test_average_length_with_input(self):
         res = utils.generate_password(16)
         assert len(res) == 16
 
