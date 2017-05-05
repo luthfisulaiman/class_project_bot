@@ -40,7 +40,7 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
-        
+
 
 @bot.message_handler(regexp=r'^\/sceleNotif$')
 def sceleNotice(message):
