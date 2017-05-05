@@ -43,7 +43,7 @@ def fetch_user_input(user_input):
 
 def send_trivia():
     data = fetch_all_data()
-    rand = randint(0, len(data))
+    rand = randint(0, len(data) - 1)
     p = data[rand]
 
     info = "Did you know? " + p['name'] + " is poisonous plant. It causes " + p['cause']

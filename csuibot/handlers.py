@@ -1,5 +1,6 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import data_processor
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -40,6 +41,26 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^triviaplant')
+def plant_trivia(message):
+    try:
+        msg = data_processor.fetch_user_input(message)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^askplant')
+def plant_ask(message):
+    try:
+        msg = data_processor.fetch_user_input(message)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
 
 
 def parse_date(text):
