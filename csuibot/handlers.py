@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_wiki
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer, lookup_wiki
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -62,6 +62,18 @@ def wiki(message):
         )
     else:
         bot.reply_to(message, wiki_summary)
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
 
 
 # bot.remove_webhook()

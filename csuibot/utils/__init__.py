@@ -1,5 +1,6 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import wiki
+from csuibot.utils import yelkomputer
 
 
 def lookup_zodiac(month, day):
@@ -58,3 +59,10 @@ def lookup_wiki(term):
                 'Page id "' + term + '" does not match any pages.'
                 ' Try another id!'
             )
+
+
+def lookup_yelkomputer(message_text):
+    if message_text == '/yelkomputer':
+        return yelkomputer.YelKomputer.get_yel_komputer()
+    else:
+        raise ValueError('Command /yelkomputer doesn\'t need any arguments')
