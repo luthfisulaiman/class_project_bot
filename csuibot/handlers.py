@@ -1,4 +1,4 @@
-from . import app, bot
+from .import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac
 
 
@@ -44,3 +44,7 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^/calculate (.*)$')
+def compute(message):
+    pass

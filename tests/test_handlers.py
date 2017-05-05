@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, compute
 
 
 def test_help(mocker):
@@ -61,3 +61,74 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_compute_addition(mocker):
+    fake_result = '7'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_compute_substraction(mocker):
+    fake_result = '3'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 10-7')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_compute_multiplication(mocker):
+    fake_result = '12'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4*3')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_compute_division(mocker):
+    fake_result = '3'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 30/3')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_compute_multiple_operator(mocker):
+    fake_result = '3'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3-2*10/5')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_compute_division_by_zero(mocker):
+    fake_error = 'Cannot divide by 0'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 3/0')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+def test_error_compute(mocker):
+    fake_error = 'Invalid command, please enter only numbers and operators'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ValueError)
+    mock_message = Mock(text='/compute asdf')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
