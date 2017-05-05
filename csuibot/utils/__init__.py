@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, isUpWeb as iuw
 
 
 def lookup_zodiac(month, day):
@@ -43,3 +43,6 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+def lookup_isUpWeb(url) :
+    return iuw.IsUpWeb(url).isUp() 
