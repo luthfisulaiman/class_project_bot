@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, soundcliphelp, soundclip
 
 
 def test_help(mocker):
@@ -27,6 +27,30 @@ def test_zodiac(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_zodiac
+
+def test_soundclip(mocker):
+    fake_soundclip = 'soundclip/jerry_sings.wma'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_zodiac', return_value=fake_soundclip)
+    mock_message = Mock(text='/soundclip jerry sings')
+
+    soundclip(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_soundclip
+
+def test_soundcliphelp(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+
+    soundcliphelp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    expected_text = (
+        'SOUNDCLIPS!\n\n'
+        'Get help!'
+    )
+    assert args[1] == expected_text
 
 
 def test_zodiac_invalid_month_or_day(mocker):

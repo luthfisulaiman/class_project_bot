@@ -44,3 +44,25 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^/soundhelp$')
+def soundcliphelp(message):
+    app.logger.debug("'about' command detected")
+    about_text = (
+        'SOUNDCLIPS!\n\n'
+        'Get help!'
+    )
+    bot.reply_to(message, about_text)
+
+
+@bot.message_handler(regexp=r'^/soundclip [a-z A-Z]*$')
+def soundclip(message):
+    title = message.text.split(' ', 1)
+    soundtitle = title[1].replace(' ', '_')
+
+    try:
+        soundclip = 'soundclip/' + soundtitle + '.wma'
+    except:
+        bot.reply_to(message, 'Sound clip not found')
+    else:
+        bot.reply_to(message, soundclip)
