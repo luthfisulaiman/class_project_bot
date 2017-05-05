@@ -1,5 +1,5 @@
 from csuibot import utils
-
+from csuibot.utils import plant as p
 
 class TestZodiac:
 
@@ -253,3 +253,21 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+class TestPlant:
+
+    def test_is_poisonous_true(self):
+        plant = p.Plant('test',True,'test')
+        assert plant.is_poisonous is True
+
+    def test_is_poisonous_false(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.is_poisonous is False
+
+    def test_name(self):
+        plant = p.Plant('test',False,'test')
+        assert  plant.name == 'test'
+
+    def test_desription(self):
+        plant = p.Plant('test',False,'test')
+        assert  plant.description == 'test'
