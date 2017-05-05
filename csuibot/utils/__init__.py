@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z, xkcd as x
+from csuibot.utils import yelkomputer
 
 
 def lookup_zodiac(month, day):
@@ -47,3 +48,10 @@ def lookup_chinese_zodiac(year):
 
 def fetch_latest_xkcd():
     return x.Comic.get_latest_comic()
+
+
+def lookup_yelkomputer(message_text):
+    if message_text == '/yelkomputer':
+        return yelkomputer.YelKomputer.get_yel_komputer()
+    else:
+        raise ValueError('Command /yelkomputer doesn\'t need any arguments')

@@ -1,6 +1,6 @@
 import requests
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, fetch_latest_xkcd
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer, fetch_latest_xkcd
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -62,3 +62,15 @@ def xkcd(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, comic)
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
