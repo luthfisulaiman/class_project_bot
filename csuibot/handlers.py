@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, generate_custom_chuck_joke
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,7 +44,12 @@ def shio(message):
 
 @bot.message_handler(regexp=r'^/chuck \d+ \d+$')
 def custom_chuck_joke(message):
-    pass
+    app.logger.debug("'chuck' command detected")
+    _, first_name, last_name = message.text.split(' ')
+    app.logger.debug("first = {}, last = {}".format(first_name, last_name))
+
+    joke = generate_custom_chuck_joke(first_name, last_name)
+    bot.reply_to(message, joke)
 
 
 def parse_date(text):

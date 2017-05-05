@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, custom_chuck_joke
 
 
 def test_help(mocker):
