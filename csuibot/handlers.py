@@ -41,6 +41,16 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
+@bot.message_handler(regexp=r'/tree height ([a\-z]*,[a\-z]*,[a\-z]*([a\-z]*,[a\-z]*)[a\-z]*)[a\-z]*)')
+def ntree_height(message):
+    app.logger.debug("'/tree height' command detected")
+
+    try:
+        height = find_height(message)
+    except ValueError:
+        bot.reply_to(message, 'That is not Newick format!')
+    else:
+        bot.reply_to(message, height)
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
