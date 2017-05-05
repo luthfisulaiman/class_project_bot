@@ -278,7 +278,11 @@ class TestPlant:
 
 class TestDataProcessor:
 
-    def test_fetch_data(self):
+    def test_fetch_data_is_poisonous(self):
+        test = processor.fetch_data('Daffodil')
+        assert test is not None
+
+    def test_fetch_data_not_poisonous(self):
         test = processor.fetch_data('test')
         assert test is not None
 
@@ -287,13 +291,21 @@ class TestDataProcessor:
         assert test is not None
 
     def test_fetch_user_input(self):
-        test = processor.fetch_user_input()
+        test = processor.fetch_user_input('elephant')
+        assert test is None
+
+    def test_fetch_user_input_trivia(self):
+        test = processor.fetch_user_input('triviaplant')
         assert test is not None
 
-    def test_sent_trivia(self):
-        test = processor.sent_trivia()
+    def test_fetch_user_input_ask_false(self):
+        test = processor.fetch_user_input('askplant apple')
         assert test is not None
 
-    def test_daily_trivia(self):
-        test = processor.daily_trivia()
+    def test_fetch_user_input_ask_true(self):
+        test = processor.fetch_user_input('askplant Daffodil')
+        assert test is not None
+
+    def test_send_trivia(self):
+        test = processor.send_trivia()
         assert test is not None
