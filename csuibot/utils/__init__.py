@@ -1,5 +1,5 @@
 from csuibot.utils import zodiac as z
-
+from csuibot.utils import message_dist as md
 
 def lookup_zodiac(month, day):
     zodiacs = [
@@ -44,5 +44,9 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def lookup_message_dist():
-    pass
+def lookup_message_dist(group_id):
+    m = md.MessageDist()
+    group_message_timestamp_list = m.get_message_dist(group_id)
+    if group_message_timestamp_list is None:
+        return "Connection error"
+    return group_message_timestamp_list
