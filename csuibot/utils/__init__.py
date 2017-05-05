@@ -1,6 +1,5 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import wiki
-import wikipedia
 
 
 def lookup_zodiac(month, day):
@@ -54,7 +53,7 @@ def lookup_wiki(term):
         object_wiki = wiki.Wiki(term)
         try:
             return object_wiki.get_result()
-        except wikipedia.exceptions.PageError as e:
+        except Exception as e:
             raise IndexError(
                 'Page id "' + term + '" does not match any pages.'
                 ' Try another id!'
