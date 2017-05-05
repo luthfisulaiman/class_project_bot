@@ -18,14 +18,15 @@ class MessageDist:
         status = telebot_updates['ok']
         if (status == False):
             return []
-        results = telebot_updates['result']
-        group_message_updates = []
-        for f in results:
-            if f.get('edited_message', None) != None:
-                group_message_updates.append(f['edited_message']['date'])
-            else:
-                group_message_updates.append(f['message']['date'])
-        return group_message_updates
+        else :
+            results = telebot_updates['result']
+            group_message_updates = []
+            for f in results:
+                if f.get('edited_message', None) != None:
+                    group_message_updates.append(f['edited_message']['date'])
+                else:
+                    group_message_updates.append(f['message']['date'])
+            return group_message_updates
 
     def calc_message_dist(self, timestamp_message):
         size = len(timestamp_message)
