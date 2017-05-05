@@ -2,6 +2,8 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, kelaskata
 
+import requests
+
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -84,3 +86,14 @@ def test_kelaskata_none_term(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Try /kelaskata [word]'
+
+
+def test_kelaskata_word_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/kelaskata akugantengsekali')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '"akugantengsekali" is not a word'

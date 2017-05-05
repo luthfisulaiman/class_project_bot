@@ -1,5 +1,6 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_kelaskata
+import requests
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -55,16 +56,9 @@ def kelaskata(message):
         kelas_kata = lookup_kelaskata(command)
     except ValueError as e:
         bot.reply_to(message, 'Try /kelaskata [word]')
-    except IndexError as e:
+    except requests.ConnectionError as e:
         bot.reply_to(
             message,
-            command + ' is not a word, try another word!')
+            '"'+command + '" is not a word')
     else:
         bot.reply_to(message, kelas_kata)
-
-# bot.remove_webhook()
-# while True:
-#     try:
-#         bot.polling(none_stop=True)
-#     except Exception as e:
-#         app.logger.debug(str(e))

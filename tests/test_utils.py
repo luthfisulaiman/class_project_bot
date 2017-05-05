@@ -1,5 +1,7 @@
 from csuibot import utils
 
+import requests
+
 
 class TestZodiac:
 
@@ -257,22 +259,21 @@ class TestChineseZodiac:
 
 class TestKelaskata:
 
+    def run_test(self, word, expected):
+        try:
+            result = utils.lookup_kelaskata(word)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('"akugantengsekali" is not a word')
+
     def test_kelaskata_intan(self):
-        res = utils.lookup_kelaskata('/kelaskata intan')
-        assert res == 'intan/n'
+        self.run_test('intan', 'intan/n')
 
     def test_kelaskata_membaca(self):
-        res = utils.lookup_kelaskata('/kelaskata membaca')
-        assert res == 'membaca/v'
+        self.run_test('membaca', 'membaca/v')
 
     def test_kelaskata_value_error(self):
         try:
-            utils.lookup_kelaskata('/kelaskata')
+            self.run_test('', 'Try /kelaskata [word]')
         except ValueError as e:
             assert str(e) == 'Try /kelaskata [word]'
-
-    def test_kelaskata_page_not_found(self):
-        try:
-            utils.lookup_kelaskata('/kelaskata akugantengsekali')
-        except ValueError as e:
-            assert str(e) == ('akugantengsekali is not a word, try another word!')

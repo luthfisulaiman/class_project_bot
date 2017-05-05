@@ -8,4 +8,4 @@ class kelaskata:
 
     def getKelasKata(self):
         res = r.get(self.webservice + self.message)
-        return (self.message + "/"+res.json()['katelgo']['lex_class'])
+        return (self.message + "/"+res.json()['kateglo']['lex_class'])
