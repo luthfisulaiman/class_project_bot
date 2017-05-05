@@ -206,7 +206,7 @@ class TestZodiac:
 
         assert res == 'Unknown zodiac'
 
-   
+
 class TestNotifTaker:
     def test_notif_taker(self):
         res = utils.takeSceleNotif()

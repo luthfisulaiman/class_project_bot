@@ -72,4 +72,4 @@ def test_sceleNotif(mocker):
     takeSceleNotif(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_scele    
+    assert args[1] == fake_scele
