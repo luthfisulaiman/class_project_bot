@@ -1,5 +1,6 @@
 from .import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, chuck
+from requests.exceptions import ConnectionError
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -47,4 +48,10 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/chuck (.*)$')
 def chuck(message):
-    pass
+    app.logger.debug("chuck command called")
+    try:
+        joke = chuck()
+    except  ConnectionError:
+        bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection to connect to ICNDb API, too bad you\'re not him')
+    else:
+        bot.reply_to(message,joke)

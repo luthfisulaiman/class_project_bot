@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, chuck as c
 
 
 def lookup_zodiac(month, day):
@@ -45,4 +45,4 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 def chuck(message):
-    pass
+    return c.Chuck.get_chuck()
