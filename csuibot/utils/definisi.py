@@ -1,9 +1,13 @@
 import requests
+import json
+
 
 class Definisi:
 
-	def __init__(self):
-		pass
+    def __init__(self):
+        pass
+        requests
+        json
 
-	def getDefinition(word):
-		pass
+    def define(word):
+        pass

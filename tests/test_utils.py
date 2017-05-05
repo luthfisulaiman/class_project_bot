@@ -253,3 +253,20 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestDefinisi:
+
+    def run_test(self, word, expected_output, is_valid=False):
+        mean = utils.lookup_definisi(word)
+        if is_valid:
+            assert word is not None
+        else:
+            assert mean == expected_output
+
+    def test_found(self):
+        self.run_test('bahtera', '', True)
+
+    def test_not_found(self):
+        expected_output = 'makimaki is not a word :(, maybe try another one?'
+        self.run_test('makimaki', expected_output)

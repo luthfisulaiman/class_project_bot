@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, definisi
+import requests
 
 
 def test_help(mocker):
@@ -61,3 +62,14 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_definisi_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_definisi', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/definisi tralalala')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Oops! There was a problem. Maybe try again later :('

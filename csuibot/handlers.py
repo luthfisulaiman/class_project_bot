@@ -42,5 +42,10 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9]+$')
+def definisi(message):
+    pass
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
