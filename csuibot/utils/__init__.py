@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, soundcloud as sc
 
 
 def lookup_zodiac(month, day):
