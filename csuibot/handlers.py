@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_isUpWeb 
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +44,15 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^\/is_up (https?)://[^\s/$.?#].[^\s]*$')
+def isUp(message) :
+    app.logger.debug("'is_up' command detected")
+    _, url = message.text.split(' ')
+
+    try:
+        result = lookup_isUpWeb(url)
+    except ValueError :
+        bot.reply_to(message, 'Url is invalid')
+    else :
+        bot.reply_to(message, result)

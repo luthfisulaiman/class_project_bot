@@ -61,3 +61,36 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_is_up(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/is_up scele.cs.ui.ac.id')
+
+    isUp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'UP'
+
+
+def test_is_down(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/is_up iniwebsitedownwoi.co.id')
+
+    isUp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'DOWN'
+
+
+def test_error_url(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.is_palindrome', side_effect=ValueError)
+    mock_message = Mock(text='/is_up ftp://example.com')
+
+    isUp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Url is invalid'
+
+
+
