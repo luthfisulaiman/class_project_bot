@@ -1,7 +1,5 @@
 from csuibot import utils
 
-import wikipedia
-
 
 class TestZodiac:
 
@@ -291,7 +289,7 @@ class TestWiki:
     def test_wiki_page_error(self):
         try:
             utils.lookup_wiki('nama_nama_ikan')
-        except wikipedia.exceptions.PageError as e:
+        except IndexError as e:
             assert str(e) == (
                 'Page id "nama_nama_ikan" does not match any pages.'
                 ' Try another id!'
