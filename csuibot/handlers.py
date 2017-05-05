@@ -41,6 +41,7 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
+
 @bot.message_handler(regexp=r'^/hipsteripsum \d{1,}$')
 def hipsteripsum(message):
     app.logger.debug("'hipsteripsum' command detected")
@@ -51,7 +52,7 @@ def hipsteripsum(message):
     except TypeError:
         bot.reply_to(message, 'Number of paragraph is invalid')
     except ValueError:
-        bot.reply_to(message, 'Number of paragraph exceed the limit, please ensure input a number between 1-99')
+        bot.reply_to(message, 'Number of paragraph exceed the limit')
     else:
         bot.reply_to(message, hipster)
 

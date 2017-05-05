@@ -1,5 +1,4 @@
 from csuibot.utils import zodiac as z
-from csuibot.utils import hipster as hp
 
 
 def lookup_zodiac(month, day):
@@ -44,6 +43,7 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
 
 def make_hipster(paras):
     raise NotImplementedError

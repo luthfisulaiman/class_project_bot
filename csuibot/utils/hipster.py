@@ -1,19 +1,20 @@
 class HipsterGenerator:
 
-	def __init__():
-		raise NotImplementedError
+    def __init__():
+        raise NotImplementedError
 
-	def generateHipster():
-		raise NotImplementedError
+    def generatehipster():
+        raise NotImplementedError
+
 
 class HipsterIpsum:
-	_paras = ""
+    _paras = ""
 
-	def __init__():
-		raise NotImplementedError
+    def __init__():
+        raise NotImplementedError
 
-	def getParagragh():
-		raise NotImplementedError
+    def getparagragh():
+        raise NotImplementedError
 
-	def set():
-		raise NotImplementedError
+    def set():
+        raise NotImplementedError
