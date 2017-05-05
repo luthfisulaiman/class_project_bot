@@ -46,6 +46,6 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def lookup_yelkomputer(message_text):
+def lookup_yelfasilkom(message_text):
     pass
     
