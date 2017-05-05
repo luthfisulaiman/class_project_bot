@@ -41,9 +41,12 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
-
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
+def parse_material(text):
+    return tuple(map(, text.split(' ')))
+
+@bot.message_handler(regexp=r'^/tellme \w+$')
 def get_discrete_material(message):
     pass
