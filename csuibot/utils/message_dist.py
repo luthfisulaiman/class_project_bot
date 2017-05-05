@@ -2,6 +2,7 @@ import requests
 from datetime import datetime
 from .. import app
 
+
 class MessageDist:
 
     def get_message_dist(self, group_id):
@@ -10,7 +11,8 @@ class MessageDist:
         return message_dist
 
     def get_group_message_timestamp_update(self, group_id):
-        telebot_update_url = 'https://api.telegram.org/bot{}/getUpdates'.format(app.config['TELEGRAM_BOT_TOKEN'])
+        telebot_base_url = 'https://api.telegram.org/bot{}/getUpdates'
+        telebot_update_url = telebot_base_url.format(app.config['TELEGRAM_BOT_TOKEN'])
         try:
             telebot_updates = requests.post(telebot_update_url).json()
         except requests.exceptions.Timeout:
@@ -22,7 +24,7 @@ class MessageDist:
             results = telebot_updates['result']
             group_message_updates = []
             for f in results:
-                if f.get('edited_message', None) != None:
+                if f.get('edited_message', None) is not None:
                     group_message_updates.append(f['edited_message']['date'])
                 else:
                     group_message_updates.append(f['message']['date'])
@@ -48,5 +50,6 @@ class MessageDist:
             if dist_hour is None:
                 result[c_hour] = {'total': 0, 'percentage': '0%'}
             result[c_hour]['total'] += 1
-            result[c_hour]['percentage'] = '{}%'.format(int(result[c_hour]['total'] / size * 100))
+            value = int(result[c_hour]['total'] / size * 100)
+            result[c_hour]['percentage'] = '{}%'.format(value)
         return result

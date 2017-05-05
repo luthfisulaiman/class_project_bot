@@ -1,6 +1,7 @@
 from csuibot import utils
 from datetime import datetime
 
+
 class TestZodiac:
 
     def test_aries_lower_bound(self):

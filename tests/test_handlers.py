@@ -62,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_message_dist(mocker):
     fake_message_dist = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
