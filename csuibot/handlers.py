@@ -46,7 +46,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/wiki')
+@bot.message_handler(commands=['wiki'])
 def wiki(message):
     app.logger.debug("'wiki' command detected")
     term = " ".join(message.text.split()[1:])
@@ -70,4 +70,5 @@ def wiki(message):
 #         bot.polling(none_stop=True)
 #     except Exception as e:
 #         app.logger.debug(type(e).__name__, e.args)
+#         import time
 #         time.sleep(5)
