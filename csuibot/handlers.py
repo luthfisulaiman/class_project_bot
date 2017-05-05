@@ -1,5 +1,5 @@
 from .import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, compute
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -45,6 +45,15 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
-@bot.message_handler(regexp=r'^/calculate (.*)$')
+
+@bot.message_handler(regexp=r'^/compute ([0-9]+[\/\+\-\*][0-9]+)*$')
 def compute(message):
-    pass
+    app.logger.debug("compute command detected")
+    try:
+        result = compute(message)
+    except NameError:
+        bot.reply_to(message, "Invalid command, please enter only numbers and operators")
+    except ZeroDivisionError:
+        bot.reply_to(message, "Cannot divide by zero")
+    else:
+        bot.reply_to(message, result)

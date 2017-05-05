@@ -62,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_compute_addition(mocker):
     fake_result = '7'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -71,6 +72,7 @@ def test_compute_addition(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
+
 
 def test_compute_substraction(mocker):
     fake_result = '3'
@@ -82,6 +84,7 @@ def test_compute_substraction(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
 
+
 def test_compute_multiplication(mocker):
     fake_result = '12'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -91,6 +94,7 @@ def test_compute_multiplication(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
+
 
 def test_compute_division(mocker):
     fake_result = '3'
@@ -102,6 +106,7 @@ def test_compute_division(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
 
+
 def test_compute_multiple_operator(mocker):
     fake_result = '3'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -112,9 +117,11 @@ def test_compute_multiple_operator(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
 
+
 def test_compute_division_by_zero(mocker):
-    fake_error = 'Cannot divide by 0'
+    fake_error = 'Cannot divide by zero'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
     mock_message = Mock(text='/compute 3/0')
 
     compute(mock_message)
@@ -122,10 +129,11 @@ def test_compute_division_by_zero(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
 
+
 def test_error_compute(mocker):
     fake_error = 'Invalid command, please enter only numbers and operators'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.compute', side_effect=ValueError)
+    mocker.patch('csuibot.handlers.compute', side_effect=NameError)
     mock_message = Mock(text='/compute asdf')
 
     compute(mock_message)

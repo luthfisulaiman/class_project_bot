@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, compute as c
 
 
 def lookup_zodiac(month, day):
@@ -44,5 +44,7 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
+
 def compute(message):
-    pass
+    _, text = message.text.split(' ')
+    return c.Compute(text).compute()
