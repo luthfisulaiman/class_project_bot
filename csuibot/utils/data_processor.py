@@ -19,7 +19,7 @@ def fetch_data(name):
 def fetch_all_data():
     data = []
     path = os.path.dirname(os.path.abspath(__file__))
-    with open(path + '\data.json') as json_file:
+    with open(path + '/data.json') as json_file:
         json_data = json.load(json_file)
         data = json_data
 
