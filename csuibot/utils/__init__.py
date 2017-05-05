@@ -1,5 +1,4 @@
 from csuibot.utils import zodiac as z
-from csuibot.utils import yelfasilkom
 
 
 def lookup_zodiac(month, day):
@@ -48,4 +47,3 @@ def lookup_chinese_zodiac(year):
 
 def lookup_yelfasilkom(message_text):
     pass
-    

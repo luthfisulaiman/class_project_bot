@@ -1,6 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelfasilkom
-
+from .utils import lookup_zodiac, lookup_chinese_zodiac
 
 
 @bot.message_handler(regexp=r'^/about$')

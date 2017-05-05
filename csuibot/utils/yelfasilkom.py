@@ -1,3 +1,3 @@
 class YelFasilkom:
-	def get_yel_fasilkom():
-		pass
+    def get_yel_fasilkom():
+        pass
