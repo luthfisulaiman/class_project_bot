@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
-
+from csuibot.handlers import help, zodiac, shio, composer
+from requests.exceptions import ConnectionError
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -61,3 +61,18 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_composer(mocker):
+    fake_track_info = '<p> The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'LIONE '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix </p>'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_composer', return_value=fake_track_info)
+    mock_message = Mock(text='/sound_composer iamlione')
+
+    composer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_track_info

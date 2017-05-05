@@ -25,8 +25,7 @@ def zodiac(message):
         bot.reply_to(message, 'Month or day is invalid')
     else:
         bot.reply_to(message, zodiac)
-
-
+        
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
 def shio(message):
     app.logger.debug("'shio' command detected")
@@ -44,3 +43,7 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+@bot.message_handler(regexp=r'^/sound_composer \w+$')
+def composer(message):
+    pass

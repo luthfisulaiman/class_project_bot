@@ -15,7 +15,6 @@ webhook_url_base = app.config['WEBHOOK_HOST']
 # Configure application logging
 app.logger.setLevel(app.config['LOG_LEVEL'])
 
-
 @app.route('/')
 def index():
     return 'Bot is running'
@@ -31,7 +30,6 @@ def webhook():
         return ''
     else:
         return abort(403)
-
 
 def get_req_body_as_json():
     return request.get_json(silent=True)
