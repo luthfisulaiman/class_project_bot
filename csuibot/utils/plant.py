@@ -1,4 +1,4 @@
-class Plant:
+class Plant(object):
 
     def __init__(self, name, is_poisonous, description):
         self.name = name

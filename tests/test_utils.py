@@ -1,5 +1,7 @@
 from csuibot import utils
 from csuibot.utils import plant as p
+from csuibot.utils import data_processor as processor
+
 
 class TestZodiac:
 
@@ -254,10 +256,11 @@ class TestChineseZodiac:
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
 
+
 class TestPlant:
 
     def test_is_poisonous_true(self):
-        plant = p.Plant('test',True,'test')
+        plant = p.Plant('test', True, 'test')
         assert plant.is_poisonous is True
 
     def test_is_poisonous_false(self):
@@ -265,9 +268,32 @@ class TestPlant:
         assert plant.is_poisonous is False
 
     def test_name(self):
-        plant = p.Plant('test',False,'test')
-        assert  plant.name == 'test'
+        plant = p.Plant('test', False, 'test')
+        assert plant.name == 'test'
 
     def test_desription(self):
-        plant = p.Plant('test',False,'test')
-        assert  plant.description == 'test'
+        plant = p.Plant('test', False, 'test')
+        assert plant.description == 'test'
+
+
+class TestDataProcessor:
+
+    def test_fetch_data(self):
+        test = processor.fetch_data('test')
+        assert test is not None
+
+    def test_fetch_all_data(self):
+        test = processor.fetch_all_data()
+        assert test is not None
+
+    def test_fetch_user_input(self):
+        test = processor.fetch_user_input()
+        assert test is not None
+
+    def test_sent_trivia(self):
+        test = processor.sent_trivia()
+        assert test is not None
+
+    def test_daily_trivia(self):
+        test = processor.daily_trivia()
+        assert test is not None
