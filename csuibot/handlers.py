@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_marsfasilkom
+from .utils import lookup_zodiac, lookup_chinese_zodiac
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -43,7 +43,7 @@ def shio(message):
 
 
 @bot.message_handler(regexp=r'^/marsfasilkom')
-def yel_fasilkom(message):
+def mars_fasilkom(message):
     pass
 
 

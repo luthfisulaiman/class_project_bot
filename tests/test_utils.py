@@ -275,6 +275,3 @@ class TestMarsFasilkom:
             utils.lookup_marsfasilkom('/marsfasilkom args')
         except ValueError as e:
             assert str(e) == 'Command /marsfasilkom doesn\'t need any arguments'
-
-
-
