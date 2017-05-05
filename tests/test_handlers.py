@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, takeSceleNotif
 
 
 def test_help(mocker):
@@ -61,3 +61,15 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_sceleNotif(mocker):
+    fake_scele = 'scele'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.takeSceleNotif', return_value=fake_scele)
+    mock_message = Mock(text='/sceleNotif')
+
+    takeSceleNotif(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_scele
+    

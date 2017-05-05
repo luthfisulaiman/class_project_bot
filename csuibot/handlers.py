@@ -40,7 +40,16 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
-
-
+        
+@bot.message_handler(regexp=r'^\/sceleNotif$')
+def sceleNotice(message):
+    app.logger.debug("command detected")
+    try:
+        notification = takeSceleNotif()
+    except Exception as e:
+        bot.reply_to(message,'Error catched')
+    else:
+        bot.reply_to(message,notification)
+    
 def parse_date(text):
     return tuple(map(int, text.split('-')))
