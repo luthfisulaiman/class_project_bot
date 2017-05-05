@@ -45,5 +45,6 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
+
 def get_meme(top, bottom):
     raise NotImplementedError

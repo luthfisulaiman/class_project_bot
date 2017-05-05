@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, get_meme
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -40,6 +40,20 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/meme \w{1,} \w{1,}$')
+def meme(message):
+    app.logger.debug("'meme' command detected")
+    _, top, bottom = message.text.split(' ')
+    app.logger.debug('top = {}, bottom = {}'.format(top, bottom))
+
+    try:
+        meme = get_meme(top, bottom)
+    except TypeError:
+        bot.reply_to(message, 'Input is invalid')
+    else:
+        bot.reply_to(message, meme)
 
 
 def parse_date(text):

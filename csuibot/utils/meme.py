@@ -1,38 +1,42 @@
+import requests
+import json
+
+
 class MemeGenerator:
+    memelist = ['61579']
 
-	memelist = ['61579']
+    def __init__():
+        raise NotImplementedError
 
-	def __init__():
-		raise NotImplementedError
+    def createid():
+        raise NotImplementedError
 
-	def createID():
-		raise NotImplementedError
+    def createbottomcaption():
+        raise NotImplementedError
 
-	def createBottomCaption():
-		raise NotImplementedError
+    def createtopcaption():
+        raise NotImplementedError
 
-	def createTopCaption():
-		raise NotImplementedError
+    def generatememe():
+        raise NotImplementedError
 
-	def generateMeme():
-		raise NotImplementedError
 
 class Meme:
-	_id = ""
-	_bottomCaption = ""
-	_topCaption = ""
+    _id = ""
+    _bottomCaption = ""
+    _topCaption = ""
 
-	def __init__():
-		raise NotImplementedError
+    def __init__():
+        raise NotImplementedError
 
-	def getID():
-		raise NotImplementedError
+    def getid():
+        raise NotImplementedError
 
-	def getBottomCaption():
-		raise NotImplementedError
+    def getbottomcaption():
+        raise NotImplementedError
 
-	def getTopCaption():
-		raise NotImplementedError
+    def gettopcaption():
+        raise NotImplementedError
 
-	def set():
-		raise NotImplementedError
+    def set():
+        raise NotImplementedError

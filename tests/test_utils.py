@@ -254,12 +254,9 @@ class TestChineseZodiac:
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
 
+
 class TestMeme:
 
     def test_success(self):
-        res = utils.get_meme("Lorem","Ipsum")
+        res = utils.get_meme("Top", "Bottom")
         assert res['success'] == 'true'
-
-    def test_failed(self):
-        res = utils.get_meme("", "")
-        assert res['success'] == 'false'

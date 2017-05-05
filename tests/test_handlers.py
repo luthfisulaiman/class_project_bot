@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, meme
 
 
 def test_help(mocker):
@@ -61,3 +61,15 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_meme_valid(mocker):
+    fake_meme = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_meme', return_value=fake_meme)
+    mock_message = Mock(text='/meme top bottom')
+
+    meme(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_meme
