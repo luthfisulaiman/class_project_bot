@@ -1,5 +1,6 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import manage_notes
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -45,6 +46,7 @@ def shio(message):
 @bot.message_handler(regexp=r'^/notes ')
 def note(message):
     pass
+    manage_notes
 
 
 def parse_date(text):

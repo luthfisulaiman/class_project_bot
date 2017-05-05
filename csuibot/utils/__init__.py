@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import note
 
 
 def lookup_zodiac(month, day):
@@ -47,3 +48,5 @@ def lookup_chinese_zodiac(year):
 
 def manage_notes(command, text=''):
     pass
+    note.Notes().view()
+    note.Notes().write(text)

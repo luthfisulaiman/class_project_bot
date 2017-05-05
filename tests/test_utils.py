@@ -260,7 +260,7 @@ class TestNotes:
     def run_test(self, command, text=''):
         if command == 'write':
             a = utils.manage_notes(command, text)
-            assert a
+            assert a == 'Message "Test add text" has been added to notes'
         elif command == 'view':
             text = utils.manage_notes(command)
             assert type(text) == str and len(text) > 0
