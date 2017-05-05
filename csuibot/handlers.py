@@ -46,7 +46,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/yelkomputer')
+@bot.message_handler(commands=['yelkomputer'])
 def yelkomputer(message):
     app.logger.debug("'yelkomputer' command detected")
 
@@ -56,3 +56,13 @@ def yelkomputer(message):
         bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
     else:
         bot.reply_to(message, yelkomputer)
+
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         app.logger.debug(type(e).__name__, e.args)
+#         import time
+#         time.sleep(5)
