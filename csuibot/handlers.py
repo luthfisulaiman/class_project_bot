@@ -45,6 +45,6 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
-@bot.message_handler(regexp=r'^/calculate (.*)$')
-def compute(message):
+@bot.message_handler(regexp=r'^/chuck (.*)$')
+def chuck(message):
     pass

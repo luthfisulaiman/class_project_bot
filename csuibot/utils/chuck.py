@@ -1,6 +1,6 @@
-class Compute:
+class Chuck:
     def __init__(self):
         pass
 
-    def compute(self):
+    def get_chuck(self):
         pass

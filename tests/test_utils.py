@@ -1,5 +1,5 @@
 from csuibot import utils
-
+from requests.exceptions import ConnectionError
 
 class TestZodiac:
 
@@ -253,3 +253,12 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+class TestChuck:
+    def test_get_chuck(self):
+        try:
+            rest = utils.chuck()
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
