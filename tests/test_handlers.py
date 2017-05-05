@@ -67,6 +67,22 @@ def test_composer(mocker):
                       '4:45 '\
                       'LIONE '\
                       'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'LIONE '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'LIONE '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'LIONE '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'LIONE '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_composer', return_value=fake_track_info)

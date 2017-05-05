@@ -1,5 +1,7 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, call_composer
+from requests.exceptions import ConnectionError
+
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -40,11 +42,18 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
-
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 @bot.message_handler(regexp=r'^/sound_composer \w+$')
 def composer(message):    
     app.logger.debug("'sound_composer' command detected")
-    pass
+    _, username = message.text.spit(' ')
+    try :
+        track = call_composer(username)
+    except ValueError:
+        bot.reply_to(message, 'Username not found')
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Soundcloud API')
+    else:
+        bot.reply_to(message, track)
