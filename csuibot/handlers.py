@@ -48,10 +48,10 @@ def parse_date(text):
 @bot.message_handler(regexp=r'^/message_dist')
 def message_dist(message):
     app.logger.debug("'messagedist' command detected", message)
-    try :
-        # get group id
+
+    try:
         message_dist = lookup_message_dist(message.chat.id)
     except ValueError:
         bot.reply_to(message, 'Internal server error')
-    else :
+    else:
         bot.reply_to(message, message_dist)

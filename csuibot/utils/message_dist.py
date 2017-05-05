@@ -11,14 +11,14 @@ class MessageDist:
 
     def get_group_message_timestamp_update(self, group_id):
         telebot_update_url = 'https://api.telegram.org/bot{}/getUpdates'.format(app.config['TELEGRAM_BOT_TOKEN'])
-        try :
+        try:
             telebot_updates = requests.post(telebot_update_url).json()
         except requests.exceptions.Timeout:
             return []
         status = telebot_updates['ok']
-        if (status == False):
+        if status is False:
             return []
-        else :
+        else:
             results = telebot_updates['result']
             group_message_updates = []
             for f in results:
@@ -39,14 +39,14 @@ class MessageDist:
                 if (m_hour < 10):
                     m_hour = '0{}'.format(m_hour)
                 m_hour = str(m_hour)
-                result[m_hour] = {'total' : 0, 'percentage' : '0%'}
+                result[m_hour] = {'total': 0, 'percentage': '0%'}
                 x_hour += 1
             if (c_hour < 10):
                 c_hour = '0{}'.format(c_hour)
             c_hour = str(c_hour)
             dist_hour = result.get(c_hour, None)
             if dist_hour is None:
-                result[c_hour] = {'total' : 0, 'percentage' : '0%'}
+                result[c_hour] = {'total': 0, 'percentage': '0%'}
             result[c_hour]['total'] += 1
             result[c_hour]['percentage'] = '{}%'.format(int(result[c_hour]['total'] / size * 100))
         return result

@@ -67,8 +67,6 @@ def test_message_dist(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_message_dist', return_value=fake_message_dist)
     mock_message = Mock(text='/messagedit')
-
     message_dist(mock_message)
-
     args = mocked_reply_to.call_args
     assert args is not None
