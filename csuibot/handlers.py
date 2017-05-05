@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, call_lorem_ipsum
+from .utils import lookup_zodiac, lookup_chinese_zodiac, call_lorem_ipsum, lookup_yelkomputer
 from requests.exceptions import ConnectionError
 
 
@@ -56,3 +56,15 @@ def loremipsum(message):
         bot.reply_to(message, 'Cannot connect to loripsum.net API')
     else:
         bot.reply_to(message, loripsum)
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)

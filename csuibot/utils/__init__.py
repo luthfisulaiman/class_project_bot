@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z, loremipsum as li
+from csuibot.utils import yelkomputer
 
 
 def lookup_zodiac(month, day):
@@ -47,3 +48,10 @@ def lookup_chinese_zodiac(year):
 
 def call_lorem_ipsum():
     return li.LoremIpsum().get_loripsum()
+
+
+def lookup_yelkomputer(message_text):
+    if message_text == '/yelkomputer':
+        return yelkomputer.YelKomputer.get_yel_komputer()
+    else:
+        raise ValueError('Command /yelkomputer doesn\'t need any arguments')
