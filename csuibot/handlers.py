@@ -47,3 +47,4 @@ def parse_date(text):
 @bot.message_handler(regexp=r'^/sound_composer \w+$')
 def composer(message):    
     app.logger.debug("'sound_composer' command detected")
+    pass
