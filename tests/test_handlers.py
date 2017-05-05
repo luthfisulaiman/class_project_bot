@@ -1,6 +1,9 @@
 from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import note
+
+import json
 
 
 def test_help(mocker):
@@ -61,3 +64,14 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_invalid_json_notes(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', side_effect=json.JSONDecodeError)
+    mock_message = Mock(text='/notes dasdsadassd')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Oops! There was a problem in the server :('
