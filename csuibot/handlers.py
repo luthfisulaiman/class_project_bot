@@ -1,4 +1,5 @@
 import requests
+import re
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer, convert_hex2rgb
 
@@ -43,13 +44,16 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/colou?r #[\dA-Fa-f]{6}$')
+@bot.message_handler(regexp=r'^/colou?r (.*)$')
 def colour(message):
     app.logger.debug("'colour' command detected")
-    _, hex_str = message.text.split(' ')
-    app.logger.debug('hex = {}'.format(hex_str))
 
     try:
+        _, hex_str = message.text.split(' ')
+        # If hex_str is not the correct format
+        if re.match(r'^#[\dA-Fa-f]{6}$', hex_str) is None:
+            raise ValueError
+        app.logger.debug('hex = {}'.format(hex_str))
         rgb = convert_hex2rgb(hex_str)
     except ValueError:
         bot.reply_to(message, 'Invalid command. '

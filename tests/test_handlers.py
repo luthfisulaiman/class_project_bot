@@ -77,15 +77,14 @@ def test_colour(mocker):
 
 
 def test_colour_invalid(mocker):
-    fake_rgb_invalid = 'Invalid command. Please use either /color #HEXSTR or /colour #HEXSTR'
+    rgb_invalid = 'Invalid command. Please use either /color #HEXSTR or /colour #HEXSTR'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.convert_hex2rgb', side_effect=ValueError)
     mock_message = Mock(text='/colour #123qwe')
 
     colour(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_rgb_invalid
+    assert args[1] == rgb_invalid
 
 
 def test_colour_connection_error(mocker):
