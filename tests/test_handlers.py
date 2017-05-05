@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, ntree_heights
 
 
 def test_help(mocker):
@@ -61,3 +61,13 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_height(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+
+    ntree_heights(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'It aint a tree'
