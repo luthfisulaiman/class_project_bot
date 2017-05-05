@@ -1,5 +1,8 @@
 from csuibot import utils
 
+from translate import translator
+
+import define
 
 class TestZodiac:
 
@@ -253,3 +256,25 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+class TestDefine:
+
+    def test_define_diamond(self):
+        res = utils.lookup_define('diamond')
+        assert res == 'intan'
+
+    def test_define_read(self):
+        res = utils.lookup_define('read')
+        assert res == 'baca'
+
+    def test_define_value_error(self):
+        try:
+            utils.lookup_define('/define')
+        except ValueError as e:
+            assert str(e) == 'Command /define need an argument'
+
+    def test_define_page_not_found(self):
+        try:
+            utils.lookup_define('/define akugantengsekali')
+        except define.exceptions.PageError as e:
+            assert str(e) == ('"akugantengsekali" is not an english word')

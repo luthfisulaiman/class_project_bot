@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, define
 
+from translate import translator
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -61,4 +62,40 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_define(mocker):
+    fake_define = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_define', return_value=fake_define)
+    mock_message = Mock(text='/define diamond')
+
+    define(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_define
+
+
+def test_define_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_define', side_effect=ValueError)
+    mock_message = Mock(text='/define')
+
+    define(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /define need an argument'
+
+
+def test_define_page_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.define', side_effect=translator.exceptions.PageError)
+    mock_message = Mock(text='/define akugantengsekali')
+
+    define(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '"akugantengsekali" is not an english word'
+
+
+
 
