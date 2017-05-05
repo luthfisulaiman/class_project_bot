@@ -62,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_sceleNotif(mocker):
     fake_scele = 'scele'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -71,5 +72,4 @@ def test_sceleNotif(mocker):
     takeSceleNotif(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_scele
-    
+    assert args[1] == fake_scele    

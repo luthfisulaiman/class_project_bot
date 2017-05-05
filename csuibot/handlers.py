@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, takeSceleNotif
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -41,15 +41,17 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
         
+
 @bot.message_handler(regexp=r'^\/sceleNotif$')
 def sceleNotice(message):
     app.logger.debug("command detected")
     try:
         notification = takeSceleNotif()
     except Exception as e:
-        bot.reply_to(message,'Error catched')
+        bot.reply_to(message, 'Error catched')
     else:
-        bot.reply_to(message,notification)
-    
+        bot.reply_to(message, notification)
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
