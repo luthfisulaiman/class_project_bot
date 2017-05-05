@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelfasilkom
+
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -40,6 +41,11 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/yelfasilkom')
+def yel_fasilkom(message):
+    pass
 
 
 def parse_date(text):

@@ -197,7 +197,7 @@ class TestZodiac:
 
     def test_unknown_zodiac(self, mocker):
         class FakeZodiac():
-            def date_includes(self, *args, **kwargs):
+            def date_includes(self, args, kwargs):
                 return False
 
         mocker.patch('csuibot.utils.z.Scorpio', return_value=FakeZodiac())
@@ -253,3 +253,30 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestYelFasilkom:
+
+    def test_yelFasilkom(self):
+        yelfasilkom = (
+            'Fasilkom!!!\n'
+            'Fasilkom!\n'
+            'Ilmu Komputer\n'
+            'Fasilkom!\n'
+            'Satu Banding Seratus\n'
+            'Kami Elit, Kami Kompak, Kami Anak UI\n'
+            'MIPA Bukan, Teknik Bukan,\n'
+            'FE Apalagi\n'
+            'Kami ini Fakultas No.1 di UI\n'
+            'Kami Cinta Fasilkom\n'
+            'Kami Bangga Fasilkom\n'
+            'Maju Terus\n'
+            'Fasilkom!')
+        res = utils.lookup_yelfasilkom('/yelfasilkom')
+        assert res == yelfasilkom
+
+    def test_yelfasilkom_value_error(self):
+        try:
+            utils.lookup_yelfasilkom('/yelfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /yelfasilkom doesn\'t need any arguments'
