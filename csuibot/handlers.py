@@ -53,12 +53,21 @@ def wiki(message):
 
     try:
         wiki_summary = lookup_wiki(term)
-    except ValueError as e:
+    except ValueError:
         bot.reply_to(message, 'Command /wiki need an argument')
-    except IndexError as e:
+    except IndexError:
         bot.reply_to(
             message,
             'Page id "' + term + '" does not match any pages. Try another id!'
         )
     else:
         bot.reply_to(message, wiki_summary)
+
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         app.logger.debug(type(e).__name__, e.args)
+#         time.sleep(5)
