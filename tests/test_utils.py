@@ -2,7 +2,6 @@ from csuibot import utils
 
 from translate import translator
 
-import define
 
 class TestZodiac:
 
