@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, dayofdate
 
 
 def test_help(mocker):
@@ -61,3 +61,34 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_dayofdate(mocker):
+    fake_day = 'boink'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', return_value=fake_day)
+    mock_message = Mock(text='/dayofdate 2016-05-13')
+
+    dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_day
+
+def test_dayofdate_invalid_command(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate 2016-15-43')
+
+    dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Incorrect use of dayofdate command. Please write a valid date in the form of yyyy-mm-dd, such as 2016-05-13'
+
+def test_dayofdate_no_argument(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate')
+
+    dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Incorrect use of dayofdate command. Please write a valid date in the form of yyyy-mm-dd, such as 2016-05-13'

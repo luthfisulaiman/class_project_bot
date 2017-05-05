@@ -253,3 +253,8 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+class TestDayofDate:
+    def test_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 05, 13)
+        assert day == 'Friday'
