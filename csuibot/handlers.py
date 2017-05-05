@@ -46,12 +46,13 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
-@bot.message_handler(regexp=r'^/chuck (.*)$')
+@bot.message_handler(regexp=r'^/chuck$')
 def chuck(message):
     app.logger.debug("chuck command called")
     try:
         joke = chuck()
-    except  ConnectionError:
+    except ConnectionError:
+        app.logger.debug("connection error detected")
         bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection to connect to ICNDb API, too bad you\'re not him')
     else:
         bot.reply_to(message,joke)

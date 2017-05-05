@@ -2,6 +2,8 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, chuck
 
+from requests.exceptions import ConnectionError
+
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock()
@@ -82,16 +84,3 @@ def test_chuck_connection_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
-
-def test_chuck_error(mocker):
-    fake_error = 'Invalid command'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck', side_effect=ValueError)
-    mock_message = Mock(text='/chuck asdf')
-
-    chuck(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_error
-
-
