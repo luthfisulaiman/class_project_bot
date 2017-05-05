@@ -43,3 +43,7 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_marsfasilkom(message_text):
+    pass
