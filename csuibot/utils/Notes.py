@@ -5,6 +5,7 @@ class Notes:
 
     def __init__(self):
         pass
+        json
 
     def view(self):
         pass

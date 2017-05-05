@@ -254,16 +254,16 @@ class TestChineseZodiac:
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
 
+
 class TestNotes:
 
     def run_test(self, command, text=''):
         if command == 'write':
             a = utils.manage_notes(command, text)
-            assert a == True
+            assert a
         elif command == 'view':
             text = utils.manage_notes(command)
             assert type(text) == str and len(text) > 0
-
 
     def test_view(self):
         self.run_test('view')
