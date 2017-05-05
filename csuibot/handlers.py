@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, call_composer
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -45,5 +45,5 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 @bot.message_handler(regexp=r'^/sound_composer \w+$')
-def composer(message):
-    pass
+def composer(message):    
+    app.logger.debug("'sound_composer' command detected")

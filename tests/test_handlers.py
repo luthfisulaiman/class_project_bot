@@ -63,10 +63,10 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 def test_composer(mocker):
-    fake_track_info = '<p> The Chainsmokers - Closer (LIONE Remix) '\
+    fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
                       'LIONE '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix </p>'\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_composer', return_value=fake_track_info)
@@ -76,3 +76,12 @@ def test_composer(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_track_info
+
+def test_composer_no_connection(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_composer', side_effect=ConnectionError)
+    mock_message = Mock(text='/sound_composer iamlione')
+
+    composer(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Cannot connect to soundcloud API'
