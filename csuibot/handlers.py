@@ -1,5 +1,7 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, generate_custom_chuck_joke
+from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import generate_custom_chuck_joke
+from .utils import lookup_yelkomputer
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -58,3 +60,25 @@ def custom_chuck_joke(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
+
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         app.logger.debug(type(e).__name__, e.args)
+#         import time
+#         time.sleep(5)
