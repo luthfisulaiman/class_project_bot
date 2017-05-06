@@ -75,6 +75,18 @@ def test_ip(mocker):
     assert args[1] == fake_ip
 
 
+def test_ip_no_connection(mocker):
+    fake_ip = 'Error connecting to ipify.org API, please try again later.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_public_ip', side_effect=ConnectionError)
+    mock_message = Mock(text='/bot ip')
+
+    ip(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_ip
+
+
 def test_yelkomputer(mocker):
     fake_yelkomputer = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

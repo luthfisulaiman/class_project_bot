@@ -48,7 +48,7 @@ def ip(message):
     try:
         public_ip = get_public_ip()
     except ConnectionError:
-        bot.reply_to(message, 'Cannot connect to ipify.org API, please try again later.')
+        bot.reply_to(message, 'Error connecting to ipify.org API, please try again later.')
     else:
         bot.reply_to(message, public_ip)
 
