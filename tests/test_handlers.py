@@ -1,6 +1,8 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, password, password_16
+from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import password, password_16
+from csuibot.handlers import yelkomputer
 
 
 def test_help(mocker):
@@ -131,3 +133,26 @@ def test_password_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_password
+
+
+def test_yelkomputer(mocker):
+    fake_yelkomputer = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelkomputer', return_value=fake_yelkomputer)
+    mock_message = Mock(text='/yelkomputer')
+
+    yelkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_yelkomputer
+
+
+def test_yelkomputer_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelkomputer', side_effect=ValueError)
+    mock_message = Mock(text='/yelkomputer some_arguments_here')
+
+    yelkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /yelkomputer doesn\'t need any arguments'

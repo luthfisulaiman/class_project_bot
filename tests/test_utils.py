@@ -278,3 +278,44 @@ class TestPassword:
         res = utils.generate_password(500)
         expected = 'Only a single integer, 1-128, is allowed as length'
         assert res == expected
+
+
+class TestYelKomputer:
+
+    def test_yelkomputer(self):
+        yelkomputer = (
+            'Komputer!\n\n'
+            'Masuknya Sulit, Fasilkom!\n'
+            'Sarana Komplit, Fasilkom!\n'
+            'Kelasnya Elit, Fasilkom!\n'
+            'Ilmu Komputer Jaya!\n'
+            'To Be Number One\n'
+            'FA... SIL... KOM...\n'
+            'Viva... viva... viva... Fasilkom!'
+        )
+        res = utils.lookup_yelkomputer('/yelkomputer')
+        assert res == yelkomputer
+
+    def test_yelkomputer_with_mars_perindo(self):
+        yelkomputer = (
+            'Marilah Seluruh rakyat Indonesia\n'
+            'Arahkan pandanganmu ke depan\n'
+            'Raihlah mimpimu bagi nusa bangsa\n'
+            'Satukan tekadmu untuk masa depan\n'
+            'Pantang menyerah itulah pedomanmu\n'
+            'Entaskan kemiskinan cita-citamu\n'
+            'Rintangan tak menggentarkan dirimu\n'
+            'Indonesia maju sejahtera tujuanmu\n'
+            'Nyalakan api semangat perjuangan\n'
+            'Dengungkan gema nyatakan persatuan\n'
+            'Oleh PERINDO... oleh PERINDO...\n'
+            'Jayalah Indonesia!'
+        )
+        res = utils.lookup_yelkomputer('/yelkomputer')
+        assert res != yelkomputer
+
+    def test_yelkomputer_value_error(self):
+        try:
+            utils.lookup_yelkomputer('/yelkomputer args')
+        except ValueError as e:
+            assert str(e) == 'Command /yelkomputer doesn\'t need any arguments'

@@ -1,5 +1,6 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import password as p
+from csuibot.utils import yelkomputer
 
 
 def lookup_zodiac(month, day):
@@ -48,3 +49,10 @@ def lookup_chinese_zodiac(year):
 
 def generate_password(len):
     return p.Password().generate_password(len)
+
+
+def lookup_yelkomputer(message_text):
+    if message_text == '/yelkomputer':
+        return yelkomputer.YelKomputer.get_yel_komputer()
+    else:
+        raise ValueError('Command /yelkomputer doesn\'t need any arguments')
