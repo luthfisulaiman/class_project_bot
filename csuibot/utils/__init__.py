@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, custom_chuck as cc
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def generate_custom_chuck_joke(first_name, last_name):
-    pass
+    return cc.CustomChuckJoke().generate_custom_chuck_joke(first_name, last_name)

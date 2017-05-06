@@ -253,3 +253,17 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestCustomChuckJoke:
+
+    def test_custom_chuck(self):
+        res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
+                "Chuck", "Norris")
+
+        assert res is not None
+
+    def test_fetch(self):
+        res = utils.generate_custom_chuck_joke("Chuck", "Norris")
+
+        assert res is not None

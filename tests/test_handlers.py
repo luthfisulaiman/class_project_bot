@@ -73,3 +73,16 @@ def test_custom_chuck(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_joke
+
+
+def test_custom_chuck_no_connection(mocker):
+    fake_joke = 'Error connecting to icndb.com API, please try again later.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke',
+                 side_effect=ConnectionError)
+    mock_message = Mock(text='/chuck Chuck Norris')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke

@@ -48,8 +48,12 @@ def custom_chuck_joke(message):
     _, first_name, last_name = message.text.split(' ')
     app.logger.debug("first = {}, last = {}".format(first_name, last_name))
 
-    joke = generate_custom_chuck_joke(first_name, last_name)
-    bot.reply_to(message, joke)
+    try:
+        joke = generate_custom_chuck_joke(first_name, last_name)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to icndb.com API, please try again later.')
+    else:
+        bot.reply_to(message, joke)
 
 
 def parse_date(text):
