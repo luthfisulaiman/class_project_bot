@@ -268,3 +268,13 @@ class TestPassword:
     def test_maximum_length(self):
         res = utils.generate_password(128)
         assert len(res) == 128
+
+    def test_under_minimum_length(self):
+        res = utils.generate_password(0)
+        expected = 'Only a single integer, 1-128, is allowed as length'
+        assert res == expected
+
+    def test_over_maximum_length(self):
+        res = utils.generate_password(500)
+        expected = 'Only a single integer, 1-128, is allowed as length'
+        assert res == expected

@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import password as p
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +47,4 @@ def lookup_chinese_zodiac(year):
 
 
 def generate_password(len):
-    pass
+    return p.Password().generate_password(len)

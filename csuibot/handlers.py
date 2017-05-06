@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, generate_password
+from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import generate_password
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -42,17 +43,32 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/password \d+$')
+@bot.message_handler(regexp=r'^/password (.*)$')
 def password(message):
     app.logger.debug("'password' command detected")
-    pass
+    length = message.text[10:]
+    app.logger.debug("requested length is {}".format(length))
+    password_helper(message, length)
 
 
 @bot.message_handler(regexp=r'^/password$')
 def password_16(message):
     app.logger.debug("'password' command detected")
-    password = generate_password(16)
-    bot.reply_to(message, password)
+    app.logger.debug("requested length is 16")
+    password_helper(message, 16)
+
+
+def password_helper(message, length):
+    try:
+        password = generate_password(length)
+    except TypeError:
+        bot.reply_to(message, 'Only a single integer, 1-128, is allowed as length')
+    except ConnectionError:
+        bot.reply_to(
+            message,
+            'Error connecting to password generator API, please try again later')
+    else:
+        bot.reply_to(message, password)
 
 
 def parse_date(text):

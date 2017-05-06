@@ -88,10 +88,7 @@ def test_password(mocker):
 
 
 def test_password_too_long(mocker):
-    expected = (
-        'Password would be too long.'
-        'Maximum allowed length is 128.'
-    )
+    expected = 'Only a single integer, 1-128, is allowed as length'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/password 500')
 
@@ -102,10 +99,7 @@ def test_password_too_long(mocker):
 
 
 def test_password_too_short(mocker):
-    expected = (
-        'Password would be nonexistent.'
-        'Minimum allowed length is 1.'
-    )
+    expected = 'Only a single integer, 1-128, is allowed as length'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/password 0')
 
@@ -113,3 +107,27 @@ def test_password_too_short(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == expected
+
+
+def test_password_wrong_format(mocker):
+    expected = 'Only a single integer, 1-128, is allowed as length'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/password Lorem Ipsum')
+
+    password(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == expected
+
+
+def test_password_no_connection(mocker):
+    fake_password = 'Error connecting to password generator API, ' \
+                    'please try again later'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_password', side_effect=ConnectionError)
+    mock_message = Mock(text='/password 16')
+
+    password(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_password
