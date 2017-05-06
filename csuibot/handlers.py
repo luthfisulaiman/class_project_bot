@@ -45,8 +45,12 @@ def shio(message):
 @bot.message_handler(regexp=r'^/bot ip$')
 def ip(message):
     app.logger.debug("'bot' command detected")
-    public_ip = get_public_ip()
-    bot.reply_to(message, public_ip)
+    try:
+        public_ip = get_public_ip()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to ipify.org API, please try again later.')
+    else:
+        bot.reply_to(message, public_ip)
 
 
 def parse_date(text):

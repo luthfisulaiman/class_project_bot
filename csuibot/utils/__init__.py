@@ -48,7 +48,7 @@ def lookup_chinese_zodiac(year):
 
 
 def get_public_ip():
-    return ip.IP.ip()
+    return ip.IP().ip()
 
 
 def lookup_yelkomputer(message_text):
