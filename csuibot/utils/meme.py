@@ -33,9 +33,13 @@ class MemeGenerator:
         self.items['id'] = self._memelist[randint(0, len(self._memelist) - 1)]
 
     def createbottom(self, caption):
+        if(len(caption) >= 100):
+            raise ValueError
         self.items['bottom'] = caption
 
     def createtop(self, caption):
+        if(len(caption) >= 100):
+            raise ValueError
         self.items['top'] = caption
 
     def generatememe(self):

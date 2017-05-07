@@ -50,7 +50,7 @@ def meme(message):
 
     try:
         meme = get_meme(top, bottom)
-    except TypeError:
+    except ValueError:
         bot.reply_to(message, 'Input is invalid')
     else:
         bot.reply_to(message, meme)

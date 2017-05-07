@@ -49,7 +49,11 @@ def lookup_chinese_zodiac(year):
 def get_meme(top, bottom):
     generator = meme.MemeGenerator()
     generator.createid()
-    generator.createtop(top)
-    generator.createbottom(bottom)
-    dank = generator.generatememe()
-    return dank.getimage()
+    try:
+        generator.createtop(top)
+        generator.createbottom(bottom)
+    except ValueError:
+        return 'Caption is too long, min < 100 words'
+    else:
+        dank = generator.generatememe()
+        return dank.getimage()

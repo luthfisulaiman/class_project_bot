@@ -259,4 +259,42 @@ class TestMeme:
 
     def test_success(self):
         res = utils.get_meme("Top", "Bottom")
-        assert res['success'] == 'true'
+        assert "http" in res
+
+    def test_top_too_long(self):
+        top = (
+            'Lorem ipsum dolor sit amet, '
+            'consectetur adipiscing elit. '
+            'Ut accumsan elementum libero, '
+            'nec lacinia erat sagittis at. '
+            'Fusce vitae fringilla nibh, aliquam molestie turpis. '
+            'Phasellus non purus id diam condimentum ullamcorper sit amet ac nulla. '
+            'Aliquam molestie fringilla neque, in volutpat lectus malesuada et. '
+            'Aliquam suscipit augue a erat blandit mattis. '
+            'Curabitur tempus porttitor nisi, sit amet volutpat ex dignissim sed. '
+            'Maecenas lacinia, libero sed accumsan volutpat, '
+            'quam mi ultrices mi, a vulputate mauris augue lobortis dui. '
+            'Cras feugiat ex quis consectetur dictum. Sed non cursus risus. '
+            'Suspendisse elementum interdum lorem in fringilla. '
+            'Suspendisse pharetra elementum dolor ac facilisis. Vivamus.')
+        res = utils.get_meme(top, "Bottom")
+        assert res == 'Caption is too long, min < 100 words'
+
+    def test_bottom_too_long(self):
+        bottom = (
+            'Lorem ipsum dolor sit amet, '
+            'consectetur adipiscing elit. '
+            'Ut accumsan elementum libero, '
+            'nec lacinia erat sagittis at. '
+            'Fusce vitae fringilla nibh, aliquam molestie turpis. '
+            'Phasellus non purus id diam condimentum ullamcorper sit amet ac nulla. '
+            'Aliquam molestie fringilla neque, in volutpat lectus malesuada et. '
+            'Aliquam suscipit augue a erat blandit mattis. '
+            'Curabitur tempus porttitor nisi, sit amet volutpat ex dignissim sed. '
+            'Maecenas lacinia, libero sed accumsan volutpat, '
+            'quam mi ultrices mi, a vulputate mauris augue lobortis dui. '
+            'Cras feugiat ex quis consectetur dictum. Sed non cursus risus. '
+            'Suspendisse elementum interdum lorem in fringilla. '
+            'Suspendisse pharetra elementum dolor ac facilisis. Vivamus.')
+        res = utils.get_meme("top", bottom)
+        assert res == 'Caption is too long, min < 100 words'
