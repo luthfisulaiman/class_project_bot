@@ -43,7 +43,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/notes .*')
+@bot.message_handler(regexp=r'^/notes .*$')
 def note(message):
     if message.text.find(' ') != -1:
         text = message.text.split(' ')
