@@ -1,12 +1,8 @@
 from unittest.mock import Mock
 
-<<<<<<< HEAD
-from csuibot.handlers import help, zodiac, shio, define
-=======
-from csuibot.handlers import help, zodiac, shio, kelaskata
+from csuibot.handlers import help, zodiac, shio, define, kelaskata
 
 import requests
->>>>>>> master
 
 
 def test_help(mocker):

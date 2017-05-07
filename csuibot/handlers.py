@@ -1,10 +1,7 @@
 from . import app, bot
-<<<<<<< HEAD
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_define
 
-=======
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_kelaskata
->>>>>>> master
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_define, lookup_kelaskata
+
 import requests
 
 
