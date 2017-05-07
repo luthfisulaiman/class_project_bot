@@ -55,7 +55,7 @@ def note(message):
             except FileNotFoundError:
                 reply = 'No notes yet'
         else:
-            reply = manage_notes('add', text)
+            reply = manage_notes('add', text[1])
 
         bot.reply_to(message, reply)
     else:
