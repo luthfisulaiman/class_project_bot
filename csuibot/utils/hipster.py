@@ -14,7 +14,7 @@ class HipsterGenerator:
 
         params = {"paras": nums, "html": "false"}
         result = self.requester.make_request(params)
-        return result
+        return result['test']
 
 
 class HipsterRequester:
