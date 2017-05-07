@@ -1,5 +1,7 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_definisi
+
+import requests
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -42,9 +44,18 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9]+$')
+@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 ]+$')
 def definisi(message):
-    pass
+    app.logger.debug("'definisi' command detected")
+    _, word_str = message.text.split(' ', 1)
+
+    app.logger.debug('input : {}'.format(word_str))
+    try:
+        meaning = lookup_definisi(word_str)
+    except requests.ConnectionError:
+        bot.reply_to(message, 'Oops! There was a problem. Maybe try again later :(')
+    else:
+        bot.reply_to(message, meaning)
 
 
 def parse_date(text):
