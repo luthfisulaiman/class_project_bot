@@ -42,7 +42,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^\/sceleNotif$')
+@bot.message_handler(regexp=r'^/sceleNotif$')
 def sceleNoticeHandler(message):
     app.logger.debug("command detected")
     try:
