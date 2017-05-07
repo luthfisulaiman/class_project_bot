@@ -42,7 +42,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/meme \w{1,} \w{1,}$')
+@bot.message_handler(regexp=r'^/meme \S{1,} \S{1,}$')
 def meme(message):
     app.logger.debug("'meme' command detected")
     _, top, bottom = message.text.split(' ')
