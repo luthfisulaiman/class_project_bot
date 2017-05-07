@@ -263,38 +263,36 @@ class TestMeme:
 
     def test_top_too_long(self):
         top = (
-            'Lorem ipsum dolor sit amet, '
-            'consectetur adipiscing elit. '
-            'Ut accumsan elementum libero, '
-            'nec lacinia erat sagittis at. '
-            'Fusce vitae fringilla nibh, aliquam molestie turpis. '
-            'Phasellus non purus id diam condimentum ullamcorper sit amet ac nulla. '
-            'Aliquam molestie fringilla neque, in volutpat lectus malesuada et. '
-            'Aliquam suscipit augue a erat blandit mattis. '
-            'Curabitur tempus porttitor nisi, sit amet volutpat ex dignissim sed. '
-            'Maecenas lacinia, libero sed accumsan volutpat, '
-            'quam mi ultrices mi, a vulputate mauris augue lobortis dui. '
-            'Cras feugiat ex quis consectetur dictum. Sed non cursus risus. '
-            'Suspendisse elementum interdum lorem in fringilla. '
-            'Suspendisse pharetra elementum dolor ac facilisis. Vivamus.')
+            'Lorem_ipsum_dolor_sit_amet,_consectetur_adipiscing_elit._'
+            'Proin_nec_massa_tempus,_blandit_ipsum_eget,_aliquam_diam._'
+            'Sed_porttitor_eget_lorem_at_mollis._'
+            'Maecenas_metus_diam,_sagittis_at_ex_eu,_porta_faucibus_nulla._'
+            'Praesent_tempus_nunc_felis,_vitae_aliquet_diam_pellentesque_at._'
+            'Aliquam_venenatis_vel_velit_quis_sollicitudin._'
+            'Ut_sit_amet_nisi_a_ante_congue_tincidunt_at_sit_amet_elit.'
+            '_Etiam_pharetra_risus_sed_interdum_mollis._'
+            'Morbi_facilisis_ipsum_non_consectetur_euismod._Donec_id_neque_felis._'
+            'Sed_maximus_rutrum_varius._Phasellus_id_dapibus_arcu._'
+            'Suspendisse_tincidunt_vulputate_nulla,_ac_elementum_ipsum_dictum_vel._'
+            'Class_aptent_taciti_sociosqu_ad_litora_'
+            'torquent_per_conubia_nostra,_per_inceptos_himenaeos.')
         res = utils.get_meme(top, "Bottom")
         assert res == 'Caption is too long, min < 100 words'
 
     def test_bottom_too_long(self):
         bottom = (
-            'Lorem ipsum dolor sit amet, '
-            'consectetur adipiscing elit. '
-            'Ut accumsan elementum libero, '
-            'nec lacinia erat sagittis at. '
-            'Fusce vitae fringilla nibh, aliquam molestie turpis. '
-            'Phasellus non purus id diam condimentum ullamcorper sit amet ac nulla. '
-            'Aliquam molestie fringilla neque, in volutpat lectus malesuada et. '
-            'Aliquam suscipit augue a erat blandit mattis. '
-            'Curabitur tempus porttitor nisi, sit amet volutpat ex dignissim sed. '
-            'Maecenas lacinia, libero sed accumsan volutpat, '
-            'quam mi ultrices mi, a vulputate mauris augue lobortis dui. '
-            'Cras feugiat ex quis consectetur dictum. Sed non cursus risus. '
-            'Suspendisse elementum interdum lorem in fringilla. '
-            'Suspendisse pharetra elementum dolor ac facilisis. Vivamus.')
+            'Lorem_ipsum_dolor_sit_amet,_consectetur_adipiscing_elit._'
+            'Proin_nec_massa_tempus,_blandit_ipsum_eget,_aliquam_diam._'
+            'Sed_porttitor_eget_lorem_at_mollis._'
+            'Maecenas_metus_diam,_sagittis_at_ex_eu,_porta_faucibus_nulla._'
+            'Praesent_tempus_nunc_felis,_vitae_aliquet_diam_pellentesque_at._'
+            'Aliquam_venenatis_vel_velit_quis_sollicitudin._'
+            'Ut_sit_amet_nisi_a_ante_congue_tincidunt_at_sit_amet_elit.'
+            '_Etiam_pharetra_risus_sed_interdum_mollis._'
+            'Morbi_facilisis_ipsum_non_consectetur_euismod._Donec_id_neque_felis._'
+            'Sed_maximus_rutrum_varius._Phasellus_id_dapibus_arcu._'
+            'Suspendisse_tincidunt_vulputate_nulla,_ac_elementum_ipsum_dictum_vel._'
+            'Class_aptent_taciti_sociosqu_ad_litora_'
+            'torquent_per_conubia_nostra,_per_inceptos_himenaeos.')
         res = utils.get_meme("top", bottom)
         assert res == 'Caption is too long, min < 100 words'
