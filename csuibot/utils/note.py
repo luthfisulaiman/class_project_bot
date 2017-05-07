@@ -13,7 +13,7 @@ class Notes:
 
             i = 1
             for note in notes:
-                view += str(i) + '. ' + note + '\n'
+                view += str(i) + '. ' + str(note) + '\n'
                 i += 1
         return view
 
