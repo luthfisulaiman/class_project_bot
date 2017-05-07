@@ -42,19 +42,12 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/hipsteripsum \d{1,}$')
+@bot.message_handler(regexp=r'^/hipsteripsum [0-9]{1,3}$')
 def hipsteripsum(message):
     app.logger.debug("'hipsteripsum' command detected")
     _, paras_str = message.text.split(' ')
-
-    try:
-        hipster = make_hipster(int(paras_str))
-    except TypeError:
-        bot.reply_to(message, 'Number of paragraph is invalid')
-    except ValueError:
-        bot.reply_to(message, 'Number of paragraph exceed the limit')
-    else:
-        bot.reply_to(message, hipster)
+    hipster = make_hipster(int(paras_str))
+    bot.reply_to(message, hipster)
 
 
 def parse_date(text):

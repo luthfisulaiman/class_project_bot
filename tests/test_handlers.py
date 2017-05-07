@@ -75,23 +75,13 @@ def test_hipster_valid(mocker):
     assert args[1] == fake_paragraph
 
 
-def test_hipster_invalid_input(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.make_hipster', return_value=TypeError)
-    mock_message = Mock(text='/hipsteripsum aabbcc')
-
-    hipsteripsum(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Number of paragraph is invalid'
-
-
 def test_hipster_paragraph(mocker):
+    fake_paragraph = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.make_hipster', return_value=ValueError)
+    mocker.patch('csuibot.handlers.make_hipster', return_value=fake_paragraph)
     mock_message = Mock(text='/hipsteripsum 100')
 
     hipsteripsum(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Number of paragraph exceed the limit'
+    assert args[1] == fake_paragraph

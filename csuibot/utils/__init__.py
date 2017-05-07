@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import hipster as hp
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +47,9 @@ def lookup_chinese_zodiac(year):
 
 
 def make_hipster(paras):
-    raise NotImplementedError
+    generator = hp.HipsterGenerator()
+
+    try:
+        return generator.generate(paras)
+    except ValueError:
+        return 'Number of paragraph exceed the limit'

@@ -1,20 +1,27 @@
+import requests
+
+import json
+
+
 class HipsterGenerator:
 
-    def __init__():
-        raise NotImplementedError
+    def __init__(self):
+        self.requester = HipsterRequester()
 
-    def generatehipster():
-        raise NotImplementedError
+    def generate(self, nums):
+        if(nums < 1 or nums > 99):
+            raise ValueError("Value must be betweeen 1 to 99")
+
+        params = {"paras": nums, "html": "false"}
+        result = self.requester.make_request(params)
+        return result['text']
 
 
-class HipsterIpsum:
-    _paras = ""
+class HipsterRequester:
 
-    def __init__():
-        raise NotImplementedError
+    def __init__(self):
+        self.url = "http://hipsterjesus.com/api/"
 
-    def getparagragh():
-        raise NotImplementedError
-
-    def set():
-        raise NotImplementedError
+    def make_request(self, task):
+        req = requests.get(self.url, params=task)
+        return json.loads(req.content)
