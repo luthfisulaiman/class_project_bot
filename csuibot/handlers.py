@@ -47,7 +47,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/sound_composer \w+$')
+@bot.message_handler(regexp=r'^\/sound_composer \w+$')
 def composer(message):
     app.logger.debug("'sound_composer' command detected")
     _, username = message.text.split(' ')
