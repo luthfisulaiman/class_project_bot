@@ -263,36 +263,38 @@ class TestMeme:
 
     def test_top_too_long(self):
         top = (
-            'Lorem_ipsum_dolor_sit_amet,_consectetur_adipiscing_elit._'
-            'Proin_nec_massa_tempus,_blandit_ipsum_eget,_aliquam_diam._'
-            'Sed_porttitor_eget_lorem_at_mollis._'
-            'Maecenas_metus_diam,_sagittis_at_ex_eu,_porta_faucibus_nulla._'
-            'Praesent_tempus_nunc_felis,_vitae_aliquet_diam_pellentesque_at._'
-            'Aliquam_venenatis_vel_velit_quis_sollicitudin._'
-            'Ut_sit_amet_nisi_a_ante_congue_tincidunt_at_sit_amet_elit.'
-            '_Etiam_pharetra_risus_sed_interdum_mollis._'
-            'Morbi_facilisis_ipsum_non_consectetur_euismod._Donec_id_neque_felis._'
-            'Sed_maximus_rutrum_varius._Phasellus_id_dapibus_arcu._'
-            'Suspendisse_tincidunt_vulputate_nulla,_ac_elementum_ipsum_dictum_vel._'
-            'Class_aptent_taciti_sociosqu_ad_litora_'
-            'torquent_per_conubia_nostra,_per_inceptos_himenaeos.')
+            'Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing'
+            '_elit_Proin_nec_massa_tempus_blandit_ipsum_eget_'
+            'aliquam_diam_Sed_porttitor_eget_lorem_at_mollis_'
+            'Maecenas_metus_diam_sagittis_at_ex_eu_porta_faucibus_'
+            'nulla_Praesent_tempus_nunc_felis_vitae_aliquet_diam_'
+            'pellentesque_at_Aliquam_venenatis_vel_velit_quis_'
+            'sollicitudin_Ut_sit_amet_nisi_a_ante_congue_tincidunt_'
+            'at_sit_amet_elit_Etiam_pharetra_risus_sed_interdum_mollis'
+            '_Morbi_facilisis_ipsum_non_consectetur_euismod_Donec_'
+            'id_neque_felis_Sed_maximus_rutrum_varius_Phasellus_'
+            'id_dapibus_arcu_Suspendisse_tincidunt_vulputate_nulla_'
+            'ac_elementum_ipsum_dictum_vel_Class_aptent_taciti_'
+            'sociosqu_ad_litora_torquent_per_conubia_'
+            'nostra_per_inceptos_himenaeos')
         res = utils.get_meme(top, "Bottom")
         assert res == 'Caption is too long, min < 100 words'
 
     def test_bottom_too_long(self):
         bottom = (
-            'Lorem_ipsum_dolor_sit_amet,_consectetur_adipiscing_elit._'
-            'Proin_nec_massa_tempus,_blandit_ipsum_eget,_aliquam_diam._'
-            'Sed_porttitor_eget_lorem_at_mollis._'
-            'Maecenas_metus_diam,_sagittis_at_ex_eu,_porta_faucibus_nulla._'
-            'Praesent_tempus_nunc_felis,_vitae_aliquet_diam_pellentesque_at._'
-            'Aliquam_venenatis_vel_velit_quis_sollicitudin._'
-            'Ut_sit_amet_nisi_a_ante_congue_tincidunt_at_sit_amet_elit.'
-            '_Etiam_pharetra_risus_sed_interdum_mollis._'
-            'Morbi_facilisis_ipsum_non_consectetur_euismod._Donec_id_neque_felis._'
-            'Sed_maximus_rutrum_varius._Phasellus_id_dapibus_arcu._'
-            'Suspendisse_tincidunt_vulputate_nulla,_ac_elementum_ipsum_dictum_vel._'
-            'Class_aptent_taciti_sociosqu_ad_litora_'
-            'torquent_per_conubia_nostra,_per_inceptos_himenaeos.')
+            'Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing'
+            '_elit_Proin_nec_massa_tempus_blandit_ipsum_eget_'
+            'aliquam_diam_Sed_porttitor_eget_lorem_at_mollis_'
+            'Maecenas_metus_diam_sagittis_at_ex_eu_porta_faucibus_'
+            'nulla_Praesent_tempus_nunc_felis_vitae_aliquet_diam_'
+            'pellentesque_at_Aliquam_venenatis_vel_velit_quis_'
+            'sollicitudin_Ut_sit_amet_nisi_a_ante_congue_tincidunt_'
+            'at_sit_amet_elit_Etiam_pharetra_risus_sed_interdum_mollis'
+            '_Morbi_facilisis_ipsum_non_consectetur_euismod_Donec_'
+            'id_neque_felis_Sed_maximus_rutrum_varius_Phasellus_'
+            'id_dapibus_arcu_Suspendisse_tincidunt_vulputate_nulla_'
+            'ac_elementum_ipsum_dictum_vel_Class_aptent_taciti_'
+            'sociosqu_ad_litora_torquent_per_conubia_'
+            'nostra_per_inceptos_himenaeos')
         res = utils.get_meme("top", bottom)
         assert res == 'Caption is too long, min < 100 words'
