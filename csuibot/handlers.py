@@ -1,5 +1,7 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_define
+
+import requests
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -45,6 +47,19 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
+
 @bot.message_handler(regexp=r'^/define (.*)$')
 def define(message):
-    pass
+    app.logger.debug("'define' command detected")
+    command = " ".join(message.text.split()[1:])
+
+    try:
+        define_ = lookup_define(command)
+    except requests.HTTPError as e:
+        bot.reply_to(
+            message,
+            '"'+command + '" is not an english word')
+    except ValueError as e:
+        bot.reply_to(message, 'Command /define need an argument')
+    else:
+        bot.reply_to(message, define_)

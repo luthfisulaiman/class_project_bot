@@ -2,7 +2,6 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, define
 
-from translate import translator
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -63,8 +62,11 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_define(mocker):
-    fake_define = 'foo bar'
+    fake_define = 'a precious stone consisting of a clear and colourless'
+    fake_define += ' crystalline form of pure carbon,'
+    fake_define += ' the hardest naturally occurring substance'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_define', return_value=fake_define)
     mock_message = Mock(text='/define diamond')
@@ -88,14 +90,10 @@ def test_define_none_term(mocker):
 
 def test_define_page_not_found(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.define', side_effect=translator.exceptions.PageError)
+    mocker.patch('csuibot.handlers.define', side_effect='404')
     mock_message = Mock(text='/define akugantengsekali')
 
     define(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '"akugantengsekali" is not an english word'
-
-
-
-

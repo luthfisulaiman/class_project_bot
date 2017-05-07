@@ -1,5 +1,7 @@
 from csuibot.utils import zodiac as z
 
+from csuibot.utils import define as d
+
 
 def lookup_zodiac(month, day):
     zodiacs = [
@@ -44,5 +46,16 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def lookup_define():
-    pass
+
+def lookup_define(word):
+    if(not word):
+        raise ValueError('Command /define need an argument')
+    elif(containsDigit(word)):
+        return word + ' contains number'
+    else:
+        define_object = d.define(word)
+        return define_object.getDefine()
+
+
+def containsDigit(string):
+    return any(i.isdigit() for i in string)
