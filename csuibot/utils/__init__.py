@@ -47,4 +47,9 @@ def lookup_chinese_zodiac(year):
 
 
 def get_meme(top, bottom):
-    raise NotImplementedError
+    generator = meme.MemeGenerator()
+    generator.createid()
+    generator.createtop(top)
+    generator.createbottom(bottom)
+    dank = generator.generatememe()
+    return dank.getimage()
