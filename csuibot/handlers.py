@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_message_dist
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer, lookup_message_dist
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -45,7 +45,6 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
-
 @bot.message_handler(regexp=r'^/message_dist')
 def message_dist(message):
 
@@ -57,3 +56,24 @@ def message_dist(message):
         bot.reply_to(message, 'Internal server error')
     else:
         bot.reply_to(message, message_dist)
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
+
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         app.logger.debug(type(e).__name__, e.args)
+#         import time
+#         time.sleep(5)
