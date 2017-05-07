@@ -1,7 +1,5 @@
 import requests
 
-import json
-
 
 class HipsterGenerator:
 
@@ -14,7 +12,7 @@ class HipsterGenerator:
 
         params = {"paras": nums, "html": "false"}
         result = self.requester.make_request(params)
-        return result
+        return result['text']
 
 
 class HipsterRequester:
@@ -24,4 +22,4 @@ class HipsterRequester:
 
     def make_request(self, task):
         req = requests.get(self.url, params=task)
-        return json.loads(req.content)
+        return req.json()
