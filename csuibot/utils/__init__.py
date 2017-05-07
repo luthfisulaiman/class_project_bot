@@ -1,6 +1,8 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import note
 
+import json
+
 
 def lookup_zodiac(month, day):
     zodiacs = [
@@ -47,6 +49,12 @@ def lookup_chinese_zodiac(year):
 
 
 def manage_notes(command, text=''):
-    pass
-    note.Notes().view()
-    note.Notes().write(text)
+    note_obj = note.Notes(text)
+
+    if command == 'view':
+        try:
+            return note_obj.view()
+        except (FileNotFoundError, json.JSONDecodeError):
+            return 'No notes yet'
+    elif command == 'add':
+        return note_obj.write()

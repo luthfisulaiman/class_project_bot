@@ -3,8 +3,6 @@ from unittest.mock import Mock
 from csuibot.handlers import help, zodiac, shio
 from csuibot.handlers import note
 
-import json
-
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -66,12 +64,33 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
+def test_notes_view(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
 def test_invalid_json_notes(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.manage_notes', side_effect=json.JSONDecodeError)
+    mocker.patch('csuibot.handlers.manage_notes', return_value='Notes added')
     mock_message = Mock(text='/notes dasdsadassd')
 
     note(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Oops! There was a problem in the server :('
+    assert args[1] == 'Notes added'
+
+
+def test_file_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', side_effect=FileNotFoundError)
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'

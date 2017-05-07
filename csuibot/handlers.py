@@ -43,10 +43,25 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/notes ')
+@bot.message_handler(regexp=r'^/notes .*')
 def note(message):
-    pass
-    manage_notes
+    if message.text.find(' ') != -1:
+        text = message.text.split(' ')
+        reply = ''
+
+        if text[1] == 'view' and len(text) == 2:
+            try:
+                reply = manage_notes('view')
+            except FileNotFoundError:
+                reply = 'No notes yet'
+        else:
+            reply = manage_notes('add', ' '.join(text[1:]))
+
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, 'Usage :\n' +
+                              '1. /notes view : View note in this group\n' +
+                              '2. /notes [text] : Add new note in this group\n')
 
 
 def parse_date(text):

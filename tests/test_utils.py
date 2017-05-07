@@ -258,16 +258,24 @@ class TestChineseZodiac:
 class TestNotes:
 
     def run_test(self, command, text=''):
-        if command == 'write':
+        if command == 'add':
             a = utils.manage_notes(command, text)
-            assert a == 'Message "Test add text" has been added to notes'
+            assert a == 'Notes added'
         elif command == 'view':
             text = utils.manage_notes(command)
             assert type(text) == str and len(text) > 0
 
-    def test_view(self):
-        self.run_test('view')
-
     def test_write_text(self):
         text = 'Test add text'
-        self.run_test('write', text)
+        self.run_test('add', text)
+
+    def test_view(self):
+        a = utils.manage_notes('view')
+        assert a == 'List notes:\n1. Test add text\n'
+
+    def test_view_empty(self):
+        f = open('notes.json', 'w')
+        f.close()
+
+        a = utils.manage_notes('view')
+        assert a == 'No notes yet'
