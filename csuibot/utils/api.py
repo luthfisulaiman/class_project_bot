@@ -1,7 +1,6 @@
 import requests
 from random import randint
 
-
 class FileHandler:
 
     def __init__(self):
@@ -16,14 +15,13 @@ class FileHandler:
     def closefile(self):
         self._file.close()
 
-
 class MemeGenerator:
 
     def __init__(self):
         self.dank = Meme()
         self.requester = MemeRequester()
         self.items = {}
-        self.fHandler = FileHandler()
+        self.fHandler = FileHandler() 
         self.fHandler.openfile()
         self._memelist = self.fHandler.readfile()
         self.fHandler.closefile()
@@ -60,7 +58,7 @@ class Meme:
 
     def gettop(self):
         return self._topCaption
-
+        
     def set(self, id, bottom, top):
         self._id = id
         self._bottomCaption = bottom
@@ -79,10 +77,16 @@ class MemeRequester:
         self.url = "https://api.imgflip.com/caption_image"
 
     def makerequest(self, meme):
-        mid = meme.getid()
-        top = meme.gettop()
-        btm = meme.getbottom()
-        ur = "imgflip_hubot"
-        task = {"template_id": mid, "username": ur, "password": ur, "text0": top, "text1": btm}
-        req = requests.post(self.url, params=task)
+        task = {"template_id":meme.getid(), "username":"imgflip_hubot", "password":"imgflip_hubot", "text0":meme.gettop(), "text1":meme.getbottom()}
+        req = requests.post(self.url, params = task)
         return req.json()
+
+def get_meme(top, bottom):
+    generator = MemeGenerator()
+    generator.createid()
+    generator.createtop(top)
+    generator.createbottom(bottom)
+    meme = generator.generatememe()
+    return meme.getimage()
+
+print(get_meme("abc", "bca"))
