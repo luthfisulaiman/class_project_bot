@@ -18,7 +18,7 @@ class Notes:
         return view
 
     def write(self):
-        notes = None
+        notes = []
         try:
             f = open('notes.json', 'r')
             notes = json.load(f)

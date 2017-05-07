@@ -46,16 +46,16 @@ def shio(message):
 @bot.message_handler(regexp=r'^/notes .*$')
 def note(message):
     if message.text.find(' ') != -1:
-        text = message.text.split(' ')
+        text = message.text.split(' ', 1)
         reply = ''
 
-        if text[1] == 'view' and len(text) == 2:
+        if text[1] == 'view':
             try:
                 reply = manage_notes('view')
             except FileNotFoundError:
                 reply = 'No notes yet'
         else:
-            reply = manage_notes('add', ' '.join(text[1:]))
+            reply = manage_notes('add', text)
 
         bot.reply_to(message, reply)
     else:
