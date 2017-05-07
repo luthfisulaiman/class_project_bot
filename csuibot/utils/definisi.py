@@ -30,7 +30,7 @@ class Definisi:
             for classWord in mean.keys():
                 output += classWord + ':\n'
                 i = 1
-                for meaning in classWord:
+                for meaning in mean[classWord]:
                     output += str(i) + meaning + '\n'
                     i += 1
             return output
