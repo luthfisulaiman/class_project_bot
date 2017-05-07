@@ -3,9 +3,6 @@ import calendar
 
 
 class dayofdate:
-    def __init__(self):
-        pass
-
     def dayoutput(year, month, day):
         try:
             dateans = datetime.date(year, month, day)
