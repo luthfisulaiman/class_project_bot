@@ -1,5 +1,7 @@
 from csuibot import utils
 
+import json
+
 
 class TestZodiac:
 
@@ -279,3 +281,11 @@ class TestNotes:
 
         a = utils.manage_notes('view')
         assert a == 'No notes yet'
+
+    def test_write_json_decode_error(self, mocker):
+        with mocker.patch('csuibot.utils.note.Notes') as MockNotes:
+            instance = MockNotes.return_value
+            instance.wite.side_effect = json.JSONDecodeError
+
+            a = utils.manage_notes('write', 'aaa')
+            assert a is None

@@ -18,12 +18,16 @@ class Notes:
         return view
 
     def write(self):
-        with open('notes.json', 'a+') as f:
-            notes = None
-            try:
-                notes = json.load(f)
-            except json.JSONDecodeError:
-                notes = []
-            notes.append(self.text)
+        notes = None
+        try:
+            f = open('notes.json', 'r')
+            notes = json.load(f)
+            f.close()
+        except (FileNotFoundError, json.JSONDecodeError):
+            notes = []
+
+        notes.append(self.text)
+        with open('notes.json', 'w') as f:
             json.dump(notes, f)
+
         return 'Notes added'
