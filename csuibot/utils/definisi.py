@@ -19,8 +19,9 @@ class Definisi:
                 classWord = definition['lex_class_ref']
 
                 if classWord is not None:
+                    classWord = classWord.capitalize()
                     if classWord not in mean.keys():
-                        mean[classWord] = []
+                        mean[classWord.] = []
                     mean[classWord].append(definition['def_text'])
                 else:
                     mean[wordType].append(definition['def_text'])
@@ -33,6 +34,7 @@ class Definisi:
                 for meaning in mean[classWord]:
                     output += str(i) + meaning + '\n'
                     i += 1
+                output += '\n'
             return output
         else:
             return word + ' is not a word :(, maybe try another one?'
