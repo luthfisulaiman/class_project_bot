@@ -286,6 +286,7 @@ class TestDefine:
         except requests.HTTPError as e:
             assert str(e) == ('"akugantengsekali" is not an english word')
 
+
 class TestKelaskata:
 
     def run_test(self, word, expected):
@@ -306,4 +307,3 @@ class TestKelaskata:
             self.run_test('', 'Try /kelaskata [word]')
         except ValueError as e:
             assert str(e) == 'Try /kelaskata [word]'
-
