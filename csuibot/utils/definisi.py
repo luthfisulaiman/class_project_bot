@@ -21,7 +21,7 @@ class Definisi:
                 if classWord is not None:
                     classWord = classWord.capitalize()
                     if classWord not in mean.keys():
-                        mean[classWord.] = []
+                        mean[classWord] = []
                     mean[classWord].append(definition['def_text'])
                 else:
                     mean[wordType].append(definition['def_text'])
@@ -32,7 +32,7 @@ class Definisi:
                 output += classWord + ':\n'
                 i = 1
                 for meaning in mean[classWord]:
-                    output += str(i) + meaning + '\n'
+                    output += str(i) + '. ' + meaning + '\n'
                     i += 1
                 output += '\n'
             return output
