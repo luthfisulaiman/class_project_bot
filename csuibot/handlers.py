@@ -43,7 +43,7 @@ def shio(message):
 
 
 @bot.message_handler(regexp=r'^\/sceleNotif$')
-def sceleNotice(message):
+def sceleNoticeHandler(message):
     app.logger.debug("command detected")
     try:
         notification = takeSceleNotif()
