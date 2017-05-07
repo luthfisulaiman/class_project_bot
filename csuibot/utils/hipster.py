@@ -24,4 +24,4 @@ class HipsterRequester:
 
     def make_request(self, task):
         req = requests.get(self.url, params=task)
-        return req
+        return req.content
