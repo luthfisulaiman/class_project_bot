@@ -94,10 +94,11 @@ def test_composer(mocker):
     assert args[1] == fake_track_info
 
 def test_composer_no_connection(mocker):
+    fake_error = 'Error connecting to Soundcloud API'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_composer', side_effect=ConnectionError)
     mock_message = Mock(text='/sound_composer iamlione')
 
     composer(mock_message)
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Cannot connect to soundcloud API'
+    assert args[1] == fake_error

@@ -1,5 +1,5 @@
 from csuibot.utils import zodiac as z
-from csuibot.utils import composer as c
+from csuibot.utils import soundcomposer as c
 
 def lookup_zodiac(month, day):
     zodiacs = [

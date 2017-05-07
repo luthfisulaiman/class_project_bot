@@ -256,7 +256,9 @@ class TestChineseZodiac:
 class TestSoundComposer:
     def test_get_track(self):
         try :
-            res = utils.call_composer();
+            res = utils.call_composer('iamlione');
+        except ValueError:
+            pass
         except ConnectionError:
             pass
         else :
