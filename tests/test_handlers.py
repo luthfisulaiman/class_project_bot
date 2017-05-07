@@ -1,6 +1,12 @@
 from unittest.mock import Mock
 
+<<<<<<< HEAD
 from csuibot.handlers import help, zodiac, shio, define
+=======
+from csuibot.handlers import help, zodiac, shio, kelaskata
+
+import requests
+>>>>>>> master
 
 
 def test_help(mocker):
@@ -97,3 +103,37 @@ def test_define_page_not_found(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '"akugantengsekali" is not an english word'
+
+
+def test_kelaskata(mocker):
+    fake_kata = 'intan/n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', return_value=fake_kata)
+    mock_message = Mock(text='/kelaskata intan')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_kata
+
+
+def test_kelaskata_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=ValueError)
+    mock_message = Mock(text='/kelaskata')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Try /kelaskata [word]'
+
+
+def test_kelaskata_word_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/kelaskata akugantengsekali')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '"akugantengsekali" is not a word'

@@ -1,6 +1,10 @@
 from . import app, bot
+<<<<<<< HEAD
 from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_define
 
+=======
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_kelaskata
+>>>>>>> master
 import requests
 
 
@@ -63,3 +67,20 @@ def define(message):
         bot.reply_to(message, 'Command /define need an argument')
     else:
         bot.reply_to(message, define_)
+
+
+@bot.message_handler(regexp=r'^/kelaskata (.*)$')
+def kelaskata(message):
+    app.logger.debug("'kelaskata' command detected")
+    command = " ".join(message.text.split()[1:])
+
+    try:
+        kelas_kata = lookup_kelaskata(command)
+    except ValueError as e:
+        bot.reply_to(message, 'Try /kelaskata [word]')
+    except requests.ConnectionError as e:
+        bot.reply_to(
+            message,
+            '"'+command + '" is not a word')
+    else:
+        bot.reply_to(message, kelas_kata)

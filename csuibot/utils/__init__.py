@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import kelaskata as k
 
 from csuibot.utils import define as d
 
@@ -59,3 +60,11 @@ def lookup_define(word):
 
 def containsDigit(string):
     return any(i.isdigit() for i in string)
+
+
+def lookup_kelaskata(message):
+    if message == '':
+        raise ValueError('Try /kelaskata [word]')
+    else:
+        kelaskata_object = k.kelaskata(message)
+        return kelaskata_object.getKelasKata()

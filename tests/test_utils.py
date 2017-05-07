@@ -285,3 +285,25 @@ class TestDefine:
             utils.lookup_define('/define akugantengsekali')
         except requests.HTTPError as e:
             assert str(e) == ('"akugantengsekali" is not an english word')
+
+class TestKelaskata:
+
+    def run_test(self, word, expected):
+        try:
+            result = utils.lookup_kelaskata(word)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('"akugantengsekali" is not a word')
+
+    def test_kelaskata_intan(self):
+        self.run_test('intan', 'intan/n')
+
+    def test_kelaskata_membaca(self):
+        self.run_test('membaca', 'membaca/v')
+
+    def test_kelaskata_value_error(self):
+        try:
+            self.run_test('', 'Try /kelaskata [word]')
+        except ValueError as e:
+            assert str(e) == 'Try /kelaskata [word]'
+
