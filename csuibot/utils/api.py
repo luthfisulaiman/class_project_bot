@@ -1,10 +1,12 @@
 import requests
+import os
 from random import randint
+
 
 class FileHandler:
 
     def __init__(self):
-        self.fname = "id_list.csv"
+        self.fname = os.path.abspath(os.path.join(os.path.dirname(__file__), "id_list.csv"))
 
     def openfile(self):
         self._file = open(self.fname, "r")
@@ -14,6 +16,7 @@ class FileHandler:
 
     def closefile(self):
         self._file.close()
+
 
 class MemeGenerator:
 
