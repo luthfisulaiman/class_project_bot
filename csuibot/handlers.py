@@ -52,6 +52,8 @@ def compute(message):
         result = calculate(message)
     except NameError:
         bot.reply_to(message, 'Invalid command, please enter only numbers and operators')
+    except ValueError:
+        bot.reply_to(message, 'Invalid command, please enter only numbers and operators')
     except ZeroDivisionError:
         bot.reply_to(message, 'Cannot divide by zero')
     else:
