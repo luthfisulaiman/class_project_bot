@@ -74,7 +74,7 @@ def test_notes_view(mocker):
     assert args[1] == 'No notes yet'
 
 
-def test_invalid_json_notes(mocker):
+def test_notes_invalid_json_notes(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.manage_notes', return_value='Notes added')
     mock_message = Mock(text='/notes dasdsadassd')
@@ -85,7 +85,7 @@ def test_invalid_json_notes(mocker):
     assert args[1] == 'Notes added'
 
 
-def test_file_not_found(mocker):
+def test_notes_file_not_found(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.manage_notes', side_effect=FileNotFoundError)
     mock_message = Mock(text='/notes view')
@@ -94,3 +94,16 @@ def test_file_not_found(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'No notes yet'
+
+
+def test_notes_no_argument(mocker):
+    fake_message = 'Usage :\n' + \
+                   '1. /notes view : View note in this group\n' + \
+                   '2. /notes [text] : Add new note in this group\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_message
