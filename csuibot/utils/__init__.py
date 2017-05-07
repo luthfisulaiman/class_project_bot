@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import notifTaker as n
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +47,6 @@ def lookup_chinese_zodiac(year):
 
 
 def takeSceleNotif():
-    return "ini adalah scele"
+
+    notif = n.notifTaker()
+    return notif.getPost()
