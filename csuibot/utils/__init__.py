@@ -1,6 +1,7 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import soundcomposer as c
 
+
 def lookup_zodiac(month, day):
     zodiacs = [
         z.Aries(),
@@ -43,6 +44,7 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
 
 def call_composer(username):
     return c.SoundComposer(username).get_composer()

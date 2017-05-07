@@ -2,6 +2,7 @@ from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, call_composer
 from requests.exceptions import ConnectionError
 
+
 @bot.message_handler(regexp=r'^/about$')
 def help(message):
     app.logger.debug("'about' command detected")
@@ -10,6 +11,7 @@ def help(message):
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     bot.reply_to(message, about_text)
+
 
 @bot.message_handler(regexp=r'^/zodiac \d{4}\-\d{2}\-\d{2}$')
 def zodiac(message):
@@ -24,7 +26,8 @@ def zodiac(message):
         bot.reply_to(message, 'Month or day is invalid')
     else:
         bot.reply_to(message, zodiac)
-        
+
+
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
 def shio(message):
     app.logger.debug("'shio' command detected")
@@ -39,16 +42,18 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
+
 @bot.message_handler(regexp=r'^/sound_composer \w+$')
-def composer(message):    
+def composer(message):
     app.logger.debug("'sound_composer' command detected")
     _, username = message.text.split(' ')
     app.logger.debug('username = {}'.format(username))
 
-    try :
+    try:
         track = call_composer(username)
     # except ValueError: cannot try fetching from SoundCloud API
     #     bot.reply_to(message, 'Username not found')

@@ -1,7 +1,8 @@
 from csuibot import utils
 from requests.exceptions import ConnectionError
-class TestZodiac:
 
+
+class TestZodiac:
     def test_aries_lower_bound(self):
         res = utils.lookup_zodiac(3, 21)
         assert res == 'aries'
@@ -207,7 +208,6 @@ class TestZodiac:
 
 
 class TestChineseZodiac:
-
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]
 
@@ -253,13 +253,14 @@ class TestChineseZodiac:
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
 
+
 class TestSoundComposer:
     def test_get_track(self):
-        try :
-            res = utils.call_composer('iamlione');
+        try:
+            res = utils.call_composer('iamlione')
         except ValueError:
             pass
         except ConnectionError:
             pass
-        else :
+        else:
             assert res is not None

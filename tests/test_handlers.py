@@ -3,6 +3,7 @@ from unittest.mock import Mock
 from csuibot.handlers import help, zodiac, shio, composer
 from requests.exceptions import ConnectionError
 
+
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock()
@@ -62,6 +63,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_composer(mocker):
     fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
@@ -92,6 +94,7 @@ def test_composer(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_track_info
+
 
 def test_composer_no_connection(mocker):
     fake_error = 'Error connecting to Soundcloud API'
