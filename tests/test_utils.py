@@ -257,16 +257,21 @@ class TestChineseZodiac:
 
 class TestDefinisi:
 
-    def run_test(self, word, expected_output, is_valid=False):
+    def run_test(self, word, expected_output):
         mean = utils.lookup_definisi(word)
-        if is_valid:
-            assert word is not None
-        else:
-            assert mean == expected_output
+        assert mean == expected_output
 
     def test_found(self):
-        self.run_test('bahtera', '', True)
+        self.run_test('bahtera', 'Nomina:\n1. perahu; kapal\n\n')
 
     def test_not_found(self):
         expected_output = 'makimaki is not a word :(, maybe try another one?'
         self.run_test('makimaki', expected_output)
+
+    def test_multiple_word(self):
+        expected_output = 'Nomina:\n1. gelombang hidup; kehidupan\n\n'
+        self.run_test('bahtera hidup', expected_output)
+
+    def test_with_number(self):
+        expected_output = 'Nomina:\n1. abad Masehi ke-10\n\n'
+        self.run_test('kurun masehi ke-10', expected_output)

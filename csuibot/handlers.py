@@ -44,18 +44,23 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 ]+$')
+@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
 def definisi(message):
-    app.logger.debug("'definisi' command detected")
-    _, word_str = message.text.split(' ', 1)
+    if message.text.find(' ') != -1:
+        app.logger.debug("'definisi' command detected")
+        _, word_str = message.text.split(' ', 1)
 
-    app.logger.debug('input : {}'.format(word_str))
-    try:
-        meaning = lookup_definisi(word_str)
-    except requests.ConnectionError:
-        bot.reply_to(message, 'Oops! There was a problem. Maybe try again later :(')
+        app.logger.debug('input : {}'.format(word_str))
+        try:
+            meaning = lookup_definisi(word_str)
+        except requests.ConnectionError:
+            bot.reply_to(message, 'Oops! There was a problem. Maybe try again later :(')
+        else:
+            bot.reply_to(message, meaning)
     else:
-        bot.reply_to(message, meaning)
+        app.logger.debug("'definisi_help' command detected")
+        bot.reply_to(message, '/definisi [word] : return definition of' +
+                              ' the word in indonesian language\n')
 
 
 def parse_date(text):

@@ -73,3 +73,26 @@ def test_definisi_connection_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Oops! There was a problem. Maybe try again later :('
+
+
+def test_definisi_help(mocker):
+    fake_word = '/definisi [word] : return definition of' + \
+                ' the word in indonesian language\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_word
+
+
+def test_definisi(mocker):
+    fake_definisi = 'Nomina:\n1. perahu; kapal\n\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi bahtera')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_definisi
