@@ -64,7 +64,7 @@ def test_shio_invalid_year(mocker):
 
 
 def test_compute_addition(mocker):
-    fake_result = '7'
+    fake_result = 7
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 4+3')
 
@@ -75,7 +75,7 @@ def test_compute_addition(mocker):
 
 
 def test_compute_substraction(mocker):
-    fake_result = '3'
+    fake_result = 3
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 10-7')
 
@@ -86,7 +86,7 @@ def test_compute_substraction(mocker):
 
 
 def test_compute_multiplication(mocker):
-    fake_result = '12'
+    fake_result = 12
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 4*3')
 
@@ -97,7 +97,7 @@ def test_compute_multiplication(mocker):
 
 
 def test_compute_division(mocker):
-    fake_result = '3'
+    fake_result = 10
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 30/3')
 
@@ -108,7 +108,7 @@ def test_compute_division(mocker):
 
 
 def test_compute_multiple_operator(mocker):
-    fake_result = '3'
+    fake_result = 3
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 4+3-2*10/5')
 

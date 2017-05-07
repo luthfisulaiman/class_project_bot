@@ -45,6 +45,6 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def compute(message):
+def calculate(message):
     _, text = message.text.split(' ')
-    return c.Compute(text).compute()
+    return c.Compute(text).calculate()
