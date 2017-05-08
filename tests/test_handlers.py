@@ -71,7 +71,7 @@ def test_chuck(mocker):
     chuck(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert "Chuck Norris" in args[1]
+    assert "Chuck" in args[1]
 
 
 def test_chuck_with_args(mocker):
