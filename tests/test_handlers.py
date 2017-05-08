@@ -2,11 +2,8 @@ import requests
 
 from unittest.mock import Mock
 
-<<<<<<< HEAD
-from csuibot.handlers import help, zodiac, shio, meme
-=======
+from csuibot.handlers import meme
 from csuibot.handlers import help, zodiac, shio, yelkomputer, colour, xkcd
->>>>>>> 92baa5bcdda50170854b16a6bdcc3da8357e6a17
 
 
 def test_help(mocker):
@@ -67,7 +64,6 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
-
 
 
 def test_meme_valid(mocker):

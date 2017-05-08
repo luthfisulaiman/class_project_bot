@@ -111,7 +111,7 @@ def yelkomputer(message):
 
     try:
         yelkomputer = lookup_yelkomputer(message.text)
-    except ValueError as e:
+    except ValueError:
         bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
     else:
         bot.reply_to(message, yelkomputer)
