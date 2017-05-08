@@ -1,5 +1,5 @@
 from csuibot.utils import zodiac as z
-from csuibot.utils.discretematerial import DiscreteMaterial as dm
+from csuibot.utils.discretemath import DiscreteMath as dm
 
 
 def lookup_zodiac(month, day):
