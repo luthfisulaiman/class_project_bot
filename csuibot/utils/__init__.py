@@ -48,6 +48,6 @@ def lookup_chinese_zodiac(year):
 def define_sound(inputKey):
 
     title = inputKey.split(' ', 1)[1]
-    soundtitle = title.replace(" ", "_") + ".mp3"
+    soundtitle = title.replace(" ", "_") + ".ogg"
 
     return 'soundclip/' + soundtitle

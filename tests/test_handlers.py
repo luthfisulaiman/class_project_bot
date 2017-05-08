@@ -41,7 +41,7 @@ def test_invalidsound(mocker):
 
 
 def test_soundclip(mocker):
-    directory = 'soundclip/wilhelm.mp3'
+    directory = 'soundclip/wilhelm.ogg'
     fake_soundclip = open(directory, 'rb')
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_audio')
     mocker.patch('csuibot.handlers.define_sound', return_value=directory)
