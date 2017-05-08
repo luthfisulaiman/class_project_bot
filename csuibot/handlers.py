@@ -46,8 +46,9 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/compute ([0-9]+[\/\+\-\*][0-9]+)*$')
+@bot.message_handler(commands=['compute'])
 def compute(message):
+    app.logger.debug(message)
     try:
         result = calculate(message)
     except NameError:
