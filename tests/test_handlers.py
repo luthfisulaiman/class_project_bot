@@ -75,6 +75,30 @@ def test_custom_chuck(mocker):
     assert args[1] == fake_joke
 
 
+def test_custom_chuck_name_too_short(mocker):
+    fake_joke = 'Only two words, first name and last name, are accepted as input.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke')
+    mock_message = Mock(text='/shio Chuck')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke
+
+
+def test_custom_chuck_name_too_long(mocker):
+    fake_joke = 'Only two words, first name and last name, are accepted as input.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke')
+    mock_message = Mock(text='/shio Chuck Chuckie Norris')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke
+
+
 def test_custom_chuck_no_connection(mocker):
     fake_joke = 'Error connecting to icndb.com API, please try again later.'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
