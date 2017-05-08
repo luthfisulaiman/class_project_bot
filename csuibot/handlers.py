@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_marsfasilkom
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -43,8 +43,15 @@ def shio(message):
 
 
 @bot.message_handler(regexp=r'^/marsfasilkom')
-def mars_fasilkom(message):
-    pass
+def marsfasilkom(message):
+    app.logger.debug("'marsfasilkom' command detected")
+
+    try:
+        marsfasilkom = lookup_marsfasilkom(message)
+    except ValueError:
+        bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, marsfasilkom)
 
 
 def parse_date(text):

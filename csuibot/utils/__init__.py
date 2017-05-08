@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils import marsfasilkom
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +47,7 @@ def lookup_chinese_zodiac(year):
 
 
 def lookup_marsfasilkom(message_text):
-    pass
+    if message_text == '/marsfasilkom':
+        return marsfasilkom.MarsFasilkom.get_mars_fasilkom()
+    else:
+        raise ValueError('Command /marsfasilkom doesn\'t need any arguments')
