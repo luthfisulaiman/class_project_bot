@@ -27,8 +27,8 @@ class DiscreteMath:
             reference = selected_data['ref']
             problem = selected_data['problem']
 
-            message = 'course: {} terminology: {} definition: {} example: {} reference: {} \
-                      problem: {}'\
+            message = 'course: {}\n terminology: {}\n definition: {}\n example: {}\n reference: {}\n \
+                      problem: {}\n'\
                       .format(course, termin, definition, example, reference, problem)
         return message
 
