@@ -1,6 +1,7 @@
 from csuibot.utils import zodiac as z
 import time
 
+
 def lookup_zodiac(month, day):
     zodiacs = [
         z.Aries(),
@@ -45,8 +46,7 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def remind_me(minutes,text):
+def remind_me(minutes, text):
     second = int(minutes) * 60
     time.sleep(second)
     return text
-    
