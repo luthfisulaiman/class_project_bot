@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, isUp
 
 
 def test_help(mocker):
@@ -64,7 +64,9 @@ def test_shio_invalid_year(mocker):
 
 def test_is_up(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/is_up scele.cs.ui.ac.id')
+    mocker.patch('csuibot.handlers.lookup_isUpWeb', return_value='UP')
+    
+    mock_message = Mock(text='/is_up https://scele.cs.ui.ac.id/')
 
     isUp(mock_message)
 
@@ -74,7 +76,9 @@ def test_is_up(mocker):
 
 def test_is_down(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/is_up iniwebsitedownwoi.co.id')
+    mocker.patch('csuibot.handlers.lookup_isUpWeb', return_value='DOWN')
+       
+    mock_message = Mock(text='/is_up http://iniwebsitedownwoi.co.id')
 
     isUp(mock_message)
 
@@ -84,7 +88,7 @@ def test_is_down(mocker):
 
 def test_error_url(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.is_palindrome', side_effect=ValueError)
+    mocker.patch('csuibot.handlers.lookup_isUpWeb', side_effect=ValueError)
     mock_message = Mock(text='/is_up ftp://example.com')
 
     isUp(mock_message)
