@@ -45,6 +45,6 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def call_discrete_material():
-    return dm.get_discrete_materials(query)
 
+def call_discrete_material(query):
+    return dm.get_discrete_materials(query)

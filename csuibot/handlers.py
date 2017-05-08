@@ -41,9 +41,11 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
-    
+
+
 @bot.message_handler(regexp=r'^/tellme .*$')
 def get_discrete_material(message):
     app.logger.debug("tellme detected")
@@ -53,6 +55,6 @@ def get_discrete_material(message):
     try:
         result = call_discrete_material(query)
     except ValueError:
-        but.reply_to(message, "Invalid Value")
+        bot.reply_to(message, "Invalid Value")
     else:
         bot.reply_to(message, result)

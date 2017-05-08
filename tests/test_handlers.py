@@ -62,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_discrete_material_no_connection(mocker):
     test_noconnection = 'Cannot connect to API'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
