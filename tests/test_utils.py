@@ -253,3 +253,11 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestReminder:
+
+    def test_reminder_return_text(self):
+        output = utils.remind_me(1, "Test")
+        assert output == "Test"
+            
