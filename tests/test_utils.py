@@ -257,6 +257,10 @@ class TestChineseZodiac:
 
 class TestReminder:
 
-    def test_reminder_return_text(self):
-        output = utils.remind_me(1, "Test")
+    def test_reminder_return_text_one_word(self):
+        output = utils.remind_me(0, "Test")
         assert output == "Test"
+
+    def test_reminder_return_text_more_word(self):
+        output = utils.remind_me(0, "Test more")
+        assert output == "Test more"
