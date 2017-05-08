@@ -49,10 +49,19 @@ def parse_date(text):
 @bot.message_handler(regexp=r'^\/remindme (\d+) (.*)$')
 def remind(message):
     app.logger.debug("'remindme' command detected")
-    _, time_str, text = message.text.split(' ')
+    time_str = message.text.split(' ')
+    i = 2
+    text = ""
+    while (i < len(time_str)):
+        if(i == (len(time_str)-1)):
+            text+= time_str[i]
+        else:
+            text += time_str[i] + " "
+        i+=1
     try:
-        reminder_text = remind_me(time_str, text)
+        bot.reply_to(message, "You have a new reminder in " + time_str[1] + " minutes")
+        reply_text = remind_me(time_str[1], text)  
     except ValueError:
-        bot.reply_to(message, 'Time is invalid')
+        bot.reply_to(message, "Invalid time input, only positive integer accepted."            
     else:
-        bot.reply_to(message, reminder_text)
+        bot.reply_to(message, reply_text)
