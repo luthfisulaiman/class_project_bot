@@ -45,10 +45,12 @@ def shio(message):
 
 @bot.message_handler(regexp=r'^/notes .*$')
 def note(message):
+    app.logger.debug('"notes" command detexted')
     if message.text.find(' ') != -1:
         text = message.text.split(' ', 1)
         reply = ''
 
+        app.logger.debug('input = {}'.format(text[1]))
         if text[1] == 'view':
             try:
                 reply = manage_notes('view')
