@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_height
+from .utils import lookup_zodiac, lookup_chinese_zodiac, get_height
+import re
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -41,16 +42,25 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
-@bot.message_handler(regexp=r'/tree height ([a\-z]*,[a\-z]*,[a\-z]*([a\-z]*,[a\-z]*)[a\-z]*)[a\-z]*)')
-def ntree_height(message):
-    app.logger.debug("'/tree height' command detected")
-
-    try:
-        height = find_height(message)
-    except ValueError:
-        bot.reply_to(message, 'That is not Newick format!')
-    else:
-        bot.reply_to(message, height)
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/tree height ?.*$')
+def newick_tree(message):
+    app.logger.debug("'tree height' command detected")
+    try:
+        cmd1, cmd2, newicktree = message.text.split(' ')
+    except ValueError:
+        bot.reply_to(message, 'Invalid tree format')
+    else:
+        if cmd1=='/tree' and cmd2=='height':
+            match = re.match(r"\(?[A-z0-9:.,()]*\)?[A-z0-9:.]+\;", newicktree)
+            if match:
+                tree_height = get_height(newicktree)
+                bot.reply_to(message, tree_height)
+            else:
+                bot.reply_to(message, 'Invalid tree format')
+        else:
+            bot.reply_to(message, 'Invalid command')

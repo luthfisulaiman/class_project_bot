@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from ete3 import Tree
 
 
 def lookup_zodiac(month, day):
@@ -44,5 +45,8 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def look_heights(tree):
-    pass
+
+def get_height(newicktree):
+    tree = Tree(newicktree, format=1)
+    _, height = tree.get_farthest_leaf()
+    return int(height+1)

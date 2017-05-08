@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, ntree_heights
+from csuibot.handlers import help, zodiac, shio, newick_tree
 
 
 def test_help(mocker):
@@ -63,11 +63,50 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
-def test_height(mocker):
+def test_tree(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock()
+    mock_message = Mock(text='/tree height (A,B,(C,D)E)F;')
 
-    ntree_heights(mock_message)
+    newick_tree(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'It aint a tree'
+    assert args[1]  == 3
+
+
+def test_tree_empty_value(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tree height')
+
+    newick_tree(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Invalid tree format'
+
+
+def test_tree_invalid_tree(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tree height A')
+
+    newick_tree(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Invalid tree format'
+
+
+def test_tree_invalid_command(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tree balance (A,B)C;')
+
+    newick_tree(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Invalid command'
+
+def test_tree_with_weight(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tree height (A:1,B:2,(C:1,D:1)E:1)F:1;')
+
+    newick_tree(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 3

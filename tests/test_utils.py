@@ -253,3 +253,18 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestTree:
+
+    def test_tree_height_root(tree):
+        res = utils.get_height('F;')
+        assert res == 1
+
+    def test_tree_height_with_children(tree):
+        res = utils.get_height('(A,B)C;')
+        assert res == 2
+
+    def test_tree_narry(tree):
+        res = utils.get_height('(A,B,(C,D)E)F;')
+        assert res == 3
