@@ -56,13 +56,16 @@ def password(message):
     app.logger.debug("'password' command detected")
     length = message.text[10:]
     app.logger.debug("requested length is {}".format(length))
-    password_helper(message, int(length))
+    password_helper(message, length)
 
 
 def password_helper(message, length):
     try:
+        length = int(length)
         password = generate_password(length)
     except TypeError:
+        bot.reply_to(message, 'Only a single integer, 1-128, is allowed as length')
+    except ValueError:
         bot.reply_to(message, 'Only a single integer, 1-128, is allowed as length')
     except ConnectionError:
         bot.reply_to(
