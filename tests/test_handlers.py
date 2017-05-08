@@ -2,7 +2,6 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, chuck
 
-from requests.exceptions import ConnectionError
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -63,6 +62,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_chuck(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.chuck')
@@ -72,18 +72,6 @@ def test_chuck(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert "Chuck Norris" in args[1]
-
-def test_chuck_connection_error(mocker):
-    fake_error = 'Chuck Norris doesn\'t need internet connection to connect to ICNDb API, too bad you\'re not him'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck',
-                 side_effect=ConnectionError)
-    mock_message = Mock(text='/chuck')
-
-    chuck(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_error
 
 
 def test_chuck_with_args(mocker):
