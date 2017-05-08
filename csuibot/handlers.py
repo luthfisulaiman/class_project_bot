@@ -47,7 +47,7 @@ def marsfasilkom(message):
     app.logger.debug("'marsfasilkom' command detected")
 
     try:
-        marsfasilkom = lookup_marsfasilkom(message)
+        marsfasilkom = lookup_marsfasilkom(message.text)
     except ValueError:
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
