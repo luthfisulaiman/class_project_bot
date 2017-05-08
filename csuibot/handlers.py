@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, check_palindrome
+from .utils import lookup_zodiac, lookup_chinese_zodiac, check_palindrome, lookup_yelkomputer
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -55,3 +55,15 @@ def is_palindrome(message):
         bot.reply_to(message, 'You can only submit a word')
     else:
         bot.reply_to(message, palindrome)
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
