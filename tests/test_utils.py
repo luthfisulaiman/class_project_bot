@@ -2,6 +2,8 @@ from csuibot import utils
 import re
 from requests.exceptions import ConnectionError
 
+import requests
+
 
 class TestZodiac:
     def test_aries_lower_bound(self):
@@ -253,6 +255,58 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestDefine:
+
+    def test_define_diamond(self):
+        res = utils.lookup_define('diamond')
+        result = 'a precious stone consisting of a clear and colourless'
+        result += ' crystalline form of pure carbon,'
+        result += ' the hardest naturally occurring substance'
+        assert res == result
+
+    def test_define_read(self):
+        res = utils.lookup_define('read')
+        result = 'look at and comprehend the meaning of (written or'
+        result += ' printed matter) by interpreting the'
+        result += ' characters or symbols of which it is composed'
+        assert res == result
+
+    def test_define_value_error(self):
+        utils.lookup_define('/define')
+
+    def test_define_contains_num(self):
+        res = utils.lookup_define('r34d')
+        assert res == 'r34d contains number'
+
+    def test_define_page_not_found(self):
+        try:
+            utils.lookup_define('/define akugantengsekali')
+        except requests.HTTPError as e:
+            assert str(e) == ('"akugantengsekali" is not an english word')
+
+
+class TestKelaskata:
+
+    def run_test(self, word, expected):
+        try:
+            result = utils.lookup_kelaskata(word)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('"akugantengsekali" is not a word')
+
+    def test_kelaskata_intan(self):
+        self.run_test('intan', 'intan/n')
+
+    def test_kelaskata_membaca(self):
+        self.run_test('membaca', 'membaca/v')
+
+    def test_kelaskata_value_error(self):
+        try:
+            self.run_test('', 'Try /kelaskata [word]')
+        except ValueError as e:
+            assert str(e) == 'Try /kelaskata [word]'
 
 
 class TestCustomChuckJoke:

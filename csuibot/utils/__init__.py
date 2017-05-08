@@ -3,6 +3,10 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc)
 from csuibot.utils import yelkomputer
 
+from csuibot.utils import kelaskata as k
+
+from csuibot.utils import define as d
+
 
 def lookup_zodiac(month, day):
     zodiacs = [
@@ -46,6 +50,28 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_define(word):
+    if(not word):
+        raise ValueError('Command /define need an argument')
+    elif(containsDigit(word)):
+        return word + ' contains number'
+    else:
+        define_object = d.define(word)
+        return define_object.getDefine()
+
+
+def containsDigit(string):
+    return any(i.isdigit() for i in string)
+
+
+def lookup_kelaskata(message):
+    if message == '':
+        raise ValueError('Try /kelaskata [word]')
+    else:
+        kelaskata_object = k.kelaskata(message)
+        return kelaskata_object.getKelasKata()
 
 
 def generate_custom_chuck_joke(first_name, last_name):

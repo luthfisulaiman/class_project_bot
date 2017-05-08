@@ -4,7 +4,8 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
-                    get_meme, generate_password, generate_custom_chuck_joke)
+                    get_meme, generate_password, generate_custom_chuck_joke,
+                    lookup_define, lookup_kelaskata)
 from requests.exceptions import ConnectionError
 
 
@@ -154,6 +155,40 @@ def colour(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/define (.*)$')
+def define(message):
+    app.logger.debug("'define' command detected")
+    command = " ".join(message.text.split()[1:])
+
+    try:
+        define_ = lookup_define(command)
+    except requests.HTTPError as e:
+        bot.reply_to(
+            message,
+            '"'+command + '" is not an english word')
+    except ValueError as e:
+        bot.reply_to(message, 'Command /define need an argument')
+    else:
+        bot.reply_to(message, define_)
+
+
+@bot.message_handler(regexp=r'^/kelaskata (.*)$')
+def kelaskata(message):
+    app.logger.debug("'kelaskata' command detected")
+    command = " ".join(message.text.split()[1:])
+
+    try:
+        kelas_kata = lookup_kelaskata(command)
+    except ValueError as e:
+        bot.reply_to(message, 'Try /kelaskata [word]')
+    except requests.ConnectionError as e:
+        bot.reply_to(
+            message,
+            '"'+command + '" is not a word')
+    else:
+        bot.reply_to(message, kelas_kata)
 
 
 @bot.message_handler(regexp=r'^/is_palindrome (.*)$')

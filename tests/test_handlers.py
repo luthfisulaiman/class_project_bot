@@ -3,7 +3,8 @@ import requests
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
-                              password, password_16, custom_chuck_joke)
+                              password, password_16, custom_chuck_joke, define,
+                              kelaskata)
 from requests.exceptions import ConnectionError
 
 
@@ -65,6 +66,76 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_define(mocker):
+    fake_define = 'a precious stone consisting of a clear and colourless'
+    fake_define += ' crystalline form of pure carbon,'
+    fake_define += ' the hardest naturally occurring substance'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_define', return_value=fake_define)
+    mock_message = Mock(text='/define diamond')
+
+    define(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_define
+
+
+def test_define_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_define', side_effect=ValueError)
+    mock_message = Mock(text='/define')
+
+    define(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /define need an argument'
+
+
+def test_define_page_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.define', side_effect='404')
+    mock_message = Mock(text='/define akugantengsekali')
+
+    define(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '"akugantengsekali" is not an english word'
+
+
+def test_kelaskata(mocker):
+    fake_kata = 'intan/n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', return_value=fake_kata)
+    mock_message = Mock(text='/kelaskata intan')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_kata
+
+
+def test_kelaskata_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=ValueError)
+    mock_message = Mock(text='/kelaskata')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Try /kelaskata [word]'
+
+
+def test_kelaskata_word_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_kelaskata', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/kelaskata akugantengsekali')
+
+    kelaskata(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '"akugantengsekali" is not a word'
 
 
 def test_custom_chuck(mocker):
