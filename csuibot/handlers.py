@@ -2,6 +2,7 @@ import requests
 import re
 from . import app, bot
 from .utils import make_hipster
+from .utils import get_meme
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer,
                     convert_hex2rgb, fetch_latest_xkcd)
@@ -54,6 +55,20 @@ def hipsteripsum(message):
     _, paras_str = message.text.split(' ')
     hipster = make_hipster(int(paras_str))
     bot.reply_to(message, hipster)
+
+
+@bot.message_handler(regexp=r'^/meme \S{1,} \S{1,}$')
+def meme(message):
+    app.logger.debug("'meme' command detected")
+    _, top, bottom = message.text.split(' ')
+    app.logger.debug('top = {}, bottom = {}'.format(top, bottom))
+
+    try:
+        meme = get_meme(top, bottom)
+    except ValueError:
+        bot.reply_to(message, 'Input is invalid')
+    else:
+        bot.reply_to(message, meme)
 
 
 @bot.message_handler(regexp=r'^/colou?r (.*)$')

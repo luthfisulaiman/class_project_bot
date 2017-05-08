@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 from csuibot.handlers import hipsteripsum
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
-                              colour, xkcd, yelkomputer)
+                              colour, xkcd, yelkomputer, meme)
 from requests.exceptions import ConnectionError
 
 
@@ -90,6 +90,18 @@ def test_hipster_paragraph(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_paragraph
+
+
+def test_meme_valid(mocker):
+    fake_meme = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_meme', return_value=fake_meme)
+    mock_message = Mock(text='/meme top bottom')
+
+    meme(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_meme
 
 
 def test_is_palindrome(mocker):
