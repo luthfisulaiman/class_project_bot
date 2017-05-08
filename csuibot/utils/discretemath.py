@@ -11,7 +11,7 @@ class DiscreteMath:
         #     data = json.load(data_file)
         file = open('/app/csuibot/utils/response.json', 'r')
         data = json.load(file)
-        
+
         try:
             selected_data = data['terminologies'][query]
         except KeyError:
@@ -27,8 +27,9 @@ class DiscreteMath:
             reference = selected_data['ref']
             problem = selected_data['problem']
 
-            message = 'course: {}\n terminology: {}\n definition: {}\n example: {}\n reference: {}\n \
-                      problem: {}\n'\
+            message = '<b>course:</b> {}\n <b>terminology:</b> {}\n <b>definition:</b> {}\n \
+                      <b>example:</b> {}\n <b>reference:</b> {}\n \
+                      <bproblem:</b> {}\n'\
                       .format(course, termin, definition, example, reference, problem)
         return message
 

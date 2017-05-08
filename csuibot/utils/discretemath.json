@@ -11,21 +11,21 @@
 		},
 		"gcd":
 		{
-			"definition":"Misalkan a dan b bilangan bulat dimana setidaknya salah satunya bukan 0, maka bilangan bulat terbesar d yang memenuhi d | a dan d | b disebut greatest common divisor (gcd) ditulis gcd(a, b)",
+			"definition":" Misalkan a dan b bilangan bulat dimana setidaknya salah satunya bukan 0, maka bilangan bulat terbesar d yang memenuhi d | a dan d | b disebut greatest common divisor (gcd) ditulis gcd(a, b)",
 			"example":"GCD(24, 36) = 12",
 			"ref":"Slide_MD2_1_Teori Bilangan-rev24Feb17",
 			"problem":"Berapakah gcd(5, 150)"
 		},
 		"lcm":
 		{
-			"definition":"Least common multiple dari dua bilangan a dan b (ditulis lcm(a, b)) adalah bilangan bulat positif terkecil yang sama-sama habis dibagi oleh a dan b",
+			"definition":"(ditulis lcm(a, b)) adalah bilangan bulat positif terkecil yang sama-sama habis dibagi oleh a dan b",
 			"example":"LCM(24, 36) = 72",
 			"ref": "Slide_MD2_1_Teori Bilangan-rev24Feb17",
 			"problem": "LCM(120, 500)?"
 		},
 		"relasi rekurensi":
 		{
-			"definition":"Relasi Rekurensi adalah suatu persamaan (rumus/formula) yang menyatakan hubungan suku xn dengan satu atau lebih suku pendahulunya dalam barisan itu, x0, x1, x2, ......, xn−1, untuk setiap n dengan n ≥ n0, & untuk suatu n0 ≥ 1",
+			"definition":"suatu persamaan (rumus/formula) yang menyatakan hubungan suku xn dengan satu atau lebih suku pendahulunya dalam barisan itu, x0, x1, x2, ......, xn−1, untuk setiap n dengan n ≥ n0, & untuk suatu n0 ≥ 1",
 			"example":"Xn = X(n-1) + X(n-2) untuk n >= 2, x0 = 3dan x1 = 5, maka x5 = 34",
 			"ref" :"Slide_MD2_2a_Teknik Berhitung Lanjut_RR-v2",
 			"problem": " Berapa jumlah uang yang diperoleh seorang nasabah bank yang mendepositokan 10 juta uangnya selama 10 tahun dengan hasil bagi 5% per tahun?"
