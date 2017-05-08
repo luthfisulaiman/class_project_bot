@@ -70,5 +70,5 @@ def test_discrete_material_no_connection(mocker):
 
     dm(mock_message)
 
-    args,_ = mocked_reply_to.call_args
-    assert args[1] = test_noconnection
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == test_noconnection

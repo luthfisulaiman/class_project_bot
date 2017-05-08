@@ -24,3 +24,4 @@ class DiscreteMath:
         		'course: {}\n terminology: {}\n definition: {}\n example: {}\n reference: {}\n problem: {}'.format(
         			course, termin, definition, example, reference, problem)
         	return message
+    print("done")
