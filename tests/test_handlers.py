@@ -130,6 +130,18 @@ def test_compute_division_by_zero(mocker):
     assert args[1] == fake_error
 
 
+def test_compute_single_digit(mocker):
+    fake_error = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
+    mock_message = Mock(text='/compute 12')
+
+    compute(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
 def test_error_compute(mocker):
     fake_error = 'Invalid command, please enter only numbers and operators'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
