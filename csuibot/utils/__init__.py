@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z, palindrome as p
+from csuibot.utils import zodiac as z, palindrome as p, loremipsum as li
 from csuibot.utils import yelkomputer
 
 
@@ -49,6 +49,10 @@ def lookup_chinese_zodiac(year):
 def check_palindrome(message):
     _, text = message.text.split(' ')
     return p.Palindrome(text).is_palindrome()
+
+
+def call_lorem_ipsum():
+    return li.LoremIpsum().get_loripsum()
 
 
 def lookup_yelkomputer(message_text):

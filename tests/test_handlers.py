@@ -1,5 +1,6 @@
 from unittest.mock import Mock
-from csuibot.handlers import help, zodiac, shio, is_palindrome, yelkomputer
+from csuibot.handlers import help, zodiac, shio, is_palindrome, loremipsum, yelkomputer
+from requests.exceptions import ConnectionError
 
 
 def test_help(mocker):
@@ -94,6 +95,34 @@ def test_error_is_palindrome(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_lorem_ipsum(mocker):
+    fake_loripsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' \
+                    'Proclivi currit oratio. ' \
+                    'Honesta oratio, Socratica, Platonis etiam. ' \
+                    'Aliter homines, aliter philosophos loqui putas oportere? ' \
+                    'Quid ergo?'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_lorem_ipsum', return_value=fake_loripsum)
+    mock_message = Mock(text='/loremipsum')
+
+    loremipsum(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_loripsum
+
+
+def test_lorem_ipsum_no_connection(mocker):
+    fake_loripsum = 'Cannot connect to loripsum.net API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_lorem_ipsum', side_effect=ConnectionError)
+    mock_message = Mock(text='/loremipsum')
+
+    loremipsum(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_loripsum
 
 
 def test_yelkomputer(mocker):

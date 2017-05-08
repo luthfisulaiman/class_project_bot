@@ -1,5 +1,10 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, check_palindrome, lookup_yelkomputer
+from .utils import (lookup_zodiac,
+                    lookup_chinese_zodiac,
+                    check_palindrome,
+                    call_lorem_ipsum,
+                    lookup_yelkomputer)
+from requests.exceptions import ConnectionError
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -55,6 +60,17 @@ def is_palindrome(message):
         bot.reply_to(message, 'You can only submit a word')
     else:
         bot.reply_to(message, palindrome)
+
+
+@bot.message_handler(regexp=r'^/loremipsum$')
+def loremipsum(message):
+    app.logger.debug("'loremipsum' command detected")
+    try:
+        loripsum = call_lorem_ipsum()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to loripsum.net API')
+    else:
+        bot.reply_to(message, loripsum)
 
 
 @bot.message_handler(commands=['yelkomputer'])

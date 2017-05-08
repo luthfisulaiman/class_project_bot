@@ -1,8 +1,8 @@
 from csuibot import utils
+from requests.exceptions import ConnectionError
 
 
 class TestZodiac:
-
     def test_aries_lower_bound(self):
         res = utils.lookup_zodiac(3, 21)
         assert res == 'aries'
@@ -208,7 +208,6 @@ class TestZodiac:
 
 
 class TestChineseZodiac:
-
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]
 
@@ -255,8 +254,17 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
-class TestYelKomputer:
+class TestLoremIpsum:
+    def test_get_loripsum(self):
+        try:
+            res = utils.call_lorem_ipsum()
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
+
+class TestYelKomputer:
     def test_yelkomputer(self):
         yelkomputer = (
             'Komputer!\n\n'
