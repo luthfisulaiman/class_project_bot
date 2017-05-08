@@ -1,5 +1,6 @@
 from csuibot.utils import meme
-from csuibot.utils import zodiac as z, hex2rgb as h, xkcd as x
+from csuibot.utils import (zodiac as z, palindrome as p,
+                           loremipsum as li, hex2rgb as h, xkcd as x)
 from csuibot.utils import yelkomputer
 
 
@@ -58,6 +59,15 @@ def get_meme(top, bottom):
     else:
         dank = generator.generatememe()
         return dank.getimage()
+
+
+def check_palindrome(message):
+    _, text = message.text.split(' ')
+    return p.Palindrome(text).is_palindrome()
+
+
+def call_lorem_ipsum():
+    return li.LoremIpsum().get_loripsum()
 
 
 def fetch_latest_xkcd():
