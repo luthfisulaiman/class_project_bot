@@ -45,10 +45,9 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
+
 @bot.message_handler(regex=r'(.*)[Ff][Aa][Ss][Ii][Ll][Kk][Oo][Mm](.*)$')
-def funFasilkom(message) :
+def funFasilkom(message):
     app.logger.debug("'Fasilkom' command detected")
-    
     reply = vivaFasilkom()
     bot.reply_to(message, reply)
-        

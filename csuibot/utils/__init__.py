@@ -45,5 +45,5 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def vivaFasilkom() :
+def vivaFasilkom():
     return f.FunFasilkom().vivaFasilkom()

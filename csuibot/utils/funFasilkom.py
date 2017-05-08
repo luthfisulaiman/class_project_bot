@@ -1,4 +1,4 @@
-class FunFasilkom :
+class FunFasilkom:
     
-    def vivaFasilkom(self) :
+    def vivaFasilkom(self):
         return "Viva, Viva, Viva Fasilkom!"
