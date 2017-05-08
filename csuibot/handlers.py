@@ -1,12 +1,9 @@
 import requests
 import re
 from . import app, bot
-<<<<<<< HEAD
-from .utils import lookup_zodiac, lookup_chinese_zodiac, make_hipster
-=======
+from .utils import make_hipster
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer,
                     convert_hex2rgb, fetch_latest_xkcd)
->>>>>>> 92baa5bcdda50170854b16a6bdcc3da8357e6a17
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -48,12 +45,14 @@ def shio(message):
     else:
         bot.reply_to(message, zodiac)
 
+
 @bot.message_handler(regexp=r'^/hipsteripsum [0-9]{1,3}$')
 def hipsteripsum(message):
     app.logger.debug("'hipsteripsum' command detected")
     _, paras_str = message.text.split(' ')
     hipster = make_hipster(int(paras_str))
     bot.reply_to(message, hipster)
+
 
 @bot.message_handler(regexp=r'^/colou?r (.*)$')
 def colour(message):

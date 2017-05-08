@@ -255,7 +255,6 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
-<<<<<<< HEAD
 class TestHipster():
 
     def test_make_one_paragraph(self):

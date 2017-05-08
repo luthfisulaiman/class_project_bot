@@ -2,11 +2,8 @@ import requests
 
 from unittest.mock import Mock
 
-<<<<<<< HEAD
-from csuibot.handlers import help, zodiac, shio, hipsteripsum
-=======
+from csuibot.handlers import hipsteripsum
 from csuibot.handlers import help, zodiac, shio, yelkomputer, colour, xkcd
->>>>>>> 92baa5bcdda50170854b16a6bdcc3da8357e6a17
 
 
 def test_help(mocker):
@@ -69,7 +66,6 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
-<<<<<<< HEAD
 def test_hipster_valid(mocker):
     fake_paragraph = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -92,7 +88,8 @@ def test_hipster_paragraph(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_paragraph
-=======
+
+
 def test_fetch_latest_xkcd(mocker):
     fake_xkcd = 'fake alt, fake img'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -238,4 +235,3 @@ def test_yelkomputer_with_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Command /yelkomputer doesn\'t need any arguments'
->>>>>>> 92baa5bcdda50170854b16a6bdcc3da8357e6a17
