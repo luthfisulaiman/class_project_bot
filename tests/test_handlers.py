@@ -38,7 +38,7 @@ def test_soundclip(mocker):
     soundclip(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_soundclip
+    assert args[1] == fake_soundclip #this is a test
 """
 
 def test_soundcliphelp(mocker):
