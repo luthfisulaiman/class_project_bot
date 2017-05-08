@@ -64,7 +64,6 @@ def test_shio_invalid_year(mocker):
 
 def test_is_up(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_isUpWeb', return_value='UP')
     
     mock_message = Mock(text='/is_up https://scele.cs.ui.ac.id/')
 
@@ -76,7 +75,6 @@ def test_is_up(mocker):
 
 def test_is_down(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_isUpWeb', return_value='DOWN')
        
     mock_message = Mock(text='/is_up http://iniwebsitedownwoi.co.id')
 

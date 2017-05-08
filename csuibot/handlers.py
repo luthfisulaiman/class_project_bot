@@ -51,6 +51,7 @@ def isUp(message) :
     _, url = message.text.split(' ')
 
     try:
+        app.logger.debug(url)
         result = lookup_isUpWeb(url)
     except ValueError :
         bot.reply_to(message, 'Url is invalid')
