@@ -50,8 +50,9 @@ def soundcliphelp(message):
     app.logger.debug("'about' command detected")
     about_text = (
         'SOUNDCLIPS!\n\n'
-        'Get help!'
+        'Get help!\n\n'
         'Wooooo'
+        'Muhammad Faiz - Capung,2015'
     )
     bot.reply_to(message, about_text)
 
@@ -62,7 +63,6 @@ def soundclip(message):
 
     try:
         soundclip = open(soundtitle, 'rb')
+        bot.send_voice(message.chat.id, soundclip);
     except:
         bot.reply_to(message, 'Sound clip not found')
-    else:
-        bot.send_audio(message.chat.id, soundclip);

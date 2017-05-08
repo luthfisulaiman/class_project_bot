@@ -48,14 +48,14 @@ def lookup_chinese_zodiac(year):
 def define_sound(inputKey):
 
     sounds = [
-        "tom_scream.mp3",
-        "wilhelm.mp3",
-        "goofy.mp3",
-        "tom_pain.mp3"
+        "tom_scream.ogg",
+        "wilhelm.ogg",
+        "goofy.ogg",
+        "tom_pain.ogg"
     ]
 
     title = inputKey.split(' ', 1)[1]
-    soundtitle = title.replace(" ", "_") + ".mp3"
+    soundtitle = title.replace(" ", "_") + ".ogg"
     if soundtitle in sounds:
         return 'soundclip/' + soundtitle
     else:
