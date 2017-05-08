@@ -253,3 +253,54 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestDiscreteMaterial:
+
+    def test_number_theory(self):
+        try:
+            res = utils.call_discrete_material('number theory')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_gcd(self):
+        try:
+            res = utils.call_discrete_material('gcd')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_lcm(self):
+        try:
+            res = utils.call_discrete_material('lcm')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_rekurensi(self):
+        try:
+            res = utils.call_discrete_material('relasi rekurensi')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_biner(self):
+        try:
+            res = utils.call_discrete_material('relasi biner')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_domain_range(self):
+        try:
+            res = utils.call_discrete_material('domain dan range')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None

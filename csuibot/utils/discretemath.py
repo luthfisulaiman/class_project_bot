@@ -27,10 +27,13 @@ class DiscreteMath:
             reference = selected_data['ref']
             problem = selected_data['problem']
 
-            message = '<b>course:</b> {}\n <b>terminology:</b> {}\n <b>definition:</b> {}\n \
-                      <b>example:</b> {}\n <b>reference:</b> {}\n \
-                      <bproblem:</b> {}\n'\
-                      .format(course, termin, definition, example, reference, problem)
+            message1 = '<b>course:</b> {}\n'.format(course)
+            message2 = 'terminology: {}\n'.format(termin)
+            message3 = 'definition: {}\n'.format(definition)
+            message4 = 'example: {}\n'.format(example)
+            message5 = 'reference: {}\n'.format(reference)
+            message6 = 'problem: {}\n'.format(problem)
+            message = message1 + message2 + message3 + message4 + message5 + message6
         return message
 
     print("done")
