@@ -264,6 +264,18 @@ class TestLoremIpsum:
             assert res is not None
 
 
+class TestXkcd:
+    def test_xkcd(self):
+        res = utils.xkcd.Comic.get_latest_comic()
+
+        assert res is not None
+
+    def test_fetch(self):
+        res = utils.fetch_latest_xkcd()
+
+        assert res is not None
+
+
 class TestYelKomputer:
     def test_yelkomputer(self):
         yelkomputer = (

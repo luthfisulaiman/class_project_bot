@@ -1,4 +1,5 @@
-from csuibot.utils import zodiac as z, palindrome as p, loremipsum as li
+from csuibot.utils import (zodiac as z, palindrome as p,
+                           loremipsum as li, hex2rgb as h, xkcd as x)
 from csuibot.utils import yelkomputer
 
 
@@ -53,6 +54,14 @@ def check_palindrome(message):
 
 def call_lorem_ipsum():
     return li.LoremIpsum().get_loripsum()
+
+
+def fetch_latest_xkcd():
+    return x.Comic.get_latest_comic()
+
+
+def convert_hex2rgb(hex_str):
+    return h.Hex2RGB(hex_str).convert()
 
 
 def lookup_yelkomputer(message_text):

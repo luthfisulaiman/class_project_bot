@@ -1,9 +1,9 @@
+import requests
+import re
 from . import app, bot
-from .utils import (lookup_zodiac,
-                    lookup_chinese_zodiac,
-                    check_palindrome,
-                    call_lorem_ipsum,
-                    lookup_yelkomputer)
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
+                    call_lorem_ipsum, lookup_yelkomputer,
+                    convert_hex2rgb, fetch_latest_xkcd)
 from requests.exceptions import ConnectionError
 
 
@@ -47,6 +47,30 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+@bot.message_handler(regexp=r'^/colou?r (.*)$')
+def colour(message):
+    app.logger.debug("'colour' command detected")
+
+    try:
+        _, hex_str = message.text.split(' ')
+        # If hex_str is not the correct format
+        if re.match(r'^#[\dA-Fa-f]{6}$', hex_str) is None:
+            raise ValueError
+        app.logger.debug('hex = {}'.format(hex_str))
+        rgb = convert_hex2rgb(hex_str)
+    except ValueError:
+        bot.reply_to(message, 'Invalid command. '
+                              'Please use either /color #HEXSTR or /colour #HEXSTR')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, rgb)
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
@@ -71,6 +95,23 @@ def loremipsum(message):
         bot.reply_to(message, 'Cannot connect to loripsum.net API')
     else:
         bot.reply_to(message, loripsum)
+
+
+@bot.message_handler(regexp=r'^/xkcd$')
+def xkcd(message):
+    app.logger.debug("'xkcd' command detected")
+    try:
+        comic = fetch_latest_xkcd()
+    except ValueError:
+        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, comic)
 
 
 @bot.message_handler(commands=['yelkomputer'])
