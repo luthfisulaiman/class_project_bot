@@ -48,5 +48,7 @@ def lookup_chinese_zodiac(year):
 
 def remind_me(minutes, text):
     second = int(minutes) * 60
-    time.sleep(second)
+    while(second > 0):
+        time.sleep(1)
+        second -= 1
     return text
