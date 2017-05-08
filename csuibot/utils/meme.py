@@ -18,35 +18,42 @@ class FileHandler:
         self._file.close()
 
 
-class MemeGenerator:
+class MemeGenerator(object):
+    class SingletonMG(object):
 
-    def __init__(self):
-        self.dank = Meme()
-        self.requester = MemeRequester()
-        self.items = {}
-        self.fHandler = FileHandler()
-        self.fHandler.openfile()
-        self._memelist = self.fHandler.readfile()
-        self.fHandler.closefile()
+        def __init__(self):
+            self.dank = Meme()
+            self.requester = MemeRequester()
+            self.items = {}
+            self.fHandler = FileHandler()
+            self.fHandler.openfile()
+            self._memelist = self.fHandler.readfile()
+            self.fHandler.closefile()
 
-    def createid(self):
-        self.items['id'] = self._memelist[randint(0, len(self._memelist) - 1)]
+        def createid(self):
+            self.items['id'] = self._memelist[randint(0, len(self._memelist) - 1)]
 
-    def createbottom(self, caption):
-        if(len(caption) >= 100):
-            raise ValueError
-        self.items['bottom'] = caption
+        def createbottom(self, caption):
+            if(len(caption) >= 100):
+                raise ValueError
+            self.items['bottom'] = caption
 
-    def createtop(self, caption):
-        if(len(caption) >= 100):
-            raise ValueError
-        self.items['top'] = caption
+        def createtop(self, caption):
+            if(len(caption) >= 100):
+                raise ValueError
+            self.items['top'] = caption
 
-    def generatememe(self):
-        self.dank.set(self.items['id'], self.items['bottom'], self.items['top'])
-        self.items['image'] = self.requester.makerequest(self.dank)['data']['url']
-        self.dank.setimage(self.items['image'])
-        return self.dank
+        def generatememe(self):
+            self.dank.set(self.items['id'], self.items['bottom'], self.items['top'])
+            self.dank.setimage(self.requester.makerequest(self.dank)['data']['url'])
+            return self.dank
+
+    instance = None
+
+    def __new__(cls):
+        if not MemeGenerator.instance:
+            MemeGenerator.instance = MemeGenerator.SingletonMG()
+        return MemeGenerator.instance
 
 
 class Meme:
