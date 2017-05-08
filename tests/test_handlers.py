@@ -11,7 +11,7 @@ def test_help(mocker):
 
     args, _ = mocked_reply_to.call_args
     expected_text = (
-        'CSUIBot v0.0.1\n\n'
+        'CSUIBot v0.0.3\n\n'
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     assert args[1] == expected_text
@@ -66,7 +66,7 @@ def test_shio_invalid_year(mocker):
 def test_discrete_material_no_connection(mocker):
     test_noconnection = 'Cannot connect to API'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.terminologies', return_value=test_noconnection)
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=test_noconnection)
     mock_message = Mock(text='/tellme Relasi Biner')
 
     dm(mock_message)
