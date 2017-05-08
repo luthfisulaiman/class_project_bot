@@ -3,7 +3,7 @@ import requests
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
-                              password, password_16)
+                              password, password_16, custom_chuck_joke)
 from requests.exceptions import ConnectionError
 
 
@@ -65,6 +65,55 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_custom_chuck(mocker):
+    fake_joke = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke', return_value=fake_joke)
+    mock_message = Mock(text='/shio Chuck Norris')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke
+
+
+def test_custom_chuck_name_too_short(mocker):
+    fake_joke = 'Only two words, first name and last name, are accepted as input.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke')
+    mock_message = Mock(text='/shio Chuck')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke
+
+
+def test_custom_chuck_name_too_long(mocker):
+    fake_joke = 'Only two words, first name and last name, are accepted as input.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke')
+    mock_message = Mock(text='/shio Chuck Chuckie Norris')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke
+
+
+def test_custom_chuck_no_connection(mocker):
+    fake_joke = 'Error connecting to icndb.com API, please try again later.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke',
+                 side_effect=ConnectionError)
+    mock_message = Mock(text='/chuck Chuck Norris')
+
+    custom_chuck_joke(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_joke
 
 
 def test_password_with_input(mocker):

@@ -255,6 +255,20 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestCustomChuckJoke:
+
+    def test_custom_chuck(self):
+        res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
+                "Chuck", "Norris")
+
+        assert res is not None
+
+    def test_fetch(self):
+        res = utils.generate_custom_chuck_joke("Chuck", "Norris")
+
+        assert res is not None
+
+
 class TestPassword:
 
     def test_minimum_length(self):

@@ -1,6 +1,6 @@
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
-                           password as pw)
+                           password as pw, custom_chuck as cc)
 from csuibot.utils import yelkomputer
 
 
@@ -46,6 +46,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def generate_custom_chuck_joke(first_name, last_name):
+    return cc.CustomChuckJoke().generate_custom_chuck_joke(first_name, last_name)
 
 
 def generate_password(len):

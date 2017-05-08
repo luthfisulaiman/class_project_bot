@@ -4,7 +4,7 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
-                    get_meme, generate_password)
+                    get_meme, generate_password, generate_custom_chuck_joke)
 from requests.exceptions import ConnectionError
 
 
@@ -46,6 +46,22 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/chuck ')
+def custom_chuck_joke(message):
+    app.logger.debug("'chuck' command detected")
+    try:
+        _, first_name, last_name = message.text.split(' ')
+        app.logger.debug("first = {}, last = {}".format(first_name, last_name))
+        joke = generate_custom_chuck_joke(first_name, last_name)
+    except ValueError:
+        bot.reply_to(message,
+                     'Only two words, first name and last name, are accepted as input.')
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to icndb.com API, please try again later.')
+    else:
+        bot.reply_to(message, joke)
 
 
 @bot.message_handler(regexp=r'^/password$')
