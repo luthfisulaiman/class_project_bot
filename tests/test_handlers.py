@@ -1,6 +1,12 @@
+import requests
+
 from unittest.mock import Mock
 
+<<<<<<< HEAD
 from csuibot.handlers import help, zodiac, shio, meme
+=======
+from csuibot.handlers import help, zodiac, shio, yelkomputer, colour, xkcd
+>>>>>>> 92baa5bcdda50170854b16a6bdcc3da8357e6a17
 
 
 def test_help(mocker):
@@ -63,6 +69,7 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
+
 def test_meme_valid(mocker):
     fake_meme = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -73,3 +80,150 @@ def test_meme_valid(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_meme
+
+
+def test_fetch_latest_xkcd(mocker):
+    fake_xkcd = 'fake alt, fake img'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd', return_value=fake_xkcd)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd
+
+
+def test_fetch_latest_xkcd_invalid(mocker):
+    fake_xkcd_invalid = 'Command is invalid. You can only use "/xkcd" command.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd', side_effect=ValueError)
+    mock_message = Mock(text='/xkcd 123123')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_invalid
+
+
+def test_fetch_latest_xkcd_connection_error(mocker):
+    fake_xkcd_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_error
+
+
+def test_fetch_latest_xkcd_http_error(mocker):
+    fake_xkcd_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_error
+
+
+def test_fetch_latest_xkcd_error(mocker):
+    fake_xkcd_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_error
+
+
+def test_colour(mocker):
+    pure_red = 'RGB(255, 0, 0)'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/colour #ff0000')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == pure_red
+
+
+def test_colour_invalid(mocker):
+    rgb_invalid = 'Invalid command. Please use either /color #HEXSTR or /colour #HEXSTR'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/colour #123qwe')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == rgb_invalid
+
+
+def test_colour_connection_error(mocker):
+    fake_colour_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_colour_http_error(mocker):
+    fake_colour_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_colour_error(mocker):
+    fake_colour_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_yelkomputer(mocker):
+    fake_yelkomputer = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelkomputer', return_value=fake_yelkomputer)
+    mock_message = Mock(text='/yelkomputer')
+
+    yelkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_yelkomputer
+
+
+def test_yelkomputer_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelkomputer', side_effect=ValueError)
+    mock_message = Mock(text='/yelkomputer some_arguments_here')
+
+    yelkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /yelkomputer doesn\'t need any arguments'

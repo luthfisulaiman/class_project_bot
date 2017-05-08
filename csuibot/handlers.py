@@ -1,5 +1,9 @@
+import requests
+import re
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, get_meme
+from .utils import get_meme
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer,
+                    convert_hex2rgb, fetch_latest_xkcd)
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -56,5 +60,58 @@ def meme(message):
         bot.reply_to(message, meme)
 
 
+@bot.message_handler(regexp=r'^/colou?r (.*)$')
+def colour(message):
+    app.logger.debug("'colour' command detected")
+
+    try:
+        _, hex_str = message.text.split(' ')
+        # If hex_str is not the correct format
+        if re.match(r'^#[\dA-Fa-f]{6}$', hex_str) is None:
+            raise ValueError
+        app.logger.debug('hex = {}'.format(hex_str))
+        rgb = convert_hex2rgb(hex_str)
+    except ValueError:
+        bot.reply_to(message, 'Invalid command. '
+                     'Please use either /color #HEXSTR or /colour #HEXSTR')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, rgb)
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/xkcd$')
+def xkcd(message):
+    app.logger.debug("'xkcd' command detected")
+    try:
+        comic = fetch_latest_xkcd()
+    except ValueError:
+        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, comic)
+
+
+@bot.message_handler(commands=['yelkomputer'])
+def yelkomputer(message):
+    app.logger.debug("'yelkomputer' command detected")
+
+    try:
+        yelkomputer = lookup_yelkomputer(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelkomputer)
