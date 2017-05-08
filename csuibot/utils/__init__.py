@@ -1,4 +1,5 @@
 from csuibot.utils import zodiac as z
+from csuibot.utils.discretematerial import DiscreteMaterial as dm
 
 
 def lookup_zodiac(month, day):
@@ -45,5 +46,5 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 def call_discrete_material():
-    pass
+    return dm.get_discrete_materials(query)
 

@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, call_discrete_material
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -47,6 +47,15 @@ def parse_date(text):
 def parse_material(text):
     return tuple(map(, text.split(' ')))
 
-@bot.message_handler(regexp=r'^/tellme \w+$')
+@bot.message_handler(regexp=r'^/tellme .*$')
 def get_discrete_material(message):
-    pass
+    app.logger.debug("tellme detected")
+    queryLower = message.lower()
+    query = queryLower.text.replace('/tellme ', '')
+    app.logger.debug('searching for {} in discretematerial'.format(query))
+    try:
+        result = call_discrete_material(query)
+    except ValueError:
+        but.reply_to(message, "Invalid Value")
+    else:
+        bot.reply_to(message, result)
