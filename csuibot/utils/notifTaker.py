@@ -13,16 +13,16 @@ class notifTaker:
         for judul in subject:
             subLaporan = subject[counter].contents[0].upper() + info[counter] + "\n"
             subLaporan += post[counter]
-            subLaporan += "\n \n "+detail[counter] +"\n =================================== \n"
+            subLaporan += "\n \n " + detail[counter] + "\n ================================ \n"
             laporan += subLaporan
             counter += 1
         return laporan
 
     def getPost(self):
         r = urllib.request.urlopen("https://scele.cs.ui.ac.id/").read()
-        detailed = urllib.request.urlopen("https://scele.cs.ui.ac.id/mod/forum/view.php?f=1").read()
+        det = urllib.request.urlopen("https://scele.cs.ui.ac.id/mod/forum/view.php?f=1").read()
         soup = BeautifulSoup(r, "html.parser")
-        detailedSoup = BeautifulSoup(detailed,"html.parser")
+        detailedSoup = BeautifulSoup(det, "html.parser")
         subject = soup.find_all("div", class_="subject")
         info = soup.find_all("div", class_="author")
         post = soup.find_all("div", class_="posting")
@@ -32,13 +32,13 @@ class notifTaker:
         postJadi = self.olahPost(post, flagNavString)
         print(self.makeNotifReport(subject, infoJadi, postJadi, detailJadi))
 
-    def olahDetail(self,soup):
+    def olahDetail(self, soup):
         outerContainer = soup.select('td.topic.starter')[:5]
         # only getting the first 5 (or according to scele front page)
-        arrayHasil =[]
+        arrayHasil = []
         for element in outerContainer:
             hasil = ""
-            hasil = element.a["href"] 
+            hasil = element.a["href"]
             arrayHasil.append(hasil)
         return arrayHasil
 
