@@ -47,4 +47,4 @@ def lookup_chinese_zodiac(year):
 
 
 def call_discrete_material(query):
-    return dm.get_discrete_materials(query)
+    return dm.get_discrete_material(query)
