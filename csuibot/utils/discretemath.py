@@ -7,9 +7,11 @@ import json
 class DiscreteMath:
 
     def get_discrete_material(query):
-        with open('/app/csuibot/utils/discretemath.json') as data_file:
-            data = json.load(data_file)
-
+        # with open('/app/csuibot/utils/response.json') as data_file:
+        #     data = json.load(data_file)
+        file = open('response.json', 'r')
+        data = json.load(file)
+        
         try:
             selected_data = data['terminologies'][query]
         except KeyError:
