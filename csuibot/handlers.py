@@ -50,10 +50,10 @@ def parse_date(text):
 def get_discrete_material(message):
     app.logger.debug("tellme detected")
     query = message.text.replace('/tellme ', '')
-    query-lowercase = query.lower()
-    app.logger.debug('searching for {} in discretematerial'.format(query-lowercase))
+    query = query.lower()
+    app.logger.debug('searching for {} in discretematerial'.format(query))
     try:
-        result = call_discrete_material(query-lowercase)
+        result = call_discrete_material(query)
     except ValueError:
         bot.reply_to(message, "Invalid Value")
     else:
