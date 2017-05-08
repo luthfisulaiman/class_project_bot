@@ -1,5 +1,6 @@
-from csuibot.utils import zodiac as z
-from csuibot.utils import password as p
+from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
+                           loremipsum as li, hex2rgb as h, xkcd as x, meme,
+                           password as pw)
 from csuibot.utils import yelkomputer
 
 
@@ -48,7 +49,50 @@ def lookup_chinese_zodiac(year):
 
 
 def generate_password(len):
-    return p.Password().generate_password(len)
+    return pw.Password().generate_password(len)
+
+
+def get_public_ip():
+    return ip.IP().ip()
+
+
+def make_hipster(paras):
+    generator = hp.HipsterGenerator()
+
+    try:
+        return generator.generate(paras)
+    except ValueError:
+        return 'Number of paragraph exceed the limit'
+
+
+def get_meme(top, bottom):
+    generator = meme.MemeGenerator()
+    generator.createid()
+    try:
+        generator.createtop(top)
+        generator.createbottom(bottom)
+    except ValueError:
+        return 'Caption is too long, min < 100 words'
+    else:
+        dank = generator.generatememe()
+        return dank.getimage()
+
+
+def check_palindrome(message):
+    _, text = message.text.split(' ')
+    return p.Palindrome(text).is_palindrome()
+
+
+def call_lorem_ipsum():
+    return li.LoremIpsum().get_loripsum()
+
+
+def fetch_latest_xkcd():
+    return x.Comic.get_latest_comic()
+
+
+def convert_hex2rgb(hex_str):
+    return h.Hex2RGB(hex_str).convert()
 
 
 def lookup_yelkomputer(message_text):

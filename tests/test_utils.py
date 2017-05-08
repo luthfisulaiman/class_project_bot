@@ -1,8 +1,9 @@
 from csuibot import utils
+import re
+from requests.exceptions import ConnectionError
 
 
 class TestZodiac:
-
     def test_aries_lower_bound(self):
         res = utils.lookup_zodiac(3, 21)
         assert res == 'aries'
@@ -208,7 +209,6 @@ class TestZodiac:
 
 
 class TestChineseZodiac:
-
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]
 
@@ -280,8 +280,103 @@ class TestPassword:
         assert res == expected
 
 
-class TestYelKomputer:
+class TestIP:
 
+    def test_wellformed_ip(self):
+        res = utils.get_public_ip()
+        pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+        assert pattern.match(res)
+
+
+class TestHipster():
+
+    def test_make_one_paragraph(self):
+        res = utils.make_hipster(1)
+        length = res.count("\n")
+        assert length == 0
+
+    def test_make_four_paragraph(self):
+        res = utils.make_hipster(4)
+        length = res.count("\n")
+        assert length == 3
+
+    def test_nums_zero(self):
+        res = utils.make_hipster(0)
+        assert res == 'Number of paragraph exceed the limit'
+
+    def test_nums_hundred(self):
+        res = utils.make_hipster(100)
+        assert res == 'Number of paragraph exceed the limit'
+
+
+class TestMeme:
+
+    def test_success(self):
+        res = utils.get_meme("Top", "Bottom")
+        assert "http" in res
+
+    def test_top_too_long(self):
+        top = (
+            'Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing'
+            '_elit_Proin_nec_massa_tempus_blandit_ipsum_eget_'
+            'aliquam_diam_Sed_porttitor_eget_lorem_at_mollis_'
+            'Maecenas_metus_diam_sagittis_at_ex_eu_porta_faucibus_'
+            'nulla_Praesent_tempus_nunc_felis_vitae_aliquet_diam_'
+            'pellentesque_at_Aliquam_venenatis_vel_velit_quis_'
+            'sollicitudin_Ut_sit_amet_nisi_a_ante_congue_tincidunt_'
+            'at_sit_amet_elit_Etiam_pharetra_risus_sed_interdum_mollis'
+            '_Morbi_facilisis_ipsum_non_consectetur_euismod_Donec_'
+            'id_neque_felis_Sed_maximus_rutrum_varius_Phasellus_'
+            'id_dapibus_arcu_Suspendisse_tincidunt_vulputate_nulla_'
+            'ac_elementum_ipsum_dictum_vel_Class_aptent_taciti_'
+            'sociosqu_ad_litora_torquent_per_conubia_'
+            'nostra_per_inceptos_himenaeos')
+        res = utils.get_meme(top, "Bottom")
+        assert res == 'Caption is too long, min < 100 words'
+
+    def test_bottom_too_long(self):
+        bottom = (
+            'Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing'
+            '_elit_Proin_nec_massa_tempus_blandit_ipsum_eget_'
+            'aliquam_diam_Sed_porttitor_eget_lorem_at_mollis_'
+            'Maecenas_metus_diam_sagittis_at_ex_eu_porta_faucibus_'
+            'nulla_Praesent_tempus_nunc_felis_vitae_aliquet_diam_'
+            'pellentesque_at_Aliquam_venenatis_vel_velit_quis_'
+            'sollicitudin_Ut_sit_amet_nisi_a_ante_congue_tincidunt_'
+            'at_sit_amet_elit_Etiam_pharetra_risus_sed_interdum_mollis'
+            '_Morbi_facilisis_ipsum_non_consectetur_euismod_Donec_'
+            'id_neque_felis_Sed_maximus_rutrum_varius_Phasellus_'
+            'id_dapibus_arcu_Suspendisse_tincidunt_vulputate_nulla_'
+            'ac_elementum_ipsum_dictum_vel_Class_aptent_taciti_'
+            'sociosqu_ad_litora_torquent_per_conubia_'
+            'nostra_per_inceptos_himenaeos')
+        res = utils.get_meme("top", bottom)
+        assert res == 'Caption is too long, min < 100 words'
+
+
+class TestLoremIpsum:
+    def test_get_loripsum(self):
+        try:
+            res = utils.call_lorem_ipsum()
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+
+class TestXkcd:
+    def test_xkcd(self):
+        res = utils.xkcd.Comic.get_latest_comic()
+
+        assert res is not None
+
+    def test_fetch(self):
+        res = utils.fetch_latest_xkcd()
+
+        assert res is not None
+
+
+class TestYelKomputer:
     def test_yelkomputer(self):
         yelkomputer = (
             'Komputer!\n\n'
