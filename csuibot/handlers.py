@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, define_sound
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -57,12 +57,11 @@ def soundcliphelp(message):
 
 @bot.message_handler(regexp=r'^/soundclip [a-z A-Z]*$')
 def soundclip(message):
-    title = message.text.split(' ', 1)
-    soundtitle = title[1].replace(' ', '_')
+    soundtitle = define_sound(message.text.lower())
 
     try:
-        soundclip = 'soundclip/' + soundtitle + '.wma'
+        soundclip = open(soundtitle, 'rb')
     except:
         bot.reply_to(message, 'Sound clip not found')
     else:
-        bot.reply_to(message, soundclip)
+        bot.send_audio(message, soundclip);

@@ -207,17 +207,17 @@ class TestZodiac:
         assert res == 'Unknown zodiac'
 
 class TestSoundEffect:
-    def test_laugh_tom(self):
-        res = utils.lookup_sound_effects("tom_laugh")
-        assert res == 'soundclip/tom_laugh.wma'
+    def test_tom_scream(self):
+        res = utils.define_sound("/soundclip tom scream")
+        assert res == 'soundclip/tom_scream.mp3'
 
-    def test_scream(self):
-        res = utils.lookup_sound_effects("scream")
-        assert res == 'soundclip/scream.wma'
+    def test_wilhelm(self):
+        res = utils.define_sound("/soundclip wilhelm")
+        assert res == 'soundclip/wilhelm.mp3'
 
     def test_laugh_jerry(self):
-        res = utils.lookup_sound_effects("laugh_jerry")
-        assert res == 'soundclip/laugh_jerry.wma'
+        res = utils.define_sound("/soundclip tom pain")
+        assert res == 'soundclip/tom_pain.mp3'
 
 
 class TestChineseZodiac:
