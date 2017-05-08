@@ -1,8 +1,10 @@
 import requests
 import re
 from . import app, bot
-from .utils import (lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer,
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
+                    call_lorem_ipsum, lookup_yelkomputer,
                     convert_hex2rgb, fetch_latest_xkcd)
+from requests.exceptions import ConnectionError
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -58,7 +60,7 @@ def colour(message):
         rgb = convert_hex2rgb(hex_str)
     except ValueError:
         bot.reply_to(message, 'Invalid command. '
-                     'Please use either /color #HEXSTR or /colour #HEXSTR')
+                              'Please use either /color #HEXSTR or /colour #HEXSTR')
     except requests.exceptions.ConnectionError:
         bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
     except requests.exceptions.HTTPError:
@@ -71,6 +73,28 @@ def colour(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/is_palindrome (.*)$')
+def is_palindrome(message):
+    app.logger.debug("'is_palindrome' command detected")
+    try:
+        palindrome = check_palindrome(message)
+    except ValueError:
+        bot.reply_to(message, 'You can only submit a word')
+    else:
+        bot.reply_to(message, palindrome)
+
+
+@bot.message_handler(regexp=r'^/loremipsum$')
+def loremipsum(message):
+    app.logger.debug("'loremipsum' command detected")
+    try:
+        loripsum = call_lorem_ipsum()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to loripsum.net API')
+    else:
+        bot.reply_to(message, loripsum)
 
 
 @bot.message_handler(regexp=r'^/xkcd$')

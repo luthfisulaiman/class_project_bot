@@ -5,7 +5,7 @@ class Comic:
 
     # Return alt text and img url of an xkcd comic
     @classmethod
-    def get_latest_comic(self):
+    def get_latest_comic(cls):
         # Use xkcd JSON API
         r = requests.get('https://xkcd.com/info.0.json')
         # Check the response status
