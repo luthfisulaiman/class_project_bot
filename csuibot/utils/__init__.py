@@ -1,3 +1,4 @@
+from csuibot.utils import meme
 from csuibot.utils import (zodiac as z, palindrome as p,
                            loremipsum as li, hex2rgb as h, xkcd as x)
 from csuibot.utils import yelkomputer
@@ -45,6 +46,19 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def get_meme(top, bottom):
+    generator = meme.MemeGenerator()
+    generator.createid()
+    try:
+        generator.createtop(top)
+        generator.createbottom(bottom)
+    except ValueError:
+        return 'Caption is too long, min < 100 words'
+    else:
+        dank = generator.generatememe()
+        return dank.getimage()
 
 
 def check_palindrome(message):
