@@ -46,7 +46,8 @@ def shio(message):
 @bot.message_handler(regexp=r'^triviaplant')
 def plant_trivia(message):
     try:
-        msg = data_processor.fetch_user_input(message)
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
@@ -56,7 +57,8 @@ def plant_trivia(message):
 @bot.message_handler(regexp=r'^askplant')
 def plant_ask(message):
     try:
-        msg = data_processor.fetch_user_input(message)
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
