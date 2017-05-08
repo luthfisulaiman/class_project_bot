@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z, hex2rgb as h
+from csuibot.utils import zodiac as z, hex2rgb as h, xkcd as x
 from csuibot.utils import yelkomputer
 
 
@@ -44,6 +44,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def fetch_latest_xkcd():
+    return x.Comic.get_latest_comic()
 
 
 def convert_hex2rgb(hex_str):

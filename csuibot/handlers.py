@@ -1,7 +1,8 @@
 import requests
 import re
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer, convert_hex2rgb
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, lookup_yelkomputer,
+                    convert_hex2rgb, fetch_latest_xkcd)
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -70,6 +71,23 @@ def colour(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/xkcd$')
+def xkcd(message):
+    app.logger.debug("'xkcd' command detected")
+    try:
+        comic = fetch_latest_xkcd()
+    except ValueError:
+        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, comic)
 
 
 @bot.message_handler(commands=['yelkomputer'])

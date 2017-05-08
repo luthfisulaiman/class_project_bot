@@ -2,7 +2,7 @@ import requests
 
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, yelkomputer, colour
+from csuibot.handlers import help, zodiac, shio, yelkomputer, colour, xkcd
 
 
 def test_help(mocker):
@@ -63,6 +63,69 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_fetch_latest_xkcd(mocker):
+    fake_xkcd = 'fake alt, fake img'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd', return_value=fake_xkcd)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd
+
+
+def test_fetch_latest_xkcd_invalid(mocker):
+    fake_xkcd_invalid = 'Command is invalid. You can only use "/xkcd" command.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd', side_effect=ValueError)
+    mock_message = Mock(text='/xkcd 123123')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_invalid
+
+
+def test_fetch_latest_xkcd_connection_error(mocker):
+    fake_xkcd_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_error
+
+
+def test_fetch_latest_xkcd_http_error(mocker):
+    fake_xkcd_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_error
+
+
+def test_fetch_latest_xkcd_error(mocker):
+    fake_xkcd_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_latest_xkcd',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/xkcd')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_xkcd_error
 
 
 def test_colour(mocker):
