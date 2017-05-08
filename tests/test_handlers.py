@@ -63,22 +63,34 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
-def test_chuck_success(mocker):
-    fake_joke = 'foo bar'
+def test_chuck(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck', return_value=fake_joke)
+    mocker.patch('csuibot.handlers.chuck')
     mock_message = Mock(text='/chuck')
 
     chuck(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1]
+    assert "Chuck Norris" in args[1]
 
 def test_chuck_connection_error(mocker):
     fake_error = 'Chuck Norris doesn\'t need internet connection to connect to ICNDb API, too bad you\'re not him'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck', side_effect=ConnectionError)
+    mocker.patch('csuibot.handlers.chuck',
+                 side_effect=ConnectionError)
     mock_message = Mock(text='/chuck')
+
+    chuck(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_chuck_with_args(mocker):
+    fake_error = 'Command /chuck doesn\'t need any arguments'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck args')
 
     chuck(mock_message)
 

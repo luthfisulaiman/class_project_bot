@@ -257,7 +257,7 @@ class TestChineseZodiac:
 class TestChuck:
     def test_get_chuck(self):
         try:
-            rest = utils.chuck()
+            res = utils.get_chuck('/chuck')
         except ConnectionError:
             pass
         else:
