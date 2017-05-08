@@ -1,7 +1,7 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import message_dist as md
 from csuibot.utils import yelkomputer
-
+import datetime
 
 def lookup_zodiac(month, day):
 
@@ -47,21 +47,29 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def lookup_message_dist(group_id):
-    m = md.MessageDist()
-    result = m.get_message_dist(group_id)
-    message_dist = ''
+def lookup_message_dist(chat_id):
+    message_dist = md.get_message_dist()
+    message_dist_text = ''
+    total_message = 0
 
-    if result is None:
-        return "Connection error"
-    for key, value in result.items():
-        message_dist += '{} -> {} \n'.format(key, value['percentage'])
-    if message_dist == '':
-        message_dist = 'Unknown error'
-    return message_dist
+    for hour in range(0, 24):
+        total_message += message_dist['dist'][str(chat_id)][str(hour)]
+
+    for hour in range(0, 24):
+        try:
+            percent_at_specified_hour = float(message_dist['dist'][str(chat_id)][str(hour)] * 100.0) / total_message
+        except ZeroDivisionError:
+            percent_at_specified_hour = 0.0
+        message_dist_text += '{} -> {}%\n'.format(str(hour).zfill(2), str(round(percent_at_specified_hour, 2)))
+
+    return message_dist_text
+
+def add_message_dist(chat_id, hour):
+    md.add_message_to_dist(chat_id, hour)
 
 def lookup_yelkomputer(message_text):
     if message_text == '/yelkomputer':
         return yelkomputer.YelKomputer.get_yel_komputer()
     else:
         raise ValueError('Command /yelkomputer doesn\'t need any arguments')
+

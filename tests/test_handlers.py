@@ -62,13 +62,18 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 def test_message_dist(mocker):
-    fake_message_dist = 'foo bar'
+    actual_dist = {'dist': {}}
+    actual_dist['dist'][str(0)] = {}
+    for i in range(0, 24):
+        actual_dist['dist'][str(0)][str(i)] = 0
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_message_dist', return_value=fake_message_dist)
-    mock_message = Mock(text='/messagedit')
+    mocker.patch('csuibot.handlers.lookup_message_dist', return_value=actual_dist)
+    mock_message = Mock(text='/message_dist')
+
     message_dist(mock_message)
-    args = mocked_reply_to.call_args
-    assert args is not None
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == actual_dist
 
 def test_yelkomputer(mocker):
     fake_yelkomputer = 'foo bar'
