@@ -71,4 +71,4 @@ def soundclip(message):
     except FileNotFoundError:
         bot.reply_to(message, 'Sound clip not found')
     else:
-        bot.send_audio(message.chat.id, soundclip)
+        bot.send_voice(message.chat.id, soundclip)
