@@ -70,7 +70,7 @@ def test_tree(mocker):
     newick_tree(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1]  == 3
+    assert args[1] == 3
 
 
 def test_tree_empty_value(mocker):
@@ -101,6 +101,7 @@ def test_tree_invalid_command(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Invalid command'
+
 
 def test_tree_with_weight(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

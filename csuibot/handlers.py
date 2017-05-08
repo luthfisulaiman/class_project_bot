@@ -55,7 +55,7 @@ def newick_tree(message):
     except ValueError:
         bot.reply_to(message, 'Invalid tree format')
     else:
-        if cmd1=='/tree' and cmd2=='height':
+        if cmd1 == '/tree' and cmd2 == 'height':
             match = re.match(r"\(?[A-z0-9:.,()]*\)?[A-z0-9:.]+\;", newicktree)
             if match:
                 tree_height = get_height(newicktree)

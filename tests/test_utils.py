@@ -257,14 +257,14 @@ class TestChineseZodiac:
 
 class TestTree:
 
-    def test_tree_height_root(tree):
+    def test_tree_height_root(self):
         res = utils.get_height('F;')
         assert res == 1
 
-    def test_tree_height_with_children(tree):
+    def test_tree_height_with_children(self):
         res = utils.get_height('(A,B)C;')
         assert res == 2
 
-    def test_tree_narry(tree):
+    def test_tree_narry(self):
         res = utils.get_height('(A,B,(C,D)E)F;')
         assert res == 3
