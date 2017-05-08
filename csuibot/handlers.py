@@ -1,6 +1,7 @@
 import requests
 import re
 from . import app, bot
+from .utils import make_hipster
 from .utils import get_meme
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer,
@@ -46,6 +47,14 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/hipsteripsum [0-9]{1,3}$')
+def hipsteripsum(message):
+    app.logger.debug("'hipsteripsum' command detected")
+    _, paras_str = message.text.split(' ')
+    hipster = make_hipster(int(paras_str))
+    bot.reply_to(message, hipster)
 
 
 @bot.message_handler(regexp=r'^/meme \S{1,} \S{1,}$')

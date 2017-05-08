@@ -1,3 +1,4 @@
+from csuibot.utils import hipster as hp
 from csuibot.utils import meme
 from csuibot.utils import (zodiac as z, palindrome as p,
                            loremipsum as li, hex2rgb as h, xkcd as x)
@@ -46,6 +47,15 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def make_hipster(paras):
+    generator = hp.HipsterGenerator()
+
+    try:
+        return generator.generate(paras)
+    except ValueError:
+        return 'Number of paragraph exceed the limit'
 
 
 def get_meme(top, bottom):

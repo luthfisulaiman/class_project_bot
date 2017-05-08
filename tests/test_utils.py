@@ -254,6 +254,27 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestHipster():
+
+    def test_make_one_paragraph(self):
+        res = utils.make_hipster(1)
+        length = res.count("\n")
+        assert length == 0
+
+    def test_make_four_paragraph(self):
+        res = utils.make_hipster(4)
+        length = res.count("\n")
+        assert length == 3
+
+    def test_nums_zero(self):
+        res = utils.make_hipster(0)
+        assert res == 'Number of paragraph exceed the limit'
+
+    def test_nums_hundred(self):
+        res = utils.make_hipster(100)
+        assert res == 'Number of paragraph exceed the limit'
+
+
 class TestMeme:
 
     def test_success(self):

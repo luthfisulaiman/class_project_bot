@@ -1,6 +1,8 @@
 import requests
 
 from unittest.mock import Mock
+
+from csuibot.handlers import hipsteripsum
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme)
 from requests.exceptions import ConnectionError
@@ -64,6 +66,30 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_hipster_valid(mocker):
+    fake_paragraph = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.make_hipster', return_value=fake_paragraph)
+    mock_message = Mock(text='/hipsteripsum 3')
+
+    hipsteripsum(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_paragraph
+
+
+def test_hipster_paragraph(mocker):
+    fake_paragraph = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.make_hipster', return_value=fake_paragraph)
+    mock_message = Mock(text='/hipsteripsum 100')
+
+    hipsteripsum(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_paragraph
 
 
 def test_meme_valid(mocker):
