@@ -206,6 +206,7 @@ class TestZodiac:
 
         assert res == 'Unknown zodiac'
 
+
 class TestSoundEffect:
     def test_tom_scream(self):
         res = utils.define_sound("/soundclip tom scream")

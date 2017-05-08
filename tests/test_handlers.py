@@ -28,18 +28,30 @@ def test_zodiac(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_zodiac
 
-"""
-def test_soundclip(mocker):
-    fake_soundclip = 'soundclip/jerry_sings.mp3'
+
+def test_invalidsound(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.define_sound', return_value=fake_soundclip)
-    mock_message = Mock(text='/soundclip jerry sings')
+    mocker.patch('csuibot.handlers.soundclip', side_effect=FileNotFoundError)
+    mock_message = Mock(text='/soundclip jerry')
 
     soundclip(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_soundclip #this is a test
-"""
+    assert args[1] == 'Sound clip not found'
+
+
+def test_soundclip(mocker):
+    directory = 'soundclip/wilhelm.mp3'
+    fake_soundclip = open(directory, 'rb')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_audio')
+    mocker.patch('csuibot.handlers.define_sound', return_value=directory)
+    mock_message = Mock(text='/soundclip wilhelm')
+
+    soundclip(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1].name is fake_soundclip.name
+
 
 def test_soundcliphelp(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -50,7 +62,13 @@ def test_soundcliphelp(mocker):
     args, _ = mocked_reply_to.call_args
     expected_text = (
         'SOUNDCLIPS!\n\n'
-        'Get help!'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
     )
     assert args[1] == expected_text
 

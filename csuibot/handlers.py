@@ -45,14 +45,19 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
+
 @bot.message_handler(regexp=r'^/soundhelp$')
 def soundcliphelp(message):
     app.logger.debug("'about' command detected")
     about_text = (
         'SOUNDCLIPS!\n\n'
-        'Get help!\n\n'
-        'Wooooo'
-        'Muhammad Faiz - Capung,2015'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
     )
     bot.reply_to(message, about_text)
 
@@ -63,6 +68,7 @@ def soundclip(message):
 
     try:
         soundclip = open(soundtitle, 'rb')
-        bot.send_audio(message.chat.id, soundclip);
-    except:
+    except FileNotFoundError:
         bot.reply_to(message, 'Sound clip not found')
+    else:
+        bot.send_audio(message.chat.id, soundclip)
