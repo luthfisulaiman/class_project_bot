@@ -30,7 +30,7 @@ class notifTaker:
         detailJadi = self.olahDetail(detailedSoup)
         infoJadi = self.olahInfo(info)
         postJadi = self.olahPost(post, flagNavString)
-        print(self.makeNotifReport(subject, infoJadi, postJadi, detailJadi))
+        return self.makeNotifReport(subject, infoJadi, postJadi, detailJadi)
 
     def olahDetail(self, soup):
         outerContainer = soup.select('td.topic.starter')[:5]
