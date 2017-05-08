@@ -5,8 +5,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
-                    lookup_define, lookup_kelaskata)
-
+                    lookup_define, lookup_kelaskata, call_composer)
 from requests.exceptions import ConnectionError
 
 
@@ -158,6 +157,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+<<<<<<< HEAD
 @bot.message_handler(regexp=r'^/define (.*)$')
 def define(message):
     app.logger.debug("'define' command detected")
@@ -241,3 +241,19 @@ def yelkomputer(message):
         bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
     else:
         bot.reply_to(message, yelkomputer)
+
+
+@bot.message_handler(regexp=r'^\/sound_composer \w+$')
+def composer(message):
+    app.logger.debug("'sound_composer' command detected")
+    _, username = message.text.split(' ')
+    app.logger.debug('username = {}'.format(username))
+
+    try:
+        track = call_composer(username)
+    # except ValueError: cannot try fetching from SoundCloud API
+    #     bot.reply_to(message, 'Username not found')
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Soundcloud API')
+    else:
+        bot.reply_to(message, track)

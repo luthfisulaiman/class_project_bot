@@ -1,10 +1,14 @@
 import requests
 
+<<<<<<< HEAD
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata)
+=======
+from csuibot.handlers import help, zodiac, shio, composer
+>>>>>>> story-#37-soundcloud
 from requests.exceptions import ConnectionError
 
 
@@ -68,6 +72,7 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
+<<<<<<< HEAD
 def test_define(mocker):
     fake_define = 'a precious stone consisting of a clear and colourless'
     fake_define += ' crystalline form of pure carbon,'
@@ -524,3 +529,46 @@ def test_yelkomputer_with_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Command /yelkomputer doesn\'t need any arguments'
+
+
+def test_composer(mocker):
+    fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'iamlione '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'iamlione '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'iamlione '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'iamlione'\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+                      'The Chainsmokers - Closer (LIONE Remix) '\
+                      '4:45 '\
+                      'iamlione '\
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_composer', return_value=fake_track_info)
+    mock_message = Mock(text='/sound_composer iamlione')
+
+    composer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_track_info
+
+
+def test_composer_no_connection(mocker):
+    fake_error = 'Error connecting to Soundcloud API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_composer', side_effect=ConnectionError)
+    mock_message = Mock(text='/sound_composer iamlione')
+
+    composer(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error

@@ -1,9 +1,8 @@
+
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
-                           define as d)
-from csuibot.utils import yelkomputer
-
+                           define as d, yelkomputer, soundcomposer as sc)
 
 def lookup_zodiac(month, day):
     zodiacs = [
@@ -49,6 +48,7 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
+<<<<<<< HEAD
 def lookup_define(word):
     if(not word):
         raise ValueError('Command /define need an argument')
@@ -127,3 +127,8 @@ def lookup_yelkomputer(message_text):
         return yelkomputer.YelKomputer.get_yel_komputer()
     else:
         raise ValueError('Command /yelkomputer doesn\'t need any arguments')
+
+
+def call_composer(username):
+    return sc.SoundComposer(username).get_composer()
+

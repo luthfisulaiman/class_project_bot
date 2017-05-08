@@ -1,7 +1,6 @@
 from csuibot import utils
 import re
 from requests.exceptions import ConnectionError
-
 import requests
 
 
@@ -426,6 +425,14 @@ class TestLoremIpsum:
     def test_get_loripsum(self):
         try:
             res = utils.call_lorem_ipsum()
+
+
+class TestSoundComposer:
+    def test_get_track(self):
+        try:
+            res = utils.call_composer('iamlione')
+        except ValueError:
+            pass
         except ConnectionError:
             pass
         else:
