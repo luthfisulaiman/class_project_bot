@@ -257,6 +257,36 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestDefine:
+
+    def test_define_diamond(self):
+        res = utils.lookup_define('diamond')
+        result = 'a precious stone consisting of a clear and colourless'
+        result += ' crystalline form of pure carbon,'
+        result += ' the hardest naturally occurring substance'
+        assert res == result
+
+    def test_define_read(self):
+        res = utils.lookup_define('read')
+        result = 'look at and comprehend the meaning of (written or'
+        result += ' printed matter) by interpreting the'
+        result += ' characters or symbols of which it is composed'
+        assert res == result
+
+    def test_define_value_error(self):
+        utils.lookup_define('/define')
+
+    def test_define_contains_num(self):
+        res = utils.lookup_define('r34d')
+        assert res == 'r34d contains number'
+
+    def test_define_page_not_found(self):
+        try:
+            utils.lookup_define('/define akugantengsekali')
+        except requests.HTTPError as e:
+            assert str(e) == ('"akugantengsekali" is not an english word')
+
+
 class TestKelaskata:
 
     def run_test(self, word, expected):
