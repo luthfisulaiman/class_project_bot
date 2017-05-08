@@ -13,7 +13,7 @@ itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
 mccabe==0.6.1
-numpy==1.12.1+mkl
+numpy==1.11.0
 packaging==16.8
 pep8==1.5.7
 pep8-naming==0.3.3
