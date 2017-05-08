@@ -46,9 +46,11 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def remind_me(minutes, text):
-    second = int(minutes) * 60
-    while(second > 0):
+def remind_me(second, text):
+    s = int(second)
+    if(s > 30):
+        raise Exception
+    while(s > 0):
         time.sleep(1)
-        second -= 1
+        s -= 1
     return text

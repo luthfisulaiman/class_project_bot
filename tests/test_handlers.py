@@ -65,21 +65,33 @@ def test_shio_invalid_year(mocker):
 
 def test_remind_valid_input(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/remindme 1 WakeUp')
+    mock_message = Mock(text='/remindme 15 WakeUp')
 
     remind(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'WakeUp'
 
+
 def test_remind_valid_input_more(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/remindme 1 WakeUp Cmon')
+    mock_message = Mock(text='/remindme 15 WakeUp Cmon')
 
     remind(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'WakeUp Cmon'
+
+
+def test_remind_more_than_thirty(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/remindme 45 WakeUp')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please input from range 0-29 only'
+
 
 def test_remind_invalid_input(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

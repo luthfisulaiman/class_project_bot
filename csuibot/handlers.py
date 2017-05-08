@@ -57,13 +57,15 @@ def remind(message):
             text += time_str[i]
         else:
             text += time_str[i] + " "
-        i+=1
+        i += 1
     try:
         bot.reply_to(message, "You have a new reminder in " + time_str[1] + " minutes")
         app.logger.debug(time_str[1])
         reply_text = remind_me(time_str[1], text)
         app.logger.debug(time_str[1])
     except ValueError:
-        bot.reply_to(message, "Invalid time input, only positive integer accepted.")            
+        bot.reply_to(message, "Invalid time input, only positive integer accepted.")
+    except Exception:
+        bot.reply_to(message, "Please input from range 0-29 only")
     else:
         bot.reply_to(message, reply_text)
