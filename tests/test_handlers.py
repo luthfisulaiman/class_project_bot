@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, discretemath as dm
+from csuibot.handlers import help, zodiac, shio, get_discrete_material as dm
 
 
 def test_help(mocker):

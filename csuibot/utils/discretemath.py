@@ -7,8 +7,8 @@ import json
 class DiscreteMath:
 
     def get_discrete_material(query):
-        with open('/app/csuibot/utils/discretemath.json') as file:
-            data = json.load(file)
+        with open('/app/csuibot/utils/discretemath.json') as data_file:
+            data = json.load(data_file)
 
         try:
             selected_data = data['terminologies'][query]
