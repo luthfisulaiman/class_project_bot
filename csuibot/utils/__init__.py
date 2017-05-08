@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, hex2rgb as h
 from csuibot.utils import yelkomputer
 
 
@@ -44,6 +44,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def convert_hex2rgb(hex_str):
+    return h.Hex2RGB(hex_str).convert()
 
 
 def lookup_yelkomputer(message_text):

@@ -1,6 +1,8 @@
+import requests
+
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, yelkomputer
+from csuibot.handlers import help, zodiac, shio, yelkomputer, colour
 
 
 def test_help(mocker):
@@ -61,6 +63,67 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_colour(mocker):
+    pure_red = 'RGB(255, 0, 0)'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/colour #ff0000')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == pure_red
+
+
+def test_colour_invalid(mocker):
+    rgb_invalid = 'Invalid command. Please use either /color #HEXSTR or /colour #HEXSTR'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/colour #123qwe')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == rgb_invalid
+
+
+def test_colour_connection_error(mocker):
+    fake_colour_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_colour_http_error(mocker):
+    fake_colour_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
+
+
+def test_colour_error(mocker):
+    fake_colour_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.convert_hex2rgb',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/colour #123456')
+
+    colour(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_colour_error
 
 
 def test_yelkomputer(mocker):
