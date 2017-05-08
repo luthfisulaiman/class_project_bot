@@ -6,7 +6,7 @@ from .utils import lookup_zodiac, lookup_chinese_zodiac, call_discrete_material
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
-        'CSUIBot v0.0.1\n\n'
+        'CSUIBot v0.0.3\n\n'
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     bot.reply_to(message, about_text)
