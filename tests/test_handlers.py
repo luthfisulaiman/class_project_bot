@@ -67,23 +67,23 @@ def test_shio_invalid_year(mocker):
 def test_composer(mocker):
     fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
-                      'LIONE '\
+                      'iamlione '\
                       'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
                       'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
-                      'LIONE '\
+                      'iamlione '\
                       'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
                       'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
-                      'LIONE '\
+                      'iamlione '\
                       'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
                       'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
-                      'LIONE '\
+                      'iamlione'\
                       'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
                       'The Chainsmokers - Closer (LIONE Remix) '\
                       '4:45 '\
-                      'LIONE '\
+                      'iamlione '\
                       'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
