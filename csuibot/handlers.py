@@ -51,6 +51,7 @@ def soundcliphelp(message):
     about_text = (
         'SOUNDCLIPS!\n\n'
         'Get help!'
+        'Wooooo'
     )
     bot.reply_to(message, about_text)
 
