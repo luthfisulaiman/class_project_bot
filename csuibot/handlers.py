@@ -42,7 +42,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/yelfasilkom')
+@bot.message_handler(commands=['yelfasilkom'])
 def yelfasilkom(message):
     app.logger.debug("'yelfasilkom' command detected")
 
