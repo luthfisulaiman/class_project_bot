@@ -1,3 +1,6 @@
+    #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import json
 
 class DiscreteMath:
@@ -21,7 +24,7 @@ class DiscreteMath:
 
 
         	message = \
-        		'course: {}\n terminology: {}\n definition: {}\n example: {}\n reference: {}\n problem: {}'.format(
+        	   'course: {}\n terminology: {}\n definition: {}\n example: {}\n reference: {}\n problem: {}'.format(
         			course, termin, definition, example, reference, problem)
         	return message
     print("done")
