@@ -4,16 +4,16 @@
 	{
 		"number theory":
 		{
-			"definition":"Misalkan a dan b adalah bilangan bulat dengan a != 0, maka a dikatakan membagi b (ditulis a | b) jika ada sebuah bilangan bulat c sehingga b = ac",
-			"example": "5 | 100 == 5 membagi 100 (100 = 5 * 20)",
-			"ref": "Slide_MD2_1_Teori Bilangan-rev24Feb17",
-			"problem": "Apakah 33 | 166?"
+			"Definition":"Misalkan a dan b adalah bilangan bulat dengan a != 0, maka a dikatakan membagi b (ditulis a | b) jika ada sebuah bilangan bulat c sehingga b = ac",
+			"Example": "5 | 100 == 5 membagi 100 (100 = 5 * 20)",
+			"Ref": "Slide_MD2_1_Teori Bilangan-rev24Feb17",
+			"Problem": "Apakah 33 | 166?"
 		},
 		"gcd":
 		{
-			"definition":"Misalkan a dan b bilangan bulat dimana setidaknya salah satunya bukan 0, maka bilangan bulat terbesar d yang memenuhi d | a dan d | b disebut greatest common divisor (gcd) ditulis gcd(a, b)",
-			"example":"GCD(24, 36) = 12",
-			"ref":"Slide_MD2_1_Teori Bilangan-rev24Feb17",
+			"Definition":"Misalkan a dan b bilangan bulat dimana setidaknya salah satunya bukan 0, maka bilangan bulat terbesar d yang memenuhi d | a dan d | b disebut greatest common divisor (gcd) ditulis gcd(a, b)",
+			"Example":"GCD(24, 36) = 12",
+			"Ref":"Slide_MD2_1_Teori Bilangan-rev24Feb17",
 			"problem":"Berapakah gcd(5, 150)"
 		},
 		"lcm":
@@ -37,12 +37,19 @@
 			"ref": "Slide_MD2_3a_Relasi",
 			"problem": "Misal A = {1, 2, 3} dan B = {a ,s, d, f}. Apa A x B?"
 		},
-		"domain dan range":
+		"domain":
 		{
-			"definition":"Domain adalah daerah awal relasi, Range adalah Daerah jelajah relasi",
-			"example":"Misal p ={ (0,0), (1,1), (4,2), (9,3) }. Dom.p = {0, 1, 4, 9}; Range.p = {0, 1, 2, 3}",
+			"definition":"Domain adalah daerah awal relasi",
+			"example":"Misal p ={ (0,0), (1,1), (4,2), (9,3) }. Dom.p = {0, 1, 4, 9}",
 			"ref": "Slide_MD2_3a_Relasi",
-			"problem": "Misal p = { (0,1), (1,2), (4,3), (9,2) }, tentukan Dom.p dan Range.p!"
+			"problem": "Misal p = { (0,1), (1,2), (4,3), (9,2) }, tentukan Dom.p!"
+		},
+		"range":
+		{
+			"definition":"Range adalah Daerah jelajah relasi",
+			"example":"Misal p ={ (0,0), (1,1), (4,2), (9,3) }. Range.p = {0, 1, 2, 3}",
+			"ref": "Slide_MD2_3a_Relasi",
+			"problem": "Misal p = { (0,1), (1,2), (4,3), (9,2) }, Range.p!"
 		}
 	}
 }
