@@ -1,14 +1,9 @@
 import requests
-
-<<<<<<< HEAD
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata)
-=======
-from csuibot.handlers import help, zodiac, shio, composer
->>>>>>> story-#37-soundcloud
+                              kelaskata, composer)
 from requests.exceptions import ConnectionError
 
 
