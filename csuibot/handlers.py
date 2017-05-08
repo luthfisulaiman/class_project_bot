@@ -44,7 +44,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/bot ip$')
+@bot.message_handler(regexp=r'^/bot')
 def ip(message):
     app.logger.debug("'bot' command detected")
     try:
