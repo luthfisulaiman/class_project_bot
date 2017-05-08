@@ -46,7 +46,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/tellme .*$')
+@bot.message_handler(regexp=r'^\/tellme .+$')
 def get_discrete_material(message):
     app.logger.debug("tellme detected")
     queryLower = message.lower()
