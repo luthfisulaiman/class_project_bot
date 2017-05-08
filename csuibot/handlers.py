@@ -63,6 +63,6 @@ def soundclip(message):
 
     try:
         soundclip = open(soundtitle, 'rb')
-        bot.send_voice(message.chat.id, soundclip);
+        bot.send_audio(message.chat.id, soundclip);
     except:
         bot.reply_to(message, 'Sound clip not found')
