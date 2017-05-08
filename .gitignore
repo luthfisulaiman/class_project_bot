@@ -64,3 +64,6 @@ tags
 
 # OSX stuff
 .DS_Store
+
+# Notes for story-9
+notes.json
