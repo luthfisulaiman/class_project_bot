@@ -62,9 +62,10 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_remind_valid_input(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', return_value='WakeUp')
+    mocker.patch('csuibot.handlers.remind_me', return_value='WakeUp')
     mock_message = Mock(text='/remindme 1 WakeUp')
 
     remind(mock_message)
@@ -72,10 +73,11 @@ def test_remind_valid_input(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'WakeUp'
 
-def test_remind_invalid_input(mocker) :
+
+def test_remind_invalid_input(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', side_effect=ValueError)
-    mock_message = Mock(text='/shio sial sial')
+    mocker.patch('csuibot.handlers.remind_me', side_effect=ValueError)
+    mock_message = Mock(text='/remindme sial sial')
 
     remind(mock_message)
 

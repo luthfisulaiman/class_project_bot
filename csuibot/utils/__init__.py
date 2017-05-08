@@ -44,6 +44,6 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def remind_me(time, message) :
+
+def remind_me(time, message):
     return rm.Reminder(time, message).remind_text()
-    
