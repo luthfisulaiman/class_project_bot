@@ -44,19 +44,19 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/password (.*)$')
-def password(message):
-    app.logger.debug("'password' command detected")
-    length = message.text[10:]
-    app.logger.debug("requested length is {}".format(length))
-    password_helper(message, length)
-
-
 @bot.message_handler(regexp=r'^/password$')
 def password_16(message):
     app.logger.debug("'password' command detected")
     app.logger.debug("requested length is 16")
     password_helper(message, 16)
+
+
+@bot.message_handler(regexp=r'^/password')
+def password(message):
+    app.logger.debug("'password' command detected")
+    length = message.text[10:]
+    app.logger.debug("requested length is {}".format(length))
+    password_helper(message, length)
 
 
 def password_helper(message, length):
