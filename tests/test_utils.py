@@ -210,19 +210,19 @@ class TestZodiac:
 class TestSoundEffect:
     def test_tom_scream(self):
         res = utils.define_sound("/soundclip tom scream")
-        assert res == 'soundclip/tom_scream.ogg'
+        assert res == 'soundclip/tom_scream.mp3'
 
     def test_wilhelm(self):
         res = utils.define_sound("/soundclip wilhelm")
-        assert res == 'soundclip/wilhelm.ogg'
+        assert res == 'soundclip/wilhelm.mp3'
 
     def test_tom_pain(self):
         res = utils.define_sound("/soundclip tom pain")
-        assert res == 'soundclip/tom_pain.ogg'
+        assert res == 'soundclip/tom_pain.mp3'
 
     def test_goofy(self):
         res = utils.define_sound("/soundclip goofy")
-        assert res == 'soundclip/goofy.ogg'
+        assert res == 'soundclip/goofy.mp3'
 
 
 class TestChineseZodiac:
