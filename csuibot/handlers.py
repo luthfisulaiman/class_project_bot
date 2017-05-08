@@ -6,6 +6,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata)
+
 from requests.exceptions import ConnectionError
 
 

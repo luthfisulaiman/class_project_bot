@@ -1,11 +1,8 @@
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
-                           password as pw, custom_chuck as cc)
+                           password as pw, custom_chuck as cc, kelaskata as k,
+                           define as d)
 from csuibot.utils import yelkomputer
-
-from csuibot.utils import kelaskata as k
-
-from csuibot.utils import define as d
 
 
 def lookup_zodiac(month, day):
