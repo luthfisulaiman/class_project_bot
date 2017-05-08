@@ -157,7 +157,6 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-<<<<<<< HEAD
 @bot.message_handler(regexp=r'^/define (.*)$')
 def define(message):
     app.logger.debug("'define' command detected")

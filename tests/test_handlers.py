@@ -67,7 +67,6 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
-<<<<<<< HEAD
 def test_define(mocker):
     fake_define = 'a precious stone consisting of a clear and colourless'
     fake_define += ' crystalline form of pure carbon,'
