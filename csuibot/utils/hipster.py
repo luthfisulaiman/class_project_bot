@@ -26,17 +26,10 @@ class HipsterGenerator(object):
 
 
 class HipsterRequester(object):
-    class SingletonHR(object):
-        def __init__(self):
+
+    def __init__(self):
             self.url = "http://hipsterjesus.com/api/"
 
-        def make_request(self, task):
-            req = requests.get(self.url, params=task)
-            return req.json()
-
-    instance = None
-
-    def __new__(cls):
-        if not HipsterRequester.instance:
-            HipsterRequester.instance = HipsterRequester.SingletonHR()
-        return HipsterRequester.instance
+    def make_request(self, task):
+        req = requests.get(self.url, params=task)
+        return req.json()
