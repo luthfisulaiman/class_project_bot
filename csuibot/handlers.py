@@ -56,7 +56,7 @@ def password(message):
     app.logger.debug("'password' command detected")
     length = message.text[10:]
     app.logger.debug("requested length is {}".format(length))
-    password_helper(message, length)
+    password_helper(message, int(length))
 
 
 def password_helper(message, length):
