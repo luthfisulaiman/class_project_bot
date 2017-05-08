@@ -44,7 +44,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/chuck \d+ \d+$')
+@bot.message_handler(regexp=r'^/chuck')
 def custom_chuck_joke(message):
     app.logger.debug("'chuck' command detected")
     _, first_name, last_name = message.text.split(' ')
