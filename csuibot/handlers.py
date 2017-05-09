@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
-                    manage_notes, lookup_dayofdate)
+                    manage_notes, lookup_dayofdate, compute)
 from requests.exceptions import ConnectionError
 
 
@@ -254,6 +254,18 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(regexp=r'^/compute ([0-9]+[\/\+\-\*][0-9]+)*$')
+def calculate(message):
+    try:
+        result = compute(message)
+    except NameError:
+        bot.reply_to(message, 'Invalid command, please enter only numbers and operators')
+    except ZeroDivisionError:
+        bot.reply_to(message, 'Cannot divide by zero')
+    else:
+        bot.reply_to(message, result)
+
+
 @bot.message_handler(regexp=r'^\/is_up (.*)$')
 def isUp(message):
     app.logger.debug("'is_up' command detected")
@@ -304,7 +316,7 @@ to start a calculation.''')
 
 
 @bot.message_handler(regexp=r'^\/compute ([01]+(.*)[01]+)$')
-def compute(message):
+def compute_binary(message):
     app.logger.debug("'compute' command detected")
     _, calculate_str = message.text.split(' ')
     try:

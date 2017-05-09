@@ -6,7 +6,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           definisi, note, dayofdate as dod)
+                           compute as co, definisi, note, dayofdate as dod)
 
 
 def lookup_zodiac(month, day):
@@ -186,6 +186,11 @@ def lookup_yelkomputer(message_text):
         return yelkomputer.YelKomputer.get_yel_komputer()
     else:
         raise ValueError('Command /yelkomputer doesn\'t need any arguments')
+
+
+def compute(message):
+    _, text = message.text.split(' ')
+    return co.Compute(text).calculate()
 
 
 def call_composer(username):

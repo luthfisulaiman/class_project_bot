@@ -3,10 +3,13 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, compute, compute_help, compute_not_binary, composer,
+                              kelaskata, compute_binary, calculate,
+                              compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate)
+
 from requests.exceptions import ConnectionError
+
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -209,6 +212,7 @@ def test_remind_valid_input_more(mocker):
 
 
 def test_remind_more_than_thirty(mocker):
+
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/remindme 45 WakeUp')
 
@@ -233,7 +237,7 @@ def test_compute_binary_valid_addtion(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 0011+0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '7'
@@ -243,7 +247,7 @@ def test_compute_binary_valid_subtraction(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 1000-0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '4'
@@ -253,7 +257,7 @@ def test_compute_binary_valid_multiplication(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 0011*0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '12'
@@ -263,7 +267,7 @@ def test_compute_binary_valid_division(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 1000/0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '2'
@@ -295,7 +299,7 @@ def test_compute_invalid_operator(mocker):
     mocker.patch('csuibot.handlers.compute', side_effect=ValueError)
     mock_message = Mock(text='/compute 0101M0111')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == "Operator is invalid, please use '+', '-', '*', or '/'"
@@ -798,6 +802,96 @@ def test_composer_no_connection(mocker):
     mock_message = Mock(text='/sound_composer iamlione')
 
     composer(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_compute_addition(mocker):
+    fake_result = 7
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_substraction(mocker):
+    fake_result = 3
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 10-7')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_multiplication(mocker):
+    fake_result = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4*3')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_division(mocker):
+    fake_result = 10
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 30/3')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_multiple_operator(mocker):
+    fake_result = 3
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3-2*10/5')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_division_by_zero(mocker):
+    fake_error = 'Cannot divide by zero'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
+    mock_message = Mock(text='/compute 3/0')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_compute_single_digit(mocker):
+    fake_error = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 12')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_error_compute(mocker):
+    fake_error = 'Invalid command, please enter only numbers and operators'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=NameError)
+    mock_message = Mock(text='/compute asdf')
+
+    calculate(mock_message)
+
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
 
