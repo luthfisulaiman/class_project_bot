@@ -532,4 +532,3 @@ class TestYelKomputer:
             utils.lookup_yelkomputer('/yelkomputer args')
         except ValueError as e:
             assert str(e) == 'Command /yelkomputer doesn\'t need any arguments'
-

@@ -1,17 +1,11 @@
 import requests
 from unittest.mock import Mock
-<<<<<<< HEAD
-
-from csuibot.handlers import help, zodiac, shio, definisi
-import requests
-=======
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler)
+                              remind, isUp, sceleNoticeHandler, definisi)
 from requests.exceptions import ConnectionError
->>>>>>> 287703f8cd9cb81103ca348f8888f007c29455d6
 
 
 def test_help(mocker):
