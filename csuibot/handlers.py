@@ -54,7 +54,7 @@ def compute_not_binary(message):
 @bot.message_handler(regexp=r'^\/compute help$')
 def compute_help(message):
     bot.reply_to(message, '''Binary Calculator v2.0, use /compute <binary><operand><binary>
-                             to start a calculation.''')
+to start a calculation.''')
 
 
 @bot.message_handler(regexp=r'^\/compute ([01]+(.*)[01]+)$')

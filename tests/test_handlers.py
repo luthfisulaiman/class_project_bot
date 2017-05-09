@@ -121,7 +121,7 @@ def test_compute_help(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '''Binary Calculator v2.0, use /compute <binary><operand><binary>
-                         to start a calculation.'''
+to start a calculation.'''
 
 
 def test_compute_invalid_operator(mocker):
