@@ -6,7 +6,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
-                              dayofdate, invalid_dayofdate, empty_dayofdate)
+                              dayofdate, invalid_dayofdate, empty_dayofdate, chuck)
 
 from requests.exceptions import ConnectionError
 
@@ -932,3 +932,26 @@ def test_dayofdate_no_argument(mocker):
     assert args[1] == ('Incorrect use of dayofdate command. '
                        'Please write a valid date in the form of yyyy-mm-dd, '
                        'such as 2016-05-13')
+
+
+def test_chuck(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck')
+
+    chuck(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert "Chuck" in args[1]
+
+
+def test_chuck_with_args(mocker):
+    fake_error = 'Command /chuck doesn\'t need any arguments'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck args')
+
+    chuck(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error

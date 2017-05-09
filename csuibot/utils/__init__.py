@@ -6,7 +6,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod)
+                           compute as co, definisi, note, dayofdate as dod, chuck)
 
 
 def lookup_zodiac(month, day):
@@ -204,3 +204,10 @@ def lookup_dayofdate(year, month, day):
         return ('Incorrect use of dayofdate command. '
                 'Please write a valid date in the form of yyyy-mm-dd, '
                 'such as 2016-05-13')
+
+
+def get_chuck(message_text):
+    if message_text == "/chuck":
+        return chuck.Chuck().get_chuck()
+    else:
+        raise ValueError('Command /chuck doesn\'t need any arguments')
