@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, funFasilkom
 
 
 def test_help(mocker):
@@ -65,10 +65,9 @@ def test_shio_invalid_year(mocker):
 
 def test_contain_fasilkom(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/saya kuliah di Fasilkom')
+    mock_message = Mock(text='saya kuliah di Fasilkom')
 
     funFasilkom(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Viva, Viva, Viva Fasilkom!'
-
