@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
-                    manage_notes, lookup_dayofdate, compute)
+                    manage_notes, lookup_dayofdate, compute, call_discrete_material)
 from requests.exceptions import ConnectionError
 
 
@@ -16,7 +16,7 @@ from requests.exceptions import ConnectionError
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
-        'CSUIBot v0.0.1\n\n'
+        'CSUIBot v0.0.3\n\n'
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     bot.reply_to(message, about_text)
@@ -266,6 +266,20 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^\/tellme .+$')
+def get_discrete_material(message):
+    app.logger.debug("tellme detected")
+    query = message.text.replace('/tellme ', '')
+    query = query.lower()
+    app.logger.debug('searching for {} in discretematerial'.format(query))
+    try:
+        result = call_discrete_material(query)
+    except ValueError:
+        bot.reply_to(message, "Invalid Value")
+    else:
+        bot.reply_to(message, result)
 
 
 @bot.message_handler(regexp=r'^/compute ([0-9]+[\/\+\-\*][0-9]+)*$')

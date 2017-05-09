@@ -264,6 +264,57 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestDiscreteMaterial:
+
+    def test_number_theory(self):
+        try:
+            res = utils.call_discrete_material('number theory')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_gcd(self):
+        try:
+            res = utils.call_discrete_material('gcd')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_lcm(self):
+        try:
+            res = utils.call_discrete_material('lcm')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_rekurensi(self):
+        try:
+            res = utils.call_discrete_material('relasi rekurensi')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_biner(self):
+        try:
+            res = utils.call_discrete_material('relasi biner')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_domain_range(self):
+        try:
+            res = utils.call_discrete_material('domain dan range')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+
 class TestNotes:
 
     def run_test(self, command, text=''):
@@ -510,8 +561,6 @@ class TestSoundComposer:
     def test_get_track(self):
         try:
             res = utils.call_composer('iamlione')
-        except ValueError:
-            pass
         except ConnectionError:
             pass
         else:

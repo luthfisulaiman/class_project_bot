@@ -6,7 +6,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod, chuck)
+                           compute as co, definisi, note, dayofdate as dod,
+                           chuck, discretemath as dm)
 
 
 def lookup_zodiac(month, day):
@@ -51,6 +52,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def call_discrete_material(query):
+    return dm.DiscreteMath().get_discrete_material(query)
 
 
 def manage_notes(command, text=''):
