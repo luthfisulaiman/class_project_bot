@@ -5,7 +5,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
-                    lookup_define, lookup_kelaskata, call_composer, calculate_binary)
+                    lookup_define, lookup_kelaskata, call_composer, calculate_binary,
+                    remind_me)
 from requests.exceptions import ConnectionError
 
 
@@ -155,6 +156,31 @@ def colour(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^\/remindme (\d+) (.*)$')
+def remind(message):
+    app.logger.debug("'remindme' command detected")
+    time_str = message.text.split(' ')
+    i = 2
+    text = ""
+    while (i < len(time_str)):
+        if(i == (len(time_str)-1)):
+            text += time_str[i]
+        else:
+            text += time_str[i] + " "
+        i += 1
+    try:
+        bot.reply_to(message, "You have a new reminder in " + time_str[1] + " second")
+        app.logger.debug(time_str[1])
+        reply_text = remind_me(time_str[1], text)
+        app.logger.debug(time_str[1])
+    except ValueError:
+        bot.reply_to(message, "Invalid time input, only positive integer accepted.")
+    except Exception:
+        bot.reply_to(message, "Please input from range 0-29 only")
+    else:
+        bot.reply_to(message, reply_text)
 
 
 @bot.message_handler(regexp=r'^\/compute ([^01]+(.*)[^01]+)$')

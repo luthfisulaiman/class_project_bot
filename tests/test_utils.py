@@ -256,6 +256,17 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestReminder:
+
+    def test_reminder_return_text_one_word(self):
+        output = utils.remind_me(0, "Test")
+        assert output == "Test"
+
+    def test_reminder_return_text_more_word(self):
+        output = utils.remind_me(0, "Test more")
+        assert output == "Test more"
+
+
 class TestDefine:
 
     def test_define_diamond(self):

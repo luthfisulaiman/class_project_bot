@@ -3,7 +3,8 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, compute, compute_help, compute_not_binary, composer)
+                              kelaskata, compute, compute_help, compute_not_binary, composer,
+                              remind)
 from requests.exceptions import ConnectionError
 
 
@@ -65,6 +66,47 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_remind_valid_input(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/remindme 15 WakeUp')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'WakeUp'
+
+
+def test_remind_valid_input_more(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/remindme 15 WakeUp Cmon')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'WakeUp Cmon'
+
+
+def test_remind_more_than_thirty(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/remindme 45 WakeUp')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please input from range 0-29 only'
+
+
+def test_remind_invalid_input(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.remind_me', side_effect=ValueError)
+    mock_message = Mock(text='/remindme sial sial')
+
+    remind(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Invalid time input, only positive integer accepted.'
 
 
 def test_compute_binary_valid_addtion(mocker):

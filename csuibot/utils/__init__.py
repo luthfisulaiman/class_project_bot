@@ -1,3 +1,4 @@
+import time
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -47,6 +48,16 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def remind_me(second, text):
+    s = int(second)
+    if(s > 30):
+        raise Exception
+    while(s > 0):
+        time.sleep(1)
+        s -= 1
+    return text
 
 
 def calculate_binary(binA, operand, binB):
