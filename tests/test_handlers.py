@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, compute
+from csuibot.handlers import help, zodiac, shio, compute, compute_help, compute_not_binary
 
 
 def test_help(mocker):
@@ -64,7 +64,6 @@ def test_shio_invalid_year(mocker):
 
 def test_compute_binary_valid_addtion(mocker) :
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.calculate_binary', return_value = '7')
     mock_message = Mock(text='/compute 0011+0100')
 
     compute(mock_message)
@@ -73,7 +72,6 @@ def test_compute_binary_valid_addtion(mocker) :
     assert args[1] == '7'
 def test_compute_binary_valid_subtraction(mocker) :
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.calculate_binary', return_value = '4')
     mock_message = Mock(text='/compute 1000-0100')
 
     compute(mock_message)
@@ -82,7 +80,6 @@ def test_compute_binary_valid_subtraction(mocker) :
     assert args[1] == '4'
 def test_compute_binary_valid_multiplication(mocker) :
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.calculate_binary', return_value = '12')
     mock_message = Mock(text='/compute 0011*0100')
 
     compute(mock_message)
@@ -91,7 +88,6 @@ def test_compute_binary_valid_multiplication(mocker) :
     assert args[1] == '12'
 def test_compute_binary_valid_division(mocker) :
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.calculate_binary', return_value = '2')
     mock_message = Mock(text='/compute 1000/0100')
 
     compute(mock_message)
@@ -101,11 +97,28 @@ def test_compute_binary_valid_division(mocker) :
     
 def test_compute_invalid_input(mocker) :
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.calculate_binary', side_effect=ValueError)
     mock_message = Mock(text='/compute 1234+12311')
+
+    compute_not_binary(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Not a binary number, Please only input binary number on both sides'
+    
+def test_compute_help(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute help')
+
+    compute_help(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Binary Calculator v2.0, use /compute <binary><operand><binary> to start a calculation.'
+
+def test_compute_invalid_operator(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ValueError)
+    mock_message = Mock(text='/compute 0101M0111')
 
     compute(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Not a binary number or operator is invalid!'
-    
+    assert args[1] == "Operator is invalid, please use '+', '-', '*', or '/'"

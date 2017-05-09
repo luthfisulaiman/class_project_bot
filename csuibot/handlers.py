@@ -44,7 +44,7 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
-@bot.message_handler(regexp=r'^\/compute ([^01]+[\/\+\-\*]+[^01]+)$')
+@bot.message_handler(regexp=r'^\/compute ([^01]+(.*)[^01]+)$')
 def compute_not_binary(message):
     bot.reply_to(message, 'Not a binary number, Please only input binary number on both sides')
 

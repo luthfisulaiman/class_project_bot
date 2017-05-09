@@ -8,7 +8,7 @@ class CalculateBinary :
         return self._numA + self._numB
 
     def multiplication(self) :
-        return self._numA * self._numB
+        return self._numA * self._numB  
 
     def subtraction(self) :
         return self._numA - self._numB
