@@ -1,8 +1,4 @@
-from csuibot.utils import zodiac as z
 from csuibot.utils import message_dist as md
-from csuibot.utils import yelkomputer
-import datetime
-
 import json
 import re
 import time
@@ -11,7 +7,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod, chuck)
+                           compute as co, definisi, note, dayofdate as dod,
+                           chuck, discretemath as dm)
 
 
 def lookup_zodiac(month, day):
@@ -58,6 +55,7 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
+
 def lookup_message_dist(chat_id):
     message_dist = md.get_message_dist()
     message_dist_text = ''
@@ -68,15 +66,24 @@ def lookup_message_dist(chat_id):
 
     for hour in range(0, 24):
         try:
-            percent_at_specified_hour = float(message_dist['dist'][str(chat_id)][str(hour)] * 100.0) / total_message
+            val = message_dist['dist'][str(chat_id)][str(hour)] * 100.0
+            percent_at_specified_hour = float(val) / total_message
         except ZeroDivisionError:
             percent_at_specified_hour = 0.0
-        message_dist_text += '{} -> {}%\n'.format(str(hour).zfill(2), str(round(percent_at_specified_hour, 2)))
+            idx_hour = str(hour).zfill(2)
+            idx_percent = str(round(percent_at_specified_hour, 2))
+        message_dist_text += '{} -> {}%\n'.format(idx_hour, idx_percent)
 
     return message_dist_text
 
+
 def add_message_dist(chat_id, hour):
     md.add_message_to_dist(chat_id, hour)
+
+
+def call_discrete_material(query):
+    return dm.DiscreteMath().get_discrete_material(query)
+
 
 def manage_notes(command, text=''):
     note_obj = note.Notes(text)
@@ -211,6 +218,7 @@ def lookup_yelkomputer(message_text):
         return yelkomputer.YelKomputer.get_yel_komputer()
     else:
         raise ValueError('Command /yelkomputer doesn\'t need any arguments')
+
 
 def compute(message):
     _, text = message.text.split(' ')

@@ -1,6 +1,5 @@
 from csuibot import utils
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
-import json
 import os
 import re
 from requests.exceptions import ConnectionError
@@ -294,7 +293,6 @@ class TestMessageDist:
         res = utils.lookup_message_dist(chat_id)
         assert res is not None
 
-
     def test_chatid_not_in_file(self):
         try:
             os.remove('dist.txt')
@@ -331,6 +329,57 @@ class TestMessageDist:
         for i in range(0, 24):
             expected_res = expected_res + (str(i).zfill(2) + ' -> ' + str(4.17) + '%\n')
         assert actual_dist == expected_res
+
+
+class TestDiscreteMaterial:
+
+    def test_number_theory(self):
+        try:
+            res = utils.call_discrete_material('number theory')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_gcd(self):
+        try:
+            res = utils.call_discrete_material('gcd')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_lcm(self):
+        try:
+            res = utils.call_discrete_material('lcm')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_rekurensi(self):
+        try:
+            res = utils.call_discrete_material('relasi rekurensi')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_biner(self):
+        try:
+            res = utils.call_discrete_material('relasi biner')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_domain_range(self):
+        try:
+            res = utils.call_discrete_material('domain dan range')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
 
 class TestNotes:
@@ -579,8 +628,6 @@ class TestSoundComposer:
     def test_get_track(self):
         try:
             res = utils.call_composer('iamlione')
-        except ValueError:
-            pass
         except ConnectionError:
             pass
         else:

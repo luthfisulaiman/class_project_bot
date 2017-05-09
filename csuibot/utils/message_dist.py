@@ -9,6 +9,7 @@ def get_message_dist():
         dist_file = 'Failed to open file.'
     return dist_file
 
+
 def add_message_to_dist(chat_id, hour):
     try:
         with open('dist.txt') as file:

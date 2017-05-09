@@ -1,9 +1,10 @@
 from csuibot.handlers import help, zodiac, shio, yelkomputer, message_dist
 import requests
-from unittest.mock import (Mock,kelaskata, compute_binary, calculate,
+from unittest.mock import (Mock, kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
-                              dayofdate, invalid_dayofdate, empty_dayofdate, chuck)
+                              dayofdate, invalid_dayofdate, empty_dayofdate,
+                              chuck, get_discrete_material as dm)
 from requests.exceptions import ConnectionError
 
 
@@ -15,7 +16,7 @@ def test_help(mocker):
 
     args, _ = mocked_reply_to.call_args
     expected_text = (
-        'CSUIBot v0.0.1\n\n'
+        'CSUIBot v0.0.3\n\n'
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     assert args[1] == expected_text
@@ -66,6 +67,7 @@ def test_shio_invalid_year(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
 
+
 def test_message_dist(mocker):
     actual_dist = {'dist': {}}
     actual_dist['dist'][str(0)] = {}
@@ -79,6 +81,91 @@ def test_message_dist(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == actual_dist
+
+
+def test_discrete_number(mocker):
+    test_noconnection = 'Cannot connect to API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=test_noconnection)
+    mock_message = Mock(text='/tellme number theory')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == test_noconnection
+
+
+def test_discrete_gcd(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme gcd')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_lcm(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme lcm')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_relasi_rekurensi(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme relasi rekurensi')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_relasi_biner(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme relasi biner')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_domain(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme domain')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_range(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme range')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
 
 def test_notes_view(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
