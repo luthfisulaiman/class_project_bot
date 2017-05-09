@@ -1,4 +1,5 @@
 from csuibot import utils
+from requests.exceptions import ConnectionError
 
 
 class TestZodiac:
