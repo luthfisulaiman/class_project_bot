@@ -74,7 +74,7 @@ def test_is_up(mocker):
 
 
 def test_is_down(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to') 
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/is_up http://iniwebsitedownwoi.co.id')
 
     isUp(mock_message)
@@ -90,4 +90,4 @@ def test_error_url(mocker):
     isUp(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Url is invalid, please insert a valid url. Ex : https://scele.cs.ui.ac.id'
+    assert args[1] == 'Url is invalid,insert a valid url!.Ex: https://www.google.com'

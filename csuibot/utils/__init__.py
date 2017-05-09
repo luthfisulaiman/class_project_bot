@@ -45,9 +45,10 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def lookup_isUpWeb(url) :
+
+def lookup_isUpWeb(url):
     pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
     if(pattern.match(url)):
-        return iuw.IsUpWeb(url).isUp() 
+        return iuw.IsUpWeb(url).isUp()
     else:
         raise ValueError
