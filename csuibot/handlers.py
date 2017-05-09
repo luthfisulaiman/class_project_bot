@@ -1,12 +1,13 @@
 import requests
 import re
 from . import app, bot
+
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb, takeSceleNotif)
+                    remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi)
 from requests.exceptions import ConnectionError
 
 
@@ -48,6 +49,25 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
+def definisi(message):
+    if message.text.find(' ') != -1:
+        app.logger.debug("'definisi' command detected")
+        _, word_str = message.text.split(' ', 1)
+
+        app.logger.debug('input : {}'.format(word_str))
+        try:
+            meaning = lookup_definisi(word_str)
+        except requests.ConnectionError:
+            bot.reply_to(message, 'Oops! There was a problem. Maybe try again later :(')
+        else:
+            bot.reply_to(message, meaning)
+    else:
+        app.logger.debug("'definisi_help' command detected")
+        bot.reply_to(message, '/definisi [word] : return definition of' +
+                              ' the word in indonesian language\n')
 
 
 @bot.message_handler(regexp=r'^/sceleNotif$')

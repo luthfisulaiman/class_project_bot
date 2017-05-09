@@ -4,7 +4,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler)
+                              remind, isUp, sceleNoticeHandler, definisi)
 from requests.exceptions import ConnectionError
 
 
@@ -66,6 +66,40 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_definisi_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_definisi', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/definisi tralalala')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Oops! There was a problem. Maybe try again later :('
+
+
+def test_definisi_help(mocker):
+    fake_word = '/definisi [word] : return definition of' + \
+                ' the word in indonesian language\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_word
+
+
+def test_definisi(mocker):
+    fake_definisi = 'Nomina:\n1. perahu; kapal\n\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi bahtera')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_definisi
 
 
 def test_sceleNotif(mocker):
