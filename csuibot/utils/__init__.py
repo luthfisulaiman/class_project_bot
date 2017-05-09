@@ -1,5 +1,6 @@
 from csuibot.utils import zodiac as z, calculate_binary as cb
 
+
 def lookup_zodiac(month, day):
     zodiacs = [
         z.Aries(),
@@ -43,12 +44,13 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
-def calculate_binary(binA, operand, binB) :
-    if operand == '+' :
+
+def calculate_binary(binA, operand, binB):
+    if operand == '+':
         return str(cb.CalculateBinary(binA, binB).addition())
-    elif operand == '-' :
+    elif operand == '-':
         return str(cb.CalculateBinary(binA, binB).subtraction())
-    elif operand == '*' :
+    elif operand == '*':
         return str(cb.CalculateBinary(binA, binB).multiplication())
-    else :
+    else:
         return str(cb.CalculateBinary(binA, binB).division())
