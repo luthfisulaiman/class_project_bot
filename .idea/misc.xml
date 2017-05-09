@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="CompilerConfiguration">
     <resourceExtensions />
     <wildcardResourcePatterns>
@@ -46,4 +47,7 @@
       </state>
     </states>
   </component>
+=======
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6.0 virtualenv at E:\Codes\TK-AP\csui-bot-2\env" project-jdk-type="Python SDK" />
+>>>>>>> e2cc45d7ecd4db8f29cb39f6742ba0a2f2a07caa
 </project>

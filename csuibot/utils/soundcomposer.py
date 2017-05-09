@@ -4,7 +4,7 @@
 class SoundComposer:
     def __init__(self, username):
         self.username = username
-        self.client_id = APP_TOKEN
+        # self.client_id = APP_TOKEN
 
     def get_composer(self):
         # using dummy because don't have the SoundCloud client API

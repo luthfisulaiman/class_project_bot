@@ -6,6 +6,8 @@ import re
 from requests.exceptions import ConnectionError
 import requests
 
+import json
+
 
 class TestZodiac:
     def test_aries_lower_bound(self):
@@ -212,6 +214,12 @@ class TestZodiac:
         assert res == 'Unknown zodiac'
 
 
+class TestNotifTaker:
+    def test_notif_taker(self):
+        res = utils.takeSceleNotif()
+        assert res != ""
+
+
 class TestChineseZodiac:
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]
@@ -323,6 +331,73 @@ class TestMessageDist:
         for i in range(0, 24):
             expected_res = expected_res + (str(i).zfill(2) + ' -> ' + str(4.17) + '%\n')
         assert actual_dist == expected_res
+
+
+class TestNotes:
+
+    def run_test(self, command, text=''):
+        if command == 'add':
+            a = utils.manage_notes(command, text)
+            assert a == 'Notes added'
+        elif command == 'view':
+            text = utils.manage_notes(command)
+            assert type(text) == str and len(text) > 0
+
+    def test_write_text(self):
+        text = 'Test add text'
+        self.run_test('add', text)
+
+    def test_view(self):
+        a = utils.manage_notes('view')
+        assert a == 'List notes:\n1. Test add text\n'
+
+    def test_view_empty(self):
+        f = open('notes.json', 'w')
+        f.close()
+
+        a = utils.manage_notes('view')
+        assert a == 'No notes yet'
+
+    def test_write_json_decode_error(self, mocker):
+        with mocker.patch('csuibot.utils.note.Notes') as MockNotes:
+            instance = MockNotes.return_value
+            instance.wite.side_effect = json.JSONDecodeError
+
+            a = utils.manage_notes('write', 'aaa')
+            assert a is None
+
+
+class TestDefinisi:
+
+    def run_test(self, word, expected_output):
+        mean = utils.lookup_definisi(word)
+        assert mean == expected_output
+
+    def test_found(self):
+        self.run_test('bahtera', 'Nomina:\n1. perahu; kapal\n\n')
+
+    def test_not_found(self):
+        expected_output = 'makimaki is not a word :(, maybe try another one?'
+        self.run_test('makimaki', expected_output)
+
+    def test_multiple_word(self):
+        expected_output = 'Nomina:\n1. gelombang hidup; kehidupan\n\n'
+        self.run_test('bahtera hidup', expected_output)
+
+    def test_with_number(self):
+        expected_output = 'Nomina:\n1. abad Masehi ke-10\n\n'
+        self.run_test('kurun masehi ke-10', expected_output)
+
+
+class TestReminder:
+
+    def test_reminder_return_text_one_word(self):
+        output = utils.remind_me(0, "Test")
+        assert output == "Test"
+
+    def test_reminder_return_text_more_word(self):
+        output = utils.remind_me(0, "Test more")
+        assert output == "Test more"
 
 
 class TestDefine:
@@ -494,8 +569,11 @@ class TestLoremIpsum:
     def test_get_loripsum(self):
         try:
             res = utils.call_lorem_ipsum()
-        except:
+        except ConnectionError:
             pass
+        else:
+            assert res is not None
+
 
 class TestSoundComposer:
     def test_get_track(self):
@@ -559,3 +637,25 @@ class TestYelKomputer:
             utils.lookup_yelkomputer('/yelkomputer args')
         except ValueError as e:
             assert str(e) == 'Command /yelkomputer doesn\'t need any arguments'
+
+
+class TestDayofDate:
+    def test_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 5, 13)
+        assert day == 'Friday'
+
+    def test_invalid_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 20, 13)
+        assert day == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
+
+class TestChuck:
+    def test_get_chuck(self):
+        try:
+            res = utils.get_chuck('/chuck')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
