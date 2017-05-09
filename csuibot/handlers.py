@@ -49,7 +49,6 @@ def parse_date(text):
 def isUp(message) :
     app.logger.debug("'is_up' command detected")
     _, url = message.text.split(' ')
-
     try:
         app.logger.debug('check {} for up/down....')
         result = lookup_isUpWeb(url)
