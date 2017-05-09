@@ -5,7 +5,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
-                    lookup_define, lookup_kelaskata, call_composer)
+                    lookup_define, lookup_kelaskata, call_composer, calculate_binary)
 from requests.exceptions import ConnectionError
 
 
@@ -157,7 +157,43 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-<<<<<<< HEAD
+@bot.message_handler(regexp=r'^\/compute ([^01]+(.*)[^01]+)$')
+def compute_not_binary(message):
+    bot.reply_to(message, 'Not a binary number, Please only input binary number on both sides')
+
+
+@bot.message_handler(regexp=r'^\/compute help$')
+def compute_help(message):
+    bot.reply_to(message, '''Binary Calculator v2.0, use /compute <binary><operand><binary>
+to start a calculation.''')
+
+
+@bot.message_handler(regexp=r'^\/compute ([01]+(.*)[01]+)$')
+def compute(message):
+    app.logger.debug("'compute' command detected")
+    _, calculate_str = message.text.split(' ')
+    try:
+        if '+' in calculate_str:
+            binA, binB = calculate_str.split('+')
+            op = '+'
+        elif '-' in calculate_str:
+            binA, binB = calculate_str.split('-')
+            op = '-'
+        elif '*' in calculate_str:
+            binA, binB = calculate_str.split('*')
+            op = '*'
+        elif '/' in calculate_str:
+            binA, binB = calculate_str.split('/')
+            op = '/'
+        else:
+            raise ValueError
+    except ValueError:
+        bot.reply_to(message, "Operator is invalid, please use '+', '-', '*', or '/'")
+    else:
+        result = calculate_binary(binA, op, binB)
+        bot.reply_to(message, result)
+
+
 @bot.message_handler(regexp=r'^/define (.*)$')
 def define(message):
     app.logger.debug("'define' command detected")

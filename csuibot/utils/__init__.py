@@ -1,8 +1,9 @@
-
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
-                           define as d, yelkomputer, soundcomposer as sc)
+                           define as d, yelkomputer, soundcomposer as sc,
+                           calculate_binary as cb)
+
 
 def lookup_zodiac(month, day):
     zodiacs = [
@@ -48,7 +49,17 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-<<<<<<< HEAD
+def calculate_binary(binA, operand, binB):
+    if operand == '+':
+        return str(cb.CalculateBinary(binA, binB).addition())
+    elif operand == '-':
+        return str(cb.CalculateBinary(binA, binB).subtraction())
+    elif operand == '*':
+        return str(cb.CalculateBinary(binA, binB).multiplication())
+    else:
+        return str(cb.CalculateBinary(binA, binB).division())
+
+
 def lookup_define(word):
     if(not word):
         raise ValueError('Command /define need an argument')
@@ -131,4 +142,3 @@ def lookup_yelkomputer(message_text):
 
 def call_composer(username):
     return sc.SoundComposer(username).get_composer()
-

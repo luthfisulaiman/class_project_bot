@@ -425,6 +425,10 @@ class TestLoremIpsum:
     def test_get_loripsum(self):
         try:
             res = utils.call_lorem_ipsum()
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
 
 class TestSoundComposer:
