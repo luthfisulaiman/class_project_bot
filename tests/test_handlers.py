@@ -8,6 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               dayofdate, invalid_dayofdate, empty_dayofdate)
 from requests.exceptions import ConnectionError
 
+
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock()
