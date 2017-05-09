@@ -1,0 +1,55 @@
+{
+	"course":"Discrete Math",
+	"terminologies":
+	{
+		"number theory":
+		{
+			"definition":"Misalkan a dan b adalah bilangan bulat dengan a != 0, maka a dikatakan membagi b (ditulis a | b) jika ada sebuah bilangan bulat c sehingga b = ac",
+			"example": "5 | 100 == 5 membagi 100 (100 = 5 * 20)",
+			"ref": "Slide_MD2_1_Teori Bilangan-rev24Feb17",
+			"problem": "Apakah 33 | 166?"
+		},
+		"gcd":
+		{
+			"definition":"Misalkan a dan b bilangan bulat dimana setidaknya salah satunya bukan 0, maka bilangan bulat terbesar d yang memenuhi d | a dan d | b disebut greatest common divisor (gcd) ditulis gcd(a, b)",
+			"example":"GCD(24, 36) = 12",
+			"ref":"Slide_MD2_1_Teori Bilangan-rev24Feb17",
+			"problem":"Berapakah gcd(5, 150)"
+		},
+		"lcm":
+		{
+			"definition":"Least common multiple dari dua bilangan a dan b (ditulis lcm(a, b)) adalah bilangan bulat positif terkecil yang sama-sama habis dibagi oleh a dan b",
+			"example":"LCM(24, 36) = 72",
+			"ref": "Slide_MD2_1_Teori Bilangan-rev24Feb17",
+			"problem": "LCM(120, 500)?"
+		},
+		"relasi rekurensi":
+		{
+			"definition":"Relasi Rekurensi adalah suatu persamaan (rumus/formula) yang menyatakan hubungan suku xn dengan satu atau lebih suku pendahulunya dalam barisan itu, x0, x1, x2, ......, xn−1, untuk setiap n dengan n ≥ n0, & untuk suatu n0 ≥ 1",
+			"example":"Xn = X(n-1) + X(n-2) untuk n >= 2, x0 = 3dan x1 = 5, maka x5 = 34",
+			"ref" :"Slide_MD2_2a_Teknik Berhitung Lanjut_RR-v2",
+			"problem": " Berapa jumlah uang yang diperoleh seorang nasabah bank yang mendepositokan 10 juta uangnya selama 10 tahun dengan hasil bagi 5% per tahun?"
+		},
+		"relasi biner":
+		{
+			"definition":"Relasi biner antara dua himpunan A dan himpunan B adalah himpunan bagian A x B",
+			"example":"Misalkan terdapat himpunan A = { 1, 2 } dan B = { a, b }, maka relasi A x B = { (1,a), (1,b), (2,a), (2,b) }",
+			"ref": "Slide_MD2_3a_Relasi",
+			"problem": "Misal A = {1, 2, 3} dan B = {a ,s, d, f}. Apa A x B?"
+		},
+		"domain":
+		{
+			"definition":"Domain adalah daerah awal relasi",
+			"example":"Misal p ={ (0,0), (1,1), (4,2), (9,3) }. Dom.p = {0, 1, 4, 9}",
+			"ref": "Slide_MD2_3a_Relasi",
+			"problem": "Misal p = { (0,1), (1,2), (4,3), (9,2) }, tentukan Dom.p!"
+		},
+		"range":
+		{
+			"definition":"Range adalah Daerah jelajah relasi",
+			"example":"Misal p ={ (0,0), (1,1), (4,2), (9,3) }. Range.p = {0, 1, 2, 3}",
+			"ref": "Slide_MD2_3a_Relasi",
+			"problem": "Misal p = { (0,1), (1,2), (4,3), (9,2) }, Range.p!"
+		}
+	}
+}
