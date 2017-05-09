@@ -4,7 +4,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
-                           calculate_binary as cb, isUpWeb as iuw)
+                           calculate_binary as cb, isUpWeb as iuw, notifTaker as n)
 
 
 def lookup_zodiac(month, day):
@@ -49,6 +49,12 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def takeSceleNotif():
+
+    notif = n.notifTaker()
+    return notif.getPost()
 
 
 def lookup_isUpWeb(url):

@@ -6,7 +6,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb)
+                    remind_me, lookup_isUpWeb, takeSceleNotif)
 from requests.exceptions import ConnectionError
 
 
@@ -48,6 +48,17 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/sceleNotif$')
+def sceleNoticeHandler(message):
+    app.logger.debug("scele command detected")
+    try:
+        notification = takeSceleNotif()
+    except Exception as e:
+        bot.reply_to(message, 'Error catched')
+    else:
+        bot.reply_to(message, notification)
 
 
 @bot.message_handler(regexp=r'^/chuck ')

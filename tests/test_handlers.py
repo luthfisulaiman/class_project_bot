@@ -4,7 +4,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp)
+                              remind, isUp, sceleNoticeHandler)
 from requests.exceptions import ConnectionError
 
 
@@ -66,6 +66,17 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_sceleNotif(mocker):
+    fake_scele = 'scele'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.takeSceleNotif', return_value=fake_scele)
+    mock_message = Mock(text='/sceleNotif')
+    sceleNoticeHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_scele
 
 
 def test_is_up(mocker):

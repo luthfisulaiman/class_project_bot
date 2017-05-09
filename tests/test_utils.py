@@ -209,6 +209,12 @@ class TestZodiac:
         assert res == 'Unknown zodiac'
 
 
+class TestNotifTaker:
+    def test_notif_taker(self):
+        res = utils.takeSceleNotif()
+        assert res != ""
+
+
 class TestChineseZodiac:
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]
