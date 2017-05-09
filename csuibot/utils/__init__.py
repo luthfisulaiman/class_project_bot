@@ -1,3 +1,4 @@
+import json
 import re
 import time
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
@@ -5,7 +6,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co)
+                           compute as co, definisi, note, dayofdate as dod)
 
 
 def lookup_zodiac(month, day):
@@ -50,6 +51,26 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def manage_notes(command, text=''):
+    note_obj = note.Notes(text)
+
+    if command == 'view':
+        try:
+            return note_obj.view()
+        except (FileNotFoundError, json.JSONDecodeError):
+            return 'No notes yet'
+    elif command == 'add':
+        return note_obj.write()
+
+
+def lookup_definisi(word):
+    kamus = definisi.Definisi()
+
+    mean = kamus.define(word)
+
+    return mean
 
 
 def takeSceleNotif():
@@ -174,3 +195,12 @@ def compute(message):
 
 def call_composer(username):
     return sc.SoundComposer(username).get_composer()
+
+
+def lookup_dayofdate(year, month, day):
+    try:
+        return dod.dayofdate.dayoutput(year, month, day)
+    except ValueError:
+        return ('Incorrect use of dayofdate command. '
+                'Please write a valid date in the form of yyyy-mm-dd, '
+                'such as 2016-05-13')

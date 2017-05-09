@@ -3,9 +3,11 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, compute_binary, calculate, compute_help,
-                              compute_not_binary, composer, remind, isUp,
-                              sceleNoticeHandler)
+                              kelaskata, compute_binary, calculate,
+                              compute_help, compute_not_binary, composer,
+                              remind, isUp, sceleNoticeHandler, definisi, note,
+                              dayofdate, invalid_dayofdate, empty_dayofdate)
+
 from requests.exceptions import ConnectionError
 
 
@@ -67,6 +69,85 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_notes_view(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
+def test_notes_invalid_json_notes(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', return_value='Notes added')
+    mock_message = Mock(text='/notes dasdsadassd')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Notes added'
+
+
+def test_notes_file_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', side_effect=FileNotFoundError)
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
+def test_notes_no_argument(mocker):
+    fake_message = 'Usage :\n' + \
+                   '1. /notes view : View note in this group\n' + \
+                   '2. /notes [text] : Add new note in this group\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_message
+
+
+def test_definisi_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_definisi', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/definisi tralalala')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Oops! There was a problem. Maybe try again later :('
+
+
+def test_definisi_help(mocker):
+    fake_word = '/definisi [word] : return definition of' + \
+                ' the word in indonesian language\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_word
+
+
+def test_definisi(mocker):
+    fake_definisi = 'Nomina:\n1. perahu; kapal\n\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi bahtera')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_definisi
 
 
 def test_sceleNotif(mocker):
@@ -724,85 +805,131 @@ def test_composer_no_connection(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
 
-    def test_compute_addition(mocker):
-        fake_result = 7
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mock_message = Mock(text='/compute 4+3')
 
-        calculate(mock_message)
+def test_compute_addition(mocker):
+    fake_result = 7
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3')
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_result
+    calculate(mock_message)
 
-    def test_compute_substraction(mocker):
-        fake_result = 3
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mock_message = Mock(text='/compute 10-7')
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
-        calculate(mock_message)
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_result
+def test_compute_substraction(mocker):
+    fake_result = 3
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 10-7')
 
-    def test_compute_multiplication(mocker):
-        fake_result = 12
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mock_message = Mock(text='/compute 4*3')
+    calculate(mock_message)
 
-        calculate(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_result
 
-    def test_compute_division(mocker):
-        fake_result = 10
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mock_message = Mock(text='/compute 30/3')
+def test_compute_multiplication(mocker):
+    fake_result = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4*3')
 
-        calculate(mock_message)
+    calculate(mock_message)
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_result
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
-    def test_compute_multiple_operator(mocker):
-        fake_result = 3
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mock_message = Mock(text='/compute 4+3-2*10/5')
 
-        calculate(mock_message)
+def test_compute_division(mocker):
+    fake_result = 10
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 30/3')
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_result
+    calculate(mock_message)
 
-    def test_compute_division_by_zero(mocker):
-        fake_error = 'Cannot divide by zero'
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
-        mock_message = Mock(text='/compute 3/0')
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
-        calculate(mock_message)
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_error
+def test_compute_multiple_operator(mocker):
+    fake_result = 3
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3-2*10/5')
 
-    def test_compute_single_digit(mocker):
-        fake_error = 12
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
-        mock_message = Mock(text='/compute 12')
+    calculate(mock_message)
 
-        calculate(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_error
 
-    def test_error_compute(mocker):
-        fake_error = 'Invalid command, please enter only numbers and operators'
-        mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-        mocker.patch('csuibot.handlers.compute', side_effect=NameError)
-        mock_message = Mock(text='/compute asdf')
+def test_compute_division_by_zero(mocker):
+    fake_error = 'Cannot divide by zero'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
+    mock_message = Mock(text='/compute 3/0')
 
-        calculate(mock_message)
+    calculate(mock_message)
 
-        args, _ = mocked_reply_to.call_args
-        assert args[1] == fake_error
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_compute_single_digit(mocker):
+    fake_error = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
+    mock_message = Mock(text='/compute 12')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_error_compute(mocker):
+    fake_error = 'Invalid command, please enter only numbers and operators'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=NameError)
+    mock_message = Mock(text='/compute asdf')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_dayofdate(mocker):
+    fake_day = 'boink'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', return_value=fake_day)
+    mock_message = Mock(text='/dayofdate 2016-05-13')
+
+    dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_day
+
+
+def test_dayofdate_invalid_command(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate invalid')
+
+    invalid_dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
+
+def test_dayofdate_no_argument(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate')
+
+    empty_dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')

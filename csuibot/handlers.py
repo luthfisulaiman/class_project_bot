@@ -1,12 +1,14 @@
 import requests
 import re
+import datetime
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb, takeSceleNotif, compute)
+                    remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
+                    manage_notes, lookup_dayofdate, compute)
 from requests.exceptions import ConnectionError
 
 
@@ -48,6 +50,48 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/notes .*$')
+def note(message):
+    app.logger.debug('"notes" command detexted')
+    if message.text.find(' ') != -1:
+        text = message.text.split(' ', 1)
+        reply = ''
+
+        app.logger.debug('input = {}'.format(text[1]))
+        if text[1] == 'view':
+            try:
+                reply = manage_notes('view')
+            except FileNotFoundError:
+                reply = 'No notes yet'
+        else:
+            reply = manage_notes('add', text[1])
+
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, 'Usage :\n' +
+                              '1. /notes view : View note in this group\n' +
+                              '2. /notes [text] : Add new note in this group\n')
+
+
+@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
+def definisi(message):
+    if message.text.find(' ') != -1:
+        app.logger.debug("'definisi' command detected")
+        _, word_str = message.text.split(' ', 1)
+
+        app.logger.debug('input : {}'.format(word_str))
+        try:
+            meaning = lookup_definisi(word_str)
+        except requests.ConnectionError:
+            bot.reply_to(message, 'Oops! There was a problem. Maybe try again later :(')
+        else:
+            bot.reply_to(message, meaning)
+    else:
+        app.logger.debug("'definisi_help' command detected")
+        bot.reply_to(message, '/definisi [word] : return definition of' +
+                              ' the word in indonesian language\n')
 
 
 @bot.message_handler(regexp=r'^/sceleNotif$')
@@ -163,6 +207,47 @@ def colour(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, rgb)
+
+
+@bot.message_handler(regexp=r'^/dayofdate \d{4}\-\d{2}\-\d{2}$')
+def dayofdate(message):
+    app.logger.debug("'dayofdate' command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+    app.logger.debug('year = {}, month = {}, day = {}'.format(year, month, day))
+
+    try:
+        datetime.datetime(year, month, day)
+        # if (newDate):
+        # check invalid date such as leap year, month 13 etc
+        dayofdate = lookup_dayofdate(year, month, day)
+    except ValueError:
+        bot.reply_to(message,
+                     'Incorrect use of dayofdate command. '
+                     'Please write a valid date in the form of yyyy-mm-dd, '
+                     'such as 2016-05-13')
+    else:
+        bot.reply_to(message, dayofdate)
+
+
+# empty dayofdate args
+@bot.message_handler(regexp=r'^/dayofdate$')
+def empty_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
+
+
+# invalid dayofdate calls
+@bot.message_handler(regexp=r'^/dayofdate (?!\d{4}\-\d{2}\-\d{2}).*$')
+def invalid_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
 
 
 def parse_date(text):
