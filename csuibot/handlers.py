@@ -6,7 +6,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me)
+                    remind_me, lookup_isUpWeb)
 from requests.exceptions import ConnectionError
 
 
@@ -156,6 +156,19 @@ def colour(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^\/is_up (.*)$')
+def isUp(message):
+    app.logger.debug("'is_up' command detected")
+    _, url = message.text.split(' ')
+    try:
+        app.logger.debug('check {} for up/down....')
+        result = lookup_isUpWeb(url)
+    except ValueError:
+        bot.reply_to(message, 'Url is invalid,insert a valid url!.Ex: https://www.google.com')
+    else:
+        bot.reply_to(message, result)
 
 
 @bot.message_handler(regexp=r'^\/remindme (\d+) (.*)$')

@@ -1,9 +1,10 @@
+import re
 import time
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
-                           calculate_binary as cb)
+                           calculate_binary as cb, isUpWeb as iuw)
 
 
 def lookup_zodiac(month, day):
@@ -48,6 +49,14 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_isUpWeb(url):
+    pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
+    if(pattern.match(url)):
+        return iuw.IsUpWeb(url).isUp()
+    else:
+        raise ValueError
 
 
 def remind_me(second, text):
