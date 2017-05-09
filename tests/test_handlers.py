@@ -4,7 +4,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, funFasilkom)
+                              remind, funFasilkom, isUp)
 from requests.exceptions import ConnectionError
 
 
@@ -75,6 +75,36 @@ def test_contain_fasilkom(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Viva, Viva, Viva Fasilkom!'
+
+
+def test_is_up(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/is_up https://scele.cs.ui.ac.id/')
+
+    isUp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'UP'
+
+
+def test_is_down(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/is_up http://iniwebsitedownwoi.co.id')
+
+    isUp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'DOWN'
+
+
+def test_error_url(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/is_up ftp://example.com')
+
+    isUp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Url is invalid,insert a valid url!.Ex: https://www.google.com'
 
 
 def test_remind_valid_input(mocker):
