@@ -1,13 +1,13 @@
 import requests
 import re
 from . import app, bot
-
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi)
+                    remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
+                    manage_notes)
 from requests.exceptions import ConnectionError
 
 
@@ -49,6 +49,29 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/notes .*$')
+def note(message):
+    app.logger.debug('"notes" command detexted')
+    if message.text.find(' ') != -1:
+        text = message.text.split(' ', 1)
+        reply = ''
+
+        app.logger.debug('input = {}'.format(text[1]))
+        if text[1] == 'view':
+            try:
+                reply = manage_notes('view')
+            except FileNotFoundError:
+                reply = 'No notes yet'
+        else:
+            reply = manage_notes('add', text[1])
+
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, 'Usage :\n' +
+                              '1. /notes view : View note in this group\n' +
+                              '2. /notes [text] : Add new note in this group\n')
 
 
 @bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')

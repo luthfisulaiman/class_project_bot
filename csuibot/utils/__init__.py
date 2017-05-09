@@ -1,3 +1,4 @@
+import json
 import re
 import time
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
@@ -5,7 +6,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           definisi)
+                           definisi, note)
 
 
 def lookup_zodiac(month, day):
@@ -50,6 +51,18 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def manage_notes(command, text=''):
+    note_obj = note.Notes(text)
+
+    if command == 'view':
+        try:
+            return note_obj.view()
+        except (FileNotFoundError, json.JSONDecodeError):
+            return 'No notes yet'
+    elif command == 'add':
+        return note_obj.write()
 
 
 def lookup_definisi(word):

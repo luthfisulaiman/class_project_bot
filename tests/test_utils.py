@@ -3,6 +3,8 @@ import re
 from requests.exceptions import ConnectionError
 import requests
 
+import json
+
 
 class TestZodiac:
     def test_aries_lower_bound(self):
@@ -260,6 +262,40 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestNotes:
+
+    def run_test(self, command, text=''):
+        if command == 'add':
+            a = utils.manage_notes(command, text)
+            assert a == 'Notes added'
+        elif command == 'view':
+            text = utils.manage_notes(command)
+            assert type(text) == str and len(text) > 0
+
+    def test_write_text(self):
+        text = 'Test add text'
+        self.run_test('add', text)
+
+    def test_view(self):
+        a = utils.manage_notes('view')
+        assert a == 'List notes:\n1. Test add text\n'
+
+    def test_view_empty(self):
+        f = open('notes.json', 'w')
+        f.close()
+
+        a = utils.manage_notes('view')
+        assert a == 'No notes yet'
+
+    def test_write_json_decode_error(self, mocker):
+        with mocker.patch('csuibot.utils.note.Notes') as MockNotes:
+            instance = MockNotes.return_value
+            instance.wite.side_effect = json.JSONDecodeError
+
+            a = utils.manage_notes('write', 'aaa')
+            assert a is None
 
 
 class TestDefinisi:

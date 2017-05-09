@@ -4,7 +4,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler, definisi)
+                              remind, isUp, sceleNoticeHandler, definisi, note)
 from requests.exceptions import ConnectionError
 
 
@@ -66,6 +66,51 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_notes_view(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
+def test_notes_invalid_json_notes(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', return_value='Notes added')
+    mock_message = Mock(text='/notes dasdsadassd')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Notes added'
+
+
+def test_notes_file_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', side_effect=FileNotFoundError)
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
+def test_notes_no_argument(mocker):
+    fake_message = 'Usage :\n' + \
+                   '1. /notes view : View note in this group\n' + \
+                   '2. /notes [text] : Add new note in this group\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_message
 
 
 def test_definisi_connection_error(mocker):
