@@ -5,7 +5,7 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
-                    get_meme, generate_password, generate_custom_chuck_joke,
+                    get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute)
@@ -103,6 +103,20 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, 'Error catched')
     else:
         bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/chuck$')
+def chuck(message):
+    app.logger.debug("'chuck' command detected")
+    try:
+        joke = get_chuck(message.text)
+    except ConnectionError:
+        bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection'
+                              ' to connect to ICNDb API, too bad you\'re not him')
+    except ValueError:
+        bot.reply_to(message, 'Command /chuck doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, joke)
 
 
 @bot.message_handler(regexp=r'^/chuck ')

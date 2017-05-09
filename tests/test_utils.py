@@ -580,3 +580,13 @@ class TestDayofDate:
         assert day == ('Incorrect use of dayofdate command. '
                        'Please write a valid date in the form of yyyy-mm-dd, '
                        'such as 2016-05-13')
+
+
+class TestChuck:
+    def test_get_chuck(self):
+        try:
+            res = utils.get_chuck('/chuck')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
