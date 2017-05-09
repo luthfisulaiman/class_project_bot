@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, funFasilkom
 
 
 def test_help(mocker):
@@ -71,4 +71,3 @@ def test_contain_fasilkom(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Viva, Viva, Viva Fasilkom!'
-
