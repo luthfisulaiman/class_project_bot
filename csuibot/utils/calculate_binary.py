@@ -1,6 +1,6 @@
 class CalculateBinary :
 
-    def __init__(self, binA, operand, binB) :
+    def __init__(self, binA, binB) :
         self._numA = int(binA, 2)
         self._numB = int(binB, 2)
 
@@ -14,5 +14,5 @@ class CalculateBinary :
         return self._numA - self._numB
 
     def division(self):
-        return self._numA / self._numB
+        return int(self._numA / self._numB)
 

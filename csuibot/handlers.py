@@ -59,7 +59,7 @@ def compute(message) :
     elif '*' in calculate_str :
         binA, binB = calculate_str.split('*')
         op = '*'
-    elif '/' in calculate_str :
+    else:
         binA, binB = calculate_str.split('/')
         op = '/'
     try :
