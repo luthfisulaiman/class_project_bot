@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio, chuck
+from csuibot.handlers import help, zodiac, shio
 
 
 def test_help(mocker):
@@ -61,26 +61,3 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
-
-
-def test_chuck(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck')
-    mock_message = Mock(text='/chuck')
-
-    chuck(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert "Chuck" in args[1]
-
-
-def test_chuck_with_args(mocker):
-    fake_error = 'Command /chuck doesn\'t need any arguments'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck')
-    mock_message = Mock(text='/chuck args')
-
-    chuck(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_error

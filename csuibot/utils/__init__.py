@@ -1,5 +1,4 @@
 from csuibot.utils import zodiac as z
-from csuibot.utils import chuck
 
 
 def lookup_zodiac(month, day):
@@ -44,10 +43,3 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
-
-
-def get_chuck(message_text):
-    if message_text == "/chuck":
-        return chuck.Chuck().get_chuck()
-    else:
-        raise ValueError('Command /chuck doesn\'t need any arguments')

@@ -1,6 +1,5 @@
-from .import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, get_chuck
-from requests.exceptions import ConnectionError
+from . import app, bot
+from .utils import lookup_zodiac, lookup_chinese_zodiac
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -41,20 +40,6 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
-
-
-@bot.message_handler(commands=['chuck'])
-def chuck(message):
-    app.logger.debug("'chuck' command detected")
-    try:
-        joke = get_chuck(message.text)
-    except ConnectionError:
-        bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection'
-                              ' to connect to ICNDb API, too bad you\'re not him')
-    except ValueError:
-        bot.reply_to(message, 'Command /chuck doesn\'t need any arguments')
-    else:
-        bot.reply_to(message, joke)
 
 
 def parse_date(text):
