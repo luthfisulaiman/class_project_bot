@@ -7,7 +7,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm)
+                           chuck, discretemath as dm, yelfasilkom)
 
 
 def lookup_zodiac(month, day):
@@ -52,6 +52,13 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_yelfasilkom(message_text):
+    if message_text == '/yelfasilkom':
+        return yelfasilkom.YelFasilkom.get_yel_fasilkom()
+    else:
+        raise ValueError('Command /yelfasilkom doesn\'t need any arguments')
 
 
 def call_discrete_material(query):

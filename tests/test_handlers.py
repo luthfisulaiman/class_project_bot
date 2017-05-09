@@ -7,7 +7,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              chuck, get_discrete_material as dm)
+                              chuck, get_discrete_material as dm, yelfasilkom)
 from requests.exceptions import ConnectionError
 
 
@@ -69,6 +69,29 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_yelfasilkom(mocker):
+    fake_yelfasilkom = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelfasilkom', return_value=fake_yelfasilkom)
+    mock_message = Mock(text='/yelfasilkom')
+
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_yelfasilkom
+
+
+def test_yelfasilkom_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelfasilkom', side_effect=ValueError)
+    mock_message = Mock(text='/yelfasilkom some_arguments_here')
+
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /yelfasilkom doesn\'t need any arguments'
 
 
 def test_discrete_number(mocker):
