@@ -568,3 +568,15 @@ class TestYelKomputer:
             utils.lookup_yelkomputer('/yelkomputer args')
         except ValueError as e:
             assert str(e) == 'Command /yelkomputer doesn\'t need any arguments'
+
+
+class TestDayofDate:
+    def test_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 5, 13)
+        assert day == 'Friday'
+
+    def test_invalid_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 20, 13)
+        assert day == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')

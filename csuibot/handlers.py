@@ -1,5 +1,6 @@
 import requests
 import re
+import datetime
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
@@ -7,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
-                    manage_notes)
+                    manage_notes, lookup_dayofdate)
 from requests.exceptions import ConnectionError
 
 
@@ -206,6 +207,47 @@ def colour(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, rgb)
+
+
+@bot.message_handler(regexp=r'^/dayofdate \d{4}\-\d{2}\-\d{2}$')
+def dayofdate(message):
+    app.logger.debug("'dayofdate' command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+    app.logger.debug('year = {}, month = {}, day = {}'.format(year, month, day))
+
+    try:
+        datetime.datetime(year, month, day)
+        # if (newDate):
+        # check invalid date such as leap year, month 13 etc
+        dayofdate = lookup_dayofdate(year, month, day)
+    except ValueError:
+        bot.reply_to(message,
+                     'Incorrect use of dayofdate command. '
+                     'Please write a valid date in the form of yyyy-mm-dd, '
+                     'such as 2016-05-13')
+    else:
+        bot.reply_to(message, dayofdate)
+
+
+# empty dayofdate args
+@bot.message_handler(regexp=r'^/dayofdate$')
+def empty_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
+
+
+# invalid dayofdate calls
+@bot.message_handler(regexp=r'^/dayofdate (?!\d{4}\-\d{2}\-\d{2}).*$')
+def invalid_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
 
 
 def parse_date(text):

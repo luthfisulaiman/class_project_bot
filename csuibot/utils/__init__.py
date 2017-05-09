@@ -6,7 +6,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           definisi, note)
+                           definisi, note, dayofdate as dod)
 
 
 def lookup_zodiac(month, day):
@@ -190,3 +190,12 @@ def lookup_yelkomputer(message_text):
 
 def call_composer(username):
     return sc.SoundComposer(username).get_composer()
+
+
+def lookup_dayofdate(year, month, day):
+    try:
+        return dod.dayofdate.dayoutput(year, month, day)
+    except ValueError:
+        return ('Incorrect use of dayofdate command. '
+                'Please write a valid date in the form of yyyy-mm-dd, '
+                'such as 2016-05-13')

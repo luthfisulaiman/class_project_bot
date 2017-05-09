@@ -4,9 +4,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler, definisi, note)
+                              remind, isUp, sceleNoticeHandler, definisi, note,
+                              dayofdate, invalid_dayofdate, empty_dayofdate)
 from requests.exceptions import ConnectionError
-
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -800,3 +800,41 @@ def test_composer_no_connection(mocker):
     composer(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_dayofdate(mocker):
+    fake_day = 'boink'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', return_value=fake_day)
+    mock_message = Mock(text='/dayofdate 2016-05-13')
+
+    dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_day
+
+
+def test_dayofdate_invalid_command(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate invalid')
+
+    invalid_dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
+
+def test_dayofdate_no_argument(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate')
+
+    empty_dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
