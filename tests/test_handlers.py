@@ -876,7 +876,6 @@ def test_compute_division_by_zero(mocker):
 def test_compute_single_digit(mocker):
     fake_error = 12
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
     mock_message = Mock(text='/compute 12')
 
     calculate(mock_message)
