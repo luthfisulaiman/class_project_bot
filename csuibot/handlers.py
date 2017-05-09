@@ -49,6 +49,5 @@ def parse_date(text):
 @bot.message_handler(regexp=r'^(.*)[Ff][Aa][Ss][Ii][Ll][Kk][Oo][Mm](.*)$')
 def funFasilkom(message):
     app.logger.debug("'Fasilkom' command detected")
-    
     reply = vivaFasilkom()
     bot.reply_to(message, reply)
