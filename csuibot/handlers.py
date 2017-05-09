@@ -52,4 +52,3 @@ def funFasilkom(message):
     
     reply = vivaFasilkom()
     bot.reply_to(message, reply)
-
