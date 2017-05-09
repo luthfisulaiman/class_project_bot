@@ -293,6 +293,26 @@ class TestDiscreteMaterial:
     def test_relasi_rekurensi(self):
         try:
             res = utils.call_discrete_material('relasi rekurensi')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_biner(self):
+        try:
+            res = utils.call_discrete_material('relasi biner')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_domain_range(self):
+        try:
+            res = utils.call_discrete_material('domain dan range')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
 
 class TestNotes:
@@ -537,11 +557,6 @@ class TestLoremIpsum:
             assert res is not None
 
 
-    def test_relasi_biner(self):
-        try:
-            res = utils.call_discrete_material('relasi biner')
-
-
 class TestSoundComposer:
     def test_get_track(self):
         try:
@@ -550,11 +565,6 @@ class TestSoundComposer:
             pass
         else:
             assert res is not None
-
-
-    def test_domain_range(self):
-        try:
-            res = utils.call_discrete_material('domain dan range')
 
 
 class TestXkcd:

@@ -6,7 +6,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
-                              dayofdate, invalid_dayofdate, empty_dayofdate, chuck, get_discrete_material as dm)
+                              dayofdate, invalid_dayofdate, empty_dayofdate,
+                              chuck, get_discrete_material as dm)
 from requests.exceptions import ConnectionError
 
 
@@ -1038,4 +1039,3 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
->>>>>>> e2cc45d7ecd4db8f29cb39f6742ba0a2f2a07caa

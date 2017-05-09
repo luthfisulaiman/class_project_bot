@@ -7,7 +7,7 @@ import json
 class DiscreteMath:
 
     def get_discrete_material(self, query):
-        file = open('app/csuibot/utils/response.json', 'r')
+        file = open('csuibot/utils/response.json', 'r')
         data = json.load(file)
 
         try:

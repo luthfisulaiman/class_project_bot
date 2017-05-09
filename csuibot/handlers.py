@@ -468,4 +468,3 @@ def composer(message):
         bot.reply_to(message, 'Error connecting to Soundcloud API')
     else:
         bot.reply_to(message, track)
->>>>>>> e2cc45d7ecd4db8f29cb39f6742ba0a2f2a07caa
