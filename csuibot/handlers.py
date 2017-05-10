@@ -454,3 +454,19 @@ def composer(message):
         bot.reply_to(message, 'Error connecting to Soundcloud API')
     else:
         bot.reply_to(message, track)
+
+
+@bot.message_handler(commands=['fake_json'])
+def fake_json(message):
+    pass
+
+
+# long-polling debugging
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         import time
+#         app.logger.debug(str(e))
+#         time.sleep(5)

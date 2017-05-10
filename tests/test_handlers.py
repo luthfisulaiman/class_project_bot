@@ -6,7 +6,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
-                              dayofdate, invalid_dayofdate, empty_dayofdate, chuck)
+                              dayofdate, invalid_dayofdate, empty_dayofdate, chuck,
+                              fake_json)
 
 from requests.exceptions import ConnectionError
 
@@ -955,3 +956,29 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_fake_json(mocker):
+    fake_json_response = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_fake_json', return_value=fake_json_response)
+    mock_message = Mock(text='/fake_json')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_json_response
+
+
+def test_fake_json_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.get_fake_json',
+        side_effect=ValueError('Command /fake_json doesn\'t need any arguments')
+    )
+    mock_message = Mock(text='/fake_json some_arguments here')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /fake_json doesn\'t need any arguments'
