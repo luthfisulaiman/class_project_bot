@@ -7,23 +7,8 @@ class Weton:
     def __init__(self, year, month, day):
         self.date = datetime.date(year, month, day)
 
-    def getweton(self):
-        hari = self.date.weekday()
-
-        if hari == 0:
-            hari = "Senin"
-        elif hari == 1:
-            hari = "Selasa"
-        elif hari == 2:
-            hari = "Rabu"
-        elif hari == 3:
-            hari = "Kamis"
-        elif hari == 4:
-            hari = "Jumat"
-        elif hari == 5:
-            hari = "Sabtu"
-        else:
-            hari = "Minggu"
+    def get_weton(self):
+        hari = self.get_hari()
 
         inisial = datetime.date(1970, 1, 2)
         inisial = int(time.mktime(inisial.timetuple())) * 1000
@@ -46,3 +31,23 @@ class Weton:
             pasaran = "Pon"
 
         return hari + " " + pasaran
+
+    def get_hari(self):
+        hari = self.date.weekday()
+
+        if hari == 0:
+            hari = "Senin"
+        elif hari == 1:
+            hari = "Selasa"
+        elif hari == 2:
+            hari = "Rabu"
+        elif hari == 3:
+            hari = "Kamis"
+        elif hari == 4:
+            hari = "Jumat"
+        elif hari == 5:
+            hari = "Sabtu"
+        else:
+            hari = "Minggu"
+
+        return hari
