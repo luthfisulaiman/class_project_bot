@@ -7,7 +7,7 @@ class Weton:
     def __init__(self, year, month, day):
         self.date = datetime.date(year, month, day)
 
-    def get_weton(self):
+    def getweton(self):
         hari = self.date.weekday()
 
         if hari == 0:
