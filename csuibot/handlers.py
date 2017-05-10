@@ -526,4 +526,13 @@ def marsfasilkom(message):
 @bot.message_handler(regexp=r'^/primbon \d{4}\-\d{2}\-\d{2}$')
 @message_decorator
 def primbon(message):
-    pass
+    app.logger.debug("'primbon' command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+
+    try:
+        weton = lookup_weton(year, month, day)
+    except TypeError:
+        bot.reply_to(message, 'Year/Month/Day is invalid')
+    else:
+        bot.reply_to(message, weton)

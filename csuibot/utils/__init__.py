@@ -260,4 +260,7 @@ def get_chuck(message_text):
 
 
 def lookup_weton(year, month, day):
-    pass
+    try:
+        return weton.Weton(year, month, day).get_weton()
+    except TypeError:
+        return 'Year/Month/Day is invalid'
