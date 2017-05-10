@@ -6,7 +6,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod, chuck)
+                           compute as co, definisi, note, dayofdate as dod, chuck,
+                           detectlang)
 
 
 def lookup_zodiac(month, day):
@@ -214,4 +215,8 @@ def get_chuck(message_text):
 
 
 def lookup_lang(arg):
-    pass
+    if arg is '':
+        raise ValueError('Command /detect_lang need an argument')
+
+    request = detectlang.DetectLang(arg)
+    return request.get_result()

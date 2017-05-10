@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
-                    manage_notes, lookup_dayofdate, compute)
+                    manage_notes, lookup_dayofdate, compute, lookup_lang)
 from requests.exceptions import ConnectionError
 
 
@@ -458,7 +458,17 @@ def composer(message):
 
 @bot.message_handler(commands=['detect_lang'])
 def detect_lang(message):
-    pass
+    app.logger.debug("'detect_lang' command detected")
+    arg = " ".join(message.text.split()[1:])
+
+    try:
+        used_langs = lookup_lang(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except LookupError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, used_langs)
 
 
 # local debugging
