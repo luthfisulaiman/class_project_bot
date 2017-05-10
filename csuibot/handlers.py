@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_marsfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 
 
@@ -51,6 +51,18 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(commands=['yelfasilkom'])
+def yelfasilkom(message):
+    app.logger.debug("'yelfasilkom' command detected")
+
+    try:
+        yelfasilkom = lookup_yelfasilkom(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelfasilkom)
 
 
 @bot.message_handler(regexp=r'^/notes .*$')
