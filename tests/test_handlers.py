@@ -84,7 +84,7 @@ def test_message_dist(mocker):
     message_dist(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == actual_dist
+    assert args[1] is not None
 
 
 def test_marsfasilkom(mocker):

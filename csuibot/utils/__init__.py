@@ -65,9 +65,11 @@ def lookup_message_dist(chat_id):
         total_message += message_dist['dist'][str(chat_id)][str(hour)]
 
     for hour in range(0, 24):
+        idx_hour = 0
+        idx_percent = 0
         try:
             val = message_dist['dist'][str(chat_id)][str(hour)] * 100.0
-            percent_at_specified_hour = float(val) / total_message
+            idx_percent = float(val) / total_message
         except ZeroDivisionError:
             percent_at_specified_hour = 0.0
             idx_hour = str(hour).zfill(2)
