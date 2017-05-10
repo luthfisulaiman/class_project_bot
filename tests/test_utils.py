@@ -332,7 +332,6 @@ class TestMessageDist:
 
 
 class TestMarsFasilkom:
-
     def test_marsfasilkom(self):
         marsfasilkom = (
             'Samudera laut ilmu\n'
@@ -354,7 +353,6 @@ class TestMarsFasilkom:
 
 
 class TestYelFasilkom:
-
     def test_yelFasilkom(self):
         yelfasilkom = (
             'Fasilkom!!!\n'
@@ -381,7 +379,6 @@ class TestYelFasilkom:
 
 
 class TestDiscreteMaterial:
-
     def test_number_theory(self):
         try:
             res = utils.call_discrete_material('number theory')
@@ -432,7 +429,6 @@ class TestDiscreteMaterial:
 
 
 class TestNotes:
-
     def run_test(self, command, text=''):
         if command == 'add':
             a = utils.manage_notes(command, text)
@@ -466,7 +462,6 @@ class TestNotes:
 
 
 class TestDefinisi:
-
     def run_test(self, word, expected_output):
         mean = utils.lookup_definisi(word)
         assert mean == expected_output
@@ -488,7 +483,6 @@ class TestDefinisi:
 
 
 class TestReminder:
-
     def test_reminder_return_text_one_word(self):
         output = utils.remind_me(0, "Test")
         assert output == "Test"
@@ -499,7 +493,6 @@ class TestReminder:
 
 
 class TestDefine:
-
     def test_define_diamond(self):
         res = utils.lookup_define('diamond')
         result = 'a precious stone consisting of a clear and colourless'
@@ -529,7 +522,6 @@ class TestDefine:
 
 
 class TestKelaskata:
-
     def run_test(self, word, expected):
         try:
             result = utils.lookup_kelaskata(word)
@@ -551,10 +543,9 @@ class TestKelaskata:
 
 
 class TestCustomChuckJoke:
-
     def test_custom_chuck(self):
         res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
-                "Chuck", "Norris")
+            "Chuck", "Norris")
 
         assert res is not None
 
@@ -565,7 +556,6 @@ class TestCustomChuckJoke:
 
 
 class TestPassword:
-
     def test_minimum_length(self):
         res = utils.generate_password(1)
         assert len(res) == 1
@@ -590,7 +580,6 @@ class TestPassword:
 
 
 class TestIP:
-
     def test_wellformed_ip(self):
         res = utils.get_public_ip()
         pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
@@ -598,7 +587,6 @@ class TestIP:
 
 
 class TestHipster():
-
     def test_make_one_paragraph(self):
         res = utils.make_hipster(1)
         length = res.count("\n")
@@ -619,7 +607,6 @@ class TestHipster():
 
 
 class TestMeme:
-
     def test_success(self):
         res = utils.get_meme("Top", "Bottom")
         assert "http" in res
@@ -755,3 +742,13 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestWeton:
+    def test_weton_value_error(self):
+        try:
+            look = utils.lookup_weton("a", "b", "c")
+        except TypeError:
+            pass
+        else:
+            assert look == "Year/Month/Day is invalid"

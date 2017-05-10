@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom, lookup_weton)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -21,6 +21,7 @@ def message_decorator(func):
         chat_id = message.chat.id
         add_message_dist(chat_id, hour)
         return func(message)
+
     return wrapper
 
 
@@ -98,8 +99,8 @@ def note(message):
         bot.reply_to(message, reply)
     else:
         bot.reply_to(message, 'Usage :\n' +
-                              '1. /notes view : View note in this group\n' +
-                              '2. /notes [text] : Add new note in this group\n')
+                     '1. /notes view : View note in this group\n' +
+                     '2. /notes [text] : Add new note in this group\n')
 
 
 @bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
@@ -118,7 +119,7 @@ def definisi(message):
     else:
         app.logger.debug("'definisi_help' command detected")
         bot.reply_to(message, '/definisi [word] : return definition of' +
-                              ' the word in indonesian language\n')
+                     ' the word in indonesian language\n')
 
 
 @bot.message_handler(regexp=r'^/sceleNotif$')
@@ -298,7 +299,6 @@ def parse_date(text):
 @bot.message_handler(regexp=r'^/message_dist')
 @message_decorator
 def message_dist(message):
-
     app.logger.debug("'messagedist' command detected", message)
 
     try:
@@ -355,7 +355,7 @@ def remind(message):
     i = 2
     text = ""
     while (i < len(time_str)):
-        if(i == (len(time_str)-1)):
+        if (i == (len(time_str) - 1)):
             text += time_str[i]
         else:
             text += time_str[i] + " "
@@ -420,7 +420,7 @@ def define(message):
     except requests.HTTPError as e:
         bot.reply_to(
             message,
-            '"'+command + '" is not an english word')
+            '"' + command + '" is not an english word')
     except ValueError as e:
         bot.reply_to(message, 'Command /define need an argument')
     else:
@@ -439,7 +439,7 @@ def kelaskata(message):
     except requests.ConnectionError as e:
         bot.reply_to(
             message,
-            '"'+command + '" is not a word')
+            '"' + command + '" is not a word')
     else:
         bot.reply_to(message, kelas_kata)
 
@@ -521,3 +521,9 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^/primbon \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
+def primbon(message):
+    pass

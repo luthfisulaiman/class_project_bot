@@ -8,11 +8,10 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, weton)
 
 
 def lookup_zodiac(month, day):
-
     zodiacs = [
         z.Aries(),
         z.Taurus(),
@@ -122,14 +121,13 @@ def lookup_definisi(word):
 
 
 def takeSceleNotif():
-
     notif = n.notifTaker()
     return notif.getPost()
 
 
 def lookup_isUpWeb(url):
     pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
-    if(pattern.match(url)):
+    if (pattern.match(url)):
         return iuw.IsUpWeb(url).isUp()
     else:
         raise ValueError
@@ -137,9 +135,9 @@ def lookup_isUpWeb(url):
 
 def remind_me(second, text):
     s = int(second)
-    if(s > 30):
+    if (s > 30):
         raise Exception
-    while(s > 0):
+    while (s > 0):
         time.sleep(1)
         s -= 1
     return text
@@ -157,9 +155,9 @@ def calculate_binary(binA, operand, binB):
 
 
 def lookup_define(word):
-    if(not word):
+    if (not word):
         raise ValueError('Command /define need an argument')
-    elif(containsDigit(word)):
+    elif (containsDigit(word)):
         return word + ' contains number'
     else:
         define_object = d.define(word)
@@ -259,3 +257,7 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def lookup_weton(year, month, day):
+    pass
