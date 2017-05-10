@@ -590,3 +590,82 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestDetectLang:
+    def test_get_type_url(self):
+        url = 'http://google.com/'
+        assert 'url' == utils.detectlang.DetectLang(url).get_type()
+
+    def test_get_type_text(self):
+        text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        assert 'text' == utils.detectlang.DetectLang(text).get_type()
+
+    def test_text(self, mocker):
+        fake_detect_lang = {
+            'timestamp': '2017-05-10T14:00:46.882',
+            'detectedLangs': [
+                {
+                    'confidence': 0.9285,
+                    'lang': 'ro'
+                },
+                {
+                    'confidence': 0.0714,
+                    'lang': 'fr'
+                }
+            ],
+            'time': 1
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        res = utils.lookup_lang(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+            ' Vestibulum elementum condimentum suscipit. Sed semper,'
+            ' dolor eu ultrices interdum, elit quam mollis ligula,'
+            ' vel cursus nisi enim sed nunc.'
+        )
+        assert res == 'Romanian (92.85%)\nFrench (7.14%)\n'
+
+    def test_url(self, mocker):
+        fake_detect_lang = {
+            'timestamp': '2017-05-10T14:00:46.882',
+            'detectedLangs': [
+                {
+                    'confidence': 1.0,
+                    'lang': 'en'
+                }
+            ],
+            'time': 1
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        res = utils.lookup_lang('https://en.wikipedia.org/wiki/Barack_Obama')
+        assert res == 'English (100.0%)\n'
+
+    def test_null_argument(self):
+        try:
+            utils.lookup_lang('')
+        except ValueError as e:
+            assert str(e) == 'Command /detect_lang need an argument'
+
+    def test_lookup_error(self, mocker):
+        fake_detect_lang = {
+            'message': 'Unable to download the web page, request got HTTP error code: 503',
+            'code': 'error.badGateway',
+            'error': True,
+            'data': {}
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        try:
+            utils.lookup_lang('http://notrealwebsite.com')
+        except LookupError as e:
+            assert str(e) == (
+                'Unable to download the web page, request got HTTP error code: 503'
+            )
