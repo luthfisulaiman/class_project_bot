@@ -1,4 +1,6 @@
 from csuibot import utils
+from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
+import os
 import re
 from requests.exceptions import ConnectionError
 import requests
@@ -201,7 +203,7 @@ class TestZodiac:
 
     def test_unknown_zodiac(self, mocker):
         class FakeZodiac():
-            def date_includes(self, *args, **kwargs):
+            def date_includes(self, args, kwargs):
                 return False
 
         mocker.patch('csuibot.utils.z.Scorpio', return_value=FakeZodiac())
@@ -262,6 +264,171 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestMessageDist:
+    def test_file_dist_not_found(self):
+        try:
+            os.remove('dist.txt')
+        except OSError:
+            pass
+
+        expected_res = 'Failed to open file.'
+        actual_res = get_message_dist()
+
+        assert expected_res == actual_res
+
+    def test_division_by_zero(self):
+        chat_id = 999
+        example_dist = {'dist': {}}
+        example_dist['dist'][str(chat_id)] = {}
+        for i in range(0, 24):
+            example_dist['dist'][str(chat_id)][str(i)] = 0
+
+        try:
+            with open('dist.txt', 'w') as dist_file:
+                json.dump(example_dist, dist_file)
+        except IOError:
+            pass
+        res = utils.lookup_message_dist(chat_id)
+        assert res is not None
+
+    def test_chatid_not_in_file(self):
+        try:
+            os.remove('dist.txt')
+        except OSError:
+            pass
+        chat_id = 0
+        hour = 0
+        expected_res = {'dist': {}}
+        expected_res['dist'][str(chat_id)] = {}
+        for i in range(0, 24):
+            if i == hour:
+                expected_res['dist'][str(chat_id)][str(i)] = 1
+            else:
+                expected_res['dist'][str(chat_id)][str(i)] = 0
+
+        add_message_to_dist(chat_id, hour)
+        actual_res = get_message_dist()
+
+        assert actual_res == expected_res
+
+    def test_get_message_dist(self):
+        expected_dist = {'dist': {}}
+        expected_dist['dist'][str(0)] = {}
+        for i in range(0, 24):
+            expected_dist['dist'][str(0)][str(i)] = 1
+
+        with open('dist.txt', 'w') as outfile:
+            json.dump(expected_dist, outfile)
+
+        chat_id = 0
+        actual_dist = utils.lookup_message_dist(chat_id)
+
+        expected_res = ''
+        for i in range(0, 24):
+            expected_res = expected_res + (str(i).zfill(2) + ' -> ' + str(4.17) + '%\n')
+        assert actual_dist is not None
+
+
+class TestMarsFasilkom:
+
+    def test_marsfasilkom(self):
+        marsfasilkom = (
+            'Samudera laut ilmu\n'
+            'Terhampar di hadapanku\n'
+            'Cakrawala bersinar\n'
+            'Memanggil ku ke sana\n\n'
+            '‘Kan ku seberangi lautan\n'
+            '‘Tak ku kenal putus asa\n'
+            'Dengan daya dan upaya\n'
+            'Untuk ilmu komputer\n')
+        res = utils.lookup_marsfasilkom('/marsfasilkom')
+        assert res == marsfasilkom
+
+    def test_marsfasilkom_value_error(self):
+        try:
+            utils.lookup_marsfasilkom('/marsfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /marsfasilkom doesn\'t need any arguments'
+
+
+class TestYelFasilkom:
+
+    def test_yelFasilkom(self):
+        yelfasilkom = (
+            'Fasilkom!!!\n'
+            'Fasilkom!\n'
+            'Ilmu Komputer\n'
+            'Fasilkom!\n'
+            'Satu Banding Seratus\n'
+            'Kami Elit, Kami Kompak, Kami Anak UI\n'
+            'MIPA Bukan, Teknik Bukan,\n'
+            'FE Apalagi\n'
+            'Kami ini Fakultas No.1 di UI\n'
+            'Kami Cinta Fasilkom\n'
+            'Kami Bangga Fasilkom\n'
+            'Maju Terus\n'
+            'Fasilkom!')
+        res = utils.lookup_yelfasilkom('/yelfasilkom')
+        assert res == yelfasilkom
+
+    def test_yelfasilkom_value_error(self):
+        try:
+            utils.lookup_yelfasilkom('/yelfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /yelfasilkom doesn\'t need any arguments'
+
+
+class TestDiscreteMaterial:
+
+    def test_number_theory(self):
+        try:
+            res = utils.call_discrete_material('number theory')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_gcd(self):
+        try:
+            res = utils.call_discrete_material('gcd')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_lcm(self):
+        try:
+            res = utils.call_discrete_material('lcm')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_rekurensi(self):
+        try:
+            res = utils.call_discrete_material('relasi rekurensi')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_biner(self):
+        try:
+            res = utils.call_discrete_material('relasi biner')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_domain_range(self):
+        try:
+            res = utils.call_discrete_material('domain dan range')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
 
 class TestNotes:
@@ -510,8 +677,6 @@ class TestSoundComposer:
     def test_get_track(self):
         try:
             res = utils.call_composer('iamlione')
-        except ValueError:
-            pass
         except ConnectionError:
             pass
         else:
