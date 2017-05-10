@@ -1,7 +1,10 @@
+import requests
+
+
 class FakeJson:
 
     def __init__(self):
-        pass
+        self._url = 'http://jsonplaceholder.typicode.com/posts/1'
 
     def get_response(self):
-        pass
+        return requests.get(self._url).text
