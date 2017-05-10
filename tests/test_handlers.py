@@ -7,7 +7,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              chuck, marsfasilkom, yelfasilkom, get_discrete_material as dm)
+                              marsfasilkom, yelfasilkom,
+                              chuck, get_discrete_material as dm, message_dist)
 from requests.exceptions import ConnectionError
 
 
@@ -69,6 +70,21 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_message_dist(mocker):
+    actual_dist = {'dist': {}}
+    actual_dist['dist'][str(0)] = {}
+    for i in range(0, 24):
+        actual_dist['dist'][str(0)][str(i)] = 0
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_message_dist', return_value=actual_dist)
+    mock_message = Mock(text='/message_dist')
+
+    message_dist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
 
 
 def test_marsfasilkom(mocker):

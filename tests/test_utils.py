@@ -1,4 +1,6 @@
 from csuibot import utils
+from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
+import os
 import re
 from requests.exceptions import ConnectionError
 import requests
@@ -262,6 +264,71 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestMessageDist:
+    def test_file_dist_not_found(self):
+        try:
+            os.remove('dist.txt')
+        except OSError:
+            pass
+
+        expected_res = 'Failed to open file.'
+        actual_res = get_message_dist()
+
+        assert expected_res == actual_res
+
+    def test_division_by_zero(self):
+        chat_id = 999
+        example_dist = {'dist': {}}
+        example_dist['dist'][str(chat_id)] = {}
+        for i in range(0, 24):
+            example_dist['dist'][str(chat_id)][str(i)] = 0
+
+        try:
+            with open('dist.txt', 'w') as dist_file:
+                json.dump(example_dist, dist_file)
+        except IOError:
+            pass
+        res = utils.lookup_message_dist(chat_id)
+        assert res is not None
+
+    def test_chatid_not_in_file(self):
+        try:
+            os.remove('dist.txt')
+        except OSError:
+            pass
+        chat_id = 0
+        hour = 0
+        expected_res = {'dist': {}}
+        expected_res['dist'][str(chat_id)] = {}
+        for i in range(0, 24):
+            if i == hour:
+                expected_res['dist'][str(chat_id)][str(i)] = 1
+            else:
+                expected_res['dist'][str(chat_id)][str(i)] = 0
+
+        add_message_to_dist(chat_id, hour)
+        actual_res = get_message_dist()
+
+        assert actual_res == expected_res
+
+    def test_get_message_dist(self):
+        expected_dist = {'dist': {}}
+        expected_dist['dist'][str(0)] = {}
+        for i in range(0, 24):
+            expected_dist['dist'][str(0)][str(i)] = 1
+
+        with open('dist.txt', 'w') as outfile:
+            json.dump(expected_dist, outfile)
+
+        chat_id = 0
+        actual_dist = utils.lookup_message_dist(chat_id)
+
+        expected_res = ''
+        for i in range(0, 24):
+            expected_res = expected_res + (str(i).zfill(2) + ' -> ' + str(4.17) + '%\n')
+        assert actual_dist is not None
 
 
 class TestMarsFasilkom:

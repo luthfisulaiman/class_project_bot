@@ -1,6 +1,5 @@
 import requests
 import re
-import datetime
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
@@ -9,11 +8,24 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
+                    lookup_message_dist, add_message_dist,
                     lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
+import datetime
+
+
+def message_decorator(func):
+    def wrapper(message):
+        now = datetime.datetime.now()
+        hour = (now.hour + 7) % 24
+        chat_id = message.chat.id
+        add_message_dist(chat_id, hour)
+        return func(message)
+    return wrapper
 
 
 @bot.message_handler(regexp=r'^/about$')
+@message_decorator
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
@@ -24,6 +36,7 @@ def help(message):
 
 
 @bot.message_handler(regexp=r'^/zodiac \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
     _, date_str = message.text.split(' ')
@@ -39,6 +52,7 @@ def zodiac(message):
 
 
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
 def shio(message):
     app.logger.debug("'shio' command detected")
     _, date_str = message.text.split(' ')
@@ -279,6 +293,20 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/message_dist')
+@message_decorator
+def message_dist(message):
+
+    app.logger.debug("'messagedist' command detected", message)
+
+    try:
+        message_dist = lookup_message_dist(message.chat.id)
+    except ValueError:
+        bot.reply_to(message, 'Internal server error')
+    else:
+        bot.reply_to(message, message_dist)
 
 
 @bot.message_handler(regexp=r'^\/tellme .+$')
