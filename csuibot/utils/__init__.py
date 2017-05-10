@@ -1,3 +1,4 @@
+from csuibot.utils import message_dist as md
 import json
 import re
 import time
@@ -6,11 +7,13 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod, chuck,
+                           compute as co, definisi, note, dayofdate as dod,
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
                            fakejson)
 
 
 def lookup_zodiac(month, day):
+
     zodiacs = [
         z.Aries(),
         z.Taurus(),
@@ -52,6 +55,51 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_message_dist(chat_id):
+    message_dist = md.get_message_dist()
+    message_dist_text = ''
+    total_message = 0
+
+    for hour in range(0, 24):
+        total_message += message_dist['dist'][str(chat_id)][str(hour)]
+
+    for hour in range(0, 24):
+        idx_hour = 0
+        idx_percent = 0
+        try:
+            val = message_dist['dist'][str(chat_id)][str(hour)] * 100.0
+            idx_percent = float(val) / total_message
+        except ZeroDivisionError:
+            percent_at_specified_hour = 0.0
+            idx_hour = str(hour).zfill(2)
+            idx_percent = str(round(percent_at_specified_hour, 2))
+        message_dist_text += '{} -> {}%\n'.format(idx_hour, idx_percent)
+
+    return message_dist_text
+
+
+def add_message_dist(chat_id, hour):
+    md.add_message_to_dist(chat_id, hour)
+
+
+def lookup_marsfasilkom(message_text):
+    if message_text == '/marsfasilkom':
+        return marsfasilkom.MarsFasilkom.get_mars_fasilkom()
+    else:
+        raise ValueError('Command /marsfasilkom doesn\'t need any arguments')
+
+
+def lookup_yelfasilkom(message_text):
+    if message_text == '/yelfasilkom':
+        return yelfasilkom.YelFasilkom.get_yel_fasilkom()
+    else:
+        raise ValueError('Command /yelfasilkom doesn\'t need any arguments')
+
+
+def call_discrete_material(query):
+    return dm.DiscreteMath().get_discrete_material(query)
 
 
 def manage_notes(command, text=''):
