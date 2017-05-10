@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="PYTHON_MODULE" version="4">
-  <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
-<<<<<<< HEAD
-    <orderEntry type="jdk" jdkName="Python 3.6.0 (C:\Users\lightmire\AppData\Local\Programs\Python\Python36-32\python.exe)" jdkType="Python SDK" />
-    <orderEntry type="sourceFolder" forTests="false" />
-  </component>
+<module version="4">
   <component name="TestRunnerService">
     <option name="projectConfiguration" value="py.test" />
     <option name="PROJECT_TEST_RUNNER" value="py.test" />
-=======
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="TestRunnerService">
-    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
->>>>>>> e2cc45d7ecd4db8f29cb39f6742ba0a2f2a07caa
   </component>
 </module>

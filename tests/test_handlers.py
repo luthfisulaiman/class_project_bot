@@ -1,10 +1,14 @@
-from csuibot.handlers import help, zodiac, shio, yelkomputer, message_dist
 import requests
-from unittest.mock import (Mock, kelaskata, compute_binary, calculate,
+from unittest.mock import Mock
+from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
+                              colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
+                              password, password_16, custom_chuck_joke, define,
+                              kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              chuck, get_discrete_material as dm)
+                              marsfasilkom, yelfasilkom,
+                              chuck, get_discrete_material as dm, message_dist)
 from requests.exceptions import ConnectionError
 
 
@@ -81,6 +85,52 @@ def test_message_dist(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == actual_dist
+
+
+def test_marsfasilkom(mocker):
+    fake_marsfasilkom = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_marsfasilkom', return_value=fake_marsfasilkom)
+    mock_message = Mock(text='/marsfasilkom')
+
+    marsfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_marsfasilkom
+
+
+def test_marsfasilkom_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_marsfasilkom', side_effect=ValueError)
+    mock_message = Mock(text='/marsfasilkom some_arguments_here')
+
+    marsfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /marsfasilkom doesn\'t need any arguments'
+
+
+def test_yelfasilkom(mocker):
+    fake_yelfasilkom = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelfasilkom', return_value=fake_yelfasilkom)
+    mock_message = Mock(text='/yelfasilkom')
+
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_yelfasilkom
+
+
+def test_yelfasilkom_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelfasilkom', side_effect=ValueError)
+    mock_message = Mock(text='/yelfasilkom some_arguments_here')
+
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /yelfasilkom doesn\'t need any arguments'
 
 
 def test_discrete_number(mocker):

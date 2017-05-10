@@ -203,7 +203,7 @@ class TestZodiac:
 
     def test_unknown_zodiac(self, mocker):
         class FakeZodiac():
-            def date_includes(self, *args, **kwargs):
+            def date_includes(self, args, kwargs):
                 return False
 
         mocker.patch('csuibot.utils.z.Scorpio', return_value=FakeZodiac())
@@ -329,6 +329,55 @@ class TestMessageDist:
         for i in range(0, 24):
             expected_res = expected_res + (str(i).zfill(2) + ' -> ' + str(4.17) + '%\n')
         assert actual_dist == expected_res
+
+
+class TestMarsFasilkom:
+
+    def test_marsfasilkom(self):
+        marsfasilkom = (
+            'Samudera laut ilmu\n'
+            'Terhampar di hadapanku\n'
+            'Cakrawala bersinar\n'
+            'Memanggil ku ke sana\n\n'
+            '‘Kan ku seberangi lautan\n'
+            '‘Tak ku kenal putus asa\n'
+            'Dengan daya dan upaya\n'
+            'Untuk ilmu komputer\n')
+        res = utils.lookup_marsfasilkom('/marsfasilkom')
+        assert res == marsfasilkom
+
+    def test_marsfasilkom_value_error(self):
+        try:
+            utils.lookup_marsfasilkom('/marsfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /marsfasilkom doesn\'t need any arguments'
+
+
+class TestYelFasilkom:
+
+    def test_yelFasilkom(self):
+        yelfasilkom = (
+            'Fasilkom!!!\n'
+            'Fasilkom!\n'
+            'Ilmu Komputer\n'
+            'Fasilkom!\n'
+            'Satu Banding Seratus\n'
+            'Kami Elit, Kami Kompak, Kami Anak UI\n'
+            'MIPA Bukan, Teknik Bukan,\n'
+            'FE Apalagi\n'
+            'Kami ini Fakultas No.1 di UI\n'
+            'Kami Cinta Fasilkom\n'
+            'Kami Bangga Fasilkom\n'
+            'Maju Terus\n'
+            'Fasilkom!')
+        res = utils.lookup_yelfasilkom('/yelfasilkom')
+        assert res == yelfasilkom
+
+    def test_yelfasilkom_value_error(self):
+        try:
+            utils.lookup_yelfasilkom('/yelfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /yelfasilkom doesn\'t need any arguments'
 
 
 class TestDiscreteMaterial:

@@ -8,7 +8,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist)
+                    lookup_message_dist, add_message_dist,
+                    lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -64,6 +65,18 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(commands=['yelfasilkom'])
+def yelfasilkom(message):
+    app.logger.debug("'yelfasilkom' command detected")
+
+    try:
+        yelfasilkom = lookup_yelfasilkom(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelfasilkom)
 
 
 @bot.message_handler(regexp=r'^/notes .*$')
@@ -496,3 +509,15 @@ def composer(message):
         bot.reply_to(message, 'Error connecting to Soundcloud API')
     else:
         bot.reply_to(message, track)
+
+
+@bot.message_handler(commands=['marsfasilkom'])
+def marsfasilkom(message):
+    app.logger.debug("'marsfasilkom' command detected")
+
+    try:
+        marsfasilkom = lookup_marsfasilkom(message.text)
+    except ValueError:
+        bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, marsfasilkom)
