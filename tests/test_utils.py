@@ -264,6 +264,28 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestMarsFasilkom:
+
+    def test_marsfasilkom(self):
+        marsfasilkom = (
+            'Samudera laut ilmu\n'
+            'Terhampar di hadapanku\n'
+            'Cakrawala bersinar\n'
+            'Memanggil ku ke sana\n\n'
+            '‘Kan ku seberangi lautan\n'
+            '‘Tak ku kenal putus asa\n'
+            'Dengan daya dan upaya\n'
+            'Untuk ilmu komputer\n')
+        res = utils.lookup_marsfasilkom('/marsfasilkom')
+        assert res == marsfasilkom
+
+    def test_marsfasilkom_value_error(self):
+        try:
+            utils.lookup_marsfasilkom('/marsfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /marsfasilkom doesn\'t need any arguments'
+
+
 class TestYelFasilkom:
 
     def test_yelFasilkom(self):

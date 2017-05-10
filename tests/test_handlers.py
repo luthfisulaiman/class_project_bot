@@ -7,7 +7,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              chuck, get_discrete_material as dm, yelfasilkom)
+                              chuck, marsfasilkom, yelfasilkom, get_discrete_material as dm)
 from requests.exceptions import ConnectionError
 
 
@@ -69,6 +69,29 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_marsfasilkom(mocker):
+    fake_marsfasilkom = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_marsfasilkom', return_value=fake_marsfasilkom)
+    mock_message = Mock(text='/marsfasilkom')
+
+    marsfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_marsfasilkom
+
+
+def test_marsfasilkom_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_marsfasilkom', side_effect=ValueError)
+    mock_message = Mock(text='/marsfasilkom some_arguments_here')
+
+    marsfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /marsfasilkom doesn\'t need any arguments'
 
 
 def test_yelfasilkom(mocker):

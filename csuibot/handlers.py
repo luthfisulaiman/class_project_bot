@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 
 
@@ -481,3 +481,15 @@ def composer(message):
         bot.reply_to(message, 'Error connecting to Soundcloud API')
     else:
         bot.reply_to(message, track)
+
+
+@bot.message_handler(commands=['marsfasilkom'])
+def marsfasilkom(message):
+    app.logger.debug("'marsfasilkom' command detected")
+
+    try:
+        marsfasilkom = lookup_marsfasilkom(message.text)
+    except ValueError:
+        bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, marsfasilkom)
