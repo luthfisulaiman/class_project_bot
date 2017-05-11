@@ -8,7 +8,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, topposter)
 
 
 def lookup_zodiac(month, day):
@@ -259,3 +259,7 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def get_top_poster():
+    return topposter.TopPoster().get_top_poster()

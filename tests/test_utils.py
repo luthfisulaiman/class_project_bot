@@ -813,3 +813,9 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestTopPoster:
+    def test_get_top_poster(self):
+        res = utils.get_top_poster()
+        assert res is not None
