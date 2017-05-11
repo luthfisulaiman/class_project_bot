@@ -755,3 +755,17 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestTropicalChartBillboard:
+    def test_get_top10_200_chart(self):
+        res = utils.b200.get_top_10()
+        assert len(res['items']) == 10
+
+    def test_get_top10_tropical_chart(self):
+        res = utils.b200.get_top_10()
+        assert len(res['items']) == 10
+
+    def test_get_top10_hot100_chart(self):
+        res = utils.b200.get_top_10()
+        assert len(res['items']) == 10
