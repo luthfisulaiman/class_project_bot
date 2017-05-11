@@ -9,8 +9,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           billboard_tropical_chart as bt, billboard_200_chart as b200,
-                           billboard_hot100_chart as bh)
+                           billboard as b)
 
 
 def lookup_zodiac(month, day):
@@ -263,13 +262,15 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def get_top10_billboard_hot100_chart():
-    pass
-
-
-def get_top10_billboard_200_chart():
-    pass
-
-
-def get_top10_billboard_tropical_chart():
-    pass
+def lookup_top10_billboard_chart(chart_category):
+    result = b.get_top10(chart_category)
+    if result != 'Invalid chart category':
+        result_rank = ''
+        for i in range(0, 10):
+            rank_i = result['items'][i]
+            _, title = rank_i.find('title').text.split(':')
+            artist = rank_i.find('artist').text
+            current_rank = rank_i.find('rank_this_week').text
+            result_rank += '({}) - {} - {} \n'.format(current_rank, artist, title)
+        return result_rank
+    return result

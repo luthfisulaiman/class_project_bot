@@ -759,13 +759,17 @@ class TestChuck:
 
 class TestTropicalChartBillboard:
     def test_get_top10_200_chart(self):
-        res = utils.b200.get_top_10()
+        res = utils.b.get_top10('200')
         assert len(res['items']) == 10
 
     def test_get_top10_tropical_chart(self):
-        res = utils.b200.get_top_10()
+        res = utils.b.get_top10('tropical')
         assert len(res['items']) == 10
 
     def test_get_top10_hot100_chart(self):
-        res = utils.b200.get_top_10()
+        res = utils.b.get_top10('hot100')
         assert len(res['items']) == 10
+
+    def test_invalid_chart_category(self):
+        res = utils.b.get_top10('invalid')
+        assert res == 'Invalid chart category'

@@ -8,7 +8,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist,
+                              billboard_chart)
 from requests.exceptions import ConnectionError
 
 
@@ -1098,6 +1099,30 @@ def test_chuck_with_args(mocker):
     mock_message = Mock(text='/chuck args')
 
     chuck(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_billboard_with_valid_arguments(mocker):
+    fake_error = 'Invalid chart category'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.billboard_chart')
+    mock_message = Mock(text='/billboard hot100')
+
+    billboard_chart(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] != fake_error
+
+
+def test_billboard_with_invalid_arguments(mocker):
+    fake_error = 'Invalid chart category'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.billboard_chart')
+    mock_message = Mock(text='/billboard invalid')
+
+    billboard_chart(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
