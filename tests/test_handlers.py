@@ -1177,15 +1177,3 @@ def test_weton_minggu(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_weton
-
-
-def test_weton_type_error(mocker):
-    fake_weton = 'Year/Month/Day is invalid'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_weton', side_effect=TypeError)
-    mock_message = Mock(text='/primbon 2015-05-10')
-
-    primbon(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_weton

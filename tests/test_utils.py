@@ -745,10 +745,10 @@ class TestChuck:
 
 
 class TestWeton:
+    def test_weton_type_error(self):
+        look = utils.lookup_weton("a", "b", "c")
+        assert look == "Year/Month/Day is invalid"
+
     def test_weton_value_error(self):
-        try:
-            look = utils.lookup_weton("a", "b", "c")
-        except TypeError:
-            pass
-        else:
-            assert look == "Year/Month/Day is invalid"
+        look = utils.lookup_weton(1995, 12, 32)
+        assert look == "Year/Month/Day is invalid"

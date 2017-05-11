@@ -264,3 +264,5 @@ def lookup_weton(year, month, day):
         return weton.Weton(year, month, day).get_weton()
     except TypeError:
         return 'Year/Month/Day is invalid'
+    except ValueError:
+        return 'Year/Month/Day is invalid'

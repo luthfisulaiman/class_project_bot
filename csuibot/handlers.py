@@ -530,9 +530,5 @@ def primbon(message):
     _, date_str = message.text.split(' ')
     year, month, day = parse_date(date_str)
 
-    try:
-        weton = lookup_weton(year, month, day)
-    except TypeError:
-        bot.reply_to(message, 'Year/Month/Day is invalid')
-    else:
-        bot.reply_to(message, weton)
+    weton = lookup_weton(year, month, day)
+    bot.reply_to(message, weton)
