@@ -521,3 +521,9 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(content_types=['photo'],
+                     func=lambda message: message.caption in ['/bgcolour', '/fgcolour'])
+def extract_colour_from_image(message):
+    pass
