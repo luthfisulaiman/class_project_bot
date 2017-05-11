@@ -5,7 +5,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
-                    lookup_define, lookup_kelaskata)
+                    lookup_define, lookup_kelaskata, lookup_hotcountry)
 
 from requests.exceptions import ConnectionError
 
@@ -241,3 +241,14 @@ def yelkomputer(message):
         bot.reply_to(message, 'Command /yelkomputer doesn\'t need any arguments')
     else:
         bot.reply_to(message, yelkomputer)
+
+
+@bot.message_handler(regexp=r'^/billboard hotcountry$')
+def hotcountry(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        hotcountry = lookup_hotcountry()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, hotcountry)

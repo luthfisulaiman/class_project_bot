@@ -482,3 +482,15 @@ class TestYelKomputer:
             utils.lookup_yelkomputer('/yelkomputer args')
         except ValueError as e:
             assert str(e) == 'Command /yelkomputer doesn\'t need any arguments'
+
+
+class TestHotcountry:
+    def run_test(self, expected):
+        try:
+            result = utils.lookup_hotcountry()
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_hotcountry(self):
+        self.run_test('foobar')

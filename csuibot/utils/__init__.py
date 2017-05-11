@@ -1,7 +1,7 @@
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
-                           define as d)
+                           define as d, hotcountry as hot)
 from csuibot.utils import yelkomputer
 
 
@@ -127,3 +127,8 @@ def lookup_yelkomputer(message_text):
         return yelkomputer.YelKomputer.get_yel_komputer()
     else:
         raise ValueError('Command /yelkomputer doesn\'t need any arguments')
+
+
+def lookup_hotcountry():
+    hotcountry_object = hot.hotcountry()
+    return hotcountry_object.getHotcountry()

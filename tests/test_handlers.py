@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata)
+                              kelaskata, hotcountry)
 from requests.exceptions import ConnectionError
 
 
@@ -524,3 +524,27 @@ def test_yelkomputer_with_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Command /yelkomputer doesn\'t need any arguments'
+
+
+def test_hotcountry(mocker):
+    fake_hotcountry = 'foobar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_hotcountry', return_value=fake_hotcountry)
+    mock_message = Mock(text='/billboard hotcountry')
+
+    hotcountry(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_hotcountry
+
+
+def test_hotcountry_no_connection(mocker):
+    fake_hotcountry = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_hotcountry', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard hotcountry')
+
+    hotcountry(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_hotcountry
