@@ -8,7 +8,9 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
+                           extractcolour)
+from csuibot import app
 
 
 def lookup_zodiac(month, day):
@@ -262,4 +264,15 @@ def get_chuck(message_text):
 
 
 def extract_colour(message):
-    pass
+    photo_id = message.photo[len(message.photo) - 1].file_id
+    caption = message.caption
+    app.logger.debug(
+        'extract_colour, photo_id: {}, caption: {}'.format(photo_id, caption))
+    ec = extractcolour.ExtractColour(photo_id)
+    if caption == "/fgcolour":
+        app.logger.debug('extract_colour, if: set state /fgcolour')
+        ec.state = extractcolour.ExtractColour.FGCOLOUR
+    ret = ec.extract()
+    # import pdb; pdb.set_trace()
+    app.logger.debug('extract_colour, extract(): {}'.format(ret))
+    return ret

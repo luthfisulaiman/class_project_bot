@@ -9,7 +9,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom,
+                    extract_colour)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -523,7 +524,18 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(content_types=['photo'],
-                     func=lambda message: message.caption in ['/bgcolour', '/fgcolour'])
+@bot.message_handler(content_types=['photo'])
+# func=lambda message: message.caption in ['/bgcolour', '/fgcolour'])
 def extract_colour_from_image(message):
-    pass
+    app.logger.debug("'extract_colour_from_image' handler executed")
+    if message.caption in ['/bgcolour', '/fgcolour']:  # else check other handler
+        try:
+            extracted = extract_colour(message)
+        except requests.exceptions.ConnectionError:
+            bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+        except requests.exceptions.RequestException:
+            bot.reply_to(message, 'An error occured. Please try again in a moment.')
+        else:
+            bot.reply_to(message, extracted)
