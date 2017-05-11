@@ -494,3 +494,15 @@ class TestHotcountry:
 
     def test_hotcountry(self):
         self.run_test('foobar')
+
+
+class TestNewAge:
+    def run_test(self, expected):
+        try:
+            result = utils.lookup_newage()
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_newage(self):
+        self.run_test('foobar')

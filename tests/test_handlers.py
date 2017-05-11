@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, hotcountry)
+                              kelaskata, hotcountry, newage)
 from requests.exceptions import ConnectionError
 
 
@@ -548,3 +548,27 @@ def test_hotcountry_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_hotcountry
+
+
+def test_newage(mocker):
+    fake_newage = 'foobar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', return_value=fake_newage)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
+
+
+def test_newage_no_connection(mocker):
+    fake_newage = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
