@@ -6,7 +6,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
-                           calculate_binary as cb, isupweb as iuw, notiftaker as n,
+                           calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
                            wiki)
@@ -136,16 +136,16 @@ def lookup_definisi(word):
     return mean
 
 
-def takescelenotif():
+def takeSceleNotif():
 
-    notif = n.NotifTaker()
+    notif = n.notifTaker()
     return notif.getPost()
 
 
-def lookup_isupweb(url):
+def lookup_isUpWeb(url):
     pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
     if(pattern.match(url)):
-        return iuw.IsUpWeb(url).isup()
+        return iuw.IsUpWeb(url).isUp()
     else:
         raise ValueError
 
@@ -160,28 +160,28 @@ def remind_me(second, text):
     return text
 
 
-def calculate_binary(bina, operand, binb):
+def calculate_binary(binA, operand, binB):
     if operand == '+':
-        return str(cb.CalculateBinary(bina, binb).addition())
+        return str(cb.CalculateBinary(binA, binB).addition())
     elif operand == '-':
-        return str(cb.CalculateBinary(bina, binb).subtraction())
+        return str(cb.CalculateBinary(binA, binB).subtraction())
     elif operand == '*':
-        return str(cb.CalculateBinary(bina, binb).multiplication())
+        return str(cb.CalculateBinary(binA, binB).multiplication())
     else:
-        return str(cb.CalculateBinary(bina, binb).division())
+        return str(cb.CalculateBinary(binA, binB).division())
 
 
 def lookup_define(word):
     if(not word):
         raise ValueError('Command /define need an argument')
-    elif(containsdigit(word)):
+    elif(containsDigit(word)):
         return word + ' contains number'
     else:
-        define_object = d.Define(word)
-        return define_object.getdefine()
+        define_object = d.define(word)
+        return define_object.getDefine()
 
 
-def containsdigit(string):
+def containsDigit(string):
     return any(i.isdigit() for i in string)
 
 
@@ -189,8 +189,8 @@ def lookup_kelaskata(message):
     if message == '':
         raise ValueError('Try /kelaskata [word]')
     else:
-        kelaskata_object = k.Kelaskata(message)
-        return kelaskata_object.getkelaskata()
+        kelaskata_object = k.kelaskata(message)
+        return kelaskata_object.getKelasKata()
 
 
 def generate_custom_chuck_joke(first_name, last_name):
@@ -262,7 +262,7 @@ def call_composer(username):
 
 def lookup_dayofdate(year, month, day):
     try:
-        return dod.Dayofdate.dayoutput(year, month, day)
+        return dod.dayofdate.dayoutput(year, month, day)
     except ValueError:
         return ('Incorrect use of dayofdate command. '
                 'Please write a valid date in the form of yyyy-mm-dd, '
@@ -274,7 +274,3 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
-
-
-def similar_text():
-    raise NotImplemented

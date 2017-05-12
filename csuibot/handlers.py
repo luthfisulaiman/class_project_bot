@@ -1,12 +1,12 @@
+from . import app, bot
 import requests
 import re
-from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isupweb, takescelenotif, lookup_definisi,
+                    remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor)
@@ -95,7 +95,7 @@ def yelfasilkom(message):
 
     try:
         yelfasilkom = lookup_yelfasilkom(message.text)
-    except ValueError:
+    except ValueError as e:
         bot.reply_to(message, 'Command /yelfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, yelfasilkom)
@@ -144,11 +144,11 @@ def definisi(message):
 
 
 @bot.message_handler(regexp=r'^/sceleNotif$')
-def scelenoticehandler(message):
+def sceleNoticeHandler(message):
     app.logger.debug("scele command detected")
     try:
-        notification = takescelenotif()
-    except Exception:
+        notification = takeSceleNotif()
+    except Exception as e:
         bot.reply_to(message, 'Error catched')
     else:
         bot.reply_to(message, notification)
@@ -376,12 +376,12 @@ def calculate(message):
 
 
 @bot.message_handler(regexp=r'^\/is_up (.*)$')
-def isup(message):
+def isUp(message):
     app.logger.debug("'is_up' command detected")
     _, url = message.text.split(' ')
     try:
         app.logger.debug('check {} for up/down....')
-        result = lookup_isupweb(url)
+        result = lookup_isUpWeb(url)
     except ValueError:
         bot.reply_to(message, 'Url is invalid,insert a valid url!.Ex: https://www.google.com')
     else:
@@ -457,11 +457,11 @@ def define(message):
 
     try:
         define_ = lookup_define(command)
-    except requests.HTTPError:
+    except requests.HTTPError as e:
         bot.reply_to(
             message,
             '"'+command + '" is not an english word')
-    except ValueError:
+    except ValueError as e:
         bot.reply_to(message, 'Command /define need an argument')
     else:
         bot.reply_to(message, define_)
@@ -474,9 +474,9 @@ def kelaskata(message):
 
     try:
         kelas_kata = lookup_kelaskata(command)
-    except ValueError:
+    except ValueError as e:
         bot.reply_to(message, 'Try /kelaskata [word]')
-    except requests.ConnectionError:
+    except requests.ConnectionError as e:
         bot.reply_to(
             message,
             '"'+command + '" is not a word')
@@ -509,20 +509,18 @@ def loremipsum(message):
 @bot.message_handler(regexp=r'^/xkcd$')
 def xkcd(message):
     app.logger.debug("'xkcd' command detected")
-    command = message.text.split(" ")
-    if (len(command) == 1):
-        try:
-            comic = fetch_latest_xkcd()
-        except ValueError:
-            bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
-        except requests.exceptions.ConnectionError:
-            bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
-        except requests.exceptions.HTTPError:
-            bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
-        except requests.exceptions.RequestException:
-            bot.reply_to(message, 'An error occured. Please try again in a moment.')
-        else:
-            bot.reply_to(message, comic)
+    try:
+        comic = fetch_latest_xkcd()
+    except ValueError:
+        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, comic)
 
 
 @bot.message_handler(commands=['yelkomputer'])

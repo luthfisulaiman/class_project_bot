@@ -1,5 +1,4 @@
 from csuibot import utils
-
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
@@ -219,7 +218,7 @@ class TestZodiac:
 
 class TestNotifTaker:
     def test_notif_taker(self):
-        res = utils.takescelenotif()
+        res = utils.takeSceleNotif()
         assert res != ""
 
 
@@ -454,7 +453,7 @@ class TestMarsFasilkom:
 
 class TestYelFasilkom:
 
-    def test_yelfasilkom(self):
+    def test_yelFasilkom(self):
         yelfasilkom = (
             'Fasilkom!!!\n'
             'Fasilkom!\n'
@@ -652,8 +651,8 @@ class TestKelaskata:
 class TestCustomChuckJoke:
 
     def test_custom_chuck(self):
-        temp = utils.custom_chuck.CustomChuckJoke()
-        res = temp.generate_custom_chuck_joke("Chuck", "Norris")
+        res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
+                "Chuck", "Norris")
 
         assert res is not None
 
