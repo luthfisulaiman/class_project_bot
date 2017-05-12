@@ -8,7 +8,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist,
+                              hotcountry_artist)
 from requests.exceptions import ConnectionError
 
 
@@ -1102,5 +1103,15 @@ def test_chuck_with_args(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
 
+
 def test_hotcountry_artist(mocker):
-    pass 
+    fake_artist = ("Sam Hunt\nBody Like A Back Road\n1")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hotcountry_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hotcountry Sam Hunt')
+
+    hotcountry_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
