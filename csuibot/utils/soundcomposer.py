@@ -33,7 +33,7 @@ class SoundComposer:
 
         track_message = ""
         for i in range(5):
-            track_message += tracks[i]['title'] + '\n' + tracks[i]['duration'] + '\n'
-            track_message += self.username + '\n' + tracks[i]['permalink_url'] + '\n \n'
+            track_message += tracks[i]['title'] + '\n' + tracks[i]['duration'] + '\n' + \
+                             self.username + '\n' + tracks[i]['permalink_url'] + '\n \n'
 
         return track_message

@@ -2,9 +2,7 @@ import datetime
 import calendar
 
 
-class Dayofdate:
-
-    @staticmethod
+class dayofdate:
     def dayoutput(year, month, day):
         try:
             dateans = datetime.date(year, month, day)
