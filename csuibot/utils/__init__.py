@@ -262,6 +262,6 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def top_ten_cd_oricon(type, date):
-    pass
-    ocd
+def top_ten_cd_oricon(chart_type, date):
+    chart = ocd.Oricon_cd.get_top_ten(chart_type, date)
+    return chart

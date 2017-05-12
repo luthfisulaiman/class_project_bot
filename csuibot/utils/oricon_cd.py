@@ -10,7 +10,7 @@ class Oricon_cd:
     @classmethod
     def get_top_ten(cls, chart_type, date):
         if chart_type == 'y':
-
+            
         elif chart_type == 'm':
 
         elif chart_type == 'w':
@@ -18,7 +18,7 @@ class Oricon_cd:
         elif chart_type == 'd':
 
         else:
-            
+                
 
     @classmethod
     def __get_page(cls, link):
