@@ -296,7 +296,7 @@ def test_definisi(mocker):
     assert args[1] == fake_definisi
 
 
-def test_sceleNotif(mocker):
+def test_scelenotif(mocker):
     fake_scele = 'scele'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.takeSceleNotif', return_value=fake_scele)
@@ -1098,6 +1098,42 @@ def test_chuck_with_args(mocker):
     mock_message = Mock(text='/chuck args')
 
     chuck(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_request_comic(mocker):
+    fake_comic = 'https://xkcd.com/1834/'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.xkcd', return_value=fake_comic)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_comic
+
+
+def test_comic_error(mocker):
+    fake_error = 'Cant\'t found the requested comic.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.xkcd', side_effect=ValueError)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_comic_invalid(mocker):
+    fake_error = 'Command not found. Please follow this format /xkcd or /xkcd <id>'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.xkcd', return_value=fake_error)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error

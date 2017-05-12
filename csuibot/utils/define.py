@@ -3,7 +3,7 @@ import requests
 import json
 
 
-class define:
+class Define:
     def __init__(self, word):
         self.app_id = 'f0d6d4d9'
         self.app_key = '1194193a908a3b2612852bd7bd5ad2c3'
@@ -13,7 +13,7 @@ class define:
         self.url = 'https://od-api.oxforddictionaries.com:443/api/v1/entries/' + self.language
         self.url = self.url + '/' + self.word_id.lower()
 
-    def getDefine(self):
+    def getdefine(self):
         r = requests.get(self.url, headers={'app_id': self.app_id, 'app_key': self.app_key})
         if(r.status_code == 404):
             return '"' + self.word_id + '" is not an english word'

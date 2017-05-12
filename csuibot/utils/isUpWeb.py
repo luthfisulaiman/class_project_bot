@@ -6,11 +6,11 @@ class IsUpWeb:
     def __init__(self, url):
         self._url = url
 
-    def isUp(self):
+    def isup(self):
         req = Request(self._url)
         try:
             urlopen(req)
-        except URLError as e:
+        except URLError:
             return 'DOWN'
         else:
             return 'UP'

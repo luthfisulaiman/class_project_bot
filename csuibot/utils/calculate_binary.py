@@ -1,8 +1,8 @@
 class CalculateBinary:
 
-    def __init__(self, binA, binB):
-        self._numA = int(binA, 2)
-        self._numB = int(binB, 2)
+    def __init__(self, bina, binb):
+        self._numA = int(bina, 2)
+        self._numB = int(binb, 2)
 
     def addition(self):
         return self._numA + self._numB

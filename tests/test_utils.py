@@ -355,7 +355,7 @@ class TestMarsFasilkom:
 
 class TestYelFasilkom:
 
-    def test_yelFasilkom(self):
+    def test_yelfasilkom(self):
         yelfasilkom = (
             'Fasilkom!!!\n'
             'Fasilkom!\n'
@@ -553,8 +553,8 @@ class TestKelaskata:
 class TestCustomChuckJoke:
 
     def test_custom_chuck(self):
-        res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
-                "Chuck", "Norris")
+        temp = utils.custom_chuck.CustomChuckJoke()
+        res = temp.generate_custom_chuck_joke("Chuck", "Norris")
 
         assert res is not None
 
@@ -755,3 +755,21 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestComic:
+    def test_connection(self):
+        comic = utils.get_comic('1834')
+        assert comic == 'connection error. Please try again'
+
+    def test_valid(self):
+        comic = utils.get_comic('1834')
+        assert "https" in comic
+
+    def test_lower_bound(self):
+        comic = utils.get_comic('0')
+        assert "Cant\'t found the requested comic." == comic
+
+    def test_upper_bound(self):
+        comic = utils.get_comic('10000')
+        assert "Cant\'t found the requested comic." == comic
