@@ -9,7 +9,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           billboard-hotcountry_artist as felhc)
+                           billboard_hotcountry_artist as felhc)
 
 
 def lookup_zodiac(month, day):
@@ -261,5 +261,10 @@ def get_chuck(message_text):
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
-def find_hotcountry_artist(artist):
-    pass
+
+def find_hotcountry_artist(name):
+    try:
+        return felhc.HotCountry_artist().find_hotcountry_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")

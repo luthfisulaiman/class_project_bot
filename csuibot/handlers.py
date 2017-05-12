@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom, find_hotcountry_artist)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -522,12 +522,19 @@ def marsfasilkom(message):
     else:
         bot.reply_to(message, marsfasilkom)
 
-@bot.message_handler(regexp=r'^(\/billboard hotcountry) .+$')
+
+@bot.message_handler(regexp=r'^/billboard hotcountry .*$')
 def hotcountry_artist(message):
     app.logger.debug("'billboard hotcountry' command detected")
+
+    s2 = "hotcountry "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard hotcountry' argument is "+name)
     try:
-        artist = find_hotcountry_artist(artist)
+        artist = find_hotcountry_artist(name)
     except ConnectionError:
         bot.reply_to(message, "Connection Error")
     else:
-        bot.reply_to(message,artist) 
+        bot.reply_to(message, artist)
