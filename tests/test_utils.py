@@ -8,7 +8,7 @@ import json
 
 class TestNews:
     pass
-    
+
 
 class TestZodiac:
     def test_aries_lower_bound(self):

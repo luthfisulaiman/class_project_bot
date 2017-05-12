@@ -147,7 +147,7 @@ def test_news(mocker):
     fake_news = 'foo bar'
     mocked_reply_to = mocked.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.news')
-    mock_message = Mock(text='/news good')
+    mock_message = Mock(text='/news good news')
 
     news(mock_message)
 
