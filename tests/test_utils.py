@@ -756,6 +756,23 @@ class TestChuck:
         else:
             assert res is not None
 
-class TestHot100-artist:
-    def test_find_hot100_artist(artist):
-        pass 
+
+class TestHot100_artist:
+
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_hot100_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHot100_artist.err_msg
+
+    def test_h100artist_found(self):
+        exp = ("Russ\nLosin Control\n68")
+
+        self.run_test('Russ', exp)
+
+    def test_h100artist_notfound(self):
+        self.run_test('foo bar', TestHot100_artist.err_msg)

@@ -8,7 +8,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist,
+                              hot100_artist)
 from requests.exceptions import ConnectionError
 
 
@@ -1102,5 +1103,15 @@ def test_chuck_with_args(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
 
+
 def test_hot100_artist(mocker):
-    pass 
+    fake_artist = ("Russ\nLosin Control\n68")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hot100_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hot100 Russ')
+
+    hot100_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
