@@ -521,3 +521,8 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(commands=['is_sfw'])
+def is_sfw(message):
+    app.logger.debug("'is_sfw' command detected")
