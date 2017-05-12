@@ -56,7 +56,7 @@ def sceleNoticeHandler(message):
     try:
         notification = takeSceleNotif()
     except ConnectionError:
-        bot.reply_to(message, 'Error connecting to Scele , please try again later.')        
+        bot.reply_to(message, 'Error connecting to Scele , please try again later.')
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:
@@ -64,12 +64,12 @@ def sceleNoticeHandler(message):
 
 
 @bot.message_handler(regexp=r'^/tropicaltop$')
-def tropical10Handler(message):
+def tropicalArtistHandler(message):
     app.logger.debug("top tropical command detected")
     try:
         notification = getTopTropical()
     except ConnectionError:
-        bot.reply_to(message, 'Error connecting to Billboard , please try again later.')        
+        bot.reply_to(message, 'Error connecting to Billboard , please try again later.')
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:
@@ -82,7 +82,7 @@ def oriconMangaHandler(message):
     try:
         notification = getTopManga()
     except ConnectionError:
-        bot.reply_to(message, 'Error connecting to oricon website , please try again later.')        
+        bot.reply_to(message, 'Error connecting to oricon website , please try again later.')
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:

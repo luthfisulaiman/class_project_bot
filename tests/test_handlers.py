@@ -4,7 +4,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler)
+                              remind, isUp, sceleNoticeHandler, tropicalArtistHandler, oriconMangaHandler)
 from requests.exceptions import ConnectionError
 
 
@@ -99,6 +99,7 @@ def test_topMangaOricon(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_manga
+
 
 def test_is_up(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
