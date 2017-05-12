@@ -1,3 +1,3 @@
 class Crop:
-	def crop():
+	def do_crop():
 		pass
