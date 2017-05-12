@@ -755,3 +755,13 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestCrop:
+    def test_crop(self):
+        try:
+            res = utils.crop('/crop')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None

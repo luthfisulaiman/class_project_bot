@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom, crop)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -521,3 +521,14 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^/crop$')
+def loremipsum(message):
+    app.logger.debug("'crop' command detected")
+    try:
+        crop = crop()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to Imagga API')
+    else:
+        bot.reply_to(message, crop)

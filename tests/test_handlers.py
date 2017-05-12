@@ -8,7 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist, crop)
 from requests.exceptions import ConnectionError
 
 
@@ -1101,3 +1101,24 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+def test_crop(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.crop')
+    mock_message = Mock(text='/crop')
+
+    crop(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert "Crop" in args[1]
+
+def test_crop_args(mocker):
+    error = 'Command /crop doesn\'t need arguments'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.crop')
+    mock_message = Mock(text='/crop args')
+
+    crop(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == error
