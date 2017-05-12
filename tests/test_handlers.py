@@ -1,9 +1,5 @@
 import requests
 from unittest.mock import Mock
-<<<<<<< HEAD
-
-from csuibot.handlers import help, zodiac, shio, soundcliphelp, soundclip
-=======
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
@@ -12,9 +8,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist,
+                              soundcliphelp, soundclip)
 from requests.exceptions import ConnectionError
->>>>>>> 59a51601dabbe8d3b24f291354d0d6a0623b1241
 
 
 def test_help(mocker):
@@ -119,8 +115,6 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
-<<<<<<< HEAD
-=======
 
 
 def test_message_dist(mocker):
@@ -1152,4 +1146,3 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
->>>>>>> 59a51601dabbe8d3b24f291354d0d6a0623b1241

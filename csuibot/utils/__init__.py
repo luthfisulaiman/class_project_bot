@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-from csuibot.utils import zodiac as z
-=======
+
 from csuibot.utils import message_dist as md
 import json
 import re
@@ -12,7 +10,6 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom)
->>>>>>> 59a51601dabbe8d3b24f291354d0d6a0623b1241
 
 
 def lookup_zodiac(month, day):
@@ -60,14 +57,14 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-<<<<<<< HEAD
 def define_sound(inputKey):
 
     title = inputKey.split(' ', 1)[1]
     soundtitle = title.replace(" ", "_") + ".mp3"
 
     return 'soundclip/' + soundtitle
-=======
+
+
 def lookup_message_dist(chat_id):
     message_dist = md.get_message_dist()
     message_dist_text = ''
@@ -271,4 +268,3 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
->>>>>>> 59a51601dabbe8d3b24f291354d0d6a0623b1241
