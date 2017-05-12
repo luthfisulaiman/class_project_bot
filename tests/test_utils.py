@@ -1,7 +1,11 @@
 from csuibot import utils
+from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
+import os
 import re
 from requests.exceptions import ConnectionError
 import requests
+
+import json
 
 
 class TestZodiac:
@@ -199,7 +203,7 @@ class TestZodiac:
 
     def test_unknown_zodiac(self, mocker):
         class FakeZodiac():
-            def date_includes(self, *args, **kwargs):
+            def date_includes(self, args, kwargs):
                 return False
 
         mocker.patch('csuibot.utils.z.Scorpio', return_value=FakeZodiac())
@@ -207,6 +211,12 @@ class TestZodiac:
         res = utils.lookup_zodiac(11, 17)
 
         assert res == 'Unknown zodiac'
+
+
+class TestNotifTaker:
+    def test_notif_taker(self):
+        res = utils.takeSceleNotif()
+        assert res != ""
 
 
 class TestChineseZodiac:
@@ -254,6 +264,238 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestMessageDist:
+    def test_file_dist_not_found(self):
+        try:
+            os.remove('dist.txt')
+        except OSError:
+            pass
+
+        expected_res = 'Failed to open file.'
+        actual_res = get_message_dist()
+
+        assert expected_res == actual_res
+
+    def test_division_by_zero(self):
+        chat_id = 999
+        example_dist = {'dist': {}}
+        example_dist['dist'][str(chat_id)] = {}
+        for i in range(0, 24):
+            example_dist['dist'][str(chat_id)][str(i)] = 0
+
+        try:
+            with open('dist.txt', 'w') as dist_file:
+                json.dump(example_dist, dist_file)
+        except IOError:
+            pass
+        res = utils.lookup_message_dist(chat_id)
+        assert res is not None
+
+    def test_chatid_not_in_file(self):
+        try:
+            os.remove('dist.txt')
+        except OSError:
+            pass
+        chat_id = 0
+        hour = 0
+        expected_res = {'dist': {}}
+        expected_res['dist'][str(chat_id)] = {}
+        for i in range(0, 24):
+            if i == hour:
+                expected_res['dist'][str(chat_id)][str(i)] = 1
+            else:
+                expected_res['dist'][str(chat_id)][str(i)] = 0
+
+        add_message_to_dist(chat_id, hour)
+        actual_res = get_message_dist()
+
+        assert actual_res == expected_res
+
+    def test_get_message_dist(self):
+        expected_dist = {'dist': {}}
+        expected_dist['dist'][str(0)] = {}
+        for i in range(0, 24):
+            expected_dist['dist'][str(0)][str(i)] = 1
+
+        with open('dist.txt', 'w') as outfile:
+            json.dump(expected_dist, outfile)
+
+        chat_id = 0
+        actual_dist = utils.lookup_message_dist(chat_id)
+
+        expected_res = ''
+        for i in range(0, 24):
+            expected_res = expected_res + (str(i).zfill(2) + ' -> ' + str(4.17) + '%\n')
+        assert actual_dist is not None
+
+
+class TestMarsFasilkom:
+
+    def test_marsfasilkom(self):
+        marsfasilkom = (
+            'Samudera laut ilmu\n'
+            'Terhampar di hadapanku\n'
+            'Cakrawala bersinar\n'
+            'Memanggil ku ke sana\n\n'
+            '‘Kan ku seberangi lautan\n'
+            '‘Tak ku kenal putus asa\n'
+            'Dengan daya dan upaya\n'
+            'Untuk ilmu komputer\n')
+        res = utils.lookup_marsfasilkom('/marsfasilkom')
+        assert res == marsfasilkom
+
+    def test_marsfasilkom_value_error(self):
+        try:
+            utils.lookup_marsfasilkom('/marsfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /marsfasilkom doesn\'t need any arguments'
+
+
+class TestYelFasilkom:
+
+    def test_yelFasilkom(self):
+        yelfasilkom = (
+            'Fasilkom!!!\n'
+            'Fasilkom!\n'
+            'Ilmu Komputer\n'
+            'Fasilkom!\n'
+            'Satu Banding Seratus\n'
+            'Kami Elit, Kami Kompak, Kami Anak UI\n'
+            'MIPA Bukan, Teknik Bukan,\n'
+            'FE Apalagi\n'
+            'Kami ini Fakultas No.1 di UI\n'
+            'Kami Cinta Fasilkom\n'
+            'Kami Bangga Fasilkom\n'
+            'Maju Terus\n'
+            'Fasilkom!')
+        res = utils.lookup_yelfasilkom('/yelfasilkom')
+        assert res == yelfasilkom
+
+    def test_yelfasilkom_value_error(self):
+        try:
+            utils.lookup_yelfasilkom('/yelfasilkom args')
+        except ValueError as e:
+            assert str(e) == 'Command /yelfasilkom doesn\'t need any arguments'
+
+
+class TestDiscreteMaterial:
+
+    def test_number_theory(self):
+        try:
+            res = utils.call_discrete_material('number theory')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_gcd(self):
+        try:
+            res = utils.call_discrete_material('gcd')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_lcm(self):
+        try:
+            res = utils.call_discrete_material('lcm')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_rekurensi(self):
+        try:
+            res = utils.call_discrete_material('relasi rekurensi')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_relasi_biner(self):
+        try:
+            res = utils.call_discrete_material('relasi biner')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_domain_range(self):
+        try:
+            res = utils.call_discrete_material('domain dan range')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+
+class TestNotes:
+
+    def run_test(self, command, text=''):
+        if command == 'add':
+            a = utils.manage_notes(command, text)
+            assert a == 'Notes added'
+        elif command == 'view':
+            text = utils.manage_notes(command)
+            assert type(text) == str and len(text) > 0
+
+    def test_write_text(self):
+        text = 'Test add text'
+        self.run_test('add', text)
+
+    def test_view(self):
+        a = utils.manage_notes('view')
+        assert a == 'List notes:\n1. Test add text\n'
+
+    def test_view_empty(self):
+        f = open('notes.json', 'w')
+        f.close()
+
+        a = utils.manage_notes('view')
+        assert a == 'No notes yet'
+
+    def test_write_json_decode_error(self, mocker):
+        with mocker.patch('csuibot.utils.note.Notes') as MockNotes:
+            instance = MockNotes.return_value
+            instance.wite.side_effect = json.JSONDecodeError
+
+            a = utils.manage_notes('write', 'aaa')
+            assert a is None
+
+
+class TestDefinisi:
+
+    def run_test(self, word, expected_output):
+        mean = utils.lookup_definisi(word)
+        assert mean == expected_output
+
+    def test_found(self):
+        self.run_test('bahtera', 'Nomina:\n1. perahu; kapal\n\n')
+
+    def test_not_found(self):
+        expected_output = 'makimaki is not a word :(, maybe try another one?'
+        self.run_test('makimaki', expected_output)
+
+    def test_multiple_word(self):
+        expected_output = 'Nomina:\n1. gelombang hidup; kehidupan\n\n'
+        self.run_test('bahtera hidup', expected_output)
+
+    def test_with_number(self):
+        expected_output = 'Nomina:\n1. abad Masehi ke-10\n\n'
+        self.run_test('kurun masehi ke-10', expected_output)
+
+
+class TestReminder:
+
+    def test_reminder_return_text_one_word(self):
+        output = utils.remind_me(0, "Test")
+        assert output == "Test"
+
+    def test_reminder_return_text_more_word(self):
+        output = utils.remind_me(0, "Test more")
+        assert output == "Test more"
 
 
 class TestDefine:
@@ -425,14 +667,16 @@ class TestLoremIpsum:
     def test_get_loripsum(self):
         try:
             res = utils.call_lorem_ipsum()
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
 
 class TestSoundComposer:
     def test_get_track(self):
         try:
             res = utils.call_composer('iamlione')
-        except ValueError:
-            pass
         except ConnectionError:
             pass
         else:
@@ -489,3 +733,25 @@ class TestYelKomputer:
             utils.lookup_yelkomputer('/yelkomputer args')
         except ValueError as e:
             assert str(e) == 'Command /yelkomputer doesn\'t need any arguments'
+
+
+class TestDayofDate:
+    def test_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 5, 13)
+        assert day == 'Friday'
+
+    def test_invalid_dayofdate(self):
+        day = utils.lookup_dayofdate(2016, 20, 13)
+        assert day == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
+
+class TestChuck:
+    def test_get_chuck(self):
+        try:
+            res = utils.get_chuck('/chuck')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None

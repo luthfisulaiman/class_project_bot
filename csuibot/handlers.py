@@ -4,22 +4,39 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
-                    get_meme, generate_password, generate_custom_chuck_joke,
-                    lookup_define, lookup_kelaskata, call_composer)
+                    get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
+                    lookup_define, lookup_kelaskata, call_composer, calculate_binary,
+                    remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
+                    manage_notes, lookup_dayofdate, compute, call_discrete_material,
+                    lookup_message_dist, add_message_dist,
+                    lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
+import datetime
+
+
+def message_decorator(func):
+    def wrapper(message):
+        now = datetime.datetime.now()
+        hour = (now.hour + 7) % 24
+        chat_id = message.chat.id
+        add_message_dist(chat_id, hour)
+        return func(message)
+    return wrapper
 
 
 @bot.message_handler(regexp=r'^/about$')
+@message_decorator
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
-        'CSUIBot v0.0.1\n\n'
+        'CSUIBot v0.0.3\n\n'
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     bot.reply_to(message, about_text)
 
 
 @bot.message_handler(regexp=r'^/zodiac \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
     _, date_str = message.text.split(' ')
@@ -35,6 +52,7 @@ def zodiac(message):
 
 
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
 def shio(message):
     app.logger.debug("'shio' command detected")
     _, date_str = message.text.split(' ')
@@ -47,6 +65,85 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(commands=['yelfasilkom'])
+def yelfasilkom(message):
+    app.logger.debug("'yelfasilkom' command detected")
+
+    try:
+        yelfasilkom = lookup_yelfasilkom(message.text)
+    except ValueError as e:
+        bot.reply_to(message, 'Command /yelfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, yelfasilkom)
+
+
+@bot.message_handler(regexp=r'^/notes .*$')
+def note(message):
+    app.logger.debug('"notes" command detexted')
+    if message.text.find(' ') != -1:
+        text = message.text.split(' ', 1)
+        reply = ''
+
+        app.logger.debug('input = {}'.format(text[1]))
+        if text[1] == 'view':
+            try:
+                reply = manage_notes('view')
+            except FileNotFoundError:
+                reply = 'No notes yet'
+        else:
+            reply = manage_notes('add', text[1])
+
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, 'Usage :\n' +
+                              '1. /notes view : View note in this group\n' +
+                              '2. /notes [text] : Add new note in this group\n')
+
+
+@bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
+def definisi(message):
+    if message.text.find(' ') != -1:
+        app.logger.debug("'definisi' command detected")
+        _, word_str = message.text.split(' ', 1)
+
+        app.logger.debug('input : {}'.format(word_str))
+        try:
+            meaning = lookup_definisi(word_str)
+        except requests.ConnectionError:
+            bot.reply_to(message, 'Oops! There was a problem. Maybe try again later :(')
+        else:
+            bot.reply_to(message, meaning)
+    else:
+        app.logger.debug("'definisi_help' command detected")
+        bot.reply_to(message, '/definisi [word] : return definition of' +
+                              ' the word in indonesian language\n')
+
+
+@bot.message_handler(regexp=r'^/sceleNotif$')
+def sceleNoticeHandler(message):
+    app.logger.debug("scele command detected")
+    try:
+        notification = takeSceleNotif()
+    except Exception as e:
+        bot.reply_to(message, 'Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/chuck$')
+def chuck(message):
+    app.logger.debug("'chuck' command detected")
+    try:
+        joke = get_chuck(message.text)
+    except ConnectionError:
+        bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection'
+                              ' to connect to ICNDb API, too bad you\'re not him')
+    except ValueError:
+        bot.reply_to(message, 'Command /chuck doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, joke)
 
 
 @bot.message_handler(regexp=r'^/chuck ')
@@ -153,11 +250,166 @@ def colour(message):
         bot.reply_to(message, rgb)
 
 
+@bot.message_handler(regexp=r'^/dayofdate \d{4}\-\d{2}\-\d{2}$')
+def dayofdate(message):
+    app.logger.debug("'dayofdate' command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+    app.logger.debug('year = {}, month = {}, day = {}'.format(year, month, day))
+
+    try:
+        datetime.datetime(year, month, day)
+        # if (newDate):
+        # check invalid date such as leap year, month 13 etc
+        dayofdate = lookup_dayofdate(year, month, day)
+    except ValueError:
+        bot.reply_to(message,
+                     'Incorrect use of dayofdate command. '
+                     'Please write a valid date in the form of yyyy-mm-dd, '
+                     'such as 2016-05-13')
+    else:
+        bot.reply_to(message, dayofdate)
+
+
+# empty dayofdate args
+@bot.message_handler(regexp=r'^/dayofdate$')
+def empty_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
+
+
+# invalid dayofdate calls
+@bot.message_handler(regexp=r'^/dayofdate (?!\d{4}\-\d{2}\-\d{2}).*$')
+def invalid_dayofdate(message):
+    app.logger.debug("invalid 'dayofdate' command detected")
+    bot.reply_to(message,
+                 'Incorrect use of dayofdate command. '
+                 'Please write a valid date in the form of yyyy-mm-dd, '
+                 'such as 2016-05-13')
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-<<<<<<< HEAD
+@bot.message_handler(regexp=r'^/message_dist')
+@message_decorator
+def message_dist(message):
+
+    app.logger.debug("'messagedist' command detected", message)
+
+    try:
+        message_dist = lookup_message_dist(message.chat.id)
+    except ValueError:
+        bot.reply_to(message, 'Internal server error')
+    else:
+        bot.reply_to(message, message_dist)
+
+
+@bot.message_handler(regexp=r'^\/tellme .+$')
+def get_discrete_material(message):
+    app.logger.debug("tellme detected")
+    query = message.text.replace('/tellme ', '')
+    query = query.lower()
+    app.logger.debug('searching for {} in discretematerial'.format(query))
+    try:
+        result = call_discrete_material(query)
+    except ValueError:
+        bot.reply_to(message, "Invalid Value")
+    else:
+        bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'^/compute ([0-9]+[\/\+\-\*][0-9]+)*$')
+def calculate(message):
+    try:
+        result = compute(message)
+    except NameError:
+        bot.reply_to(message, 'Invalid command, please enter only numbers and operators')
+    except ZeroDivisionError:
+        bot.reply_to(message, 'Cannot divide by zero')
+    else:
+        bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'^\/is_up (.*)$')
+def isUp(message):
+    app.logger.debug("'is_up' command detected")
+    _, url = message.text.split(' ')
+    try:
+        app.logger.debug('check {} for up/down....')
+        result = lookup_isUpWeb(url)
+    except ValueError:
+        bot.reply_to(message, 'Url is invalid,insert a valid url!.Ex: https://www.google.com')
+    else:
+        bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'^\/remindme (\d+) (.*)$')
+def remind(message):
+    app.logger.debug("'remindme' command detected")
+    time_str = message.text.split(' ')
+    i = 2
+    text = ""
+    while (i < len(time_str)):
+        if(i == (len(time_str)-1)):
+            text += time_str[i]
+        else:
+            text += time_str[i] + " "
+        i += 1
+    try:
+        bot.reply_to(message, "You have a new reminder in " + time_str[1] + " second")
+        app.logger.debug(time_str[1])
+        reply_text = remind_me(time_str[1], text)
+        app.logger.debug(time_str[1])
+    except ValueError:
+        bot.reply_to(message, "Invalid time input, only positive integer accepted.")
+    except Exception:
+        bot.reply_to(message, "Please input from range 0-29 only")
+    else:
+        bot.reply_to(message, reply_text)
+
+
+@bot.message_handler(regexp=r'^\/compute ([^01]+(.*)[^01]+)$')
+def compute_not_binary(message):
+    bot.reply_to(message, 'Not a binary number, Please only input binary number on both sides')
+
+
+@bot.message_handler(regexp=r'^\/compute help$')
+def compute_help(message):
+    bot.reply_to(message, '''Binary Calculator v2.0, use /compute <binary><operand><binary>
+to start a calculation.''')
+
+
+@bot.message_handler(regexp=r'^\/compute ([01]+(.*)[01]+)$')
+def compute_binary(message):
+    app.logger.debug("'compute' command detected")
+    _, calculate_str = message.text.split(' ')
+    try:
+        if '+' in calculate_str:
+            binA, binB = calculate_str.split('+')
+            op = '+'
+        elif '-' in calculate_str:
+            binA, binB = calculate_str.split('-')
+            op = '-'
+        elif '*' in calculate_str:
+            binA, binB = calculate_str.split('*')
+            op = '*'
+        elif '/' in calculate_str:
+            binA, binB = calculate_str.split('/')
+            op = '/'
+        else:
+            raise ValueError
+    except ValueError:
+        bot.reply_to(message, "Operator is invalid, please use '+', '-', '*', or '/'")
+    else:
+        result = calculate_binary(binA, op, binB)
+        bot.reply_to(message, result)
+
+
 @bot.message_handler(regexp=r'^/define (.*)$')
 def define(message):
     app.logger.debug("'define' command detected")
@@ -257,3 +509,15 @@ def composer(message):
         bot.reply_to(message, 'Error connecting to Soundcloud API')
     else:
         bot.reply_to(message, track)
+
+
+@bot.message_handler(commands=['marsfasilkom'])
+def marsfasilkom(message):
+    app.logger.debug("'marsfasilkom' command detected")
+
+    try:
+        marsfasilkom = lookup_marsfasilkom(message.text)
+    except ValueError:
+        bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, marsfasilkom)
