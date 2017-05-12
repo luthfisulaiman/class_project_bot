@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom, find_newage_artist)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -523,12 +523,18 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^(\/billboard newage) .+$')
-def newage_artist(message): 
+@bot.message_handler(regexp=r'^/billboard newage .*$')
+def newage_artist(message):
         app.logger.debug("'billboard newage' command detected")
+
+        s2 = "newage "
+
+        name = (message.text[message.text.index(s2) + len(s2):])
+
+        app.logger.debug("'billboard newage' argument is "+name)
         try:
-            artist = find_newage_artist(artist)
+            artist = find_newage_artist(name)
         except ConnectionError:
             bot.reply_to(message, "Connection Error")
         else:
-            bot.reply_to(message,artist)
+            bot.reply_to(message, artist)
