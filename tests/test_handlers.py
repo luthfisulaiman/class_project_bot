@@ -8,7 +8,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist,
+                              tagimage)
 from requests.exceptions import ConnectionError
 
 
@@ -1101,3 +1102,13 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+def test_tag_image(mocker):
+    mocked.reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.tagimage' , return_value= )
+    mock_message = Mock(text='/tags')
+
+    tagimage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == "Test'
