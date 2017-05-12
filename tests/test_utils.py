@@ -758,7 +758,7 @@ class TestChuck:
 
 
 class TestYoutube:
-    def test_get_url:
+    def test_get_url(self):
         try:
             res = utils.call_youtube('https://www.youtube.com/watch?v=kJ5PCbtiCpk')
         except ConnectionError:

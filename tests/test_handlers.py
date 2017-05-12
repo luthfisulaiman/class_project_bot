@@ -1104,10 +1104,11 @@ def test_chuck_with_args(mocker):
 
 
 def test_youtube_url(mocker):
-    fake_url_info = 'Gordon Ramsay Answers Cooking Questions From Twitter | Tech Support | WIRED'\
-               'WIRED'\
-               '4390281'\
-               '102154 & 1122'\
+    fake_url_info = 'Gordon Ramsay Answers Cooking Questions From Twitter' \
+                    '| Tech Support | WIRED'\
+                    'WIRED'\
+                    '4390281'\
+                    '102154 & 1122'\
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_youtube', return_value=fake_url_info)
@@ -1116,7 +1117,7 @@ def test_youtube_url(mocker):
     youtube(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_track_info
+    assert args[1] == fake_url_info
 
 
 def test_youtube_no_connection(mocker):
@@ -1129,4 +1130,4 @@ def test_youtube_no_connection(mocker):
     youtube(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_track_info
+    assert args[1] == fake_url_info
