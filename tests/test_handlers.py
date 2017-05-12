@@ -9,7 +9,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom, wiki,
                               chuck, get_discrete_material as dm, message_dist,
-                              hot100_artist, newage_artist)
+                              hot100_artist, newage_artist, hotcountry_artist)
 from requests.exceptions import ConnectionError
 
 
@@ -1161,6 +1161,19 @@ def test_newage_artist(mocker):
     mock_message = Mock(text='/billboard newage Enya')
 
     newage_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_hotcountry_artist(mocker):
+    fake_artist = ("Sam Hunt\nBody Like A Back Road\n1")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hotcountry_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hotcountry Sam Hunt')
+
+    hotcountry_artist(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_artist

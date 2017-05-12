@@ -10,7 +10,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom, wiki,
                            billboard_hot100_artist as felh, 
-                           billboard_newage_artist as feln)
+                           billboard_newage_artist as feln,
+                           billboard_hotcountry_artist as felhc)
 
 
 def lookup_zodiac(month, day):
@@ -288,6 +289,14 @@ def find_hot100_artist(name):
 def find_newage_artist(name):
     try:
         return feln.NewAge_artist().find_newage_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")
+
+
+def find_hotcountry_artist(name):
+    try:
+        return felhc.HotCountry_artist().find_hotcountry_artist(name)
     except ValueError:
         return ("Artist is not present on chart or no such artist exists\n"
                 "Artist's name is case sensitive")
