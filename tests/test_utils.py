@@ -506,3 +506,18 @@ class TestNewAge:
 
     def test_newage(self):
         self.run_test('foobar')
+
+
+class TestBillArtist:
+    def run_test(self, command, expected):
+        try:
+            result = utils.lookup_billArtist(command)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_billArtist_Taylor_Swift(self):
+        self.run_test('Taylor Swift', 'foobar')
+
+    def test_billArtist_Rhoma_Irama(self):
+        self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
