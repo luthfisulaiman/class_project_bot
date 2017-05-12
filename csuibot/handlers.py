@@ -523,10 +523,10 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(commands=['/billboard'])
+@bot.message_handler(regexp=r'/billboard (tropcial|hot100|200)$')
 def billboard_chart(message):
     app.logger.debug("billboard command detected")
     _, chart_category = message.text.split(' ')
-    app.logger.debug('chart category = {}'.format(chart_category))
+    app.logger.debug('chart category = {}'.format(str(chart_category)))
     result = lookup_top10_billboard_chart(chart_category)
     bot.reply_to(message, result)
