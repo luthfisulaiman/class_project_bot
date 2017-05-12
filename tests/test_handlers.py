@@ -79,6 +79,27 @@ def test_sceleNotif(mocker):
     assert args[1] == fake_scele
 
 
+def test_tropicalBb(mocker):
+    fake_bb = 'judul-artis'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopTropical', return_value=fake_bb)
+    mock_message = Mock(text='/tropicaltop')
+    sceleNoticeHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_bb
+
+
+def test_topMangaOricon(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
+    mock_message = Mock(text='/topMangaOricon')
+    sceleNoticeHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
 def test_is_up(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/is_up https://scele.cs.ui.ac.id/')

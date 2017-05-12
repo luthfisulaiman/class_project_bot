@@ -6,7 +6,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb, takeSceleNotif)
+                    remind_me, lookup_isUpWeb, takeSceleNotif, getTopTropical, getTopManga)
 from requests.exceptions import ConnectionError
 
 
@@ -55,8 +55,36 @@ def sceleNoticeHandler(message):
     app.logger.debug("scele command detected")
     try:
         notification = takeSceleNotif()
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Scele , please try again later.')        
     except Exception as e:
-        bot.reply_to(message, 'Error catched')
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/tropicaltop$')
+def tropical10Handler(message):
+    app.logger.debug("top tropical command detected")
+    try:
+        notification = getTopTropical()
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Billboard , please try again later.')        
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/topMangaOricon$')
+def oriconMangaHandler(message):
+    app.logger.debug("oricon command detected")
+    try:
+        notification = getTopManga()
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to oricon website , please try again later.')        
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
     else:
         bot.reply_to(message, notification)
 

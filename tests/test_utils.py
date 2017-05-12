@@ -215,6 +215,34 @@ class TestNotifTaker:
         assert res != ""
 
 
+class TestTropicalBb:
+    def test_TropicalBbExist(self):
+        res = utils.getTopTropical()
+        assert res != ""
+	
+	def test_TropicalConn(self):
+		try:
+			res = utils.takeSceleNotif()
+		except requests.ConnectionError as e:
+			return false
+		else:
+			assert res != ""
+
+
+class TestMangaTopOricon:
+    def test_TropicalBbExist(self):
+        res = utils.getTopManga()
+        assert res != ""
+	
+	def test_TropicalConn(self):
+		try:
+			res = utils.getTopManga()
+		except requests.ConnectionError as e:
+			return false
+		else:
+			assert res != ""
+
+
 class TestChineseZodiac:
     def run_test(self, expected_zodiac, years):
         res = [utils.lookup_chinese_zodiac(y) == expected_zodiac for y in years]

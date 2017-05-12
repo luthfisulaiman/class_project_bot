@@ -4,7 +4,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
-                           calculate_binary as cb, isUpWeb as iuw, notifTaker as n)
+                           calculate_binary as cb, isUpWeb as iuw, notifTaker as n ,topTropical as trop, mangaTopOricon as mto)
 
 
 def lookup_zodiac(month, day):
@@ -56,6 +56,16 @@ def takeSceleNotif():
     notif = n.notifTaker()
     return notif.getPost()
 
+
+def getTopTropical():
+	topTropical = trop.topTropicalBb()
+	return topTropical.getTopTropical()
+
+
+def getTopManga():
+	manga = mto.mangaTopOricon()
+	return manga.getTopManga()
+	
 
 def lookup_isUpWeb(url):
     pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
