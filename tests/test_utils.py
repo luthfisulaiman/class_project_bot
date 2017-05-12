@@ -755,3 +755,8 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestIsSfw:
+    def test_is_sfw():
+        pass
