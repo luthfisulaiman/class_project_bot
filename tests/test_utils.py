@@ -759,4 +759,9 @@ class TestChuck:
 
 class TestJapanArtist:
     def test_get_artist(self):
-        pass 
+        try:
+            res = utils.lookup_artist('Kana Nishino')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None

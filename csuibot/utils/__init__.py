@@ -263,4 +263,4 @@ def get_chuck(message_text):
 
 
 def lookup_artist(artist):
-    pass
+    return ja.JapanArtist().getArtist(artist)
