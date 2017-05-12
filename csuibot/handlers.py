@@ -521,3 +521,13 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+@bot.message_handler(regexp=r'^(\/billboard hotcountry) .+$')
+def hotcountry_artist(message):
+    app.logger.debug("'billboard hotcountry' command detected")
+    try:
+        artist = find_hotcountry_artist(artist)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message,artist) 
