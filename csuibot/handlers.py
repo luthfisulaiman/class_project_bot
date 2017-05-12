@@ -521,3 +521,16 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^/billboard japan100$')
+def japan100(message):
+    app.logger.debug("'billboard japan100' command detected")
+    rss_url="http://www.billboard.com/rss/charts/japan-hot-100"
+    try:
+        reply = lookup_HotJapan100(rss_url)
+    except ConnectionError:
+        bot.reply_to(message, '''Sorry,the connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message,reply)
