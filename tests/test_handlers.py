@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import (help, zodiac, shio, oricon_books)
 
 
 def test_help(mocker):
@@ -66,8 +66,92 @@ def test_shio_invalid_year(mocker):
 def test_oricon_books(mocker):
     fake_output = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.generate_custom_chuck_joke', return_value=fake_output)
+    mocker.patch('csuibot.handlers.get_oricon_books', return_value=fake_output)
     mock_message = Mock(text='/oricon books weekly 2001-01-01')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_invalid_date(mocker):
+    fake_output = 'Requested date is invalid.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books weekly 2001-02-31')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_invalid_month(mocker):
+    fake_output = 'Requested date is invalid.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books weekly 2001-13-31')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_invalid_year(mocker):
+    fake_output = 'Requested date is invalid.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books weekly ASDF-02-31')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_not_weekly(mocker):
+    fake_output = 'Oricon books command currently only supports weekly at this time.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books daily 2011-02-31')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_not_monday(mocker):
+    fake_output = 'Oricon books command only accepts dates of Mondays.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books daily 2011-05-12')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_before_earliest(mocker):
+    fake_output = "Oricon books' earliest record is on 2017-04-10."
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books daily 2011-05-12')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_after_latest(mocker):
+    fake_output = "Oricon books' earliest record is on 2017-04-10."
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books daily 2011-05-12')
 
     oricon_books(mock_message)
 

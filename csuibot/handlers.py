@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import (lookup_zodiac, lookup_chinese_zodiac)
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -46,7 +46,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/oricon books weekly ')
+@bot.message_handler(regexp=r'^/oricon books ')
 def oricon_books(message):
     app.logger.debug("'oricon' command detected")
     app.logger.debug("oricon command type is 'books'")

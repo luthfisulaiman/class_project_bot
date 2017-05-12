@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import (zodiac as z, books)
 
 
 def lookup_zodiac(month, day):
