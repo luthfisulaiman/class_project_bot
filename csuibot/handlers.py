@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    lookup_marsfasilkom, lookup_yelfasilkom, lookup_artist)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -521,3 +521,8 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+@bot.message.handler(regexp=r'^(\/billboard japan100) .+$')
+def japanartist(message):
+    pass
+
