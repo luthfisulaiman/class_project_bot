@@ -755,3 +755,7 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+class TestNewAge-artist:
+    def test_find_newage_artist(artist):
+        pass 
