@@ -268,7 +268,7 @@ def lookup_top10_billboard_chart(chart_category):
         result_rank = ''
         for i in range(0, 10):
             rank_i = result['items'][i]
-            _, title = rank_i.find('title').text.split(':')
+            title = rank_i.find('title').text
             artist = rank_i.find('artist').text
             current_rank = rank_i.find('rank_this_week').text
             result_rank += '({}) - {} - {} \n'.format(current_rank, artist, title)

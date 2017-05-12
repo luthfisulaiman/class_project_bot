@@ -9,7 +9,7 @@ chart_urls = {
 
 def get_top10(chart_category):
     try:
-        chart_url = chart_urls[chart_category]
+        chart_url = chart_urls[str(chart_category)]
     except KeyError:
         return 'Invalid chart category'
     chart_xml_text = requests.get(chart_url).text

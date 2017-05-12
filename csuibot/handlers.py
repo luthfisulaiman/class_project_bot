@@ -523,7 +523,7 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'/billboard (tropcial|hot100|200)$')
+@bot.message_handler(regexp=r'/billboard (tropicial|hot100|200)$')
 def billboard_chart(message):
     app.logger.debug("billboard command detected")
     _, chart_category = message.text.split(' ')
