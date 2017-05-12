@@ -1,6 +1,6 @@
-# from bs4 import BeautifulSoup as Bs
-# from bs4 import SoupStrainer as Ss
-# import requests as r
+from bs4 import BeautifulSoup as Bs
+from bs4 import SoupStrainer as Ss
+import requests as r
 
 
 class Oricon_cd:
@@ -9,6 +9,9 @@ class Oricon_cd:
     @classmethod
     def get_top_ten(cls, type, year, month=None, day=None):
         pass
+        r
+        Bs
+        Ss
 
     @classmethod
     def __get_page(cls, link):
