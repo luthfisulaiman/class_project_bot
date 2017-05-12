@@ -9,7 +9,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
-                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor)
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
+                    find_hot100_artist)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -561,3 +562,20 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^/billboard hot100 .*$')
+def hot100_artist(message):
+    app.logger.debug("'billboard hot100' command detected")
+
+    s2 = "hot100 "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard hot100' argument is "+name)
+    try:
+        artist = find_hot100_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)
