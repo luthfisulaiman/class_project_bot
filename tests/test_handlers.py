@@ -7,7 +7,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom,
+                              marsfasilkom, yelfasilkom, japanartist
                               chuck, get_discrete_material as dm, message_dist)
 from requests.exceptions import ConnectionError
 
@@ -1099,5 +1099,31 @@ def test_chuck_with_args(mocker):
 
     chuck(mock_message)
 
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_japanartist(mocker):
+    fake_artist = 'Kana Nishino'\
+                  'Pa'\
+                  '3'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+def test_japanartist_no_connection(mocker):
+    fake_error = 'Error connecting to Billboard RSS Feed'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+
+    japanartist(mock_message)
+    
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
