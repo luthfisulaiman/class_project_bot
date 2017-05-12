@@ -46,4 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def get_oricon_books(date):
-    return books.Books().top_10(date)
+    return books.Books().get_top_10(date)

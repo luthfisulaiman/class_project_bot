@@ -257,5 +257,12 @@ class TestChineseZodiac:
 
 class TestOriconBooks:
 
+    def test_books(self):
+        res = utils.books.Books().get_top_10('2017-04-10')
+
+        assert res is not None
+
     def test_fetch(self):
-        pass
+        res = utils.get_oricon_books('2017-04-10')
+
+        assert res is not None
