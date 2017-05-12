@@ -2,6 +2,7 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
+import feedparser
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -259,3 +260,11 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def lookup_HotJapan100(url):
+    feed = feedparser.parse(url)
+    return_str = ""
+    for i in range(10):
+        return_str += "(" + i + ") "+feed['entries'][i]['artist']+" - " + feed['entries'][i]['title']+"\n"     
+    return return_str
