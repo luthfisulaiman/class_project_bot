@@ -8,8 +8,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom, lookup_wiki)
+                    lookup_message_dist, add_message_dist, lookup_wiki,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -65,6 +65,28 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^triviaplant')
+def plant_trivia(message):
+    try:
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^askplant')
+def plant_ask(message):
+    try:
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
 
 
 @bot.message_handler(commands=['yelfasilkom'])
