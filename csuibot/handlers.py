@@ -62,7 +62,7 @@ def soundcliphelp(message):
     bot.reply_to(message, about_text)
 
 
-@bot.message_handler(regexp=r'^/soundclip [a-z A-Z]*$')
+@bot.message_handler(regexp=r'^/soundclip [a-z A-Z 0-9]*$')
 def soundclip(message):
     soundtitle = define_sound(message.text.lower())
 
