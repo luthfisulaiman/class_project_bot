@@ -259,3 +259,6 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+def auto_tag(image):
+    return t.Tagging(image).getTag()
