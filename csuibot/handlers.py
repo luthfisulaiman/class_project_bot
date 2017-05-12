@@ -521,3 +521,16 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'\/tags$')
+def tagimage(message):
+    app.logger.debug("'tag image' command detected")
+    image = 'some url'
+    try :
+        tag = auto_tag(image)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Immaga API")
+    else :
+        bot.reply_to(message, tag)
+        
