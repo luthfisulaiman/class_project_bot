@@ -253,3 +253,18 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestTweet:
+
+    def test_tweet_true(self):
+        res = utils.get_tweets('qurratayuna')
+        assert = 'sesuatu' #not yet
+
+    def test_tweet_none(self):
+        res = utils.get_tweets('')
+        assert = 'sesuatu' #not done
+
+    def test_tweet_wrong_user(self):
+        res = utils.get_tweets('foo')
+        assert = 'sesuatu' #not done

@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, get_notif_twitter
 
 
 def test_help(mocker):
@@ -61,3 +61,53 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_tweet_fine(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recents qurrata_yuna')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'sesuatu' #assert something
+
+
+def test_tweet_wrong(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recents nobody') #no user is in twitter
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'sesuatu' #assert something
+
+
+def test_tweet_bad_cmd(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet huuuh qurrata_yuna')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'sesuatu' #assert something
+
+
+def test_tweet_not_complete(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recents')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'sesuatu' #assert something
+
+
+def test_tweet_fine(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command' #assert something
