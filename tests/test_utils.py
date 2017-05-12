@@ -224,7 +224,7 @@ class TestTropicalBb:
 		try:
 			res = utils.takeSceleNotif()
 		except requests.ConnectionError as e:
-			return false
+			return False
 		else:
 			assert res != ""
 
@@ -238,7 +238,7 @@ class TestMangaTopOricon:
 		try:
 			res = utils.getTopManga()
 		except requests.ConnectionError as e:
-			return false
+			return False
 		else:
 			assert res != ""
 

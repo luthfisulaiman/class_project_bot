@@ -12,5 +12,6 @@ class topTropicalBb:
         hasil = hasil[0][5][0]
         return hasil.text
 
+
 tro = topTropicalBb()
 print(tro.getTopTropical())

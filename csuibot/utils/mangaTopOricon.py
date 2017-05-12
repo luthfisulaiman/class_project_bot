@@ -1,5 +1,5 @@
-from bs4 import BeautifulSoup
-import urllib.request
+# from bs4 import BeautifulSoup
+# import urllib.request
 
 
 class mangaTopOricon:
@@ -8,7 +8,3 @@ class mangaTopOricon:
 
     def getTopManga(self):
         return "ini top manga"
-	
-	def getRaw(self):
-		pass;
-
