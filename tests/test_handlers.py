@@ -7,7 +7,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom,
+                              marsfasilkom, yelfasilkom, youtube,
                               chuck, get_discrete_material as dm, message_dist)
 from requests.exceptions import ConnectionError
 
@@ -1101,3 +1101,32 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_youtube_url(mocker):
+    fake_url_info = 'Gordon Ramsay Answers Cooking Questions From Twitter | Tech Support | WIRED'\
+               'WIRED'\
+               '4390281'\
+               '102154 & 1122'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_youtube', return_value=fake_url_info)
+    mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+
+    youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_track_info
+
+
+def test_youtube_no_connection(mocker):
+    fake_url_info = 'Error connecting to Youtube'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_youtube', side_effect=ConnectionError)
+    mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+
+    youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_track_info

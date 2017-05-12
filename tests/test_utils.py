@@ -755,3 +755,13 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestYoutube:
+    def test_get_url:
+        try:
+            res = utils.call_youtube('https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
