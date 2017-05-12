@@ -215,7 +215,7 @@ class TestZodiac:
 
 class TestNotifTaker:
     def test_notif_taker(self):
-        res = utils.takeSceleNotif()
+        res = utils.takescelenotif()
         assert res != ""
 
 

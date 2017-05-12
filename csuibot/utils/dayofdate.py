@@ -3,7 +3,9 @@ import calendar
 
 
 class Dayofdate:
-    def dayoutput(self, year, month, day):
+
+    @staticmethod
+    def dayoutput(year, month, day):
         try:
             dateans = datetime.date(year, month, day)
             return calendar.day_name[dateans.weekday()]

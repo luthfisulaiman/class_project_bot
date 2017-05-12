@@ -5,7 +5,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler, definisi, note,
+                              remind, isup, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
                               chuck, get_discrete_material as dm, message_dist)
