@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, get_aqi
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -42,5 +42,12 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+@bot.message_handler(commands=['aqi'])
+def air_quality(message):
+    pass
+
+
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
