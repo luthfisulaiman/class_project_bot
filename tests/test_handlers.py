@@ -1101,3 +1101,6 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+def test_hotcountry_artist(mocker):
+    pass 
