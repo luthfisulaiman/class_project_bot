@@ -49,4 +49,10 @@ unicode-slugify==0.1.3
 Unidecode==0.4.20
 virtualenv==15.1.0
 Werkzeug==0.12.1
+<<<<<<< HEAD
 wgetter==0.6
+=======
+wikipedia==1.4.0
+beautifulsoup4==4.5.3
+py-translate==1.0.3
+>>>>>>> 74bcefa565677b13fe61f12a1cfa187105427511

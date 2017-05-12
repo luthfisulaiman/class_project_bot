@@ -267,6 +267,47 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestWiki:
+
+    wikipedia_summary = (
+        'The Ukrainian revolution of 2014 (also known as the'
+        ' Euromaidan Revolution or Revolution of Dignity; Ukrainian:'
+        ' Революція гідності, Revoliutsiia hidnosti) took place in'
+        ' Ukraine in February 2014, when a series of violent events'
+        ' involving protesters, riot police, and unknown shooters in'
+        ' the capital, Kiev, culminated in the ousting of Ukrainian'
+        ' President, Viktor Yanukovych. This was followed by a series'
+        ' of changes in Ukraine\'s sociopolitical system, including'
+        ' the formation of a new interim government, the restoration'
+        ' of the previous constitution, and a call to hold impromptu'
+        ' presidential elections within months.\n\n'
+        'source: https://en.wikipedia.org/wiki/2014_Ukrainian_revolution'
+    )
+
+    def test_wiki_wikipedia(self):
+        res = utils.lookup_wiki('The Ukrainian revolution of 2014')
+        assert res == self.wikipedia_summary
+
+    def test_wiki_tongkol(self):
+        res = utils.lookup_wiki('Tongkol')
+        assert res != self.wikipedia_summary
+
+    def test_wiki_value_error(self):
+        try:
+            utils.lookup_wiki('')
+        except ValueError as e:
+            assert str(e) == 'Command /wiki need an argument'
+
+    def test_wiki_page_error(self):
+        try:
+            utils.lookup_wiki('nama_nama_ikan')
+        except IndexError as e:
+            assert str(e) == (
+                'Page id "nama_nama_ikan" does not match any pages.'
+                ' Try another id!'
+            )
+
+
 class TestPlant:
 
     def test_is_poisonous_true(self):
