@@ -521,3 +521,14 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^(\/billboard newage) .+$')
+def newage_artist(message): 
+        app.logger.debug("'billboard newage' command detected")
+        try:
+            artist = find_newage_artist(artist)
+        except ConnectionError:
+            bot.reply_to(message, "Connection Error")
+        else:
+            bot.reply_to(message,artist)
