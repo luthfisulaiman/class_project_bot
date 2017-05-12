@@ -9,7 +9,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
                               chuck, get_discrete_material as dm, message_dist,
-                              extract_colour_from_image)
+                              extract_colour_from_image, check_caption_colour)
 from requests.exceptions import ConnectionError
 
 
@@ -1115,28 +1115,11 @@ def test_extract_colour(mocker):
     mock_message = mocker.Mock()
     attrs = {'photo': [photo], 'caption': '/fgcolour'}
     mock_message.configure_mock(**attrs)
-
+    assert check_caption_colour(mock_message)
     extract_colour_from_image(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
-
-
-def test_extract_colour_other_caption(mocker):
-    fake_result = 'fake result'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.extract_colour',
-                 return_value=fake_result)
-    photo = mocker.Mock()
-    attrs = {'file_id': 'somestr'}
-    photo.configure_mock(**attrs)
-    mock_message = mocker.Mock()
-    attrs = {'photo': [photo], 'caption': '/somecaption'}
-    mock_message.configure_mock(**attrs)
-
-    extract_colour_from_image(mock_message)
-
-    assert mocked_reply_to.call_args is None
 
 
 def test_extract_colour_requests_errors(mocker):

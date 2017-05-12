@@ -524,18 +524,20 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(content_types=['photo'])
-# func=lambda message: message.caption in ['/bgcolour', '/fgcolour'])
+def check_caption_colour(message):
+    return message.caption in ['/bgcolour', '/fgcolour']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_colour)
 def extract_colour_from_image(message):
     app.logger.debug("'extract_colour_from_image' handler executed")
-    if message.caption in ['/bgcolour', '/fgcolour']:  # else check other handler
-        try:
-            extracted = extract_colour(message)
-        except requests.exceptions.ConnectionError:
-            bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
-        except requests.exceptions.HTTPError:
-            bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
-        except requests.exceptions.RequestException:
-            bot.reply_to(message, 'An error occured. Please try again in a moment.')
-        else:
-            bot.reply_to(message, extracted)
+    try:
+        extracted = extract_colour(message)
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, extracted)

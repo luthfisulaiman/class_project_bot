@@ -263,7 +263,7 @@ def get_chuck(message_text):
 
 
 def extract_colour(message):
-    photo_id = message.photo[len(message.photo) - 1].file_id
+    photo_id = message.photo[-1].file_id
     caption = message.caption
     ec = extractcolour.ExtractColour(photo_id)
     if caption == "/fgcolour":
