@@ -1,9 +1,13 @@
 from csuibot import utils
+
+from csuibot.utils import plant as p
+from csuibot.utils import data_processor as processor
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
 import os
 import re
 from requests.exceptions import ConnectionError
 import requests
+
 
 import json
 
@@ -264,6 +268,101 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestWiki:
+
+    wikipedia_summary = (
+        'The Ukrainian revolution of 2014 (also known as the'
+        ' Euromaidan Revolution or Revolution of Dignity; Ukrainian:'
+        ' Революція гідності, Revoliutsiia hidnosti) took place in'
+        ' Ukraine in February 2014, when a series of violent events'
+        ' involving protesters, riot police, and unknown shooters in'
+        ' the capital, Kiev, culminated in the ousting of Ukrainian'
+        ' President, Viktor Yanukovych. This was followed by a series'
+        ' of changes in Ukraine\'s sociopolitical system, including'
+        ' the formation of a new interim government, the restoration'
+        ' of the previous constitution, and a call to hold impromptu'
+        ' presidential elections within months.\n\n'
+        'source: https://en.wikipedia.org/wiki/2014_Ukrainian_revolution'
+    )
+
+    def test_wiki_wikipedia(self):
+        res = utils.lookup_wiki('The Ukrainian revolution of 2014')
+        assert res == self.wikipedia_summary
+
+    def test_wiki_tongkol(self):
+        res = utils.lookup_wiki('Tongkol')
+        assert res != self.wikipedia_summary
+
+    def test_wiki_value_error(self):
+        try:
+            utils.lookup_wiki('')
+        except ValueError as e:
+            assert str(e) == 'Command /wiki need an argument'
+
+    def test_wiki_page_error(self):
+        try:
+            utils.lookup_wiki('nama_nama_ikan')
+        except IndexError as e:
+            assert str(e) == (
+                'Page id "nama_nama_ikan" does not match any pages.'
+                ' Try another id!'
+            )
+
+
+class TestPlant:
+
+    def test_is_poisonous_true(self):
+        plant = p.Plant('test', True, 'test')
+        assert plant.is_poisonous is True
+
+    def test_is_poisonous_false(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.is_poisonous is False
+
+    def test_name(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.name == 'test'
+
+    def test_desription(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.description == 'test'
+
+
+class TestDataProcessor:
+
+    def test_fetch_data_is_poisonous(self):
+        test = processor.fetch_data('Daffodil')
+        assert test is not None
+
+    def test_fetch_data_not_poisonous(self):
+        test = processor.fetch_data('test')
+        assert test is not None
+
+    def test_fetch_all_data(self):
+        test = processor.fetch_all_data()
+        assert test is not None
+
+    def test_fetch_user_input(self):
+        test = processor.fetch_user_input('elephant')
+        assert test is None
+
+    def test_fetch_user_input_trivia(self):
+        test = processor.fetch_user_input('triviaplant')
+        assert test is not None
+
+    def test_fetch_user_input_ask_false(self):
+        test = processor.fetch_user_input('askplant apple')
+        assert test is not None
+
+    def test_fetch_user_input_ask_true(self):
+        test = processor.fetch_user_input('askplant Daffodil')
+        assert test is not None
+
+    def test_send_trivia(self):
+        test = processor.send_trivia()
+        assert test is not None
 
 
 class TestMessageDist:

@@ -8,7 +8,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isupweb as iuw, notiftaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
+                           wiki)
 
 
 def lookup_zodiac(month, day):
@@ -54,6 +55,20 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_wiki(term):
+    if term == '':
+        raise ValueError('Command /wiki need an argument')
+    else:
+        object_wiki = wiki.Wiki(term)
+        try:
+            return object_wiki.get_result()
+        except Exception as e:
+            raise IndexError(
+                'Page id "' + term + '" does not match any pages.'
+                ' Try another id!'
+            )
 
 
 def lookup_message_dist(chat_id):
