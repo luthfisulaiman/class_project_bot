@@ -8,7 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist)
+                              chuck, get_discrete_material as dm, message_dist, similar)
 from requests.exceptions import ConnectionError
 
 
@@ -1103,37 +1103,24 @@ def test_chuck_with_args(mocker):
     assert args[1] == fake_error
 
 
-def test_request_comic(mocker):
-    fake_comic = 'https://xkcd.com/1834/'
+def test_similar_valid(mocker):
+    fake_result = '100%'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.xkcd', return_value=fake_comic)
-    mock_message = Mock(text='/xkcd 1834')
+    mocker.patch('csuibot.handlers.similar')
+    mock_message = Mock(text='/docs_sim a a')
 
-    xkcd(mock_message)
+    similar(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_comic
+    assert args[1] == fake_result
 
 
-def test_comic_error(mocker):
-    fake_error = 'Cant\'t found the requested comic.'
+def test_similar_invalid(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.xkcd', side_effect=ValueError)
-    mock_message = Mock(text='/xkcd 1834')
+    mocker.patch('csuibot.handlers.similar')
+    mock_message = Mock(text='/docs_sim a a')
 
-    xkcd(mock_message)
+    similar(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_error
-
-
-def test_comic_invalid(mocker):
-    fake_error = 'Command not found. Please follow this format /xkcd or /xkcd <id>'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.xkcd', return_value=fake_error)
-    mock_message = Mock(text='/xkcd 1834')
-
-    xkcd(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_error
+    assert args[1] == 'Command invalid, please use /docs_sim <text1> <text2> format'

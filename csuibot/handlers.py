@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isupweb, takescelenotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom, get_comic)
+                    lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -483,16 +483,6 @@ def xkcd(message):
             bot.reply_to(message, 'An error occured. Please try again in a moment.')
         else:
             bot.reply_to(message, comic)
-    elif(len(command) == 2):
-        try:
-            comic = get_comic(command[1])
-        except ValueError:
-            bot.reply_to(message, 'Cant\'t found the requested comic.')
-        else:
-            bot.reply_to(message, comic)
-    else:
-        output = ('Command not found. Please follow this format /xkcd or /xkcd <id>')
-        bot.reply_to(message, output)
 
 
 @bot.message_handler(commands=['yelkomputer'])
@@ -533,3 +523,8 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^\/docs_sim \w+$')
+def similar(message):
+    raise NotImplemented

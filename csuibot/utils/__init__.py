@@ -261,5 +261,5 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def get_comic(id):
+def similar_text():
     raise NotImplemented

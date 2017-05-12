@@ -215,7 +215,7 @@ class TestZodiac:
 
 class TestNotifTaker:
     def test_notif_taker(self):
-        res = utils.takeSceleNotif()
+        res = utils.takescelenotif()
         assert res != ""
 
 
@@ -757,19 +757,23 @@ class TestChuck:
             assert res is not None
 
 
-class TestComic:
-    def test_connection(self):
-        comic = utils.get_comic('1834')
-        assert comic == 'connection error. Please try again'
+class TestSimilar:
+    def test_similar_text(self):
+        res = utils.similar_text('melewat', 'melarat')
+        assert '%' in res
 
-    def test_valid(self):
-        comic = utils.get_comic('1834')
-        assert "https" in comic
+    def test_similar_url(self):
+        url1 = 'https://docs.python.org/3/library/unittest.mock.html#quick-guide'
+        url2 = 'https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch'
+        res = utils.similar_text(url1, url2)
+        assert '%' in res
 
-    def test_lower_bound(self):
-        comic = utils.get_comic('0')
-        assert "Cant\'t found the requested comic." == comic
+    def test_connection_error(self):
+        res = utils.similar_text('/docs_sim melewat melarat')
+        assert res == 'Connection error occured, please try again in a moment'
 
-    def test_upper_bound(self):
-        comic = utils.get_comic('10000')
-        assert "Cant\'t found the requested comic." == comic
+    def test_bound(self):
+        fake1 = 'a' * 10000
+        fake2 = 'ab' * 5000
+        res = utils.similar_text(fake1, fake2)
+        assert res == 'Your text is too long'

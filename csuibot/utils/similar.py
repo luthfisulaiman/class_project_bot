@@ -1,19 +1,19 @@
-class Xkcd2:
+class Similar:
 
     def __init__():
         raise NotImplemented
 
-    def getrequester():
+    def checktext():
         raise NotImplemented
 
-    def generate():
+    def checkweb():
         raise NotImplemented
 
 
-class ComicRequester(object):
+class ApiRequester:
 
     def __init__():
-            raise NotImplemented
+        raise NotImplemented
 
-    def make_request():
+    def request():
         raise NotImplemented
