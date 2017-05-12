@@ -67,6 +67,10 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+def news(message):
+    pass
+
+
 @bot.message_handler(commands=['yelfasilkom'])
 def yelfasilkom(message):
     app.logger.debug("'yelfasilkom' command detected")
