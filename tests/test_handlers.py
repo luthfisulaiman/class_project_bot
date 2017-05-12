@@ -100,6 +100,7 @@ def test_topMangaOricon(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_manga
 
+
 def test_is_up(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/is_up https://scele.cs.ui.ac.id/')

@@ -219,28 +219,28 @@ class TestTropicalBb:
     def test_TropicalBbExist(self):
         res = utils.getTopTropical()
         assert res != ""
-	
-	def test_TropicalConn(self):
-		try:
-			res = utils.takeSceleNotif()
-		except requests.ConnectionError as e:
-			return False
-		else:
-			assert res != ""
+
+    def test_TropicalConn(self):
+        try:
+            res = utils.takeSceleNotif()
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res != ""
 
 
 class TestMangaTopOricon:
     def test_TropicalBbExist(self):
         res = utils.getTopManga()
         assert res != ""
-	
-	def test_TropicalConn(self):
-		try:
-			res = utils.getTopManga()
-		except requests.ConnectionError as e:
-			return False
-		else:
-			assert res != ""
+
+    def test_TropicalConn(self):
+        try:
+            res = utils.getTopManga()
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res != ""
 
 
 class TestChineseZodiac:
