@@ -1120,7 +1120,7 @@ def test_top_oricon_cd_unknown(mocker):
     fake_output = "Oricon don't know chart in this date"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
 
-    mock_message = Mock(text='/oricon jpsingles daily 9999-99-99')
+    mock_message = Mock(text='/oricon jpsingles daily 1854-01-02')
 
     oricon_cd(mock_message)
 

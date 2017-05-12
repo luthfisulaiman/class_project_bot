@@ -525,5 +525,28 @@ def marsfasilkom(message):
 
 @bot.message_handler(regexp=r'/oricon jpsingles(| .*)$')
 def oricon_cd(message):
-    pass
-    top_ten_cd_oricon
+    app.logger.debug("'oricon CD' command detected")
+    help_text = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                ' date of the monday in that week'
+
+    command = message.text.split(' ')
+    if len(command) == 3:
+        if len(command[2].split('-')) == 1:
+            chart_type = 'y'
+        else:
+            chart_type = 'm'
+
+        chart = top_ten_cd_oricon(chart_type, command[2])
+        bot.reply_to(message, chart)
+    elif len(command) == 4:
+        if command[2] == 'weekly':
+            chart_type = 'w'
+        elif command[2] == 'daily':
+            chart_type = 'd'
+        else:
+            bot.reply_to(message, help_text)
+            return
+        chart = top_ten_cd_oricon(chart_type, command[3])
+    else:
+        bot.reply_to(message, help_text)
