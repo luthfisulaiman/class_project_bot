@@ -123,7 +123,7 @@ def lookup_definisi(word):
 
 def takescelenotif():
 
-    notif = n.notifTaker()
+    notif = n.notiftaker()
     return notif.getPost()
 
 

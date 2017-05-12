@@ -5,7 +5,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               password, password_16, custom_chuck_joke, define,
                               kelaskata, compute_binary, calculate,
                               compute_help, compute_not_binary, composer,
-                              remind, isup, sceleNoticeHandler, definisi, note,
+                              remind, isup, scelenoticehandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
                               chuck, get_discrete_material as dm, message_dist)
@@ -299,9 +299,9 @@ def test_definisi(mocker):
 def test_scelenotif(mocker):
     fake_scele = 'scele'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.takeSceleNotif', return_value=fake_scele)
+    mocker.patch('csuibot.handlers.takescelenotif', return_value=fake_scele)
     mock_message = Mock(text='/sceleNotif')
-    sceleNoticeHandler(mock_message)
+    scelenoticehandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_scele
@@ -311,7 +311,7 @@ def test_is_up(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/is_up https://scele.cs.ui.ac.id/')
 
-    isUp(mock_message)
+    isup(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'UP'
@@ -321,7 +321,7 @@ def test_is_down(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/is_up http://iniwebsitedownwoi.co.id')
 
-    isUp(mock_message)
+    isup(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'DOWN'
@@ -331,7 +331,7 @@ def test_error_url(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/is_up ftp://example.com')
 
-    isUp(mock_message)
+    isup(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Url is invalid,insert a valid url!.Ex: https://www.google.com'
