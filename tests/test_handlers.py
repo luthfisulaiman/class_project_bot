@@ -7,7 +7,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom,
+                              marsfasilkom, yelfasilkom, wiki,
                               chuck, get_discrete_material as dm, message_dist,
                               fake_json)
 from requests.exceptions import ConnectionError
@@ -71,6 +71,42 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_wiki(mocker):
+    fake_wiki = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', return_value=fake_wiki)
+    mock_message = Mock(text='/wiki Joko Widodo')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_wiki
+
+
+def test_wiki_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=ValueError)
+    mock_message = Mock(text='/wiki')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /wiki need an argument'
+
+
+def test_wiki_page_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=IndexError)
+    mock_message = Mock(text='/wiki Wikipedia')
+
+    wiki(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == (
+        'Page id "Wikipedia" does not match any pages.'
+        ' Try another id!'
+    )
 
 
 def test_message_dist(mocker):
