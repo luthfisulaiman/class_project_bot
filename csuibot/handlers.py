@@ -44,3 +44,12 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/oricon books weekly ')
+def oricon_books(message):
+    app.logger.debug("'oricon' command detected")
+    app.logger.debug("oricon command type is 'books'")
+    app.logger.debug("oricon command type is 'weekly'")
+
+    pass

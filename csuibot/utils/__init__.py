@@ -43,3 +43,7 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def get_oricon_books(date):
+    return books.Books().top_10(date)

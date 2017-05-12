@@ -61,3 +61,15 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_oricon_books(mocker):
+    fake_output = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.generate_custom_chuck_joke', return_value=fake_output)
+    mock_message = Mock(text='/oricon books weekly 2001-01-01')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
