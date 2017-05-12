@@ -10,7 +10,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
-                    find_hot100_artist)
+                    find_hot100_artist, find_newage_artist)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -579,3 +579,20 @@ def hot100_artist(message):
         bot.reply_to(message, "Connection Error")
     else:
         bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard newage .*$')
+def newage_artist(message):
+        app.logger.debug("'billboard newage' command detected")
+
+        s2 = "newage "
+
+        name = (message.text[message.text.index(s2) + len(s2):])
+
+        app.logger.debug("'billboard newage' argument is "+name)
+        try:
+            artist = find_newage_artist(name)
+        except ConnectionError:
+            bot.reply_to(message, "Connection Error")
+        else:
+            bot.reply_to(message, artist)

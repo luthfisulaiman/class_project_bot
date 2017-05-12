@@ -875,3 +875,23 @@ class TestHot100_artist:
 
     def test_h100artist_notfound(self):
         self.run_test('foo bar', TestHot100_artist.err_msg)
+
+
+class TestNewAge_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_newage_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestNewAge_artist.err_msg
+
+    def test_newageartist_found(self):
+        exp = ("Enya\nDark Sky Island\n3")
+
+        self.run_test('Enya', exp)
+
+    def test_newageartist_notfound(self):
+        self.run_test('foo bar', TestNewAge_artist.err_msg)
