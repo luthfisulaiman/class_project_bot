@@ -1,0 +1,37 @@
+{
+  "plants": [
+    {"name":"Daffodil", 
+     "cause":"nausea, vomiting, diarrhea. May be fatal."
+    },
+    {"name":"Oleander",
+      "cause":"affects the heart, produces severe digestive upset and has caused death. It's extremely poisonous"
+    },
+    {"name":"Elephant Ear",
+      "cause":"intense burning and irritation of the mouth and tongue. Death can occur if base of the tongue swells enough to block the air passage of the throat."
+    },
+   {"name":"Castor Bean",
+      "cause":"fatal effect. A single Rosary Pea seed has caused death. One or two Castor Bean seeds are near the lethal dose for adults."
+    },
+    {"name":"Larkspur",
+      "cause":"digestive upset, nervous excitement, depression. May be fatal."
+    },
+    {"name":"Monkshood",
+      "cause":"digestive upset and nervous excitement."
+    },
+    {"name":"Star of Bethlehem",
+      "cause":"vomiting and nervous excitement."
+    },
+    {"name":"Lily-of-the-Valley",
+      "cause":"irregular heart beat and pulse, usually accompanied by digestive upset and mental confusion."
+    },
+    {"name":"Iris",
+      "cause":"severe-but not usually serious-digestive upset."
+    },
+    {"name":"Foxglove",
+      "cause":"dangerously irregular heartbeat and pulse, usually digestive upset and mental confusion. May be fatal."
+    },
+    {"name":"Bleeding Heart",
+      "cause":"fatal effects and it's poisonous in large amount to cattle."
+    }
+  ]
+}
