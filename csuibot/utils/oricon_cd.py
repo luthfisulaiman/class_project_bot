@@ -7,7 +7,7 @@ import re
 
 
 class Oricon_cd:
-    ORICON_URL = "http://www.oricon.co.jp/rank/js/{}/{}"
+    ORICON_URL = "http://www.oricon.co.jp/rank/js/{}/{}/"
 
     @classmethod
     def get_top_ten(cls, chart_type, date):
@@ -21,7 +21,7 @@ class Oricon_cd:
 
         if chart_type in need_check:
             month = date.split('-')[1]
-            month = int(month.split('0')[-1])
+            month = int(month.lstrip('0'))
             if month < 1 or month > 12:
                 return error_text
             if chart_type != 'm':
@@ -33,16 +33,17 @@ class Oricon_cd:
                 except ValueError:
                     return error_text
         try:
-            page = cls.__get_page(cls.ORICON_URL.format(chart_type, date))
+            page = cls._get_page(cls.ORICON_URL.format(chart_type, date))
         except ConnectionError:
             return 'Error occured when connecting to Oricon website.'
+
         if page.status_code == 404:
             return "Oricon don't know chart in this date"
         soup = cls.__parse_scraping_text(page.content)
-        return cls.__get_output(chart_type, soup)
+        return cls.__get_output(soup)
 
     @classmethod
-    def __get_page(cls, link):
+    def _get_page(cls, link):
         page = r.get(link)
         return page
 
@@ -53,7 +54,7 @@ class Oricon_cd:
         return parse_html_text
 
     @classmethod
-    def __get_output(cls, chart_type, soup):
+    def __get_output(cls, soup):
         output = ''
         for entry in soup.find_all(class_='box-rank-entry'):
             info = entry.find(class_="title").text
@@ -66,7 +67,7 @@ class Oricon_cd:
             info += ' - ' + release_date
 
             sales = "No estimated sales"
-            if chart_type != 'y':
+            if len(entry_info) > 5:
                 sales = re.search(r'[0-9,]+', entry_info[3].text).group()
             info += ' - ' + sales
             output += info + '\n'

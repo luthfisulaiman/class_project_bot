@@ -531,6 +531,8 @@ def oricon_cd(message):
                 ' date of the monday in that week'
 
     command = message.text.split(' ')
+    app.logger.debug(command)
+
     if len(command) == 3:
         if len(command[2].split('-')) == 1:
             chart_type = 'y'

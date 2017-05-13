@@ -1140,7 +1140,9 @@ def test_top_oricon_cd(mocker):
 
 
 def test_top_oricon_help(mocker):
-    fake_output = ''
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
 
