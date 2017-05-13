@@ -550,5 +550,6 @@ def oricon_cd(message):
             bot.reply_to(message, help_text)
             return
         chart = top_ten_cd_oricon(chart_type, command[3])
+        bot.reply_to(message, chart)
     else:
         bot.reply_to(message, help_text)

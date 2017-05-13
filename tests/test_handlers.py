@@ -1128,10 +1128,32 @@ def test_top_oricon_cd_unknown(mocker):
     assert args[1] == fake_output
 
 
-def test_top_oricon_cd(mocker):
+def test_top_oricon_cd_weekly(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
 
     mock_message = Mock(text='/oricon jpsingles weekly 2017-05-15')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_montly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2017-04')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_yearly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2016')
 
     oricon_cd(mock_message)
 
@@ -1147,6 +1169,21 @@ def test_top_oricon_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
 
     mock_message = Mock(text='/oricon jpsingles')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_invalid_command(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles Maki 2010-12-10')
 
     oricon_cd(mock_message)
 
