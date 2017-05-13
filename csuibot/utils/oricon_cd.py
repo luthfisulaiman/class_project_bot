@@ -72,4 +72,6 @@ class Oricon_cd:
                 sales = re.search(r'[0-9,]+', entry_info[3].text).group()
             info += ' - ' + sales
             output += info + '\n'
+            i += 1
+
         return output
