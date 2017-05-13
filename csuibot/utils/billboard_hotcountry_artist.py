@@ -15,7 +15,7 @@ class HotCountry_artist:
                    "Artist's name is case sensitive")
         for song in self.chart:
             if (name in song.artist):
-                resultsongs += (song.artist+"\n"+song.title+"\n"+str(song.rank))
+                resultsongs += (song.artist+"\n"+song.title+"\n"+str(song.rank)+"\n")
 
         if (resultsongs == ""):
             return err_msg

@@ -869,7 +869,7 @@ class TestHot100_artist:
             assert str(ce) == TestHot100_artist.err_msg
 
     def test_h100artist_found(self):
-        exp = ("Russ\nLosin Control\n68")
+        exp = ("Russ\nLosin Control\n68\n")
 
         self.run_test('Russ', exp)
 
@@ -889,7 +889,7 @@ class TestNewAge_artist:
             assert str(ce) == TestNewAge_artist.err_msg
 
     def test_newageartist_found(self):
-        exp = ("Enya\nDark Sky Island\n3")
+        exp = ("Enya\nDark Sky Island\n3\n")
 
         self.run_test('Enya', exp)
 
@@ -910,7 +910,7 @@ class TestHotCountry_artist:
             assert str(ce) == TestHotCountry_artist.err_msg
 
     def test_hcountryartist_found(self):
-        exp = ("Sam Hunt\nBody Like A Back Road\n1")
+        exp = ("Sam Hunt\nBody Like A Back Road\n1\n")
 
         self.run_test('Sam Hunt', exp)
 

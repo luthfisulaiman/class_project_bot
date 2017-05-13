@@ -1141,7 +1141,7 @@ def test_chuck_with_args(mocker):
 
 
 def test_hot100_artist(mocker):
-    fake_artist = ("Russ\nLosin Control\n68")
+    fake_artist = ("Russ\nLosin Control\n68\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.hot100_artist', return_value=fake_artist)
@@ -1154,7 +1154,7 @@ def test_hot100_artist(mocker):
 
 
 def test_newage_artist(mocker):
-    fake_artist = ("Enya\nDark Sky Island\n3")
+    fake_artist = ("Enya\nDark Sky Island\n3\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.newage_artist', return_value=fake_artist)
@@ -1167,7 +1167,7 @@ def test_newage_artist(mocker):
 
 
 def test_hotcountry_artist(mocker):
-    fake_artist = ("Sam Hunt\nBody Like A Back Road\n1")
+    fake_artist = ("Sam Hunt\nBody Like A Back Road\n1\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.hotcountry_artist', return_value=fake_artist)
