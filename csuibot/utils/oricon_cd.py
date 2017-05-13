@@ -56,8 +56,9 @@ class Oricon_cd:
     @classmethod
     def __get_output(cls, soup):
         output = ''
+        i = 1
         for entry in soup.find_all(class_='box-rank-entry'):
-            info = entry.find(class_="title").text
+            info = '(' + str(i) + ') ' + entry.find(class_="title").text
             info += ' - ' + entry.find(class_="name").text
 
             entry_info = entry.find(class_="list").contents
