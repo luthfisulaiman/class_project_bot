@@ -10,7 +10,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
-                    find_hot100_artist, find_newage_artist, find_hotcountry_artist)
+                    find_hot100_artist, find_newage_artist, find_hotcountry_artist,
+                    top_ten_cd_oricon)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -562,6 +563,38 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'/oricon jpsingles(| .*)$')
+def oricon_cd(message):
+    app.logger.debug("'oricon CD' command detected")
+    help_text = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                ' date of the monday in that week'
+
+    command = message.text.split(' ')
+    app.logger.debug(command)
+
+    if len(command) == 3:
+        if len(command[2].split('-')) == 1:
+            chart_type = 'y'
+        else:
+            chart_type = 'm'
+
+        chart = top_ten_cd_oricon(chart_type, command[2])
+        bot.reply_to(message, chart)
+    elif len(command) == 4:
+        if command[2] == 'weekly':
+            chart_type = 'w'
+        elif command[2] == 'daily':
+            chart_type = 'd'
+        else:
+            bot.reply_to(message, help_text)
+            return
+        chart = top_ten_cd_oricon(chart_type, command[3])
+        bot.reply_to(message, chart)
+    else:
+        bot.reply_to(message, help_text)
 
 
 @bot.message_handler(regexp=r'^/billboard hot100 .*$')

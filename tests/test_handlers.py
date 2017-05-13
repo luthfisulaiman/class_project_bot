@@ -9,7 +9,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom, wiki,
                               chuck, get_discrete_material as dm, message_dist,
-                              hot100_artist, newage_artist, hotcountry_artist)
+                              hot100_artist, newage_artist, hotcountry_artist,
+                              oricon_cd)
 from requests.exceptions import ConnectionError
 
 
@@ -1138,6 +1139,93 @@ def test_chuck_with_args(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_top_oricon_cd_invalid_date(mocker):
+    fake_output = 'Invalid date'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles weekly 9999-99-99')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_cd_unknown(mocker):
+    fake_output = "Oricon don't know chart in this date"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles daily 1854-01-02')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_cd_weekly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles weekly 2017-05-15')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_montly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2017-04')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_yearly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2016')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_help(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_invalid_command(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles Maki 2010-12-10')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
 
 
 def test_hot100_artist(mocker):

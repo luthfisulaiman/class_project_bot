@@ -11,7 +11,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom, wiki,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
-                           billboard_hotcountry_artist as felhc)
+                           billboard_hotcountry_artist as felhc,
+                           oricon_cd as ocd)
 
 
 def lookup_zodiac(month, day):
@@ -276,6 +277,11 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def top_ten_cd_oricon(chart_type, date):
+    chart = ocd.Oricon_cd.get_top_ten(chart_type, date)
+    return chart
 
 
 def find_hot100_artist(name):

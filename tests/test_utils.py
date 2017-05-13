@@ -856,6 +856,55 @@ class TestChuck:
             assert res is not None
 
 
+class TestOriconCD:
+    def test_connection_error(self, mocker):
+        mocker.patch('csuibot.utils.ocd.Oricon_cd._get_page', side_effect=ConnectionError)
+
+        output = utils.top_ten_cd_oricon('w', '2017-05-05')
+
+        assert output == 'Error occured when connecting to Oricon website.'
+
+    def test_daily_chart(self):
+        output = utils.top_ten_cd_oricon('d', '2017-05-12')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_weekly_chart(self):
+        output = utils.top_ten_cd_oricon('w', '2017-05-15')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_montly_chart(self):
+        output = utils.top_ten_cd_oricon('m', '2017-04')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_yearly_chart(self):
+        output = utils.top_ten_cd_oricon('y', '2016')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_unknown(self):
+        output = utils.top_ten_cd_oricon('d', '1854-05-05')
+
+        assert output == "Oricon don't know chart in this date"
+
+    def test_invalid_date(self):
+        output = utils.top_ten_cd_oricon('d', '9999-12-99')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_month(self):
+        output = utils.top_ten_cd_oricon('m', '2016-90')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_date_format(self):
+        output = utils.top_ten_cd_oricon('d', 'Maki Cantik Sekali')
+
+        assert output == 'Invalid date'
+
+
 class TestHot100_artist:
 
     err_msg = ("Artist is not present on chart or no such artist exists\n"
