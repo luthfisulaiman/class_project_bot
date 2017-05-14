@@ -6,7 +6,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb, takeSceleNotif, getTopTropical, getTopManga)
+                    remind_me, lookup_isUpWeb, takeSceleNotif, checkTopTropical, getTopManga)
 from requests.exceptions import ConnectionError
 
 
@@ -63,9 +63,9 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/tropicaltop$')
-def tropical10Handler(message):
-    app.logger.debug("top tropical command detected")
+@bot.message_handler(regexp=r'^/tropicaltop $')
+def checkTropical10Handler(message):
+    app.logger.debug("check top tropical command detected")
     try:
         notification = getTopTropical()
     except ConnectionError:

@@ -58,9 +58,9 @@ def takeSceleNotif():
     return notif.getPost()
 
 
-def getTopTropical():
+def checkTopTropical(artist):
     topTropical = trop.topTropicalBb()
-    return topTropical.getTopTropical()
+    return topTropical.getTopTropical(artist)
 
 
 def getTopManga():
