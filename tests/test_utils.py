@@ -785,3 +785,21 @@ class TestYoutube:
     def test_not_youtube_video(self):
         res = utils.lookup_url("http://youtube.com")
         assert res == "Please provide a YouTube video URL"
+
+
+class TestJapanArtist:
+    def test_get_artist(self):
+        try:
+            res = utils.lookup_artist('Kana Nishino')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_get_artist_not_found(self):
+        try:
+            res = utils.lookup_artist('Tulus')
+        except ConnectionError:
+            pass
+        else:
+            assert res == 'Artist not present on the Top 100 Chart'

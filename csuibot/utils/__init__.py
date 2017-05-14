@@ -9,7 +9,11 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
+<<<<<<< HEAD
                            youtube)
+=======
+                           japanartist as ja)
+>>>>>>> story-japan-artist
 
 
 def lookup_zodiac(month, day):
@@ -264,3 +268,7 @@ def get_chuck(message_text):
 
 def lookup_url(url):
     return youtube.Youtube().getURL(url)
+
+
+def lookup_artist(artist):
+    return ja.JapanArtist().getArtist(artist)
