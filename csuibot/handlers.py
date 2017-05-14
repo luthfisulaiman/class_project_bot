@@ -534,6 +534,6 @@ def japanartist(message):
     # except ValueError:
     #     bot.reply_to(message, 'Command /billboard japan100 need an arguments')
     except ConnectionError:
-        bot.reply_to(message, 'Error connecting to Billboard RSS Feed')
+        bot.reply_to('Error connecting to Billboard RSS Feed')
     else:
-        bot.reply_to(message, _artist)
+        bot.reply_to(_artist)

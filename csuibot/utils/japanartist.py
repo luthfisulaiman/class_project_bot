@@ -7,15 +7,14 @@ class JapanArtist:
         self.url = "http://www.billboard.com/rss/charts/japan-hot-100"
 
     def getArtist(self, artist):
-        MUSIC_NOTE = '🎶'
-        MICROPHONE = '🎤'
-        SPARKLES = '📈'
 
         charts = r.get(self.url).text
         soup = bs(charts, 'html.parser')
         for chart in soup.find_all('item'):
             if(artist in chart.artist.string):
-                return "Artist {}: {}\nSong {}: {}\nPosition {}: {}"\
+                return "🎤 Artist 🎤   : {} 🎤\n \
+                        🎶 Song 🎶     : {} 🎶\n \
+                        📈 Position 📈 : {} 📈"
                         .format(MICROPHONE, chart.artist.string, MUSIC_NOTE,
                                 chart.chart_item_title.string, SPARKLES,
                                 chart.rank_this_week.string)
