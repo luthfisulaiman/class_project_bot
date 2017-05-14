@@ -14,7 +14,7 @@ class JapanArtist:
             if(artist in chart.artist.string):
                 return "🎤 Artist 🎤   : {} 🎤\n \
                         🎶 Song 🎶     : {} 🎶\n \
-                        📈 Position 📈 : {} 📈"
+                        📈 Position 📈 : {} 📈"\
                         .format(MICROPHONE, chart.artist.string, MUSIC_NOTE,
                                 chart.chart_item_title.string, SPARKLES,
                                 chart.rank_this_week.string)
