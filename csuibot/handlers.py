@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import (lookup_zodiac, lookup_chinese_zodiac)
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, get_oricon_books)
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -50,6 +50,20 @@ def parse_date(text):
 def oricon_books(message):
     app.logger.debug("'oricon' command detected")
     app.logger.debug("oricon command type is 'books'")
-    app.logger.debug("oricon command type is 'weekly'")
 
-    pass
+    try:
+        _, _, weekly, request_date = message.text.split(' ')
+        if (weekly != 'weekly'):
+            top10 = 'Oricon books command currently only supports '\
+                    'weekly ratings at this time.'
+        else:
+            app.logger.debug("oricon command type is 'weekly'")
+            top10 = get_oricon_books(request_date)
+    except ValueError:
+        error = "Invalid command structure. Example: " \
+                "'/oricon books weekly 2017-05-01'"
+        bot.reply_to(message, error)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to the oricon.co.jp website.')
+    else:
+        bot.reply_to(message, top10)
