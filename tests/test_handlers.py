@@ -574,11 +574,11 @@ def test_newage_no_connection(mocker):
     assert args[1] == fake_newage
 
 
-def test_billArtist_Taylor_Swift(mocker):
-    fake_billArtist = 'foobar'
+def test_billArtist_Pentatonix(mocker):
+    fake_billArtist = "Pentatonix \n PTX Vol. IV: Classics (EP) \n Rank #93"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_billArtist', return_value=fake_billArtist)
-    mock_message = Mock(text='/billboard bill200 Taylor Swift')
+    mock_message = Mock(text='/billboard bill200 Pentatonix')
 
     billArtist(mock_message)
 

@@ -517,10 +517,10 @@ class TestBillArtist:
             assert str(e) == ('Cannot connect to billboard API')
 
     def test_billArtist_Taylor_Swift(self):
-        self.run_test('Taylor Swift', 'foobar')
+        self.run_test('Taylor Swift', "Taylor Swift doesn't exist in bill200")
 
     def test_billArtist_Rhoma_Irama(self):
         self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
 
      def test_billArtist_Pentatonix(self):
-        self.run_test('Pentatonix', "foobar")
+        self.run_test('Pentatonix', "Pentatonix \n PTX Vol. IV: Classics (EP) \n Rank #93")
