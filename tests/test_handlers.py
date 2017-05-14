@@ -1134,7 +1134,7 @@ def test_japanartist_not_found(mocker):
     fake_error = 'Artist not present on the Top 100 Chart'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_artist', return_value=fake_error)
-    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+    mock_message = Mock(text='/billboard japan100 Justin Bieber')
 
     japanartist(mock_message)
 

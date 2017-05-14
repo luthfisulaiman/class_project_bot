@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist,
+                    lookup_message_dist, add_message_dist, lookup_artist,
                     lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 import datetime
@@ -525,4 +525,15 @@ def marsfasilkom(message):
 
 @bot.message_handler(regexp=r'^(\/billboard japan100) .+$')
 def japanartist(message):
-    pass
+    app.logger.debug("'billboard japan100 artist comand detacted'")
+    artist = message.text.split(' ')[2:]
+    app.logger.debug('artist = {}'.format(artist))
+
+    try:
+        _artist = lookup_artist(artist)
+    # except ValueError:
+    #     bot.reply_to(message, 'Command /billboard japan100 need an arguments')
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Billboard RSS Feed')
+    else:
+        bot.reply_to(message, _artist)

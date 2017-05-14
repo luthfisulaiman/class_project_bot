@@ -765,3 +765,11 @@ class TestJapanArtist:
             pass
         else:
             assert res is not None
+
+    def test_get_artist_not_found(self):
+        try:
+            res = utils.lookup_artist('Tulus')
+        except ConnectionError:
+            pass
+        else:
+            assert res == 'Artist not present on the Top 100 Chart'
