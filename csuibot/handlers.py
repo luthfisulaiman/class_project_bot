@@ -28,7 +28,6 @@ def message_decorator(func):
 
 
 @bot.message_handler(regexp=r'^/about$')
-@message_decorator
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
@@ -39,7 +38,6 @@ def help(message):
 
 
 @bot.message_handler(regexp=r'^/zodiac \d{4}\-\d{2}\-\d{2}$')
-@message_decorator
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
     _, date_str = message.text.split(' ')
@@ -55,7 +53,6 @@ def zodiac(message):
 
 
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
-@message_decorator
 def shio(message):
     app.logger.debug("'shio' command detected")
     _, date_str = message.text.split(' ')
