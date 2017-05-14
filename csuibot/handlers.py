@@ -8,11 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-<<<<<<< HEAD
-                    lookup_message_dist, add_message_dist, lookup_url,
-=======
-                    lookup_message_dist, add_message_dist, lookup_artist,
->>>>>>> story-japan-artist
+                    lookup_message_dist, add_message_dist, lookup_url, lookup_artist,
                     lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 import datetime

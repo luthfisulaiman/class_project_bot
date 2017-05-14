@@ -7,12 +7,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-<<<<<<< HEAD
-                              marsfasilkom, yelfasilkom, youtube,
-=======
-                              marsfasilkom, yelfasilkom, japanartist,
->>>>>>> story-japan-artist
-                              chuck, get_discrete_material as dm, message_dist)
+                              marsfasilkom, yelfasilkom, youtube, youtube_no_url,
+                              japanartist, chuck, get_discrete_material as dm, message_dist)
 from requests.exceptions import ConnectionError
 
 
@@ -1119,6 +1115,19 @@ def test_youtube_url(mocker):
     mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
 
     youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_youtube_no_url(mocker):
+    fake_url_info = "'youtube' command needs an url"
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', return_value=fake_url_info)
+    mock_message = Mock(text='/youtube ')
+
+    youtube_no_url(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_url_info
