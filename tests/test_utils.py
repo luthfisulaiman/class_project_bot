@@ -522,5 +522,8 @@ class TestBillArtist:
     def test_billArtist_Rhoma_Irama(self):
         self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
 
-     def test_billArtist_Pentatonix(self):
-        self.run_test('Pentatonix', "Pentatonix \n PTX Vol. IV: Classics (EP) \n Rank #93")
+    def test_billArtist_Pentatonix(self):
+        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #93")
+
+    def test_billArtist_Bruno_Mars(self):
+        self.run_test('Bruno Mars', "Bruno Mars\n24K Magic\nRank #7")
