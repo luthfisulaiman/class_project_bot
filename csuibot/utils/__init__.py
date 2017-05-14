@@ -8,8 +8,11 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           billboard as b)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, wiki,
+                           billboard_hot100_artist as felh,
+                           billboard_newage_artist as feln,
+                           billboard_hotcountry_artist as felhc,
+                           oricon_cd as ocd, billboard as b)
 
 
 def lookup_zodiac(month, day):
@@ -55,6 +58,20 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_wiki(term):
+    if term == '':
+        raise ValueError('Command /wiki need an argument')
+    else:
+        object_wiki = wiki.Wiki(term)
+        try:
+            return object_wiki.get_result()
+        except Exception as e:
+            raise IndexError(
+                'Page id "' + term + '" does not match any pages.'
+                ' Try another id!'
+            )
 
 
 def lookup_message_dist(chat_id):
@@ -274,3 +291,32 @@ def lookup_top10_billboard_chart(chart_category):
             result_rank += '({}) - {} - {} \n'.format(current_rank, artist, title)
         return result_rank
     return result
+
+
+def top_ten_cd_oricon(chart_type, date):
+    chart = ocd.Oricon_cd.get_top_ten(chart_type, date)
+    return chart
+
+
+def find_hot100_artist(name):
+    try:
+        return felh.Hot100_artist().find_hot100_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")
+
+
+def find_newage_artist(name):
+    try:
+        return feln.NewAge_artist().find_newage_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")
+
+
+def find_hotcountry_artist(name):
+    try:
+        return felhc.HotCountry_artist().find_hotcountry_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")

@@ -8,8 +8,11 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom, lookup_top10_billboard_chart)
+                    lookup_message_dist, add_message_dist, lookup_wiki,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
+                    find_hot100_artist, find_newage_artist, find_hotcountry_artist,
+                    top_ten_cd_oricon, lookup_top10_billboard_chart)
+
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -65,6 +68,28 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^triviaplant')
+def plant_trivia(message):
+    try:
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^askplant')
+def plant_ask(message):
+    try:
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
 
 
 @bot.message_handler(commands=['yelfasilkom'])
@@ -293,6 +318,24 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(commands=['wiki'])
+def wiki(message):
+    app.logger.debug("'wiki' command detected")
+    term = " ".join(message.text.split()[1:])
+
+    try:
+        wiki_summary = lookup_wiki(term)
+    except ValueError:
+        bot.reply_to(message, 'Command /wiki need an argument')
+    except IndexError:
+        bot.reply_to(
+            message,
+            'Page id "' + term + '" does not match any pages. Try another id!'
+        )
+    else:
+        bot.reply_to(message, wiki_summary)
 
 
 @bot.message_handler(regexp=r'^/message_dist')
@@ -530,3 +573,86 @@ def billboard_chart(message):
     app.logger.debug('chart category = {}'.format(str(chart_category)))
     result = lookup_top10_billboard_chart(chart_category)
     bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'/oricon jpsingles(| .*)$')
+def oricon_cd(message):
+    app.logger.debug("'oricon CD' command detected")
+    help_text = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                ' date of the monday in that week'
+
+    command = message.text.split(' ')
+    app.logger.debug(command)
+
+    if len(command) == 3:
+        if len(command[2].split('-')) == 1:
+            chart_type = 'y'
+        else:
+            chart_type = 'm'
+
+        chart = top_ten_cd_oricon(chart_type, command[2])
+        bot.reply_to(message, chart)
+    elif len(command) == 4:
+        if command[2] == 'weekly':
+            chart_type = 'w'
+        elif command[2] == 'daily':
+            chart_type = 'd'
+        else:
+            bot.reply_to(message, help_text)
+            return
+        chart = top_ten_cd_oricon(chart_type, command[3])
+        bot.reply_to(message, chart)
+    else:
+        bot.reply_to(message, help_text)
+
+
+@bot.message_handler(regexp=r'^/billboard hot100 .*$')
+def hot100_artist(message):
+    app.logger.debug("'billboard hot100' command detected")
+
+    s2 = "hot100 "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard hot100' argument is "+name)
+    try:
+        artist = find_hot100_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard newage .*$')
+def newage_artist(message):
+        app.logger.debug("'billboard newage' command detected")
+
+        s2 = "newage "
+
+        name = (message.text[message.text.index(s2) + len(s2):])
+
+        app.logger.debug("'billboard newage' argument is "+name)
+        try:
+            artist = find_newage_artist(name)
+        except ConnectionError:
+            bot.reply_to(message, "Connection Error")
+        else:
+            bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard hotcountry .*$')
+def hotcountry_artist(message):
+    app.logger.debug("'billboard hotcountry' command detected")
+
+    s2 = "hotcountry "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard hotcountry' argument is "+name)
+    try:
+        artist = find_hotcountry_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)

@@ -7,9 +7,10 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom,
+                              marsfasilkom, yelfasilkom, wiki,
                               chuck, get_discrete_material as dm, message_dist,
-                              billboard_chart)
+                              hot100_artist, newage_artist, hotcountry_artist,
+                              oricon_cd, billboard_chart)
 from requests.exceptions import ConnectionError
 
 
@@ -71,6 +72,42 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_wiki(mocker):
+    fake_wiki = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', return_value=fake_wiki)
+    mock_message = Mock(text='/wiki Joko Widodo')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_wiki
+
+
+def test_wiki_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=ValueError)
+    mock_message = Mock(text='/wiki')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /wiki need an argument'
+
+
+def test_wiki_page_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=IndexError)
+    mock_message = Mock(text='/wiki Wikipedia')
+
+    wiki(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == (
+        'Page id "Wikipedia" does not match any pages.'
+        ' Try another id!'
+    )
 
 
 def test_message_dist(mocker):
@@ -1126,3 +1163,129 @@ def test_billboard_with_invalid_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_top_oricon_cd_invalid_date(mocker):
+    fake_output = 'Invalid date'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles weekly 9999-99-99')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_cd_unknown(mocker):
+    fake_output = "Oricon don't know chart in this date"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles daily 1854-01-02')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_cd_weekly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles weekly 2017-05-15')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_montly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2017-04')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_yearly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2016')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_help(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_invalid_command(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles Maki 2010-12-10')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_hot100_artist(mocker):
+    fake_artist = ("Russ\nLosin Control\n68\n")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hot100_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hot100 Russ')
+
+    hot100_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_newage_artist(mocker):
+    fake_artist = ("Enya\nDark Sky Island\n3\n")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.newage_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard newage Enya')
+
+    newage_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_hotcountry_artist(mocker):
+    fake_artist = ("Sam Hunt\nBody Like A Back Road\n1\n")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hotcountry_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hotcountry Sam Hunt')
+
+    hotcountry_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
