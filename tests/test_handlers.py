@@ -1111,7 +1111,7 @@ def test_youtube_url(mocker):
                     '102154 & 1122'\
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.call_youtube', return_value=fake_url_info)
+    mocker.patch('csuibot.handlers.lookup_url', return_value=fake_url_info)
     mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
 
     youtube(mock_message)
@@ -1124,7 +1124,7 @@ def test_youtube_no_connection(mocker):
     fake_url_info = 'Error connecting to Youtube'
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.call_youtube', side_effect=ConnectionError)
+    mocker.patch('csuibot.handlers.lookup_url', side_effect=ConnectionError)
     mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
 
     youtube(mock_message)
