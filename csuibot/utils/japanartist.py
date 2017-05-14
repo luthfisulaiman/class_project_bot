@@ -11,10 +11,8 @@ class JapanArtist:
         charts = r.get(self.url).text
         soup = bs(charts, 'html.parser')
         for chart in soup.find_all('item'):
-            if(artist in chart.artist.string):
-                return "🎤 Artist 🎤  :{} \n\
-                        🎶 Song 🎶    :{} \n \
-                        📈 Position 📈:{} \n"\
+            if(artist.lower() == chart.artist.string.lower()):
+                return "🎤 Artist 🎤  :{}\n\🎶 Song 🎶    :{}\n\📈 Position 📈:{}\n"\
                         .format(chart.artist.string,
                                 chart.chart_item_title.string,
                                 chart.rank_this_week.string)
