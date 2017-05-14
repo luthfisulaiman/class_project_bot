@@ -1104,7 +1104,8 @@ def test_chuck_with_args(mocker):
 
 
 def test_japanartist(mocker):
-    fake_artist = 'Kana Nishino'\
+    fake_artist = 'Your artist is present in Japan Top100' \
+                  'Kana Nishino'\
                   'Pa'\
                   '3'\
 
