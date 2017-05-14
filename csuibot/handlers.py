@@ -270,7 +270,8 @@ def newage(message):
 def billArtist(message):
     app.logger.debug("'billboard' command detected")
     try:
-        billArtist = lookup_billArtist()
+        _, _, message = message.split(" ")
+        billArtist = lookup_billArtist(message)
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to billboard API')
     else:
