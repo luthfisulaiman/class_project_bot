@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, hotcountry, newage)
+                              kelaskata, hotcountry, newage, billArtist)
 from requests.exceptions import ConnectionError
 
 
@@ -589,3 +589,27 @@ def test_newage_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_newage
+
+
+def test_billArtist_Pentatonix(mocker):
+    fake_billArtist = "Pentatonix \n PTX Vol. IV: Classics (EP) \n Rank #93"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_billArtist', return_value=fake_billArtist)
+    mock_message = Mock(text='/billboard bill200 Pentatonix')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
+def test_billArtist_no_connection(mocker):
+    fake_billArtist = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_billArtist', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard bill200 intan')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist

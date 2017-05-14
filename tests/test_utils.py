@@ -524,3 +524,24 @@ class TestNewAge:
         expected += "(9) Various Artists - 111 Tracks\n"
         expected += "(10) Laura Sullivan - Calm Within"
         self.run_test(expected)
+
+
+class TestBillArtist:
+    def run_test(self, command, expected):
+        try:
+            result = utils.lookup_billArtist(command)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_billArtist_Taylor_Swift(self):
+        self.run_test('Taylor Swift', "Taylor Swift doesn't exist in bill200")
+
+    def test_billArtist_Rhoma_Irama(self):
+        self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
+
+    def test_billArtist_Pentatonix(self):
+        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #93")
+
+    def test_billArtist_Bruno_Mars(self):
+        self.run_test('Bruno Mars', "Bruno Mars\n24K Magic\nRank #7")

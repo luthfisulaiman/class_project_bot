@@ -1,7 +1,8 @@
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
-                           define as d, hotcountry as hot, newage as na)
+                           define as d, hotcountry as hot, newage as na,
+                           billArtist as ba)
 from csuibot.utils import yelkomputer
 
 
@@ -137,3 +138,8 @@ def lookup_hotcountry():
 def lookup_newage():
     newage_object = na.newage()
     return newage_object.getNewage()
+
+
+def lookup_billArtist(message):
+    billArtist_object = ba.billArtist(message)
+    return billArtist_object.getBillArtist()
