@@ -493,7 +493,15 @@ class TestHotcountry:
             assert str(e) == ('Cannot connect to billboard API')
 
     def test_hotcountry(self):
-        self.run_test('foobar')
+        expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+        expected += "Brett Young - In Case You Didn't Know\n(3) "
+        expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+        expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+        expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+        expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+        expected += "If I Told You\n(9) Kelsea Ballerini - "
+        expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
+        self.run_test(expected)
 
 
 class TestNewAge:

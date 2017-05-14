@@ -527,15 +527,22 @@ def test_yelkomputer_with_arguments(mocker):
 
 
 def test_hotcountry(mocker):
-    fake_hotcountry = 'foobar'
+    expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+    expected += "Brett Young - In Case You Didn't Know\n(3) "
+    expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+    expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+    expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+    expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+    expected += "If I Told You\n(9) Kelsea Ballerini - "
+    expected += 'Yeah Boy\n(10) Brantley Gilbert - The Weekend'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_hotcountry', return_value=fake_hotcountry)
+    mocker.patch('csuibot.handlers.lookup_hotcountry', return_value=expected)
     mock_message = Mock(text='/billboard hotcountry')
 
     hotcountry(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_hotcountry
+    assert args[1] == expected
 
 
 def test_hotcountry_no_connection(mocker):
