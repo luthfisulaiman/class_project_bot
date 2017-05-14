@@ -7,9 +7,9 @@ class JapanArtist:
         self.url = "http://www.billboard.com/rss/charts/japan-hot-100"
 
     def getArtist(self, artist):
-        MUSIC_NOTE = '\xF0\x9F\x8E\xB5'
-        MICROPHONE = '\xF0\x9F\x8E\xA4'
-        SPARKLES = '\xE2\x9C\xA8'
+        MUSIC_NOTE = 'U+1F3B6'
+        MICROPHONE = 'U+1F3A4'
+        SPARKLES = 'U+2728'
 
         charts = r.get(self.url).text
         soup = bs(charts, 'html.parser')
