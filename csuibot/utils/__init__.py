@@ -1,6 +1,7 @@
 from csuibot.utils import message_dist as md
 import json
 import re
+import requests
 import time
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
@@ -9,7 +10,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           wiki)
+                           wiki, xkcd2 as x2)
 
 
 def lookup_zodiac(month, day):
@@ -277,4 +278,20 @@ def get_chuck(message_text):
 
 
 def get_comic(id):
-    raise NotImplemented
+    comic_gen = x2.Xkcd2Generator()
+    timeout = 5
+    retries = 5
+    for i in range(retries):
+        try:
+            img = comic_gen.get_img(id)
+        except ValueError:
+            return 'Cant\'t found the requested comic. Please ensure that your input is correct'
+        except requests.exceptions.HTTPError:
+            return 'Cant\'t found the requested comic. Please ensure that your input is correct'
+        except ConnectionError:
+            time.sleep(timeout)
+            continue
+        else:
+            return img
+
+    raise ConnectionError

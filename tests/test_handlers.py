@@ -1152,9 +1152,9 @@ def test_request_comic(mocker):
 
 
 def test_comic_error(mocker):
-    fake_error = 'Cant\'t found the requested comic.'
+    fake_error = 'Can\'t connect to the server. Please try again later'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.xkcd', side_effect=ValueError)
+    mocker.patch('csuibot.handlers.xkcd', side_effect=ConnectionError)
     mock_message = Mock(text='/xkcd 1834')
 
     xkcd(mock_message)
@@ -1167,7 +1167,7 @@ def test_comic_invalid(mocker):
     fake_error = 'Command not found. Please follow this format /xkcd or /xkcd <id>'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.xkcd', return_value=fake_error)
-    mock_message = Mock(text='/xkcd 1834')
+    mock_message = Mock(text='/xkcd 1834 1234')
 
     xkcd(mock_message)
 

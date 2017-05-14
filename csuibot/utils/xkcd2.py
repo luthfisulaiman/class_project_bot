@@ -1,19 +1,33 @@
-class Xkcd2:
+import requests
+import re
 
-    def __init__():
-        raise NotImplemented
+class Xkcd2Generator(object):
+    class Xkcd2Singleton(object):
+        def __init__(self):
+            pass
 
-    def getrequester():
-        raise NotImplemented
+        def get_img(self, comic_id):
+            if(re.search('/w', comic_id)):
+                raise ValueError
+            if(int(comic_id) < 1):
+                raise ValueError
 
-    def generate():
-        raise NotImplemented
+            json = ComicRequester.make_request(comic_id)
+            return json['img']
+
+    instance = None
+
+    def __new__(cls):
+        if not Xkcd2Generator.instance:
+            Xkcd2Generator.instance = Xkcd2Generator.Xkcd2Singleton()
+        return Xkcd2Generator.instance
 
 
-class ComicRequester(object):
+class ComicRequester():
 
-    def __init__():
-            raise NotImplemented
-
-    def make_request():
-        raise NotImplemented
+    @staticmethod
+    def make_request(comic_id):
+        url = 'http://xkcd.com/{}/info.0.json'.format(comic_id)
+        req = requests.get(url)
+        req.raise_for_status()
+        return req.json()

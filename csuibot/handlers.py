@@ -526,8 +526,8 @@ def xkcd(message):
     elif(len(command) == 2):
         try:
             comic = get_comic(command[1])
-        except ValueError:
-            bot.reply_to(message, 'Cant\'t found the requested comic.')
+        except ConnectionError:
+            bot.reply_to(message, 'Can\'t connect to the server. Please try again later')
         else:
             bot.reply_to(message, comic)
     else:
