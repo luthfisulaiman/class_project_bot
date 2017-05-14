@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist,
+                    lookup_message_dist, add_message_dist, lookup_url,
                     lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 import datetime
@@ -523,6 +523,19 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
+@bot.message_handler(regexp=r'^\/youtube\s*$')
+def youtube_no_url(message):
+    bot.reply_to(message, "'youtube' command needs an url")
+
+
 @bot.message_handler(regexp=r'^(\/youtube) .+$')
-def youtube(url):
-    pass
+def youtube(message):
+    app.logger.debug("'youtube' command detected")
+    _, url = message.text.split(' ')
+
+    try:
+        youtube = lookup_url(url)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Youtube')
+    else:
+        bot.reply_to(message, youtube)

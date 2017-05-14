@@ -262,5 +262,5 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def call_youtube(url):
+def lookup_url(url):
     return youtube.Youtube().getURL(url)
