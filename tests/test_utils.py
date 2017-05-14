@@ -1,5 +1,4 @@
 from csuibot import utils
-
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
@@ -7,8 +6,6 @@ import os
 import re
 from requests.exceptions import ConnectionError
 import requests
-
-
 import json
 
 
@@ -854,6 +851,24 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestTropicalChartBillboard:
+    def test_get_top10_200_chart(self):
+        res = utils.b.get_top10('200')
+        assert len(res['items']) == 10
+
+    def test_get_top10_tropical_chart(self):
+        res = utils.b.get_top10('tropical')
+        assert len(res['items']) == 10
+
+    def test_get_top10_hot100_chart(self):
+        res = utils.b.get_top10('hot100')
+        assert len(res['items']) == 10
+
+    def test_invalid_chart_category(self):
+        res = utils.b.get_top10('invalid')
+        assert res == 'Invalid chart category'
 
 
 class TestOriconCD:

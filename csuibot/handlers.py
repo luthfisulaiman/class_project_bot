@@ -11,7 +11,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_message_dist, add_message_dist, lookup_wiki,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
-                    top_ten_cd_oricon)
+                    top_ten_cd_oricon, lookup_top10_billboard_chart)
+
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -27,7 +28,6 @@ def message_decorator(func):
 
 
 @bot.message_handler(regexp=r'^/about$')
-@message_decorator
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
@@ -38,7 +38,6 @@ def help(message):
 
 
 @bot.message_handler(regexp=r'^/zodiac \d{4}\-\d{2}\-\d{2}$')
-@message_decorator
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
     _, date_str = message.text.split(' ')
@@ -54,7 +53,6 @@ def zodiac(message):
 
 
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
-@message_decorator
 def shio(message):
     app.logger.debug("'shio' command detected")
     _, date_str = message.text.split(' ')
@@ -563,6 +561,15 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'/billboard (tropicial|hot100|200)$')
+def billboard_chart(message):
+    app.logger.debug("billboard command detected")
+    _, chart_category = message.text.split(' ')
+    app.logger.debug('chart category = {}'.format(str(chart_category)))
+    result = lookup_top10_billboard_chart(chart_category)
+    bot.reply_to(message, result)
 
 
 @bot.message_handler(regexp=r'/oricon jpsingles(| .*)$')

@@ -12,7 +12,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
-                           oricon_cd as ocd)
+                           oricon_cd as ocd, billboard as b)
 
 
 def lookup_zodiac(month, day):
@@ -277,6 +277,20 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def lookup_top10_billboard_chart(chart_category):
+    result = b.get_top10(chart_category)
+    if result != 'Invalid chart category':
+        result_rank = ''
+        for i in range(0, 10):
+            rank_i = result['items'][i]
+            title = rank_i.find('title').text
+            artist = rank_i.find('artist').text
+            current_rank = rank_i.find('rank_this_week').text
+            result_rank += '({}) - {} - {} \n'.format(current_rank, artist, title)
+        return result_rank
+    return result
 
 
 def top_ten_cd_oricon(chart_type, date):
