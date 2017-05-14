@@ -5,7 +5,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
-                    lookup_define, lookup_kelaskata, lookup_hotcountry)
+                    lookup_define, lookup_kelaskata, lookup_hotcountry,
+                    lookup_newage)
 
 from requests.exceptions import ConnectionError
 
@@ -252,3 +253,14 @@ def hotcountry(message):
         bot.reply_to(message, 'Cannot connect to billboard API')
     else:
         bot.reply_to(message, hotcountry)
+
+
+@bot.message_handler(regexp=r'^/billboard newage$')
+def newage(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        newage = lookup_newage()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, newage)

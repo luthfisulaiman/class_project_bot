@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, hotcountry)
+                              kelaskata, hotcountry, newage)
 from requests.exceptions import ConnectionError
 
 
@@ -555,3 +555,37 @@ def test_hotcountry_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_hotcountry
+
+
+def test_newage(mocker):
+    expected = "(1) Armik - Enamor\n"
+    expected += "(2) The Piano Guys - Uncharted\n"
+    expected += "(3) Enya - Dark Sky Island\n"
+    expected += "(4) Armik - Solo Guitar Collection\n"
+    expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+    expected += "(6) Various Artists - Music For Deep Sleep\n"
+    expected += "(7) George Winston - Spring Carousel\n"
+    expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+    expected += "(9) Various Artists - 111 Tracks\n"
+    expected += "(10) Laura Sullivan - Calm Within"
+    fake_newage = expected
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', return_value=fake_newage)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
+
+
+def test_newage_no_connection(mocker):
+    fake_newage = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
