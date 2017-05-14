@@ -551,7 +551,17 @@ def test_hotcountry_no_connection(mocker):
 
 
 def test_newage(mocker):
-    fake_newage = 'foobar'
+    expected = "(1) Armik - Enamor\n"
+    expected += "(2) The Piano Guys - Uncharted\n"
+    expected += "(3) Enya - Dark Sky Island\n"
+    expected += "(4) Armik - Solo Guitar Collection\n"
+    expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+    expected += "(6) Various Artists - Music For Deep Sleep\n"
+    expected += "(7) George Winston - Spring Carousel\n"
+    expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+    expected += "(9) Various Artists - 111 Tracks\n"
+    expected += "(10) Laura Sullivan - Calm Within"
+    fake_newage = expected
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_newage', return_value=fake_newage)
     mock_message = Mock(text='/billboard newage')

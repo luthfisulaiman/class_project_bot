@@ -505,4 +505,14 @@ class TestNewAge:
             assert str(e) == ('Cannot connect to billboard API')
 
     def test_newage(self):
-        self.run_test('foobar')
+        expected = "(1) Armik - Enamor\n"
+        expected += "(2) The Piano Guys - Uncharted\n"
+        expected += "(3) Enya - Dark Sky Island\n"
+        expected += "(4) Armik - Solo Guitar Collection\n"
+        expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+        expected += "(6) Various Artists - Music For Deep Sleep\n"
+        expected += "(7) George Winston - Spring Carousel\n"
+        expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+        expected += "(9) Various Artists - 111 Tracks\n"
+        expected += "(10) Laura Sullivan - Calm Within"
+        self.run_test(expected)
