@@ -3,7 +3,6 @@ colorama==0.3.7
 coverage==4.3.4
 flake8==3.3.0
 Flask==0.12.1
-fudge==1.1.0
 gunicorn==19.7.1
 itsdangerous==0.24
 Jinja2==2.9.6
@@ -18,10 +17,5 @@ pytest-cov==2.4.0
 pytest-mock==1.6.0
 python-dotenv==0.6.4
 requests==2.13.0
-simplejson==3.10.0
 six==1.10.0
-soundcloud==0.5.0
 Werkzeug==0.12.1
-wikipedia==1.4.0
-beautifulsoup4==4.5.3
-py-translate==1.0.3
