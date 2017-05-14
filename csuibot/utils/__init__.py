@@ -1,8 +1,8 @@
 from csuibot.utils import message_dist as md
 import json
 import re
-import requests
 import time
+import requests
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -279,19 +279,11 @@ def get_chuck(message_text):
 
 def get_comic(id):
     comic_gen = x2.Xkcd2Generator()
-    timeout = 5
-    retries = 5
-    for i in range(retries):
-        try:
-            img = comic_gen.get_img(id)
-        except ValueError:
-            return 'Cant\'t found the requested comic. Please ensure that your input is correct'
-        except requests.exceptions.HTTPError:
-            return 'Cant\'t found the requested comic. Please ensure that your input is correct'
-        except ConnectionError:
-            time.sleep(timeout)
-            continue
-        else:
-            return img
-
-    raise ConnectionError
+    try:
+        img = comic_gen.get_img(id)
+    except ValueError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    except requests.exceptions.HTTPError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    else:
+        return img

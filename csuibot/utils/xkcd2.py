@@ -1,14 +1,13 @@
 import requests
 import re
 
+
 class Xkcd2Generator(object):
     class Xkcd2Singleton(object):
         def __init__(self):
             pass
 
         def get_img(self, comic_id):
-            if(re.search('/w', comic_id)):
-                raise ValueError
             if(int(comic_id) < 1):
                 raise ValueError
 

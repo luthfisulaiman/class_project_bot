@@ -862,12 +862,15 @@ class TestComic:
 
     def test_lower_bound(self):
         comic = utils.get_comic('0')
-        assert 'Cant\'t found the requested comic. Please ensure that your input is correct' == comic
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
 
     def test_upper_bound(self):
         comic = utils.get_comic('10000')
-        assert 'Cant\'t found the requested comic. Please ensure that your input is correct' == comic
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
 
     def test_invalid(self):
         comic = utils.get_comic('abab')
-        assert 'Cant\'t found the requested comic. Please ensure that your input is correct' == comic
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
