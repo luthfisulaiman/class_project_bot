@@ -526,7 +526,7 @@ def marsfasilkom(message):
 @bot.message_handler(regexp=r'^(\/billboard japan100) .+$')
 def japanartist(message):
     app.logger.debug("'billboard japan100 artist comand detacted'")
-    artist = message.text.split(' ')[2:]
+    artist = " ".join(message.text.split(' ')[2:])
     app.logger.debug('artist = {}'.format(artist))
 
     try:
