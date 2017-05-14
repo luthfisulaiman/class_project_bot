@@ -2,6 +2,7 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
+import requests
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -9,7 +10,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           wiki)
+                           wiki, similar)
 
 
 def lookup_zodiac(month, day):
@@ -274,3 +275,20 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def similar_text(input1, input2):
+    checker = similar.SimilarText()
+    try:
+        if("http://" in input1 or "https://" in input1):
+            if("http://" in input2 or "https://" in input2):
+                return checker.checkweb(input1, input2)
+
+        return checker.checktext(input1, input2)
+
+    except requests.exceptions.ConnectionError:
+        return "Connection Error occurs, please check your url or try again later"
+    except requests.exceptions.HTTPError:
+        return "Please ensure that your text is in english"
+    except ValueError:
+        return "Your input is too long, please keep below 500 words"

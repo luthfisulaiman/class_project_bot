@@ -857,7 +857,7 @@ class TestChuck:
 
 class TestSimilar:
     def test_similar_text(self):
-        res = utils.similar_text('melewat', 'melarat')
+        res = utils.similar_text('Tomorrow is Holiday', 'Tomorrow is Judgement day')
         assert '%' in res
 
     def test_similar_url(self):
@@ -867,11 +867,15 @@ class TestSimilar:
         assert '%' in res
 
     def test_connection_error(self):
-        res = utils.similar_text('/docs_sim melewat melarat')
-        assert res == 'Connection error occured, please try again in a moment'
+        res = utils.similar_text('http://www.aku1.com', 'http://www.aku2.com')
+        assert res == "Connection Error occurs, please check your url or try again later"
 
     def test_bound(self):
         fake1 = 'a' * 10000
         fake2 = 'ab' * 5000
         res = utils.similar_text(fake1, fake2)
-        assert res == 'Your text is too long'
+        assert res == "Your input is too long, please keep below 500 words"
+
+    def test_not_english(self):
+        res = utils.similar_text('besok libur', 'besok ngerjain tugas sehairan')
+        assert res == "Please ensure that your text is in english"

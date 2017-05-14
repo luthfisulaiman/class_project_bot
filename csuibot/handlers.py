@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
-                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor)
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -565,4 +565,14 @@ def marsfasilkom(message):
 
 @bot.message_handler(regexp=r'^\/docs_sim \w+$')
 def similar(message):
-    raise NotImplemented
+    app.logger.debug("'similarity text' command detected")
+    command = message.text.split(' ')
+    if(len(command) != 3):
+        bot.reply_to(message, 'Command invalid, please use /docs_sim <text1> <text2> format')
+    else:
+        try:
+            percentage = similar_text(command[1], command[2])
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP Error occurs, please try again later')
+        else:
+            bot.reply_to(message, percentage)
