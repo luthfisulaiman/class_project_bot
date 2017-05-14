@@ -15,8 +15,8 @@ class JapanArtist:
                 return "🎤 Artist 🎤   : {} 🎤\n \
                         🎶 Song 🎶     : {} 🎶\n \
                         📈 Position 📈 : {} 📈"\
-                        .format(MICROPHONE, chart.artist.string, MUSIC_NOTE,
-                                chart.chart_item_title.string, SPARKLES,
+                        .format(chart.artist.string,
+                                chart.chart_item_title.string,
                                 chart.rank_this_week.string)
         else:
             return "Artist not present on the Top 100 Chart"
