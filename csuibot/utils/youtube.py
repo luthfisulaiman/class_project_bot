@@ -29,7 +29,8 @@ class Youtube:
             likes = information_div.span.contents[1].button.span.string
             dislikes = information_div.span.contents[5].button.span.string
         except AttributeError:
-            return "Video doesn't exist"
+            soup = bs(video.text, 'html.parser')
+            return soup.find(class_="content").h1.string.strip()
         else:
             return "{}\n{}\n{}\n{} likes & {} dislikes".format(title,
                                                                channel,
