@@ -10,11 +10,13 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           youtube, japanartist as ja, wiki, xkcd2 as x2, similar,
-                           billboard_hot100_artist as felh, billboard_newage_artist as feln,
-                           billboard_hotcountry_artist as felhc, oricon_cd as ocd,
-                           billboard as b, hotcountry as hot, newage as na, fakejson,
-                           detectlang, billArtist as ba, weton)
+                           wiki, xkcd2 as x2, similar,
+                           billboard_hot100_artist as felh,
+                           billboard_newage_artist as feln,
+                           billboard_hotcountry_artist as felhc,
+                           oricon_cd as ocd, billboard as b, hotcountry as hot,
+                           newage as na, fakejson, detectlang, billArtist as ba, weton,
+                           books, youtube, japanartist as ja)
 
 
 def lookup_zodiac(month, day):
@@ -59,6 +61,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def get_oricon_books(date):
+    return books.Books().get_top_10(date)
 
 
 def lookup_wiki(term):

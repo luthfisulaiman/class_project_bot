@@ -7,11 +7,12 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom, wiki, youtube, youtube_no_url,
-                              japanartist, chuck, get_discrete_material as dm,
-                              message_dist, similar, hot100_artist, newage_artist,
-                              hotcountry_artist, oricon_cd, billboard_chart, hotcountry,
-                              newage, fake_json, detect_lang, billArtist, primbon)
+                              marsfasilkom, yelfasilkom, wiki,  youtube, youtube_no_url,
+                              chuck, get_discrete_material as dm, message_dist, similar,
+                              hot100_artist, newage_artist, hotcountry_artist,
+                              oricon_cd, billboard_chart, hotcountry, newage,
+                              fake_json, detect_lang, billArtist, primbon, oricon_books,
+                              japanartist)
 from requests.exceptions import ConnectionError
 
 
@@ -73,6 +74,54 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_oricon_books(mocker):
+    fake_output = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books', return_value=fake_output)
+    mock_message = Mock(text='/oricon books weekly 2001-01-01')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_input_overload(mocker):
+    fake_output = "Invalid command structure. Example: " \
+                  "'/oricon books weekly 2017-05-01'"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books weekly 2001-02-31 now!')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_not_weekly(mocker):
+    fake_output = 'Oricon books command currently only supports weekly ratings at this time.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books daily 2011-02-31')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_no_connection(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books', side_effect=ConnectionError)
+    mock_message = Mock(text='/oricon books weekly 2017-05-01')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Error connecting to the oricon.co.jp website.'
 
 
 def test_wiki(mocker):
