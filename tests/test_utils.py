@@ -887,7 +887,7 @@ class TestYoutube:
         except AttributeError:
             pass
         else:
-            assert res == "Video doesn't exist"
+            assert res == "This video is unavailable."
 
     def test_no_http(self):
         res = utils.lookup_url("youtube.com/watch?v=kJ5PCbtiCpk")

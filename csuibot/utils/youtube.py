@@ -37,5 +37,3 @@ class Youtube:
                                                                views,
                                                                likes,
                                                                dislikes)
-
-print(Youtube().getURL("https://www.youtube.com/watch?v=kJ5PCbtwkwwkkwkwwk"))
