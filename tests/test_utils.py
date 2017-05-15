@@ -1060,3 +1060,26 @@ class TestSimilar:
         assert res == ("Can\'t detect your input, "
                        "please ensure that your text is in english"
                        " or add more text in your input")
+
+
+class TestFakeJson:
+    def test_response(self):
+        expected = (
+            '{\n'
+            '  "userId": 1,\n'
+            '  "id": 1,\n'
+            '  "title": "sunt aut facere repellat provident occaecati excepturi'
+            ' optio reprehenderit",\n'
+            '  "body": "quia et suscipit\\nsuscipit recusandae consequuntur'
+            ' expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum'
+            ' rerum est autem sunt rem eveniet architecto"\n'
+            '}'
+        )
+
+        assert utils.get_fake_json('') == expected
+
+    def test_with_arguments(self):
+        try:
+            utils.get_fake_json('some_arguments here')
+        except ValueError as e:
+            assert str(e) == 'Command /fake_json doesn\'t need any arguments'

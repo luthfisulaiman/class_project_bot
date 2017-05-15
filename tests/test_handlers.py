@@ -10,7 +10,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               marsfasilkom, yelfasilkom, wiki,
                               get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
-                              oricon_cd, billboard_chart, hotcountry, newage)
+                              oricon_cd, billboard_chart, hotcountry, newage,
+                              fake_json)
 from requests.exceptions import ConnectionError
 
 
@@ -1208,6 +1209,32 @@ def test_billboard_with_invalid_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_fake_json(mocker):
+    fake_json_response = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_fake_json', return_value=fake_json_response)
+    mock_message = Mock(text='/fake_json')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_json_response
+
+
+def test_fake_json_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.get_fake_json',
+        side_effect=ValueError('Command /fake_json doesn\'t need any arguments')
+    )
+    mock_message = Mock(text='/fake_json some_arguments here')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /fake_json doesn\'t need any arguments'
 
 
 def test_similar_valid(mocker):

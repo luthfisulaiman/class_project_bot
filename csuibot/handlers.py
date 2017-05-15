@@ -12,7 +12,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
-                    lookup_hotcountry, lookup_newage)
+                    lookup_hotcountry, lookup_newage, get_fake_json)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -560,6 +560,19 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
+@bot.message_handler(commands=['fake_json'])
+def fake_json(message):
+    app.logger.debug("'fake_json' command detected")
+
+    arg = " ".join(message.text.split()[1:])
+    try:
+        fakejson = get_fake_json(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, fakejson)
+
+
 @bot.message_handler(regexp=r'^\/docs_sim')
 def similar(message):
     app.logger.debug("'similarity text' command detected")
@@ -687,3 +700,14 @@ def newage(message):
         bot.reply_to(message, 'Cannot connect to billboard API')
     else:
         bot.reply_to(message, newage)
+
+
+# long-polling debugging
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         import time
+#         app.logger.debug(str(e))
+#         time.sleep(5)

@@ -15,7 +15,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
-                           newage as na)
+                           newage as na, fakejson)
 
 
 def lookup_zodiac(month, day):
@@ -351,6 +351,12 @@ def get_comic(id):
         return 'Cant\'t found requested comic. Please ensure that your input is correct'
     else:
         return img
+
+
+def get_fake_json(arg):
+    if arg is '':
+        return fakejson.FakeJson().get_response()
+    raise ValueError('Command /fake_json doesn\'t need any arguments')
 
 
 def lookup_newage():
