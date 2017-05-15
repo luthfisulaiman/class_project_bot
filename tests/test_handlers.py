@@ -603,6 +603,17 @@ def test_billArtist_Pentatonix(mocker):
     assert args[1] == fake_billArtist
 
 
+def test_billArtist_not_exist(mocker):
+    fake_billArtist = "Rhoma Irama doesn't exist in bill200"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/billboard bill200 Rhoma Irama')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
 def test_billArtist_no_connection(mocker):
     fake_billArtist = 'Cannot connect to billboard API'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

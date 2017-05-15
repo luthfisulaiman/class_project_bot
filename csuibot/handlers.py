@@ -269,15 +269,11 @@ def newage(message):
 @bot.message_handler(regexp=r'^/billboard bill200 (.*)$')
 def billArtist(message):
     app.logger.debug("'billboard bill200' command detected")
-    messages = ""
-    for msg in (message.text.split(" ")[2:]):
-        messages += msg + " "
-    message = messages[:-1]
-    app.logger.debug(message)
     try:
-        billArtist = lookup_billArtist(message)
-    except ValueError:
-        bot.reply_to(message, "It doesn't exist in bill200")
+        name = message.text[message.text.index("bill200") + len("bill200")+1:]
+        billArtist = lookup_billArtist(name)
+        app.logger.debug("artist's name" + name)
+        app.logger.debug("lookup result" + billArtist)
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to billboard API')
     else:
