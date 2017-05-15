@@ -2,13 +2,20 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
+import requests
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, weton)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
+                           wiki, xkcd2 as x2, similar,
+                           billboard_hot100_artist as felh,
+                           billboard_newage_artist as feln,
+                           billboard_hotcountry_artist as felhc,
+                           oricon_cd as ocd, billboard as b, hotcountry as hot,
+                           newage as na, fakejson, detectlang, billArtist as ba, weton)
 
 
 def lookup_zodiac(month, day):
@@ -53,6 +60,20 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_wiki(term):
+    if term == '':
+        raise ValueError('Command /wiki need an argument')
+    else:
+        object_wiki = wiki.Wiki(term)
+        try:
+            return object_wiki.get_result()
+        except Exception as e:
+            raise IndexError(
+                'Page id "' + term + '" does not match any pages.'
+                                     ' Try another id!'
+            )
 
 
 def lookup_message_dist(chat_id):
@@ -252,11 +273,113 @@ def lookup_dayofdate(year, month, day):
                 'such as 2016-05-13')
 
 
+def similar_text(input1, input2):
+    checker = similar.SimilarText()
+    try:
+        if (input1[0:7] == "http://" or input1[0:8] == "https://"):
+            if (input2[0:7] == "http://" or input2[0:8] == "https://"):
+                return checker.checkweb(input1, input2)
+
+        return checker.checktext(input1, input2)
+
+    except requests.exceptions.ConnectionError:
+        return "Connection Error occurs, please check your url or try again later"
+    except ValueError:
+        return "Your input is too long, please keep below 500 words"
+
+
+def lookup_top10_billboard_chart(chart_category):
+    result = b.get_top10(chart_category)
+    if result != 'Invalid chart category':
+        result_rank = ''
+        for i in range(0, 10):
+            rank_i = result['items'][i]
+            title = rank_i.find('title').text
+            artist = rank_i.find('artist').text
+            current_rank = rank_i.find('rank_this_week').text
+            result_rank += '({}) - {} - {} \n'.format(current_rank, artist, title)
+        return result_rank
+    return result
+
+
+def top_ten_cd_oricon(chart_type, date):
+    chart = ocd.Oricon_cd.get_top_ten(chart_type, date)
+    return chart
+
+
+def find_hot100_artist(name):
+    try:
+        return felh.Hot100_artist().find_hot100_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")
+
+
+def find_newage_artist(name):
+    try:
+        return feln.NewAge_artist().find_newage_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")
+
+
+def find_hotcountry_artist(name):
+    try:
+        return felhc.HotCountry_artist().find_hotcountry_artist(name)
+    except ValueError:
+        return ("Artist is not present on chart or no such artist exists\n"
+                "Artist's name is case sensitive")
+
+
+def lookup_hotcountry():
+    hotcountry_object = hot.hotcountry()
+    return hotcountry_object.getHotcountry()
+
+
+def get_comic(id):
+    comic_gen = x2.Xkcd2Generator()
+    try:
+        img = comic_gen.get_img(id)
+    except ValueError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    except requests.exceptions.HTTPError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    else:
+        return img
+
+
 def get_chuck(message_text):
     if message_text == "/chuck":
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def get_fake_json(arg):
+    if arg is '':
+        return fakejson.FakeJson().get_response()
+    raise ValueError('Command /fake_json doesn\'t need any arguments')
+
+
+def lookup_newage():
+    newage_object = na.newage()
+    return newage_object.getNewage()
+
+
+def lookup_billArtist(message):
+    try:
+        billArtist_object = ba.billArtist(message)
+        return billArtist_object.getBillArtist()
+    except ValueError:
+        return message + " doesn't exist in bill200"
+
+
+def lookup_lang(arg):
+    if arg is '':
+        raise ValueError('Command /detect_lang need an argument')
+
+    request = detectlang.DetectLang(arg)
+    return request.get_result()
 
 
 def lookup_weton(year, month, day):

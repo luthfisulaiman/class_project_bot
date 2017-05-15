@@ -1,6 +1,11 @@
 *** Discrete Math Course Dictionary ***
 
+<<<<<<< HEAD
 # Background
+=======
+[![build status](https://gitlab.com/CSUI-AdvProg-2017/project-b/csui-bot-2/badges/master/build.svg)](https://gitlab.com/CSUI-AdvProg-2017/project-b/csui-bot-2/master)
+[![coverage report](https://gitlab.com/CSUI-AdvProg-2017/project-b/csui-bot-2/badges/master/coverage.svg)](https://gitlab.com/CSUI-AdvProg-2017/project-b/csui-bot-2/commits/master)
+>>>>>>> story-#61
 
 Similar to: #102
 
