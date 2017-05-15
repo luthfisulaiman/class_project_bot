@@ -1055,12 +1055,6 @@ class TestSimilar:
         res = utils.similar_text(fake1, fake2)
         assert res == "Your input is too long, please keep below 500 words"
 
-    def test_not_english(self):
-        res = utils.similar_text('besok libur', 'besok ngerjain tugas sehairan')
-        assert res == ("Can\'t detect your input, "
-                       "please ensure that your text is in english"
-                       " or add more text in your input")
-
 
 class TestExtractColour:
     EXAMPLE_IMAGGA_JSON = {
