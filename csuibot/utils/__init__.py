@@ -9,7 +9,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
+                           discretemath as dm, marsfasilkom, yelfasilkom,
                            wiki, similar,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
@@ -273,13 +273,6 @@ def lookup_dayofdate(year, month, day):
         return ('Incorrect use of dayofdate command. '
                 'Please write a valid date in the form of yyyy-mm-dd, '
                 'such as 2016-05-13')
-
-
-def get_chuck(message_text):
-    if message_text == "/chuck":
-        return chuck.Chuck().get_chuck()
-    else:
-        raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
 def similar_text(input1, input2):
