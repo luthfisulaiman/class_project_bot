@@ -74,7 +74,7 @@ def lookup_wiki(term):
         except Exception as e:
             raise IndexError(
                 'Page id "' + term + '" does not match any pages.'
-                ' Try anotr id!'
+                ' Try another id!'
             )
 
 
