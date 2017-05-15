@@ -8,7 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom, wiki,
-                              get_discrete_material as dm, message_dist,
+                              get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage)
 from requests.exceptions import ConnectionError
@@ -1172,6 +1172,41 @@ def test_billboard_with_invalid_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_similar_valid(mocker):
+    fake_result = '100%'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.similar_text', return_value=fake_result)
+    mock_message = Mock(text='/docs_sim a a')
+
+    similar(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_similar_text_invalid(mocker):
+    fake_error = 'Command invalid, please use /docs_sim <text1> <text2> format'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.similar_text', return_value=fake_error)
+    mock_message = Mock(text='/docs_sim a a a')
+
+    similar(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command invalid, please use /docs_sim <text1> <text2> format'
+
+
+def test_similar_url_invalid(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.similar_text', side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/docs_sim http://aku.com http://aku1.com')
+
+    similar(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP Error occurs, please try again later'
 
 
 def test_top_oricon_cd_invalid_date(mocker):

@@ -1,6 +1,6 @@
+from . import app, bot
 import requests
 import re
-from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
@@ -9,11 +9,10 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
-                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage)
-
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -548,6 +547,21 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^\/docs_sim')
+def similar(message):
+    app.logger.debug("'similarity text' command detected")
+    command = message.text.split(' ')
+    if(len(command) != 3):
+        bot.reply_to(message, 'Command invalid, please use /docs_sim <text1> <text2> format')
+    else:
+        try:
+            percentage = similar_text(command[1], command[2])
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP Error occurs, please try again later')
+        else:
+            bot.reply_to(message, percentage)
 
 
 @bot.message_handler(regexp=r'/billboard (tropicial|hot100|200)$')

@@ -2,13 +2,15 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
+import requests
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           discretemath as dm, marsfasilkom, yelfasilkom, wiki,
+                           discretemath as dm, marsfasilkom, yelfasilkom,
+                           wiki, similar,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
@@ -271,6 +273,24 @@ def lookup_dayofdate(year, month, day):
         return ('Incorrect use of dayofdate command. '
                 'Please write a valid date in the form of yyyy-mm-dd, '
                 'such as 2016-05-13')
+
+
+def similar_text(input1, input2):
+    checker = similar.SimilarText()
+    try:
+        if("http://" in input1 or "https://" in input1):
+            if("http://" in input2 or "https://" in input2):
+                return checker.checkweb(input1, input2)
+
+        return checker.checktext(input1, input2)
+
+    except requests.exceptions.ConnectionError:
+        return "Connection Error occurs, please check your url or try again later"
+    except requests.exceptions.HTTPError:
+        return ("Can\'t detect your input, "
+                "please ensure that your text is in english or add more text in your input")
+    except ValueError:
+        return "Your input is too long, please keep below 500 words"
 
 
 def lookup_top10_billboard_chart(chart_category):
