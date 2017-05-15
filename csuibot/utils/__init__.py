@@ -289,6 +289,7 @@ def similar_text(input1, input2):
     except requests.exceptions.ConnectionError:
         return "Connection Error occurs, please check your url or try again later"
     except requests.exceptions.HTTPError:
-        return "Please ensure that your text is in english"
+        return ("Can\'t detect your input, "
+                "please ensure that your text is in english or add more text in your input")
     except ValueError:
         return "Your input is too long, please keep below 500 words"

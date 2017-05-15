@@ -878,4 +878,6 @@ class TestSimilar:
 
     def test_not_english(self):
         res = utils.similar_text('besok libur', 'besok ngerjain tugas sehairan')
-        assert res == "Please ensure that your text is in english"
+        assert res == ("Can\'t detect your input, "
+                       "please ensure that your text is in english"
+                       " or add more text in your input")
