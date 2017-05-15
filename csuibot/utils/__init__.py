@@ -15,7 +15,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
-                           newage as na, fakejson, detectlang, extractcolour)
+                           newage as na, fakejson, detectlang, billArtist as ba,
+                           extractcolour)
 
 
 def lookup_zodiac(month, day):
@@ -369,6 +370,14 @@ def extract_colour(message):
         ec.state = extractcolour.ExtractColour.FGCOLOUR
     ret = ec.extract()
     return ret
+
+
+def lookup_billArtist(message):
+    try:
+        billArtist_object = ba.billArtist(message)
+        return billArtist_object.getBillArtist()
+    except ValueError:
+        return message + " doesn't exist in bill200"
 
 
 def lookup_lang(arg):

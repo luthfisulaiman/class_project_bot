@@ -1034,6 +1034,24 @@ class TestNewAge:
         self.run_test(expected)
 
 
+class TestBillArtist:
+    def run_test(self, command, expected):
+        try:
+            result = utils.lookup_billArtist(command)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_billArtist_Taylor_Swift(self):
+        self.run_test('Taylor Swift', "Taylor Swift doesn't exist in bill200")
+
+    def test_billArtist_Rhoma_Irama(self):
+        self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
+
+    def test_billArtist_Pentatonix(self):
+        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #93")
+
+
 class TestSimilar:
     def test_similar_text(self):
         res = utils.similar_text('Tomorrow is Holiday', 'Tomorrow is Judgement day')

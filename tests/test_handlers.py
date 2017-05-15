@@ -11,7 +11,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
-                              fake_json, detect_lang,
+                              fake_json, detect_lang, billArtist,
                               extract_colour_from_image, check_caption_colour)
 from requests.exceptions import ConnectionError
 
@@ -1530,3 +1530,38 @@ def test_extract_colour_errors(mocker):
     extract_colour_from_image(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_request_exception
+
+
+def test_billArtist_Pentatonix(mocker):
+    fake_billArtist = "Pentatonix \n PTX Vol. IV: Classics (EP) \n Rank #93"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_billArtist', return_value=fake_billArtist)
+    mock_message = Mock(text='/billboard bill200 Pentatonix')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
+def test_billArtist_not_exist(mocker):
+    fake_billArtist = "Rhoma Irama doesn't exist in bill200"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/billboard bill200 Rhoma Irama')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
+def test_billArtist_no_connection(mocker):
+    fake_billArtist = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_billArtist', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard bill200 intan')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist

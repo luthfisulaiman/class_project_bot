@@ -13,7 +13,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
-                    extract_colour)
+                    lookup_billArtist, extract_colour)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -739,12 +739,15 @@ def newage(message):
         bot.reply_to(message, newage)
 
 
-# long-polling debugging
-# bot.remove_webhook()
-# while True:
-#     try:
-#         bot.polling(none_stop=True)
-#     except Exception as e:
-#         import time
-#         app.logger.debug(str(e))
-#         time.sleep(5)
+@bot.message_handler(regexp=r'^/billboard bill200 (.*)$')
+def billArtist(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        name = message.text[message.text.index("bill200") + len("bill200")+1:]
+        billArtist = lookup_billArtist(name)
+        app.logger.debug("artist's name" + name)
+        app.logger.debug("lookup result" + billArtist)
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, billArtist)
