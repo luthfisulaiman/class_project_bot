@@ -755,3 +755,51 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestYoutube:
+    def test_get_url(self):
+        try:
+            res = utils.lookup_url('https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+        except ConnectionError:
+            pass
+        except AttributeError:
+            pass
+        else:
+            assert res is not None
+
+    def test_video_not_found(self):
+        try:
+            res = utils.lookup_url('https://www.youtube.com/watch?v=kJ5PCbtwkwwkkwkwwk')
+        except ConnectionError:
+            pass
+        except AttributeError:
+            pass
+        else:
+            assert res == "Video doesn't exist"
+
+    def test_no_http(self):
+        res = utils.lookup_url("youtube.com/watch?v=kJ5PCbtiCpk")
+        assert res == "Invalid URL, do you mean http://youtube.com/watch?v=kJ5PCbtiCpk ?"
+
+    def test_not_youtube_video(self):
+        res = utils.lookup_url("http://youtube.com")
+        assert res == "Please provide a YouTube video URL"
+
+
+class TestJapanArtist:
+    def test_get_artist(self):
+        try:
+            res = utils.lookup_artist('Kana Nishino')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_get_artist_not_found(self):
+        try:
+            res = utils.lookup_artist('Tulus')
+        except ConnectionError:
+            pass
+        else:
+            assert res == 'Artist not present on the Top 100 Chart'
