@@ -1,6 +1,6 @@
 import requests
 from urllib.parse import quote
-import os
+from os import environ
 
 
 def checkconnection(function):
@@ -43,7 +43,7 @@ class ApiRequester:
 
     def __init__(self):
         self.url = 'https://api.dandelion.eu/datatxt/sim/v1'
-        self.auth = os.environ['DANDELION_KEY']
+        self.auth = environ.get('DANDELION_KEY')
 
     def make_request_text(self, text1, text2):
         en_text1 = quote(text1, safe='')
