@@ -4,7 +4,7 @@ import re
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
-                    get_meme, generate_password, generate_custom_chuck_joke,
+                    get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
@@ -13,7 +13,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
-                    lookup_billArtist)
+                    lookup_billArtist, lookup_weton)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -25,6 +25,7 @@ def message_decorator(func):
         chat_id = message.chat.id
         add_message_dist(chat_id, hour)
         return func(message)
+
     return wrapper
 
 
@@ -121,8 +122,8 @@ def note(message):
         bot.reply_to(message, reply)
     else:
         bot.reply_to(message, 'Usage :\n' +
-                              '1. /notes view : View note in this group\n' +
-                              '2. /notes [text] : Add new note in this group\n')
+                     '1. /notes view : View note in this group\n' +
+                     '2. /notes [text] : Add new note in this group\n')
 
 
 @bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
@@ -141,7 +142,7 @@ def definisi(message):
     else:
         app.logger.debug("'definisi_help' command detected")
         bot.reply_to(message, '/definisi [word] : return definition of' +
-                              ' the word in indonesian language\n')
+                     ' the word in indonesian language\n')
 
 
 @bot.message_handler(regexp=r'^/sceleNotif$')
@@ -153,6 +154,20 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, 'Error catched')
     else:
         bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/chuck$')
+def chuck(message):
+    app.logger.debug("'chuck' command detected")
+    try:
+        joke = get_chuck(message.text)
+    except ConnectionError:
+        bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection'
+                              ' to connect to ICNDb API, too bad you\'re not him')
+    except ValueError:
+        bot.reply_to(message, 'Command /chuck doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, joke)
 
 
 @bot.message_handler(regexp=r'^/chuck ')
@@ -325,7 +340,6 @@ def wiki(message):
 @bot.message_handler(regexp=r'^/message_dist')
 @message_decorator
 def message_dist(message):
-
     app.logger.debug("'messagedist' command detected", message)
 
     try:
@@ -382,7 +396,7 @@ def remind(message):
     i = 2
     text = ""
     while (i < len(time_str)):
-        if(i == (len(time_str)-1)):
+        if (i == (len(time_str) - 1)):
             text += time_str[i]
         else:
             text += time_str[i] + " "
@@ -447,7 +461,7 @@ def define(message):
     except requests.HTTPError as e:
         bot.reply_to(
             message,
-            '"'+command + '" is not an english word')
+            '"' + command + '" is not an english word')
     except ValueError as e:
         bot.reply_to(message, 'Command /define need an argument')
     else:
@@ -466,7 +480,7 @@ def kelaskata(message):
     except requests.ConnectionError as e:
         bot.reply_to(
             message,
-            '"'+command + '" is not a word')
+            '"' + command + '" is not a word')
     else:
         bot.reply_to(message, kelas_kata)
 
@@ -510,7 +524,7 @@ def xkcd(message):
             bot.reply_to(message, 'An error occured. Please try again in a moment.')
         else:
             bot.reply_to(message, comic)
-    elif(len(command) == 2):
+    elif (len(command) == 2):
         try:
             comic = get_comic(command[1])
         except requests.exceptions.ConnectionError:
@@ -593,7 +607,7 @@ def fake_json(message):
 def similar(message):
     app.logger.debug("'similarity text' command detected")
     command = message.text.split(' ')
-    if(len(command) != 3):
+    if (len(command) != 3):
         bot.reply_to(message, 'Command invalid, please use /docs_sim <text1> <text2> format')
     else:
         try:
@@ -653,7 +667,7 @@ def hot100_artist(message):
 
     name = (message.text[message.text.index(s2) + len(s2):])
 
-    app.logger.debug("'billboard hot100' argument is "+name)
+    app.logger.debug("'billboard hot100' argument is " + name)
     try:
         artist = find_hot100_artist(name)
     except ConnectionError:
@@ -664,19 +678,19 @@ def hot100_artist(message):
 
 @bot.message_handler(regexp=r'^/billboard newage .*$')
 def newage_artist(message):
-        app.logger.debug("'billboard newage' command detected")
+    app.logger.debug("'billboard newage' command detected")
 
-        s2 = "newage "
+    s2 = "newage "
 
-        name = (message.text[message.text.index(s2) + len(s2):])
+    name = (message.text[message.text.index(s2) + len(s2):])
 
-        app.logger.debug("'billboard newage' argument is "+name)
-        try:
-            artist = find_newage_artist(name)
-        except ConnectionError:
-            bot.reply_to(message, "Connection Error")
-        else:
-            bot.reply_to(message, artist)
+    app.logger.debug("'billboard newage' argument is " + name)
+    try:
+        artist = find_newage_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)
 
 
 @bot.message_handler(regexp=r'^/billboard hotcountry .*$')
@@ -687,7 +701,7 @@ def hotcountry_artist(message):
 
     name = (message.text[message.text.index(s2) + len(s2):])
 
-    app.logger.debug("'billboard hotcountry' argument is "+name)
+    app.logger.debug("'billboard hotcountry' argument is " + name)
     try:
         artist = find_hotcountry_artist(name)
     except ConnectionError:
@@ -722,7 +736,7 @@ def newage(message):
 def billArtist(message):
     app.logger.debug("'billboard' command detected")
     try:
-        name = message.text[message.text.index("bill200") + len("bill200")+1:]
+        name = message.text[message.text.index("bill200") + len("bill200") + 1:]
         billArtist = lookup_billArtist(name)
         app.logger.debug("artist's name" + name)
         app.logger.debug("lookup result" + billArtist)
@@ -730,3 +744,14 @@ def billArtist(message):
         bot.reply_to(message, 'Cannot connect to billboard API')
     else:
         bot.reply_to(message, billArtist)
+
+
+@bot.message_handler(regexp=r'^/primbon \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
+def primbon(message):
+    app.logger.debug("'primbon' command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+
+    weton = lookup_weton(year, month, day)
+    bot.reply_to(message, weton)

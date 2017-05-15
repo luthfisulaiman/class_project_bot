@@ -8,10 +8,10 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom, wiki,
-                              get_discrete_material as dm, message_dist, similar,
+                              chuck, get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
-                              fake_json, detect_lang, billArtist)
+                              fake_json, detect_lang, billArtist, primbon)
 from requests.exceptions import ConnectionError
 
 
@@ -397,7 +397,6 @@ def test_remind_valid_input_more(mocker):
 
 
 def test_remind_more_than_thirty(mocker):
-
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/remindme 45 WakeUp')
 
@@ -949,27 +948,26 @@ def test_yelkomputer_with_arguments(mocker):
 
 
 def test_composer(mocker):
-    fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione'\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-
+    fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_composer', return_value=fake_track_info)
     mock_message = Mock(text='/sound_composer iamlione')
@@ -1117,6 +1115,25 @@ def test_dayofdate_no_argument(mocker):
     assert args[1] == ('Incorrect use of dayofdate command. '
                        'Please write a valid date in the form of yyyy-mm-dd, '
                        'such as 2016-05-13')
+
+
+def test_chuck(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck')
+    chuck(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert "Chuck" in args[1]
+
+
+def test_chuck_with_args(mocker):
+    fake_error = 'Command /chuck doesn\'t need any arguments'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck args')
+    chuck(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
 
 
 def test_hotcountry(mocker):
@@ -1507,3 +1524,80 @@ def test_billArtist_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_billArtist
+
+
+def test_weton_senin(mocker):
+    fake_weton = 'Senin Pon'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-04')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_selasa(mocker):
+    fake_weton = 'Selasa Wage'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-05')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_rabu(mocker):
+    fake_weton = 'Rabu Kliwon'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-06')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_kamis(mocker):
+    fake_weton = 'Kamis Legi'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-07')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_jumat(mocker):
+    fake_weton = 'Jumat Pahing'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-08')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_sabtu(mocker):
+    fake_weton = 'Sabtu Pon'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-09')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_minggu(mocker):
+    fake_weton = 'Minggu Wage'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-10')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
