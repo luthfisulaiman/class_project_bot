@@ -3,7 +3,6 @@ import html
 
 
 class Chuck:
-
     def __init__(self):
         self.url = "http://api.icndb.com/jokes/random"
 

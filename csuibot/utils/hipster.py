@@ -6,9 +6,6 @@ class HipsterGenerator(object):
         def __init__(self):
             self.requester = HipsterRequester()
 
-        def getrequester(self):
-            return self.requester
-
         def generate(self, nums):
             if(nums < 1 or nums > 99):
                 raise ValueError("Value must be betweeen 1 to 99")

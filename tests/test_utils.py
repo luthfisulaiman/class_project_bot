@@ -1,10 +1,11 @@
 from csuibot import utils
+from csuibot.utils import plant as p
+from csuibot.utils import data_processor as processor
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
 import os
 import re
 from requests.exceptions import ConnectionError
 import requests
-
 import json
 
 
@@ -266,6 +267,98 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestWiki:
+    wikipedia_summary = (
+        'The Ukrainian revolution of 2014 (also known as the'
+        ' Euromaidan Revolution or Revolution of Dignity; Ukrainian:'
+        ' Революція гідності, Revoliutsiia hidnosti) took place in'
+        ' Ukraine in February 2014, when a series of violent events'
+        ' involving protesters, riot police, and unknown shooters in'
+        ' the capital, Kiev, culminated in the ousting of Ukrainian'
+        ' President, Viktor Yanukovych. This was followed by a series'
+        ' of changes in Ukraine\'s sociopolitical system, including'
+        ' the formation of a new interim government, the restoration'
+        ' of the previous constitution, and a call to hold impromptu'
+        ' presidential elections within months.\n\n'
+        'source: https://en.wikipedia.org/wiki/2014_Ukrainian_revolution'
+    )
+
+    def test_wiki_wikipedia(self):
+        res = utils.lookup_wiki('The Ukrainian revolution of 2014')
+        assert res == self.wikipedia_summary
+
+    def test_wiki_tongkol(self):
+        res = utils.lookup_wiki('Tongkol')
+        assert res != self.wikipedia_summary
+
+    def test_wiki_value_error(self):
+        try:
+            utils.lookup_wiki('')
+        except ValueError as e:
+            assert str(e) == 'Command /wiki need an argument'
+
+    def test_wiki_page_error(self):
+        try:
+            utils.lookup_wiki('nama_nama_ikan')
+        except IndexError as e:
+            assert str(e) == (
+                'Page id "nama_nama_ikan" does not match any pages.'
+                ' Try another id!'
+            )
+
+
+class TestPlant:
+    def test_is_poisonous_true(self):
+        plant = p.Plant('test', True, 'test')
+        assert plant.is_poisonous is True
+
+    def test_is_poisonous_false(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.is_poisonous is False
+
+    def test_name(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.name == 'test'
+
+    def test_desription(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.description == 'test'
+
+
+class TestDataProcessor:
+    def test_fetch_data_is_poisonous(self):
+        test = processor.fetch_data('Daffodil')
+        assert test is not None
+
+    def test_fetch_data_not_poisonous(self):
+        test = processor.fetch_data('test')
+        assert test is not None
+
+    def test_fetch_all_data(self):
+        test = processor.fetch_all_data()
+        assert test is not None
+
+    def test_fetch_user_input(self):
+        test = processor.fetch_user_input('elephant')
+        assert test is None
+
+    def test_fetch_user_input_trivia(self):
+        test = processor.fetch_user_input('triviaplant')
+        assert test is not None
+
+    def test_fetch_user_input_ask_false(self):
+        test = processor.fetch_user_input('askplant apple')
+        assert test is not None
+
+    def test_fetch_user_input_ask_true(self):
+        test = processor.fetch_user_input('askplant Daffodil')
+        assert test is not None
+
+    def test_send_trivia(self):
+        test = processor.send_trivia()
+        assert test is not None
+
+
 class TestMessageDist:
     def test_file_dist_not_found(self):
         try:
@@ -332,7 +425,6 @@ class TestMessageDist:
 
 
 class TestMarsFasilkom:
-
     def test_marsfasilkom(self):
         marsfasilkom = (
             'Samudera laut ilmu\n'
@@ -354,7 +446,6 @@ class TestMarsFasilkom:
 
 
 class TestYelFasilkom:
-
     def test_yelFasilkom(self):
         yelfasilkom = (
             'Fasilkom!!!\n'
@@ -381,7 +472,6 @@ class TestYelFasilkom:
 
 
 class TestDiscreteMaterial:
-
     def test_number_theory(self):
         try:
             res = utils.call_discrete_material('number theory')
@@ -432,7 +522,6 @@ class TestDiscreteMaterial:
 
 
 class TestNotes:
-
     def run_test(self, command, text=''):
         if command == 'add':
             a = utils.manage_notes(command, text)
@@ -466,7 +555,6 @@ class TestNotes:
 
 
 class TestDefinisi:
-
     def run_test(self, word, expected_output):
         mean = utils.lookup_definisi(word)
         assert mean == expected_output
@@ -488,7 +576,6 @@ class TestDefinisi:
 
 
 class TestReminder:
-
     def test_reminder_return_text_one_word(self):
         output = utils.remind_me(0, "Test")
         assert output == "Test"
@@ -499,7 +586,6 @@ class TestReminder:
 
 
 class TestDefine:
-
     def test_define_diamond(self):
         res = utils.lookup_define('diamond')
         result = 'a precious stone consisting of a clear and colourless'
@@ -529,7 +615,6 @@ class TestDefine:
 
 
 class TestKelaskata:
-
     def run_test(self, word, expected):
         try:
             result = utils.lookup_kelaskata(word)
@@ -551,10 +636,9 @@ class TestKelaskata:
 
 
 class TestCustomChuckJoke:
-
     def test_custom_chuck(self):
         res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
-                "Chuck", "Norris")
+            "Chuck", "Norris")
 
         assert res is not None
 
@@ -565,7 +649,6 @@ class TestCustomChuckJoke:
 
 
 class TestPassword:
-
     def test_minimum_length(self):
         res = utils.generate_password(1)
         assert len(res) == 1
@@ -590,7 +673,6 @@ class TestPassword:
 
 
 class TestIP:
-
     def test_wellformed_ip(self):
         res = utils.get_public_ip()
         pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
@@ -598,7 +680,6 @@ class TestIP:
 
 
 class TestHipster():
-
     def test_make_one_paragraph(self):
         res = utils.make_hipster(1)
         length = res.count("\n")
@@ -619,7 +700,6 @@ class TestHipster():
 
 
 class TestMeme:
-
     def test_success(self):
         res = utils.get_meme("Top", "Bottom")
         assert "http" in res
@@ -803,3 +883,343 @@ class TestJapanArtist:
             pass
         else:
             assert res == 'Artist not present on the Top 100 Chart'
+
+
+class TestTropicalChartBillboard:
+    def test_get_top10_200_chart(self):
+        res = utils.b.get_top10('200')
+        assert len(res['items']) == 10
+
+    def test_get_top10_tropical_chart(self):
+        res = utils.b.get_top10('tropical')
+        assert len(res['items']) == 10
+
+    def test_get_top10_hot100_chart(self):
+        res = utils.b.get_top10('hot100')
+        assert len(res['items']) == 10
+
+    def test_invalid_chart_category(self):
+        res = utils.b.get_top10('invalid')
+        assert res == 'Invalid chart category'
+
+
+class TestOriconCD:
+    def test_connection_error(self, mocker):
+        mocker.patch('csuibot.utils.ocd.Oricon_cd._get_page', side_effect=ConnectionError)
+
+        output = utils.top_ten_cd_oricon('w', '2017-05-05')
+
+        assert output == 'Error occured when connecting to Oricon website.'
+
+    def test_daily_chart(self):
+        output = utils.top_ten_cd_oricon('d', '2017-05-12')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_weekly_chart(self):
+        output = utils.top_ten_cd_oricon('w', '2017-05-15')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_montly_chart(self):
+        output = utils.top_ten_cd_oricon('m', '2017-04')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_yearly_chart(self):
+        output = utils.top_ten_cd_oricon('y', '2016')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_unknown(self):
+        output = utils.top_ten_cd_oricon('d', '1854-05-05')
+
+        assert output == "Oricon don't know chart in this date"
+
+    def test_invalid_date(self):
+        output = utils.top_ten_cd_oricon('d', '9999-12-99')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_month(self):
+        output = utils.top_ten_cd_oricon('m', '2016-90')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_date_format(self):
+        output = utils.top_ten_cd_oricon('d', 'Maki Cantik Sekali')
+
+        assert output == 'Invalid date'
+
+
+class TestHot100_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_hot100_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHot100_artist.err_msg
+
+    def test_h100artist_found(self):
+        exp = ("Russ\nLosin Control\n68\n")
+        self.run_test('Russ', exp)
+
+    def test_h100artist_notfound(self):
+        self.run_test('foo bar', TestHot100_artist.err_msg)
+
+
+class TestNewAge_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_newage_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestNewAge_artist.err_msg
+
+    def test_newageartist_found(self):
+        exp = ("Enya\nDark Sky Island\n3\n")
+        self.run_test('Enya', exp)
+
+    def test_newageartist_notfound(self):
+        self.run_test('foo bar', TestNewAge_artist.err_msg)
+
+
+class TestComic:
+    def test_valid(self):
+        comic = utils.get_comic('1834')
+        assert "https" in comic
+
+    def test_lower_bound(self):
+        comic = utils.get_comic('0')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+    def test_upper_bound(self):
+        comic = utils.get_comic('10000')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+    def test_invalid(self):
+        comic = utils.get_comic('abab')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+
+class TestHotCountry_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_hotcountry_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHotCountry_artist.err_msg
+
+    def test_hcountryartist_found(self):
+        exp = ("Sam Hunt\nBody Like A Back Road\n1\n")
+
+        self.run_test('Sam Hunt', exp)
+
+    def test_hcountryartist_notfound(self):
+        self.run_test('foo bar', TestHotCountry_artist.err_msg)
+
+
+class TestHotcountry:
+    def run_test(self, expected):
+        try:
+            result = utils.lookup_hotcountry()
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_hotcountry(self):
+        expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+        expected += "Brett Young - In Case You Didn't Know\n(3) "
+        expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+        expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+        expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+        expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+        expected += "If I Told You\n(9) Kelsea Ballerini - "
+        expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
+        self.run_test(expected)
+
+
+class TestNewAge:
+    def run_test(self, expect):
+        try:
+            result = utils.lookup_newage()
+            assert result == expect
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_newage(self):
+        expected = "(1) Armik - Enamor\n"
+        expected += "(2) The Piano Guys - Uncharted\n"
+        expected += "(3) Enya - Dark Sky Island\n"
+        expected += "(4) Armik - Solo Guitar Collection\n"
+        expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+        expected += "(6) Various Artists - Music For Deep Sleep\n"
+        expected += "(7) George Winston - Spring Carousel\n"
+        expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+        expected += "(9) Various Artists - 111 Tracks\n"
+        expected += "(10) Laura Sullivan - Calm Within"
+        self.run_test(expected)
+
+
+class TestBillArtist:
+    def run_test(self, command, expected):
+        try:
+            result = utils.lookup_billArtist(command)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_billArtist_Taylor_Swift(self):
+        self.run_test('Taylor Swift', "Taylor Swift doesn't exist in bill200")
+
+    def test_billArtist_Rhoma_Irama(self):
+        self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
+
+    def test_billArtist_Pentatonix(self):
+        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #93")
+
+
+class TestSimilar:
+    def test_similar_text(self):
+        res = utils.similar_text('Tomorrow is Holiday', 'Tomorrow is Judgement day')
+        assert '%' in res
+
+    def test_similar_url(self):
+        url1 = 'https://docs.python.org/3/library/unittest.mock.html#quick-guide'
+        url2 = 'https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch'
+        res = utils.similar_text(url1, url2)
+        assert '%' in res
+
+    def test_connection_error(self):
+        res = utils.similar_text('http://www.aku1.com', 'http://www.aku2.com')
+        assert res == "Connection Error occurs, please check your url or try again later"
+
+    def test_bound(self):
+        fake1 = 'a' * 10000
+        fake2 = 'ab' * 5000
+        res = utils.similar_text(fake1, fake2)
+        assert res == "Your input is too long, please keep below 500 words"
+
+
+class TestFakeJson:
+    def test_response(self):
+        expected = (
+            '{\n'
+            '  "userId": 1,\n'
+            '  "id": 1,\n'
+            '  "title": "sunt aut facere repellat provident occaecati excepturi'
+            ' optio reprehenderit",\n'
+            '  "body": "quia et suscipit\\nsuscipit recusandae consequuntur'
+            ' expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum'
+            ' rerum est autem sunt rem eveniet architecto"\n'
+            '}'
+        )
+
+        assert utils.get_fake_json('') == expected
+
+    def test_with_arguments(self):
+        try:
+            utils.get_fake_json('some_arguments here')
+        except ValueError as e:
+            assert str(e) == 'Command /fake_json doesn\'t need any arguments'
+
+
+class TestDetectLang:
+    def test_get_type_url(self):
+        url = 'http://google.com/'
+        assert 'url' == utils.detectlang.DetectLang(url).get_type()
+
+    def test_get_type_text(self):
+        text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        assert 'text' == utils.detectlang.DetectLang(text).get_type()
+
+    def test_text(self, mocker):
+        fake_detect_lang = {
+            'timestamp': '2017-05-10T14:00:46.882',
+            'detectedLangs': [
+                {
+                    'confidence': 0.9285,
+                    'lang': 'ro'
+                },
+                {
+                    'confidence': 0.0714,
+                    'lang': 'fr'
+                }
+            ],
+            'time': 1
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        res = utils.lookup_lang(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+            ' Vestibulum elementum condimentum suscipit. Sed semper,'
+            ' dolor eu ultrices interdum, elit quam mollis ligula,'
+            ' vel cursus nisi enim sed nunc.'
+        )
+        assert res == 'Romanian (92.85%)\nFrench (7.14%)\n'
+
+    def test_url(self, mocker):
+        fake_detect_lang = {
+            'timestamp': '2017-05-10T14:00:46.882',
+            'detectedLangs': [
+                {
+                    'confidence': 1.0,
+                    'lang': 'en'
+                }
+            ],
+            'time': 1
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        res = utils.lookup_lang('https://en.wikipedia.org/wiki/Barack_Obama')
+        assert res == 'English (100.0%)\n'
+
+    def test_null_argument(self):
+        try:
+            utils.lookup_lang('')
+        except ValueError as e:
+            assert str(e) == 'Command /detect_lang need an argument'
+
+    def test_lookup_error(self, mocker):
+        fake_detect_lang = {
+            'message': 'Unable to download the web page, request got HTTP error code: 503',
+            'code': 'error.badGateway',
+            'error': True,
+            'data': {}
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        try:
+            utils.lookup_lang('http://notrealwebsite.com')
+        except LookupError as e:
+            assert str(e) == (
+                'Unable to download the web page, request got HTTP error code: 503'
+            )
+
+
+class TestWeton:
+    def test_weton_type_error(self):
+        look = utils.lookup_weton("a", "b", "c")
+        assert look == "Year/Month/Day is invalid"
+
+    def test_weton_value_error(self):
+        look = utils.lookup_weton(1995, 12, 32)
+        assert look == "Year/Month/Day is invalid"
