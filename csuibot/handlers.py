@@ -12,7 +12,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
-                    lookup_hotcountry, lookup_newage, extract_colour)
+                    lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
+                    extract_colour)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -581,6 +582,34 @@ def extract_colour_from_image(message):
         bot.reply_to(message, extracted)
 
 
+@bot.message_handler(commands=['detect_lang'])
+def detect_lang(message):
+    app.logger.debug("'detect_lang' command detected")
+    arg = " ".join(message.text.split()[1:])
+
+    try:
+        used_langs = lookup_lang(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except LookupError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, used_langs)
+
+
+@bot.message_handler(commands=['fake_json'])
+def fake_json(message):
+    app.logger.debug("'fake_json' command detected")
+
+    arg = " ".join(message.text.split()[1:])
+    try:
+        fakejson = get_fake_json(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, fakejson)
+
+
 @bot.message_handler(regexp=r'^\/docs_sim')
 def similar(message):
     app.logger.debug("'similarity text' command detected")
@@ -708,3 +737,14 @@ def newage(message):
         bot.reply_to(message, 'Cannot connect to billboard API')
     else:
         bot.reply_to(message, newage)
+
+
+# long-polling debugging
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         import time
+#         app.logger.debug(str(e))
+#         time.sleep(5)

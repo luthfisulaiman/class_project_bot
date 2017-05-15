@@ -48,3 +48,5 @@ wgetter==0.6
 wikipedia==1.4.0
 beautifulsoup4==4.5.3
 py-translate==1.0.3
+pycountry==17.1.8
+validators==0.11.3
