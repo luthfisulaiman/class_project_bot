@@ -141,5 +141,8 @@ def lookup_newage():
 
 
 def lookup_billArtist(message):
-    billArtist_object = ba.billArtist(message)
-    return billArtist_object.getBillArtist()
+    try:
+        billArtist_object = ba.billArtist(message)
+        return billArtist_object.getBillArtist()
+    except ValueError:
+        return message + " doesn't exist in bill200"
