@@ -8,26 +8,26 @@ import re
 class Books:
 
     def __init__(self):
-        self.url = "http://www.oricon.co.jp/rank/ob/w/{}"
+        self.url = "http://www.oricon.co.jp/rank/ob/w/{}/"
 
     def get_top_10(self, date):
         try:
             valid_date = datetime.strptime(date, '%Y-%m-%d')
-            if not (valid_date.strftime('%A')):
+            if not (valid_date.strftime('%A') == 'Monday'):
                 return 'Oricon books command only accepts dates of Mondays.'
             if (datetime(2017, 4, 10) > valid_date):
-                return "Oricon books' earliest record is on 2017-04-10."
+                return "Oricon books' earliest record is on 2017-04-10"
         except ValueError:
             return 'Requested date is invalid.'
 
-        page = r.get(self.url.format(date)).content
-
+        page = r.get(self.url.format(date))
+        if page.status_code == 404:
+            return "No chart is found on this date."
         strainer = SS(class_='box-rank-entry')
-        html = BS(page, 'html.parser', parse_only=strainer)
-
+        entries = BS(page.content, 'html.parser', parse_only=strainer)
         output = ''
         count = 1
-        for entry in html.find_all(class_='box-rank-entry'):
+        for entry in entries.find_all(class_='box-rank-entry'):
             title = entry.find(class_="title").text
             author = entry.find(class_="name").text
             info = entry.find(class_="list").contents
@@ -38,7 +38,3 @@ class Books:
             output += line + '\n'
             count += 1
         return output
-
-
-if __name__ == '__main__':
-    print(Books().get_top_10('ASDF-05-01'))

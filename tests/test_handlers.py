@@ -77,22 +77,10 @@ def test_oricon_books(mocker):
 
 def test_oricon_books_input_overload(mocker):
     fake_output = "Invalid command structure. Example: " \
-                  "'oricon books weekly 2017-04-10'"
+                  "'/oricon books weekly 2017-05-01'"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.get_oricon_books')
-    mock_message = Mock(text='/oricon books weekly 2001-02-31')
-
-    oricon_books(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_output
-
-
-def test_oricon_books_invalid_date(mocker):
-    fake_output = 'Requested date is invalid.'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.get_oricon_books')
-    mock_message = Mock(text='/oricon books weekly 9999-99-99')
+    mock_message = Mock(text='/oricon books weekly 2001-02-31 now!')
 
     oricon_books(mock_message)
 
@@ -105,30 +93,6 @@ def test_oricon_books_not_weekly(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.get_oricon_books')
     mock_message = Mock(text='/oricon books daily 2011-02-31')
-
-    oricon_books(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_output
-
-
-def test_oricon_books_not_monday(mocker):
-    fake_output = 'Oricon books command only accepts dates of Mondays.'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.get_oricon_books')
-    mock_message = Mock(text='/oricon books weekly 2011-05-12')
-
-    oricon_books(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_output
-
-
-def test_oricon_books_before_earliest(mocker):
-    fake_output = "Oricon books' earliest record is on 2017-04-10."
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.get_oricon_books')
-    mock_message = Mock(text='/oricon books weekly 2011-05-12')
 
     oricon_books(mock_message)
 
