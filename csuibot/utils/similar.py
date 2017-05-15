@@ -43,7 +43,7 @@ class ApiRequester:
 
     def __init__(self):
         self.url = 'https://api.dandelion.eu/datatxt/sim/v1'
-        self.auth = environ.get('DANDELION_KEY')
+        self.auth = environ.get('DANDELION_KEY', "44152baf309c4ae28d4317593e623dbb")
 
     def make_request_text(self, text1, text2):
         en_text1 = quote(text1, safe='')
