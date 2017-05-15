@@ -1,4 +1,4 @@
-from csuibot.utils import (zodiac as z, books)
+from csuibot.utils import (zodiac as z, books, custom_chuck as cc, yelkomputer)
 
 
 def lookup_zodiac(month, day):
@@ -47,3 +47,14 @@ def lookup_chinese_zodiac(year):
 
 def get_oricon_books(date):
     return books.Books().get_top_10(date)
+
+
+def generate_custom_chuck_joke(first_name, last_name):
+    return cc.CustomChuckJoke().generate_custom_chuck_joke(first_name, last_name)
+
+
+def lookup_yelkomputer(message_text):
+    if message_text == '/yelkomputer':
+        return yelkomputer.YelKomputer.get_yel_komputer()
+    else:
+        raise ValueError('Command /yelkomputer doesn\'t need any arguments')
