@@ -1424,7 +1424,8 @@ def test_extract_colour(mocker):
     assert args[1] == fake_result
 
 
-def test_extract_colour_requests_errors(mocker):
+def test_extract_colour_errors(mocker):
+    fake_index_error = 'Colour not extracted.'
     fake_connection_error = 'A connection error occured. Please try again in a moment.'
     fake_http_error = 'An HTTP error occured. Please try again in a moment.'
     fake_request_exception = 'An error occured. Please try again in a moment.'
@@ -1436,6 +1437,12 @@ def test_extract_colour_requests_errors(mocker):
     mock_message = mocker.Mock()
     attrs = {'photo': [photo], 'caption': '/fgcolour'}
     mock_message.configure_mock(**attrs)
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=IndexError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_index_error
 
     mocker.patch('csuibot.handlers.extract_colour',
                  side_effect=requests.exceptions.ConnectionError)

@@ -569,6 +569,8 @@ def extract_colour_from_image(message):
     app.logger.debug("'extract_colour_from_image' handler executed")
     try:
         extracted = extract_colour(message)
+    except IndexError:
+        bot.reply_to(message, 'Colour not extracted.')
     except requests.exceptions.ConnectionError:
         bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
     except requests.exceptions.HTTPError:
