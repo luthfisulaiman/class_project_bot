@@ -13,7 +13,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
-                    lookup_billArtist, lookup_weton)
+                    lookup_billArtist, lookup_weton, get_oricon_books)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -317,6 +317,29 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/oricon books ')
+def oricon_books(message):
+    app.logger.debug("'oricon' command detected")
+    app.logger.debug("oricon command type is 'books'")
+
+    try:
+        _, _, weekly, request_date = message.text.split(' ')
+        if (weekly != 'weekly'):
+            top10 = 'Oricon books command currently only supports '\
+                    'weekly ratings at this time.'
+        else:
+            app.logger.debug("oricon command type is 'weekly'")
+            top10 = get_oricon_books(request_date)
+    except ValueError:
+        error = "Invalid command structure. Example: " \
+                "'/oricon books weekly 2017-05-01'"
+        bot.reply_to(message, error)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to the oricon.co.jp website.')
+    else:
+        bot.reply_to(message, top10)
 
 
 @bot.message_handler(commands=['wiki'])

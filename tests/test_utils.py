@@ -642,7 +642,38 @@ class TestCustomChuckJoke:
 
         assert res is not None
 
+
+class TestOriconBooks:
+
+    def test_books(self):
+        res = utils.books.Books().get_top_10('2017-04-10')
+
+        assert res is not None
+
     def test_fetch(self):
+        res = utils.get_oricon_books('2017-04-10')
+
+        assert res is not None
+
+    def test_no_entry(mocker):
+        res = utils.get_oricon_books('2017-10-16')
+
+        assert res == "No chart is found on this date."
+
+    def test_too_early(mocker):
+        res = utils.get_oricon_books('2017-04-03')
+
+        assert res == "Oricon books' earliest record is on 2017-04-10"
+
+    def test_not_monday(mocker):
+        res = utils.get_oricon_books('2017-05-12')
+
+        assert res == 'Oricon books command only accepts dates of Mondays.'
+
+    def test_invalid_date(mocker):
+        res = utils.get_oricon_books('2017-05-99')
+
+        assert res == 'Requested date is invalid.'
         res = utils.generate_custom_chuck_joke("Chuck", "Norris")
 
         assert res is not None

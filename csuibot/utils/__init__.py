@@ -15,7 +15,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
-                           newage as na, fakejson, detectlang, billArtist as ba, weton)
+                           newage as na, fakejson, detectlang, billArtist as ba, weton,
+                           books)
 
 
 def lookup_zodiac(month, day):
@@ -60,6 +61,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def get_oricon_books(date):
+    return books.Books().get_top_10(date)
 
 
 def lookup_wiki(term):
