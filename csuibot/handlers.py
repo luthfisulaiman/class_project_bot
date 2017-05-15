@@ -4,14 +4,15 @@ from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
-                    get_meme, generate_password, get_chuck, generate_custom_chuck_joke,
+                    get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist, lookup_wiki,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
-                    top_ten_cd_oricon, lookup_top10_billboard_chart)
+                    top_ten_cd_oricon, lookup_top10_billboard_chart,
+                    lookup_hotcountry, lookup_newage)
 
 from requests.exceptions import ConnectionError
 import datetime
@@ -152,20 +153,6 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, 'Error catched')
     else:
         bot.reply_to(message, notification)
-
-
-@bot.message_handler(regexp=r'^/chuck$')
-def chuck(message):
-    app.logger.debug("'chuck' command detected")
-    try:
-        joke = get_chuck(message.text)
-    except ConnectionError:
-        bot.reply_to(message, 'Chuck Norris doesn\'t need internet connection'
-                              ' to connect to ICNDb API, too bad you\'re not him')
-    except ValueError:
-        bot.reply_to(message, 'Command /chuck doesn\'t need any arguments')
-    else:
-        bot.reply_to(message, joke)
 
 
 @bot.message_handler(regexp=r'^/chuck ')
@@ -653,3 +640,25 @@ def hotcountry_artist(message):
         bot.reply_to(message, "Connection Error")
     else:
         bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard hotcountry$')
+def hotcountry(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        hotcountry = lookup_hotcountry()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, hotcountry)
+
+
+@bot.message_handler(regexp=r'^/billboard newage$')
+def newage(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        newage = lookup_newage()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, newage)

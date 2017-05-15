@@ -8,9 +8,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom, wiki,
-                              chuck, get_discrete_material as dm, message_dist,
+                              get_discrete_material as dm, message_dist,
                               hot100_artist, newage_artist, hotcountry_artist,
-                              oricon_cd, billboard_chart)
+                              oricon_cd, billboard_chart, hotcountry, newage)
 from requests.exceptions import ConnectionError
 
 
@@ -1118,27 +1118,36 @@ def test_dayofdate_no_argument(mocker):
                        'such as 2016-05-13')
 
 
-def test_chuck(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck')
-    mock_message = Mock(text='/chuck')
+def test_hotcountry(mocker):
+    expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+    expected += "Brett Young - In Case You Didn't Know\n(3) "
+    expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+    expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+    expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+    expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+    expected += "If I Told You\n(9) Kelsea Ballerini - "
+    expected += 'Yeah Boy\n(10) Brantley Gilbert - The Weekend'
 
-    chuck(mock_message)
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_hotcountry', return_value=expected)
+    mock_message = Mock(text='/billboard hotcountry')
+
+    hotcountry(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert "Chuck" in args[1]
+    assert args[1] == expected
 
 
-def test_chuck_with_args(mocker):
-    fake_error = 'Command /chuck doesn\'t need any arguments'
+def test_hotcountry_no_connection(mocker):
+    fake_hotcountry = 'Cannot connect to billboard API'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.chuck')
-    mock_message = Mock(text='/chuck args')
+    mocker.patch('csuibot.handlers.lookup_hotcountry', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard hotcountry')
 
-    chuck(mock_message)
+    hotcountry(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_error
+    assert args[1] == fake_hotcountry
 
 
 def test_billboard_with_valid_arguments(mocker):
@@ -1289,3 +1298,37 @@ def test_hotcountry_artist(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_artist
+
+
+def test_newage(mocker):
+    expected = "(1) Armik - Enamor\n"
+    expected += "(2) The Piano Guys - Uncharted\n"
+    expected += "(3) Enya - Dark Sky Island\n"
+    expected += "(4) Armik - Solo Guitar Collection\n"
+    expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+    expected += "(6) Various Artists - Music For Deep Sleep\n"
+    expected += "(7) George Winston - Spring Carousel\n"
+    expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+    expected += "(9) Various Artists - 111 Tracks\n"
+    expected += "(10) Laura Sullivan - Calm Within"
+    fake_newage = expected
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', return_value=fake_newage)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
+
+
+def test_newage_no_connection(mocker):
+    fake_newage = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage

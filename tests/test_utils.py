@@ -843,16 +843,6 @@ class TestDayofDate:
                        'such as 2016-05-13')
 
 
-class TestChuck:
-    def test_get_chuck(self):
-        try:
-            res = utils.get_chuck('/chuck')
-        except ConnectionError:
-            pass
-        else:
-            assert res is not None
-
-
 class TestTropicalChartBillboard:
     def test_get_top10_200_chart(self):
         res = utils.b.get_top10('200')
@@ -980,3 +970,45 @@ class TestHotCountry_artist:
 
     def test_hcountryartist_notfound(self):
         self.run_test('foo bar', TestHotCountry_artist.err_msg)
+
+
+class TestHotcountry:
+    def run_test(self, expected):
+        try:
+            result = utils.lookup_hotcountry()
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_hotcountry(self):
+        expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+        expected += "Brett Young - In Case You Didn't Know\n(3) "
+        expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+        expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+        expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+        expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+        expected += "If I Told You\n(9) Kelsea Ballerini - "
+        expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
+        self.run_test(expected)
+
+
+class TestNewAge:
+    def run_test(self, expect):
+        try:
+            result = utils.lookup_newage()
+            assert result == expect
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_newage(self):
+        expected = "(1) Armik - Enamor\n"
+        expected += "(2) The Piano Guys - Uncharted\n"
+        expected += "(3) Enya - Dark Sky Island\n"
+        expected += "(4) Armik - Solo Guitar Collection\n"
+        expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+        expected += "(6) Various Artists - Music For Deep Sleep\n"
+        expected += "(7) George Winston - Spring Carousel\n"
+        expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+        expected += "(9) Various Artists - 111 Tracks\n"
+        expected += "(10) Laura Sullivan - Calm Within"
+        self.run_test(expected)

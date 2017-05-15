@@ -8,11 +8,12 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, wiki,
+                           discretemath as dm, marsfasilkom, yelfasilkom, wiki,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
-                           oricon_cd as ocd, billboard as b)
+                           oricon_cd as ocd, billboard as b, hotcountry as hot,
+                           newage as na)
 
 
 def lookup_zodiac(month, day):
@@ -272,13 +273,6 @@ def lookup_dayofdate(year, month, day):
                 'such as 2016-05-13')
 
 
-def get_chuck(message_text):
-    if message_text == "/chuck":
-        return chuck.Chuck().get_chuck()
-    else:
-        raise ValueError('Command /chuck doesn\'t need any arguments')
-
-
 def lookup_top10_billboard_chart(chart_category):
     result = b.get_top10(chart_category)
     if result != 'Invalid chart category':
@@ -320,3 +314,13 @@ def find_hotcountry_artist(name):
     except ValueError:
         return ("Artist is not present on chart or no such artist exists\n"
                 "Artist's name is case sensitive")
+
+
+def lookup_hotcountry():
+    hotcountry_object = hot.hotcountry()
+    return hotcountry_object.getHotcountry()
+
+
+def lookup_newage():
+    newage_object = na.newage()
+    return newage_object.getNewage()
