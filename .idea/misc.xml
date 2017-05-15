@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-<<<<<<< HEAD
   <component name="CompilerConfiguration">
     <resourceExtensions />
     <wildcardResourcePatterns>
@@ -20,17 +19,7 @@
       </profile>
     </annotationProcessing>
   </component>
-  <component name="GradleLocalSettings">
-    <option name="modificationStamps">
-      <map>
-        <entry key="$USER_HOME$/Desktop/Training/Android-Universal-Image-Loader" value="5829128329619" />
-      </map>
-    </option>
-    <option name="externalProjectsViewState">
-      <projects_view />
-    </option>
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6.0 (C:\Users\lightmire\AppData\Local\Programs\Python\Python36-32\python.exe)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.5.2 virtualenv at ~/Kuliah/csui-bot-2/env" project-jdk-type="Python SDK" />
   <component name="masterDetails">
     <states>
       <state key="ProjectJDKs.UI">
@@ -47,7 +36,4 @@
       </state>
     </states>
   </component>
-=======
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6.0 virtualenv at E:\Codes\TK-AP\csui-bot-2\env" project-jdk-type="Python SDK" />
->>>>>>> e2cc45d7ecd4db8f29cb39f6742ba0a2f2a07caa
 </project>
