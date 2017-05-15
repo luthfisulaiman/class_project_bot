@@ -270,7 +270,7 @@ def newage(message):
 def billArtist(message):
     app.logger.debug("'billboard' command detected")
     try:
-        name = message.text[message.text.index("bill200") + len("bill200"):]
+        name = message.text[message.text.index("bill200") + len("bill200")+1:]
         billArtist = lookup_billArtist(name)
         app.logger.debug("artist's name" + name)
         app.logger.debug("lookup result" + billArtist)

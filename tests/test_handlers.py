@@ -589,7 +589,6 @@ def test_billArtist_Pentatonix(mocker):
 def test_billArtist_not_exist(mocker):
     fake_billArtist = "Rhoma Irama doesn't exist in bill200"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_billArtist', side_effect=fake_billArtist)
     mock_message = Mock(text='/billboard bill200 Rhoma Irama')
 
     billArtist(mock_message)
