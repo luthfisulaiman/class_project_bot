@@ -31,12 +31,12 @@ class SimilarText:
     @checktext
     def checktext(self, text1, text2):
         res = self.requester.make_request_text(text1, text2)
-        return "similarity:" + "{0:.2f}".format(float(res['langConfidence']) * 100) + "%"
+        return "similarity:" + "{0:.2f}".format(float(res['similarity']) * 100) + "%"
 
     @checkconnection
     def checkweb(self, url1, url2):
         res = self.requester.make_request_url(url1, url2)
-        return "similarity:" + "{0:.2f}".format(float(res['langConfidence']) * 100) + "%"
+        return "similarity:" + "{0:.2f}".format(float(res['similarity']) * 100) + "%"
 
 
 class ApiRequester:
