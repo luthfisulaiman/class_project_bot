@@ -16,7 +16,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
-                           books, extractcolour)
+                           books, youtube, japanartist as ja, extractcolour)
 
 
 def lookup_zodiac(month, day):
@@ -358,6 +358,14 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def lookup_url(url):
+    return youtube.Youtube().getURL(url)
+
+
+def lookup_artist(artist):
+    return ja.JapanArtist().getArtist(artist)
 
 
 def get_fake_json(arg):

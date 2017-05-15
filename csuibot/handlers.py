@@ -13,7 +13,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
-                    lookup_billArtist, lookup_weton, get_oricon_books, extract_colour)
+                    lookup_billArtist, lookup_weton, get_oricon_books,
+                    lookup_url, lookup_artist, extract_colour)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -598,25 +599,38 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-def check_caption_colour(message):
-    return message.caption in ['/bgcolour', '/fgcolour']
+@bot.message_handler(regexp=r'^\/youtube\s*$')
+def youtube_no_url(message):
+    bot.reply_to(message, "'youtube' command needs an url")
 
 
-@bot.message_handler(content_types=['photo'], func=check_caption_colour)
-def extract_colour_from_image(message):
-    app.logger.debug("'extract_colour_from_image' handler executed")
+@bot.message_handler(regexp=r'^(\/youtube) .+$')
+def youtube(message):
+    app.logger.debug("'youtube' command detected")
+    _, url = message.text.split(' ')
+
     try:
-        extracted = extract_colour(message)
-    except IndexError:
-        bot.reply_to(message, 'Colour not extracted.')
-    except requests.exceptions.ConnectionError:
-        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
-    except requests.exceptions.RequestException:
-        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+        youtube = lookup_url(url)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Youtube')
     else:
-        bot.reply_to(message, extracted)
+        bot.reply_to(message, youtube)
+
+
+@bot.message_handler(regexp=r'^(\/billboard japan100) .+$')
+def japanartist(message):
+    app.logger.debug("'billboard japan100 artist comand detacted'")
+    artist = " ".join(message.text.split(' ')[2:])
+    app.logger.debug('artist = {}'.format(artist))
+
+    try:
+        _artist = lookup_artist(artist)
+    # except ValueError:
+    #     bot.reply_to(message, 'Command /billboard japan100 need an arguments')
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Billboard RSS Feed')
+    else:
+        bot.reply_to(message, _artist)
 
 
 @bot.message_handler(commands=['detect_lang'])
@@ -799,3 +813,24 @@ def primbon(message):
 
     weton = lookup_weton(year, month, day)
     bot.reply_to(message, weton)
+
+
+def check_caption_colour(message):
+    return message.caption in ['/bgcolour', '/fgcolour']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_colour)
+def extract_colour_from_image(message):
+    app.logger.debug("'extract_colour_from_image' handler executed")
+    try:
+        extracted = extract_colour(message)
+    except IndexError:
+        bot.reply_to(message, 'Colour not extracted.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, extracted)

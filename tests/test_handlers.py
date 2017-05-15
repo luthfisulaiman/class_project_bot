@@ -7,12 +7,12 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom, wiki,
+                              marsfasilkom, yelfasilkom, wiki, youtube, youtube_no_url,
                               chuck, get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
-                              extract_colour_from_image, check_caption_colour)
+                              japanartist, extract_colour_from_image, check_caption_colour)
 from requests.exceptions import ConnectionError
 
 
@@ -1277,6 +1277,65 @@ def test_billboard_with_invalid_arguments(mocker):
     assert args[1] == fake_error
 
 
+def test_youtube_url(mocker):
+    fake_url_info = 'Gordon Ramsay Answers Cooking Questions From Twitter' \
+                    '| Tech Support | WIRED'\
+                    'WIRED'\
+                    '4390281'\
+                    '102154 & 1122'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', return_value=fake_url_info)
+    mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+
+    youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_youtube_no_url(mocker):
+    fake_url_info = "'youtube' command needs an url"
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', return_value=fake_url_info)
+    mock_message = Mock(text='/youtube ')
+
+    youtube_no_url(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_youtube_no_connection(mocker):
+    fake_url_info = 'Error connecting to Youtube'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', side_effect=ConnectionError)
+    mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+
+    youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_japanartist(mocker):
+    fake_artist = 'Your artist is present in Japan Top100' \
+                  'Kana Nishino'\
+                  'Pa'\
+                  '3'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
 def test_detect_lang(mocker):
     fake_detect_lang = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -1504,6 +1563,30 @@ def test_hotcountry_artist(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_artist
+
+
+def test_japanartist_no_connection(mocker):
+    fake_error = 'Error connecting to Billboard RSS Feed'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_japanartist_not_found(mocker):
+    fake_error = 'Artist not present on the Top 100 Chart'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', return_value=fake_error)
+    mock_message = Mock(text='/billboard japan100 Justin Bieber')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
 
 
 def test_newage(mocker):
