@@ -46,9 +46,10 @@ class ApiRequester:
         self.auth = environ.get('DANDELION_KEY', "44152baf309c4ae28d4317593e623dbb")
 
     def make_request_text(self, text1, text2):
-        en_text1 = quote(text1, safe='')
-        en_text2 = quote(text2, safe='')
-        task = self.url + "/?text1={} &text2={}&lang={}&token={}".format(en_text1, en_text2, 'en', self.auth)
+        en_txt1 = quote(text1, safe='')
+        en_txt2 = quote(text2, safe='')
+        par = "/?text1={} &text2={}&lang={}&token={}".format(en_txt1, en_txt2, 'en', self.auth)
+        task = self.url + par
         req = requests.get(task)
         req.raise_for_status()
         return req.json()
@@ -56,7 +57,8 @@ class ApiRequester:
     def make_request_url(self, url1, url2):
         en_url1 = quote(url1, safe='')
         en_url2 = quote(url2, safe='')
-        task = self.url + "/?url1={} &url2={}&lang={}&token={}".format(en_url1, en_url2, 'en', self.auth)
+        par = "/?url1={} &url2={}&lang={}&token={}".format(en_url1, en_url2, 'en', self.auth)
+        task = self.url + par
         req = requests.get(task)
         req.raise_for_status()
         return req.json()
