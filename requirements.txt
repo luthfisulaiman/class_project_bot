@@ -1,9 +1,4 @@
-args==0.1.0
-asn1crypto==0.22.0
-bandcamp-downloader==0.0.7.post9
-beautifulsoup4==4.5.3
-cffi==1.10.0
-chardet==2.3.0
+billboard.py==3.0.2
 click==6.7
 clint==0.5.1
 colorama==0.3.7
