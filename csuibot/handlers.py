@@ -12,7 +12,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
-                    lookup_hotcountry, lookup_newage, get_fake_json)
+                    lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -558,6 +558,21 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(commands=['detect_lang'])
+def detect_lang(message):
+    app.logger.debug("'detect_lang' command detected")
+    arg = " ".join(message.text.split()[1:])
+
+    try:
+        used_langs = lookup_lang(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except LookupError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, used_langs)
 
 
 @bot.message_handler(commands=['fake_json'])

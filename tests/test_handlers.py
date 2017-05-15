@@ -11,7 +11,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
-                              fake_json)
+                              fake_json, detect_lang)
 from requests.exceptions import ConnectionError
 
 
@@ -1209,6 +1209,48 @@ def test_billboard_with_invalid_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_detect_lang(mocker):
+    fake_detect_lang = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_lang', return_value=fake_detect_lang)
+    mock_message = Mock(text='/detect_lang Lorem ipsum dolor sit amet, consectetur adipiscing')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_detect_lang
+
+
+def test_detect_lang_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.lookup_lang',
+        side_effect=ValueError('Command /detect_lang need an argument')
+    )
+    mock_message = Mock(text='/detect_lang')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /detect_lang need an argument'
+
+
+def test_detect_lang_lookup_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.lookup_lang',
+        side_effect=LookupError(
+            'Unable to download the web page, request got HTTP error code: 503'
+        )
+    )
+    mock_message = Mock(text='/detect_lang http://justsomerandomwebsite.com')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Unable to download the web page, request got HTTP error code: 503'
 
 
 def test_fake_json(mocker):

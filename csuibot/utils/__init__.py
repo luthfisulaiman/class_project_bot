@@ -15,7 +15,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
-                           newage as na, fakejson)
+                           newage as na, fakejson, detectlang)
 
 
 def lookup_zodiac(month, day):
@@ -362,3 +362,11 @@ def get_fake_json(arg):
 def lookup_newage():
     newage_object = na.newage()
     return newage_object.getNewage()
+
+
+def lookup_lang(arg):
+    if arg is '':
+        raise ValueError('Command /detect_lang need an argument')
+
+    request = detectlang.DetectLang(arg)
+    return request.get_result()
