@@ -6,8 +6,6 @@ import os
 import re
 from requests.exceptions import ConnectionError
 import requests
-
-
 import json
 
 
@@ -845,14 +843,175 @@ class TestDayofDate:
                        'such as 2016-05-13')
 
 
-class TestChuck:
-    def test_get_chuck(self):
+class TestTropicalChartBillboard:
+    def test_get_top10_200_chart(self):
+        res = utils.b.get_top10('200')
+        assert len(res['items']) == 10
+
+    def test_get_top10_tropical_chart(self):
+        res = utils.b.get_top10('tropical')
+        assert len(res['items']) == 10
+
+    def test_get_top10_hot100_chart(self):
+        res = utils.b.get_top10('hot100')
+        assert len(res['items']) == 10
+
+    def test_invalid_chart_category(self):
+        res = utils.b.get_top10('invalid')
+        assert res == 'Invalid chart category'
+
+
+class TestOriconCD:
+    def test_connection_error(self, mocker):
+        mocker.patch('csuibot.utils.ocd.Oricon_cd._get_page', side_effect=ConnectionError)
+
+        output = utils.top_ten_cd_oricon('w', '2017-05-05')
+
+        assert output == 'Error occured when connecting to Oricon website.'
+
+    def test_daily_chart(self):
+        output = utils.top_ten_cd_oricon('d', '2017-05-12')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_weekly_chart(self):
+        output = utils.top_ten_cd_oricon('w', '2017-05-15')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_montly_chart(self):
+        output = utils.top_ten_cd_oricon('m', '2017-04')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_yearly_chart(self):
+        output = utils.top_ten_cd_oricon('y', '2016')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_unknown(self):
+        output = utils.top_ten_cd_oricon('d', '1854-05-05')
+
+        assert output == "Oricon don't know chart in this date"
+
+    def test_invalid_date(self):
+        output = utils.top_ten_cd_oricon('d', '9999-12-99')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_month(self):
+        output = utils.top_ten_cd_oricon('m', '2016-90')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_date_format(self):
+        output = utils.top_ten_cd_oricon('d', 'Maki Cantik Sekali')
+
+        assert output == 'Invalid date'
+
+
+class TestHot100_artist:
+
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
         try:
-            res = utils.get_chuck('/chuck')
-        except ConnectionError:
-            pass
-        else:
-            assert res is not None
+            result = utils.find_hot100_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHot100_artist.err_msg
+
+    def test_h100artist_found(self):
+        exp = ("Russ\nLosin Control\n68\n")
+
+        self.run_test('Russ', exp)
+
+    def test_h100artist_notfound(self):
+        self.run_test('foo bar', TestHot100_artist.err_msg)
+
+
+class TestNewAge_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_newage_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestNewAge_artist.err_msg
+
+    def test_newageartist_found(self):
+        exp = ("Enya\nDark Sky Island\n3\n")
+
+        self.run_test('Enya', exp)
+
+    def test_newageartist_notfound(self):
+        self.run_test('foo bar', TestNewAge_artist.err_msg)
+
+
+class TestHotCountry_artist:
+
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_hotcountry_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHotCountry_artist.err_msg
+
+    def test_hcountryartist_found(self):
+        exp = ("Sam Hunt\nBody Like A Back Road\n1\n")
+
+        self.run_test('Sam Hunt', exp)
+
+    def test_hcountryartist_notfound(self):
+        self.run_test('foo bar', TestHotCountry_artist.err_msg)
+
+
+class TestHotcountry:
+    def run_test(self, expected):
+        try:
+            result = utils.lookup_hotcountry()
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_hotcountry(self):
+        expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+        expected += "Brett Young - In Case You Didn't Know\n(3) "
+        expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+        expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+        expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+        expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+        expected += "If I Told You\n(9) Kelsea Ballerini - "
+        expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
+        self.run_test(expected)
+
+
+class TestNewAge:
+    def run_test(self, expect):
+        try:
+            result = utils.lookup_newage()
+            assert result == expect
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_newage(self):
+        expected = "(1) Armik - Enamor\n"
+        expected += "(2) The Piano Guys - Uncharted\n"
+        expected += "(3) Enya - Dark Sky Island\n"
+        expected += "(4) Armik - Solo Guitar Collection\n"
+        expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+        expected += "(6) Various Artists - Music For Deep Sleep\n"
+        expected += "(7) George Winston - Spring Carousel\n"
+        expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+        expected += "(9) Various Artists - 111 Tracks\n"
+        expected += "(10) Laura Sullivan - Calm Within"
+        self.run_test(expected)
 
 
 class TestSimilar:
