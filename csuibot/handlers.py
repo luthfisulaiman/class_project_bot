@@ -563,7 +563,7 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^\/docs_sim \w+$')
+@bot.message_handler(regexp=r'^\/docs_sim')
 def similar(message):
     app.logger.debug("'similarity text' command detected")
     command = message.text.split(' ')
