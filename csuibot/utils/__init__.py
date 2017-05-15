@@ -278,8 +278,8 @@ def lookup_dayofdate(year, month, day):
 def similar_text(input1, input2):
     checker = similar.SimilarText()
     try:
-        if("http://" in input1 or "https://" in input1):
-            if("http://" in input2 or "https://" in input2):
+        if(input1[0:7] == "http://" or input1[0:8] == "https://"):
+            if(input2[0:7] == "http://" or input2[0:8] == "https://"):
                 return checker.checkweb(input1, input2)
 
         return checker.checktext(input1, input2)
