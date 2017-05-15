@@ -67,7 +67,7 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(regexp=r'^/triviaplant')
+@bot.message_handler(regexp=r'^/triviaplant$')
 def plant_trivia(message):
     try:
         txt = message.text
@@ -78,7 +78,7 @@ def plant_trivia(message):
         bot.reply_to(message, msg)
 
 
-@bot.message_handler(regexp=r'^/askplant')
+@bot.message_handler(regexp=r'^/askplant (.*)$')
 def plant_ask(message):
     try:
         txt = message.text
@@ -89,7 +89,7 @@ def plant_ask(message):
         bot.reply_to(message, msg)
 
 
-@bot.message_handler(regexp=r'^/topposters')
+@bot.message_handler(regexp=r'^/topposters$')
 def top_poster(message):
     app.logger.debug("'/topposter' command detected")
     try:
