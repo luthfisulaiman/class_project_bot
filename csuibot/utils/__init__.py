@@ -9,18 +9,17 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           discretemath as dm, marsfasilkom, yelfasilkom,
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
                            wiki, xkcd2 as x2, similar,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
-                           newage as na, fakejson, detectlang, billArtist as ba,
-                           extractcolour)
+                           newage as na, fakejson, detectlang, billArtist as ba, weton,
+                           books, extractcolour)
 
 
 def lookup_zodiac(month, day):
-
     zodiacs = [
         z.Aries(),
         z.Taurus(),
@@ -64,6 +63,10 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
+def get_oricon_books(date):
+    return books.Books().get_top_10(date)
+
+
 def lookup_wiki(term):
     if term == '':
         raise ValueError('Command /wiki need an argument')
@@ -74,7 +77,7 @@ def lookup_wiki(term):
         except Exception as e:
             raise IndexError(
                 'Page id "' + term + '" does not match any pages.'
-                ' Try another id!'
+                                     ' Try another id!'
             )
 
 
@@ -144,14 +147,13 @@ def lookup_definisi(word):
 
 
 def takeSceleNotif():
-
     notif = n.notifTaker()
     return notif.getPost()
 
 
 def lookup_isUpWeb(url):
     pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
-    if(pattern.match(url)):
+    if (pattern.match(url)):
         return iuw.IsUpWeb(url).isUp()
     else:
         raise ValueError
@@ -159,9 +161,9 @@ def lookup_isUpWeb(url):
 
 def remind_me(second, text):
     s = int(second)
-    if(s > 30):
+    if (s > 30):
         raise Exception
-    while(s > 0):
+    while (s > 0):
         time.sleep(1)
         s -= 1
     return text
@@ -179,9 +181,9 @@ def calculate_binary(binA, operand, binB):
 
 
 def lookup_define(word):
-    if(not word):
+    if (not word):
         raise ValueError('Command /define need an argument')
-    elif(containsDigit(word)):
+    elif (containsDigit(word)):
         return word + ' contains number'
     else:
         define_object = d.define(word)
@@ -279,8 +281,8 @@ def lookup_dayofdate(year, month, day):
 def similar_text(input1, input2):
     checker = similar.SimilarText()
     try:
-        if(input1[0:7] == "http://" or input1[0:8] == "https://"):
-            if(input2[0:7] == "http://" or input2[0:8] == "https://"):
+        if (input1[0:7] == "http://" or input1[0:8] == "https://"):
+            if (input2[0:7] == "http://" or input2[0:8] == "https://"):
                 return checker.checkweb(input1, input2)
 
         return checker.checktext(input1, input2)
@@ -351,6 +353,13 @@ def get_comic(id):
         return img
 
 
+def get_chuck(message_text):
+    if message_text == "/chuck":
+        return chuck.Chuck().get_chuck()
+    else:
+        raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
 def get_fake_json(arg):
     if arg is '':
         return fakejson.FakeJson().get_response()
@@ -386,3 +395,12 @@ def lookup_lang(arg):
 
     request = detectlang.DetectLang(arg)
     return request.get_result()
+
+
+def lookup_weton(year, month, day):
+    try:
+        return weton.Weton(year, month, day).get_weton()
+    except TypeError:
+        return 'Year/Month/Day is invalid'
+    except ValueError:
+        return 'Year/Month/Day is invalid'

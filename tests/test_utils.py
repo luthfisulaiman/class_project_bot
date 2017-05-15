@@ -268,7 +268,6 @@ class TestChineseZodiac:
 
 
 class TestWiki:
-
     wikipedia_summary = (
         'The Ukrainian revolution of 2014 (also known as the'
         ' Euromaidan Revolution or Revolution of Dignity; Ukrainian:'
@@ -309,7 +308,6 @@ class TestWiki:
 
 
 class TestPlant:
-
     def test_is_poisonous_true(self):
         plant = p.Plant('test', True, 'test')
         assert plant.is_poisonous is True
@@ -328,7 +326,6 @@ class TestPlant:
 
 
 class TestDataProcessor:
-
     def test_fetch_data_is_poisonous(self):
         test = processor.fetch_data('Daffodil')
         assert test is not None
@@ -428,7 +425,6 @@ class TestMessageDist:
 
 
 class TestMarsFasilkom:
-
     def test_marsfasilkom(self):
         marsfasilkom = (
             'Samudera laut ilmu\n'
@@ -450,7 +446,6 @@ class TestMarsFasilkom:
 
 
 class TestYelFasilkom:
-
     def test_yelFasilkom(self):
         yelfasilkom = (
             'Fasilkom!!!\n'
@@ -477,7 +472,6 @@ class TestYelFasilkom:
 
 
 class TestDiscreteMaterial:
-
     def test_number_theory(self):
         try:
             res = utils.call_discrete_material('number theory')
@@ -528,7 +522,6 @@ class TestDiscreteMaterial:
 
 
 class TestNotes:
-
     def run_test(self, command, text=''):
         if command == 'add':
             a = utils.manage_notes(command, text)
@@ -562,7 +555,6 @@ class TestNotes:
 
 
 class TestDefinisi:
-
     def run_test(self, word, expected_output):
         mean = utils.lookup_definisi(word)
         assert mean == expected_output
@@ -584,7 +576,6 @@ class TestDefinisi:
 
 
 class TestReminder:
-
     def test_reminder_return_text_one_word(self):
         output = utils.remind_me(0, "Test")
         assert output == "Test"
@@ -595,7 +586,6 @@ class TestReminder:
 
 
 class TestDefine:
-
     def test_define_diamond(self):
         res = utils.lookup_define('diamond')
         result = 'a precious stone consisting of a clear and colourless'
@@ -625,7 +615,6 @@ class TestDefine:
 
 
 class TestKelaskata:
-
     def run_test(self, word, expected):
         try:
             result = utils.lookup_kelaskata(word)
@@ -647,21 +636,50 @@ class TestKelaskata:
 
 
 class TestCustomChuckJoke:
-
     def test_custom_chuck(self):
         res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
-                "Chuck", "Norris")
+            "Chuck", "Norris")
+
+        assert res is not None
+
+
+class TestOriconBooks:
+
+    def test_books(self):
+        res = utils.books.Books().get_top_10('2017-04-10')
 
         assert res is not None
 
     def test_fetch(self):
+        res = utils.get_oricon_books('2017-04-10')
+
+        assert res is not None
+
+    def test_no_entry(mocker):
+        res = utils.get_oricon_books('2017-10-16')
+
+        assert res == "No chart is found on this date."
+
+    def test_too_early(mocker):
+        res = utils.get_oricon_books('2017-04-03')
+
+        assert res == "Oricon books' earliest record is on 2017-04-10"
+
+    def test_not_monday(mocker):
+        res = utils.get_oricon_books('2017-05-12')
+
+        assert res == 'Oricon books command only accepts dates of Mondays.'
+
+    def test_invalid_date(mocker):
+        res = utils.get_oricon_books('2017-05-99')
+
+        assert res == 'Requested date is invalid.'
         res = utils.generate_custom_chuck_joke("Chuck", "Norris")
 
         assert res is not None
 
 
 class TestPassword:
-
     def test_minimum_length(self):
         res = utils.generate_password(1)
         assert len(res) == 1
@@ -686,7 +704,6 @@ class TestPassword:
 
 
 class TestIP:
-
     def test_wellformed_ip(self):
         res = utils.get_public_ip()
         pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
@@ -694,7 +711,6 @@ class TestIP:
 
 
 class TestHipster():
-
     def test_make_one_paragraph(self):
         res = utils.make_hipster(1)
         length = res.count("\n")
@@ -715,7 +731,6 @@ class TestHipster():
 
 
 class TestMeme:
-
     def test_success(self):
         res = utils.get_meme("Top", "Bottom")
         assert "http" in res
@@ -843,6 +858,16 @@ class TestDayofDate:
                        'such as 2016-05-13')
 
 
+class TestChuck:
+    def test_get_chuck(self):
+        try:
+            res = utils.get_chuck('/chuck')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+
 class TestTropicalChartBillboard:
     def test_get_top10_200_chart(self):
         res = utils.b.get_top10('200')
@@ -911,7 +936,6 @@ class TestOriconCD:
 
 
 class TestHot100_artist:
-
     err_msg = ("Artist is not present on chart or no such artist exists\n"
                "Artist's name is case sensitive")
 
@@ -924,7 +948,6 @@ class TestHot100_artist:
 
     def test_h100artist_found(self):
         exp = ("Russ\nLosin Control\n68\n")
-
         self.run_test('Russ', exp)
 
     def test_h100artist_notfound(self):
@@ -972,7 +995,6 @@ class TestComic:
 
 
 class TestHotCountry_artist:
-
     err_msg = ("Artist is not present on chart or no such artist exists\n"
                "Artist's name is case sensitive")
 
@@ -1276,3 +1298,13 @@ class TestDetectLang:
             assert str(e) == (
                 'Unable to download the web page, request got HTTP error code: 503'
             )
+
+
+class TestWeton:
+    def test_weton_type_error(self):
+        look = utils.lookup_weton("a", "b", "c")
+        assert look == "Year/Month/Day is invalid"
+
+    def test_weton_value_error(self):
+        look = utils.lookup_weton(1995, 12, 32)
+        assert look == "Year/Month/Day is invalid"
