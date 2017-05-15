@@ -10,7 +10,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            discretemath as dm, marsfasilkom, yelfasilkom,
-                           wiki, similar,
+                           wiki, xkcd2 as x2, similar,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
@@ -339,6 +339,18 @@ def find_hotcountry_artist(name):
 def lookup_hotcountry():
     hotcountry_object = hot.hotcountry()
     return hotcountry_object.getHotcountry()
+
+
+def get_comic(id):
+    comic_gen = x2.Xkcd2Generator()
+    try:
+        img = comic_gen.get_img(id)
+    except ValueError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    except requests.exceptions.HTTPError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    else:
+        return img
 
 
 def lookup_newage():

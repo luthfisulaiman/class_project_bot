@@ -944,11 +944,31 @@ class TestNewAge_artist:
 
     def test_newageartist_found(self):
         exp = ("Enya\nDark Sky Island\n3\n")
-
         self.run_test('Enya', exp)
 
     def test_newageartist_notfound(self):
         self.run_test('foo bar', TestNewAge_artist.err_msg)
+
+
+class TestComic:
+    def test_valid(self):
+        comic = utils.get_comic('1834')
+        assert "https" in comic
+
+    def test_lower_bound(self):
+        comic = utils.get_comic('0')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+    def test_upper_bound(self):
+        comic = utils.get_comic('10000')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+    def test_invalid(self):
+        comic = utils.get_comic('abab')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
 
 
 class TestHotCountry_artist:

@@ -816,7 +816,7 @@ def test_fetch_latest_xkcd_invalid(mocker):
     fake_xkcd_invalid = 'Command is invalid. You can only use "/xkcd" command.'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.fetch_latest_xkcd', side_effect=ValueError)
-    mock_message = Mock(text='/xkcd 123123')
+    mock_message = Mock(text='/xkcd123123')
 
     xkcd(mock_message)
 
@@ -1148,6 +1148,42 @@ def test_hotcountry_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_hotcountry
+
+
+def test_request_comic(mocker):
+    fake_comic = 'https://imgs.xkcd.com/comics/lunch_order.png'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', return_value=fake_comic)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_comic
+
+
+def test_comic_error(mocker):
+    fake_error = 'Can\'t connect to the server. Please try again later'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_comic_format_error(mocker):
+    fake_error = 'Command is invalid. please user /xkcd <id> or /xkcd format'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', return_value=fake_error)
+    mock_message = Mock(text='/xkcd 1834 1234')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
 
 
 def test_billboard_with_valid_arguments(mocker):

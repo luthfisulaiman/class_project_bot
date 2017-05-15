@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist, lookup_wiki,
+                    lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
@@ -492,21 +492,32 @@ def loremipsum(message):
         bot.reply_to(message, loripsum)
 
 
-@bot.message_handler(regexp=r'^/xkcd$')
+@bot.message_handler(regexp=r'^/xkcd')
 def xkcd(message):
     app.logger.debug("'xkcd' command detected")
-    try:
-        comic = fetch_latest_xkcd()
-    except ValueError:
-        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
-    except requests.exceptions.ConnectionError:
-        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
-    except requests.exceptions.RequestException:
-        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    command = message.text.split(" ")
+    if (len(command) == 1):
+        try:
+            comic = fetch_latest_xkcd()
+        except ValueError:
+            bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+        except requests.exceptions.ConnectionError:
+            bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+        except requests.exceptions.RequestException:
+            bot.reply_to(message, 'An error occured. Please try again in a moment.')
+        else:
+            bot.reply_to(message, comic)
+    elif(len(command) == 2):
+        try:
+            comic = get_comic(command[1])
+        except requests.exceptions.ConnectionError:
+            bot.reply_to(message, 'Can\'t connect to the server. Please try again later')
+        else:
+            bot.reply_to(message, comic)
     else:
-        bot.reply_to(message, comic)
+        bot.reply_to(message, 'Command is invalid. please user /xkcd <id> or /xkcd format')
 
 
 @bot.message_handler(commands=['yelkomputer'])
