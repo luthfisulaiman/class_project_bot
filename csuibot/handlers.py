@@ -14,7 +14,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
-                    lookup_url, lookup_artist)
+                    lookup_url, lookup_artist, extract_colour)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -813,3 +813,24 @@ def primbon(message):
 
     weton = lookup_weton(year, month, day)
     bot.reply_to(message, weton)
+
+
+def check_caption_colour(message):
+    return message.caption in ['/bgcolour', '/fgcolour']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_colour)
+def extract_colour_from_image(message):
+    app.logger.debug("'extract_colour_from_image' handler executed")
+    try:
+        extracted = extract_colour(message)
+    except IndexError:
+        bot.reply_to(message, 'Colour not extracted.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, extracted)

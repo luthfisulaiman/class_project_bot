@@ -1,4 +1,4 @@
-from csuibot import utils
+from csuibot import utils, config
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
@@ -1142,6 +1142,108 @@ class TestSimilar:
         fake2 = 'ab' * 5000
         res = utils.similar_text(fake1, fake2)
         assert res == "Your input is too long, please keep below 500 words"
+
+
+class TestExtractColour:
+    EXAMPLE_IMAGGA_JSON = {
+        "unsuccessful": [],
+        "results": [
+            {
+                "info": {
+                    "background_colors": [
+                        {
+                            "html_code": "#a9a9a0",
+                            "b": "160",
+                            "percentage": 67.04,
+                            "closest_palette_color": "twig",
+                            "closest_palette_distance": 4.36372161759075,
+                            "closest_palette_color_html_code": "#a29e92",
+                            "closest_palette_color_parent": "grey",
+                            "g": "169",
+                            "r": "169"
+                        }
+                    ],
+                    "foreground_colors": [
+                        {
+                            "html_code": "#2d2d21",
+                            "b": "33",
+                            "percentage": 100.0,
+                            "closest_palette_color": "graphite",
+                            "closest_palette_distance": 8.829642270845508,
+                            "closest_palette_color_html_code": "#3a3536",
+                            "closest_palette_color_parent": "black",
+                            "g": "45",
+                            "r": "45"
+                        }
+                    ],
+                    "color_percent_threshold": 1.75
+                },
+                "image": "https://api.telegram.org/file/botsomerandomstring/photos/file_2.jpg"
+            }
+        ]
+    }
+
+    EXAMPLE_TELEGRAM_JSON = {"ok": True, "result": {
+        "file_id": "id", "file_size": 65661, "file_path": "photo_path"}}
+
+    EXAMPLE_FOREGROUND_RES = "EXTRACT FGCOLOUR\n(45, 45, 33)\n#2d2d21\nPercentage: 100.0%"
+
+    EXAMPLE_BACKGROUND_RES = "EXTRACT BGCOLOUR\n(169, 169, 160)\n#a9a9a0\nPercentage: 67.04%"
+
+    # ExtractColour Class and its methods Tests #
+    def test_extract_colour_class(self, mocker):
+        # assert state
+        EC = utils.extractcolour.ExtractColour
+        instance = EC('photo_id')
+
+        # assert get_photo_url()
+        fake_response = requests.Response()
+        fake_response.status_code = 200
+        fake_response._content = bytes(json.dumps(self.EXAMPLE_TELEGRAM_JSON), 'utf-8')
+        mocker.patch('requests.get', return_value=fake_response)
+        assert instance.get_photo_url() == instance.TELEGRAM_FILE_URL.format(
+            config.TELEGRAM_BOT_TOKEN, "photo_path")
+
+        # assert extract()
+        mocker.patch('csuibot.utils.extractcolour.ExtractColour.get_photo_url',
+                     return_value='photo_path')
+        fake_response = requests.Response()
+        fake_response.status_code = 200
+        fake_response._content = bytes(json.dumps(self.EXAMPLE_IMAGGA_JSON), 'utf-8')
+        mocker.patch('requests.get', return_value=fake_response)
+
+        # for state BGCOLOUR
+        extracted = instance.extract()
+        assert extracted == self.EXAMPLE_BACKGROUND_RES
+
+        # for state FGCOLOUR
+        instance.state = EC.FGCOLOUR
+        extracted = instance.extract()
+        assert extracted == self.EXAMPLE_FOREGROUND_RES
+
+    # utils.extract_colour Tests #
+    def test_extract_colour_utils(self, mocker):
+        res = 'fake result'
+        photo = mocker.Mock()
+        attrs = {'file_id': 'somestr'}
+        photo.configure_mock(**attrs)
+        message = mocker.Mock()
+        attrs = {'photo': [photo], 'caption': '/bgcolour'}
+        message.configure_mock(**attrs)
+
+        mocker.patch('csuibot.utils.extractcolour.ExtractColour.extract',
+                     return_value='fake result')
+
+        assert utils.extract_colour(message) == res
+
+        message = mocker.Mock()
+        attrs = {'photo': [photo], 'caption': '/fgcolour'}
+        message.configure_mock(**attrs)
+
+        mocker.patch('csuibot.utils.extractcolour.ExtractColour.extract',
+                     return_value='fake result')
+
+        assert utils.extract_colour(message) == res
 
 
 class TestFakeJson:

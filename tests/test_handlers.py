@@ -7,12 +7,12 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom, wiki,  youtube, youtube_no_url,
+                              marsfasilkom, yelfasilkom, wiki, youtube, youtube_no_url,
                               chuck, get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
-                              japanartist)
+                              japanartist, extract_colour_from_image, check_caption_colour)
 from requests.exceptions import ConnectionError
 
 
@@ -1621,6 +1621,63 @@ def test_newage_no_connection(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_newage
+
+
+def test_extract_colour(mocker):
+    fake_result = 'EXTRACT BGCOLOUR\n(R, G, B)\n#HEXSTR\nPercentage: ff.ff%'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.extract_colour',
+                 return_value=fake_result)
+    photo = mocker.Mock()
+    attrs = {'file_id': 'somestr'}
+    photo.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'photo': [photo], 'caption': '/fgcolour'}
+    mock_message.configure_mock(**attrs)
+    assert check_caption_colour(mock_message)
+    extract_colour_from_image(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_extract_colour_errors(mocker):
+    fake_index_error = 'Colour not extracted.'
+    fake_connection_error = 'A connection error occured. Please try again in a moment.'
+    fake_http_error = 'An HTTP error occured. Please try again in a moment.'
+    fake_request_exception = 'An error occured. Please try again in a moment.'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    photo = mocker.Mock()
+    attrs = {'file_id': 'somestr'}
+    photo.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'photo': [photo], 'caption': '/fgcolour'}
+    mock_message.configure_mock(**attrs)
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=IndexError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_index_error
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=requests.exceptions.ConnectionError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_connection_error
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=requests.exceptions.HTTPError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_http_error
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=requests.exceptions.RequestException)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_request_exception
 
 
 def test_billArtist_Pentatonix(mocker):

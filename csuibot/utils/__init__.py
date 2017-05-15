@@ -16,7 +16,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
-                           books, youtube, japanartist as ja)
+                           books, youtube, japanartist as ja, extractcolour)
 
 
 def lookup_zodiac(month, day):
@@ -377,6 +377,16 @@ def get_fake_json(arg):
 def lookup_newage():
     newage_object = na.newage()
     return newage_object.getNewage()
+
+
+def extract_colour(message):
+    photo_id = message.photo[-1].file_id
+    caption = message.caption
+    ec = extractcolour.ExtractColour(photo_id)
+    if caption == "/fgcolour":
+        ec.state = extractcolour.ExtractColour.FGCOLOUR
+    ret = ec.extract()
+    return ret
 
 
 def lookup_billArtist(message):
