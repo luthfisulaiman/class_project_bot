@@ -10,12 +10,12 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
                            discretemath as dm, marsfasilkom, yelfasilkom,
-                           wiki, similar,
+                           wiki, xkcd2 as x2, similar,
                            billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
-                           newage as na)
+                           newage as na, fakejson, detectlang)
 
 
 def lookup_zodiac(month, day):
@@ -341,6 +341,32 @@ def lookup_hotcountry():
     return hotcountry_object.getHotcountry()
 
 
+def get_comic(id):
+    comic_gen = x2.Xkcd2Generator()
+    try:
+        img = comic_gen.get_img(id)
+    except ValueError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    except requests.exceptions.HTTPError:
+        return 'Cant\'t found requested comic. Please ensure that your input is correct'
+    else:
+        return img
+
+
+def get_fake_json(arg):
+    if arg is '':
+        return fakejson.FakeJson().get_response()
+    raise ValueError('Command /fake_json doesn\'t need any arguments')
+
+
 def lookup_newage():
     newage_object = na.newage()
     return newage_object.getNewage()
+
+
+def lookup_lang(arg):
+    if arg is '':
+        raise ValueError('Command /detect_lang need an argument')
+
+    request = detectlang.DetectLang(arg)
+    return request.get_result()

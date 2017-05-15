@@ -10,7 +10,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               marsfasilkom, yelfasilkom, wiki,
                               get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
-                              oricon_cd, billboard_chart, hotcountry, newage)
+                              oricon_cd, billboard_chart, hotcountry, newage,
+                              fake_json, detect_lang)
 from requests.exceptions import ConnectionError
 
 
@@ -816,7 +817,7 @@ def test_fetch_latest_xkcd_invalid(mocker):
     fake_xkcd_invalid = 'Command is invalid. You can only use "/xkcd" command.'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.fetch_latest_xkcd', side_effect=ValueError)
-    mock_message = Mock(text='/xkcd 123123')
+    mock_message = Mock(text='/xkcd123123')
 
     xkcd(mock_message)
 
@@ -1150,6 +1151,42 @@ def test_hotcountry_no_connection(mocker):
     assert args[1] == fake_hotcountry
 
 
+def test_request_comic(mocker):
+    fake_comic = 'https://imgs.xkcd.com/comics/lunch_order.png'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', return_value=fake_comic)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_comic
+
+
+def test_comic_error(mocker):
+    fake_error = 'Can\'t connect to the server. Please try again later'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_comic_format_error(mocker):
+    fake_error = 'Command is invalid. please user /xkcd <id> or /xkcd format'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', return_value=fake_error)
+    mock_message = Mock(text='/xkcd 1834 1234')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
 def test_billboard_with_valid_arguments(mocker):
     fake_error = 'Invalid chart category'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -1172,6 +1209,74 @@ def test_billboard_with_invalid_arguments(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_detect_lang(mocker):
+    fake_detect_lang = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_lang', return_value=fake_detect_lang)
+    mock_message = Mock(text='/detect_lang Lorem ipsum dolor sit amet, consectetur adipiscing')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_detect_lang
+
+
+def test_detect_lang_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.lookup_lang',
+        side_effect=ValueError('Command /detect_lang need an argument')
+    )
+    mock_message = Mock(text='/detect_lang')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /detect_lang need an argument'
+
+
+def test_detect_lang_lookup_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.lookup_lang',
+        side_effect=LookupError(
+            'Unable to download the web page, request got HTTP error code: 503'
+        )
+    )
+    mock_message = Mock(text='/detect_lang http://justsomerandomwebsite.com')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Unable to download the web page, request got HTTP error code: 503'
+
+
+def test_fake_json(mocker):
+    fake_json_response = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_fake_json', return_value=fake_json_response)
+    mock_message = Mock(text='/fake_json')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_json_response
+
+
+def test_fake_json_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.get_fake_json',
+        side_effect=ValueError('Command /fake_json doesn\'t need any arguments')
+    )
+    mock_message = Mock(text='/fake_json some_arguments here')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /fake_json doesn\'t need any arguments'
 
 
 def test_similar_valid(mocker):
