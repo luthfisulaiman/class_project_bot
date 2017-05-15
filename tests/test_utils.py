@@ -915,14 +915,12 @@ class TestHot100_artist:
         except requests.ConnectionError as ce:
             assert str(ce) == TestHot100_artist.err_msg
 
+    def test_h100artist_found(self):
+        exp = ("Russ\nLosin Control\n68\n")
+        self.run_test('Russ', exp)
 
-def test_h100artist_found(self):
-    exp = ("Russ\nLosin Control\n68\n")
-    self.run_test('Russ', exp)
-
-
-def test_h100artist_notfound(self):
-    self.run_test('foo bar', TestHot100_artist.err_msg)
+    def test_h100artist_notfound(self):
+        self.run_test('foo bar', TestHot100_artist.err_msg)
 
 
 class TestNewAge_artist:
