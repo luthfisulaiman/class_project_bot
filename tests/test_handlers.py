@@ -1829,10 +1829,10 @@ def test_weton_minggu(mocker):
 
 
 def test_tag_image(mocker):
-    fake_result = '''Tag : sky , Confidence : 38\n
-Tag : turbine , Confidence : 25\n
-Tag : landscape , Confidence : 21\n
-Tag : energy , Confidence : 20\n
+    fake_result = '''Tag : sky , Confidence : 38
+Tag : turbine , Confidence : 25
+Tag : landscape , Confidence : 21
+Tag : energy , Confidence : 20
 Tag : power , Confidence : 19'''
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.tagimage', return_value=fake_result)

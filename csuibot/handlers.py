@@ -895,10 +895,6 @@ def tagimage(message):
     try:
         tag = auto_tag(message)
     except ConnectionError:
-        bot.reply_to(message, "Cannot connect to Immaga API")
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, "An HTTP error occured. Please try again in a moment")
-    except requests.exceptions.RequestException:
-        bot.reply_to(message, 'An error occured, please try again in a moment')
+        bot.reply_to(message, "Cannot connect to Immaga API")]
     else:
         bot.reply_to(message, tag)
