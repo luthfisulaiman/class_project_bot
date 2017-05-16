@@ -1866,4 +1866,4 @@ Tag : power , Confidence : 19'''
     assert check_caption_tag(mock_message)
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_result
+    assert args[1] == 'HTTP Error'
