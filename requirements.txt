@@ -21,7 +21,6 @@ pytest==3.0.7
 pytest-cov==2.4.0
 pytest-mock==1.6.0
 python-dotenv==0.6.4
-pywin32==220
 requests==2.13.0
 requests-oauthlib==0.8.0
 simplejson==3.10.0
