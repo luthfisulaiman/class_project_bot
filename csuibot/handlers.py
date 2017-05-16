@@ -9,7 +9,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom, define_sound)
+                    lookup_marsfasilkom, lookup_yelfasilkom, define_sound,
+                    get_news)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -553,3 +554,15 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+def get_news(message):
+    app.logger.debug("'get news' command detected")
+    _, keyword = message.text.split(' ', 1)
+
+    try:
+        news = get_news(keyword)['value']
+    except ValueError:
+        bot_reply_to(message, "Sorry, try again later insyaAllah bisa")
+    else:
+        bot_reply_to(message, news)

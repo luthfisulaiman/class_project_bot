@@ -7,7 +7,9 @@ import requests
 import json
 
 class TestNews:
-    pass
+    def test_new(self):
+        res = utils.get_news("foo")['type']
+        assert res == 'News'
 
 
 class TestZodiac:
