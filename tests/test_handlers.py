@@ -14,7 +14,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
                               japanartist, extract_colour_from_image, check_caption_colour,
                               tropicalArtistHandler,
-                              oriconMangaHandler, oriconMangaMonthlyHandler)
+                              oriconMangaHandler, oriconMangaMonthlyHandler,
+                              tagimage, check_caption_tag)
 from requests.exceptions import ConnectionError
 
 
@@ -1825,3 +1826,23 @@ def test_weton_minggu(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_weton
+
+
+def test_tag_image(mocker):
+    fake_result = '''Tag : sky , Confidence : 38\n
+Tag : turbine , Confidence : 25\n
+Tag : landscape , Confidence : 21\n
+Tag : energy , Confidence : 20\n
+Tag : power , Confidence : 19'''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.tagimage', return_value=fake_result)
+    photo = mocker.Mock()
+    attrs = {'file_id': 'somestr'}
+    photo.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'photo': [photo], 'caption': '/tag'}
+    mock_message.configure_mock(*attrs)
+    assert check_caption_tag(mock_message)
+    tagimage(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result

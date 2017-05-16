@@ -15,7 +15,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly)
+                    getTopManga, getTopMangaMonthly, auto_tag)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -883,3 +883,22 @@ def extract_colour_from_image(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, extracted)
+
+
+def check_caption_tag(message):
+    return message.caption in ['/tag']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_tag)
+def tagimage(message):
+    app.logger.debug("'tag image' command detected")
+    try:
+        tag = auto_tag(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Immaga API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "An HTTP error occured. Please try again in a moment")
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured, please try again in a moment')
+    else:
+        bot.reply_to(message, tag)
