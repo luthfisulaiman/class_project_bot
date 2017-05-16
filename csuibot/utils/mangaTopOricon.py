@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib.request
 import urllib.error
+from . import app, bot
 
 
 class mangaTopOricon:
@@ -9,6 +10,7 @@ class mangaTopOricon:
 
     def getTopManga(self, year, month, day):
         l = "http://www.oricon.co.jp/rank/obc/w/" + year + "-" + month + "-" + day + "/"
+        app.log.debug("ini di topmanga " + l)
         r = urllib.request.urlopen(l)
         soup = BeautifulSoup(r, "html.parser")
         judul = soup.find_all("h2", class_="title")[:10]
@@ -21,6 +23,7 @@ class mangaTopOricon:
 
     def getTopMangaMonthly(self, year, month):
         l = "http://www.oricon.co.jp/rank/cbm/m/" + year + "-" + month+"/"
+        app.log.debug("ini di topmangaMon " + l)
         r = urllib.request.urlopen(l)
         soup = BeautifulSoup(r, "html.parser")
         stl = "font-weight:bold; margin-bottom:2px; margin-top:2px;"
