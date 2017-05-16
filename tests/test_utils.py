@@ -1134,11 +1134,11 @@ class TestHotcountry:
     def test_hotcountry(self):
         expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
         expected += "Brett Young - In Case You Didn't Know\n(3) "
-        expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
-        expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
-        expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
-        expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
-        expected += "If I Told You\n(9) Kelsea Ballerini - "
+        expected += "Luke Combs - Hurricane\n(4) Dierks Bentley - Black "
+        expected += "Carrie Underwood - The Fighter\n(5) Keith Urban Featuring Carrie"
+        expected += " Underwood - The Fighter\n(6) Darius Rucker - If I Told You\n(7) "
+        expected += "Jon Pardi - Dirt On My Boots\n(8) Florida Georgia Line Feautring"
+        expected += " Backstreet Boys - God, Your Mama, And Me\n(9) Kelsea Ballerini - "
         expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
         self.run_test(expected)
 
@@ -1180,7 +1180,7 @@ class TestBillArtist:
         self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
 
     def test_billArtist_Pentatonix(self):
-        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #93")
+        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #126")
 
 
 class TestSimilar:

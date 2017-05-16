@@ -1562,7 +1562,7 @@ def test_top_oricon_invalid_command(mocker):
 
 
 def test_hot100_artist(mocker):
-    fake_artist = ("Russ\nLosin Control\n68\n")
+    fake_artist = ("Russ\nLosin Control\n62\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.hot100_artist', return_value=fake_artist)
@@ -1575,7 +1575,7 @@ def test_hot100_artist(mocker):
 
 
 def test_newage_artist(mocker):
-    fake_artist = ("Enya\nDark Sky Island\n3\n")
+    fake_artist = ("Enya\nDark Sky Island\n7\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.newage_artist', return_value=fake_artist)
