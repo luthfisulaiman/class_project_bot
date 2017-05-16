@@ -12,7 +12,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
-                              japanartist, extract_colour_from_image, check_caption_colour)
+                              japanartist, extract_colour_from_image, check_caption_colour,
+                              tropicalArtistHandler,
+                              oriconMangaHandler, oriconMangaMonthlyHandler)
 from requests.exceptions import ConnectionError
 
 
@@ -393,6 +395,39 @@ def test_sceleNotif(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_scele
+
+
+def test_tropicalBb(mocker):
+    fake_bb = 'judul-artis'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.checkTopTropical', return_value=fake_bb)
+    mock_message = Mock(text='/tropicaltop romeo')
+    tropicalArtistHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_bb
+
+
+def test_topMangaOricon(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
+    mock_message = Mock(text='/topMangaOricon 2017-05-15')
+    oriconMangaHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
+
+def test_topMangaOriconMonthly(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopMangaMonthly', return_value=fake_manga)
+    mock_message = Mock(text='/topMangaOricon 2017-05')
+    oriconMangaMonthlyHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
 
 
 def test_is_up(mocker):
@@ -1527,7 +1562,7 @@ def test_top_oricon_invalid_command(mocker):
 
 
 def test_hot100_artist(mocker):
-    fake_artist = ("Russ\nLosin Control\n68\n")
+    fake_artist = ("Russ\nLosin Control\n62\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.hot100_artist', return_value=fake_artist)
@@ -1540,7 +1575,7 @@ def test_hot100_artist(mocker):
 
 
 def test_newage_artist(mocker):
-    fake_artist = ("Enya\nDark Sky Island\n3\n")
+    fake_artist = ("Enya\nDark Sky Island\n7\n")
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.newage_artist', return_value=fake_artist)
