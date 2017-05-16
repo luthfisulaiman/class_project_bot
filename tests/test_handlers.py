@@ -1827,7 +1827,7 @@ def test_weton_minggu(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_weton
 
-    
+
 def test_japan100(mocker):
     fake_japan100 = "Stay tuned ya!"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -1857,4 +1857,3 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
- 

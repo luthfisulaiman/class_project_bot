@@ -404,7 +404,6 @@ def lookup_HotJapan100(html):
         elif i == 9:
             string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
             string += '\n'
-            
     return (string)
 
 
