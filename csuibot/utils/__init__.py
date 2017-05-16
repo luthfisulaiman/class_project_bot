@@ -273,8 +273,8 @@ def get_articles(message_text):
 
     articles = news.News().get_news(message_text)
 
-    brackets = '=================================='
-    out = brackets
+    brackets = '========================='
+    out = brackets + '\n\n'
     for values in articles['value'][0:5]:
         out += ("[" + values['name'] + "]\n\n")
         out += (values['description'] + "\n")
