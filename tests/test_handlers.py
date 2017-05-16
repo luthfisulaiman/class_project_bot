@@ -8,7 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist, crop_image)
+                              chuck, get_discrete_material as dm, message_dist, crop_image, crop_no_image)
 from requests.exceptions import ConnectionError
 
 
@@ -1104,12 +1104,12 @@ def test_chuck_with_args(mocker):
 
 
 def test_crop(mocker):
-    error = 'Send an image with a caption!'
+    error = 'You must upload an image with a caption in order to crop!'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.crop')
     mock_message = Mock(text='/crop')
 
-    crop_image(mock_message)
+    crop_no_image(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == error
@@ -1121,7 +1121,7 @@ def test_crop_args(mocker):
     mocker.patch('csuibot.handlers.crop')
     mock_message = Mock(text='/crop args')
 
-    crop_image(mock_message)
+    crop_arguments(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == error
