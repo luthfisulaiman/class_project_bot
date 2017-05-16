@@ -5,6 +5,7 @@ csuibot-test:
     - python manage.py check
 csuibot-staging:
   stage: deploy
+  image: ruby:2.2
   script:
     - apt-get update -yq
     - apt-get install -y ruby-dev
