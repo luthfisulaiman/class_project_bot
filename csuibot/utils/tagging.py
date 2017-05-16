@@ -9,7 +9,7 @@ class Tagging:
     IMAGGA_API = "https://api.imagga.com/v1/tagging?url={}"
 
     def __init__(self, file_url):
-        self.file = file_url
+        self.photo_id = file_url
 
     def get_json_tag(self, i):
         return self.json['results'][0]['tags'][i]['tag']
