@@ -1,6 +1,7 @@
 from . import app, bot
 import requests
 import re
+import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
@@ -15,7 +16,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
+                    lookup_HotJapan100)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -655,6 +657,20 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^/billboard japan100$')
+def japan100(message):
+    rss_url = "http://www.billboard.com/rss/charts/japan-hot-100"
+    html = urllib.request.urlopen(rss_url).read()
+    html = str(html)
+    try:
+        reply = lookup_HotJapan100(html)
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(regexp=r'^\/youtube\s*$')

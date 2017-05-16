@@ -1417,3 +1417,9 @@ class TestWeton:
     def test_weton_value_error(self):
         look = utils.lookup_weton(1995, 12, 32)
         assert look == "Year/Month/Day is invalid"
+
+
+class test_hot_japan_100:
+    def test_japan_100(self):
+        res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
+        assert res != "ups, something wrong is going on"

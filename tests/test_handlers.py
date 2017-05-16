@@ -15,7 +15,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               japanartist, extract_colour_from_image, check_caption_colour,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
-                              tagimage, check_caption_tag, sentiment)
+                              tagimage, check_caption_tag, sentiment, japan100)
 from requests.exceptions import ConnectionError
 
 
@@ -1838,6 +1838,28 @@ def test_weton_minggu(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_weton
+
+
+def test_japan100(mocker):
+    fake_japan100 = '''(1) Colors-BUMP OF CHICKEN
+(2) Ribbon-Kana Nishino
+(3) Pa-BTOB
+(4) Movie-Mag!C Prince
+(5) Update-Austin Mahone
+(6) Dirty Work-Gen Hoshino
+(7) Koi-Mai Kuraki
+(8) Togetsukyou  (Kimi Omofu)-Keyakizaka46
+(9) Fukyouwaon-Ariana Grande & John Legend
+(10) Beauty And The Beast-Nogizaka 46
+'''
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/billboard japan100')
+
+    japan100(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_japan100
 
 
 def test_tag_image(mocker):
