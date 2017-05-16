@@ -1,5 +1,4 @@
 from csuibot import utils
-import re
 
 
 class TestZodiac:

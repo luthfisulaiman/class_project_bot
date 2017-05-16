@@ -2,8 +2,6 @@ from unittest.mock import Mock
 
 from csuibot.handlers import help, zodiac, shio, air_quality
 
-from requests.exceptions import ConnectionError
-
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

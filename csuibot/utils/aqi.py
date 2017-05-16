@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 def GetAQICity(city):
     url = "https://api.waqi.info/feed/"
     token = "21003f71e603a67f7313fd9b3692eb2363412228"
@@ -99,7 +100,7 @@ def GetAQICoord(coord):
                                  " more serious health effects"
 
         return 'AQI value: ' + str(aqi) + '\n' + 'Air Quality level: ' + level + '\n' + \
-                'Health Implications: ' + health_implication
+            'Health Implications: ' + health_implication
 
     elif (status == 'error'):
         return "Invalid city name or coordinate, please try again"
