@@ -531,7 +531,7 @@ def crop_image(message):
     crop_file = ('https://api.telegram.org/file/bot{0}/{1}'
                  .format(API_TOKEN, file_name.file_path))
     try:
-        image_crop = crop(crop_file)
+        image_crop = get_crop(crop_file)
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to Imagga API')
     except ValueError:
