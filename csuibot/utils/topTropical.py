@@ -20,12 +20,7 @@ class topTropicalBb:
                     printa = printa + strArr[x]+" "
                 printa = printa + "\n" + strArr[0] + " Out of 10"
                 isInChart = True
-
         if(isInChart):
             return printa
         else:
             return "Artist is not in the chart"
-
-
-tro = topTropicalBb()
-print(tro.checkTopTropical("romeo santos"))
