@@ -1,5 +1,4 @@
 import requests
-from requests.exceptions import ConnectionError
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
