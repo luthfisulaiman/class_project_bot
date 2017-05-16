@@ -7,8 +7,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
-                              marsfasilkom, yelfasilkom, chuck, get_discrete_material as dm, message_dist,
-                              soundcliphelp, soundclip, news, get_articles)
+                              marsfasilkom, yelfasilkom, chuck, get_discrete_material as dm,
+                              message_dist, soundcliphelp, soundclip, news)
 from requests.exceptions import ConnectionError
 
 
@@ -147,7 +147,7 @@ def test_news(mocker):
     news_result = {'type': 'News', 'value': 'foo bar'}
     fake_article = news_result['value']
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.get_articles', return_value = news_result)
+    mocker.patch('csuibot.handlers.get_articles', return_value=news_result)
     mock_message = Mock(text='/getnews good news')
 
     news(mock_message)

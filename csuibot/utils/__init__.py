@@ -269,6 +269,7 @@ def get_chuck(message_text):
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
+
 def get_articles(message_text):
 
     articles = news.News().get_news(message_text)
@@ -280,5 +281,5 @@ def get_articles(message_text):
         out += (values['description'] + "\n")
         out += ("LINK: " + values['url'] + "\n\n")
         out += brackets + '\n\n'
-    res = {'type': articles['_type'], 'value':out}
+    res = {'type': articles['_type'], 'value': out}
     return res
