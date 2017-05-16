@@ -9,7 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
                     lookup_message_dist, add_message_dist,
-                    lookup_marsfasilkom, lookup_yelfasilkom, crop)
+                    lookup_marsfasilkom, lookup_yelfasilkom, get_crop)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -530,6 +530,7 @@ def crop_image(message):
     file_name = bot.get_file(message.photo[len(message.photo) - 1].file_id)
     crop_file = ('https://api.telegram.org/file/bot{0}/{1}'
                  .format(API_TOKEN, file_name.file_path))
+    app.logger.debug('Cropping {}'.format(crop_file))
     try:
         image_crop = get_crop(crop_file)
     except ConnectionError:
