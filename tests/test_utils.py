@@ -1056,7 +1056,7 @@ class TestHot100_artist:
             assert str(ce) == TestHot100_artist.err_msg
 
     def test_h100artist_found(self):
-        exp = ("Russ\nLosin Control\n68\n")
+        exp = ("Russ\nLosin Control\n62\n")
         self.run_test('Russ', exp)
 
     def test_h100artist_notfound(self):
@@ -1075,7 +1075,7 @@ class TestNewAge_artist:
             assert str(ce) == TestNewAge_artist.err_msg
 
     def test_newageartist_found(self):
-        exp = ("Enya\nDark Sky Island\n3\n")
+        exp = ("Enya\nDark Sky Island\n7\n")
         self.run_test('Enya', exp)
 
     def test_newageartist_notfound(self):
@@ -1135,9 +1135,9 @@ class TestHotcountry:
         expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
         expected += "Brett Young - In Case You Didn't Know\n(3) "
         expected += "Luke Combs - Hurricane\n(4) Dierks Bentley - Black "
-        expected += "Carrie Underwood - The Fighter\n(5) Keith Urban Featuring Carrie"
+        expected += "\n(5) Keith Urban Featuring Carrie"
         expected += " Underwood - The Fighter\n(6) Darius Rucker - If I Told You\n(7) "
-        expected += "Jon Pardi - Dirt On My Boots\n(8) Florida Georgia Line Feautring"
+        expected += "Jon Pardi - Dirt On My Boots\n(8) Florida Georgia Line Featuring"
         expected += " Backstreet Boys - God, Your Mama, And Me\n(9) Kelsea Ballerini - "
         expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
         self.run_test(expected)
@@ -1152,16 +1152,16 @@ class TestNewAge:
             assert str(e) == ('Cannot connect to billboard API')
 
     def test_newage(self):
-        expected = "(1) Armik - Enamor\n"
-        expected += "(2) The Piano Guys - Uncharted\n"
+        expected = "(1) Alice Coltrane - The Ecstatic Music Of Alice Coltrane\n"
+        expected += "(2) Armik - Enamor\n"
         expected += "(3) Enya - Dark Sky Island\n"
-        expected += "(4) Armik - Solo Guitar Collection\n"
-        expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
-        expected += "(6) Various Artists - Music For Deep Sleep\n"
-        expected += "(7) George Winston - Spring Carousel\n"
-        expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+        expected += "(4) Michael S. Tyrrel - WHOLETONES\n"
+        expected += "(5) Armik - Solo Guitar Collectionn"
+        expected += "(6) Armik - Romantic Spanish Guitar, Vol. 3\n"
+        expected += "(7) Enya - Dark Sky Island\n"
+        expected += "(8) Various Artists - Music For Deep Sleep\n"
         expected += "(9) Various Artists - 111 Tracks\n"
-        expected += "(10) Laura Sullivan - Calm Within"
+        expected += "(10) George Winston - Spring Carousel"
         self.run_test(expected)
 
 
