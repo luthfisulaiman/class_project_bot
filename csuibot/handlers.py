@@ -67,11 +67,10 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(commands=['triviaplants'])
+@bot.message_handler(commands=['triviaplant'])
 def plant_trivia(message):
     try:
-        txt = message.text
-        msg = data_processor.fetch_user_input(txt)
+        msg = data_processor.fetch_user_input(message.text)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
