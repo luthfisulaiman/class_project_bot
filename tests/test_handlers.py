@@ -1838,7 +1838,8 @@ def test_japan100(mocker):
 (7) Koi-Mai Kuraki
 (8) Togetsukyou  (Kimi Omofu)-Keyakizaka46
 (9) Fukyouwaon-Ariana Grande & John Legend
-(10) Beauty And The Beast-Nogizaka 46'''
+(10) Beauty And The Beast-Nogizaka 46
+'''
     
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/billboard japan100')
