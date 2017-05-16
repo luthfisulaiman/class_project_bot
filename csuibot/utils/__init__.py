@@ -77,12 +77,12 @@ def lookup_sentiment(word):
     neutral_vocab = ['movie', 'the', 'sound', 'was', 'is', 'actors', 'did', 'know', 'not']
     positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
     negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
-    neutral_features = [(word_feats(neu), 'neu') for neu in neutral_vocab]
-    train_set = negative_features + positive_features + neutral_features
+    train_set = negative_features + positive_features
     classifier = NaiveBayesClassifier.train(train_set)
     neg = 0
     pos = 0
     words = word.split(' ')
+
     for i in words:
         classresult = classifier.classify(word_feats(i))
         if classresult == 'neg':
