@@ -9,7 +9,6 @@ class mangaTopOricon:
 
     def getTopManga(self, year, month, day):
         l = "http://www.oricon.co.jp/rank/obc/w/" + year + "-" + month + "-" + day + "/"
-        print(l)
         r = urllib.request.urlopen(l)
         soup = BeautifulSoup(r, "html.parser")
         judul = soup.find_all("h2", class_="title")[:10]
