@@ -1,5 +1,7 @@
 from flask import Flask, request, abort
 import telebot
+import json
+import os
 
 app = Flask(__name__)
 app.config.from_object('{}.config'.format(__name__))
@@ -15,8 +17,6 @@ webhook_url_base = app.config['WEBHOOK_HOST']
 # Configure application logging
 app.logger.setLevel(app.config['LOG_LEVEL'])
 
-lastupdate = {}
-
 
 @app.route('/')
 def index():
@@ -29,8 +29,7 @@ def webhook():
     if json_data is not None:
         app.logger.debug('Update received')
         update = telebot.types.Update.de_json(json_data)
-        global lastupdate
-        lastupdate = json_data
+        add_update_to_json(update)
         bot.process_new_messages([update.message])
         return ''
     else:
@@ -39,6 +38,16 @@ def webhook():
 
 def get_req_body_as_json():
     return request.get_json(silent=True)
+
+
+def add_update_to_json(update):
+    path = os.path.dirname(os.path.abspath(__file__))
+    with open(path + '/update_list.json') as input_file:
+        data = json.load(input_file)
+        data['result'].append(update)
+
+    with open(path + '/update_list.json', 'w') as output_file:
+        json.dump(data, output_file)
 
 
 if app.config['APP_ENV'] != 'development':  # pragma: no cover

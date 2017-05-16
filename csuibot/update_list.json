@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "result": [
+    {
+      "update_id": 85303840,
+      "message": {
+        "message_id": 5,
+        "from": {
+          "id": 357997106,
+          "first_name": "Muhammad",
+          "last_name": "Irfan Bisyr"
+        },
+        "chat": {
+          "id": 357997106,
+          "first_name": "Muhammad",
+          "last_name": "Irfan Bisyr",
+          "type": "private"
+        },
+        "date": 1494793952,
+        "text": "/start",
+        "entities": [
+          {
+            "type": "bot_command",
+            "offset": 0,
+            "length": 6
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import operator
-import csuibot
+import os
+import json
 
 
 class TopPoster:
@@ -64,6 +65,9 @@ class TopPoster:
         return group_id
 
     def get_all_bot_updates(self):
-        res = csuibot.lastupdate
-        res = res['result']
+        path = os.path.dirname(os.path.abspath(__file__))
+        parent_path = os.path.abspath(path + "/../")
+        with open(parent_path + '/update_list.json') as input_file:
+            res = json.load(input_file)
+            res = res['result']
         return res
