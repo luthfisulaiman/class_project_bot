@@ -15,7 +15,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -367,6 +367,15 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/sentiment \w+')
+def sentiment(message):
+    app.logger.debug("'sentiment' command detected")
+    _, word_str = message.text.split(' ', 1)
+    word_str = word_str.lower()
+    word = lookup_sentiment(word_str)
+    bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
@@ -883,3 +892,20 @@ def extract_colour_from_image(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, extracted)
+
+
+def check_caption_tag(message):
+    return message.caption in ['/tag']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_tag)
+def tagimage(message):
+    app.logger.debug("'tag image' command detected")
+    try:
+        tag = auto_tag(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Immaga API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        bot.reply_to(message, tag)
