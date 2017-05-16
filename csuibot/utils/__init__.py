@@ -390,7 +390,7 @@ def get_chuck(message_text):
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
- 
+
 def get_crop(crop_file):
     if (crop_file == '/crop'):
         return 'You must upload an image with a caption in order to crop!'

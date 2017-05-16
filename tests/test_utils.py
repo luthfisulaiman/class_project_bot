@@ -933,6 +933,10 @@ class TestCrop:
     def test_crop(self):
         try:
             res = utils.get_crop('/crop')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
 
 
 class TestYoutube:
@@ -973,7 +977,6 @@ class TestJapanArtist:
             pass
         else:
             assert res is not None
-
 
     def test_get_artist_not_found(self):
         try:
