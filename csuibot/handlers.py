@@ -67,17 +67,18 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-@bot.message_handler(commands=['triviaplant'])
+@bot.message_handler(regexp=r'^triviaplant')
 def plant_trivia(message):
     try:
-        msg = data_processor.fetch_user_input(message.text)
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
         bot.reply_to(message, msg)
 
 
-@bot.message_handler(regexp=r'^/askplant (.*)$')
+@bot.message_handler(regexp=r'^askplant')
 def plant_ask(message):
     try:
         txt = message.text
