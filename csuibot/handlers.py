@@ -535,7 +535,7 @@ def crop_image(message):
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to Imagga API')
     except ValueError:
-        bot.reply_to(message, 'Invalid Command')
+        bot.reply_to(message, 'Command /crop doesn\'t need arguments')
     except requests.exceptions.HTTPError:
         bot.reply_to(message, 'You must upload an image with a caption in order to crop!')
     else:
