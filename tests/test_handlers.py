@@ -3,8 +3,18 @@ from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
                               password, password_16, custom_chuck_joke, define,
-                              kelaskata, compute, compute_help, compute_not_binary, composer,
-                              remind, isUp, sceleNoticeHandler)
+                              kelaskata, compute_binary, calculate,
+                              compute_help, compute_not_binary, composer,
+                              remind, isUp, sceleNoticeHandler, definisi, note,
+                              dayofdate, invalid_dayofdate, empty_dayofdate,
+                              marsfasilkom, yelfasilkom, wiki, youtube, youtube_no_url,
+                              chuck, get_discrete_material as dm, message_dist, similar,
+                              hot100_artist, newage_artist, hotcountry_artist,
+                              oricon_cd, billboard_chart, hotcountry, newage,
+                              fake_json, detect_lang, billArtist, primbon, oricon_books,
+                              japanartist, extract_colour_from_image, check_caption_colour,
+                              tropicalArtistHandler,
+                              oriconMangaHandler, oriconMangaMonthlyHandler)
 from requests.exceptions import ConnectionError
 
 
@@ -16,7 +26,7 @@ def test_help(mocker):
 
     args, _ = mocked_reply_to.call_args
     expected_text = (
-        'CSUIBot v0.0.1\n\n'
+        'CSUIBot v0.0.3\n\n'
         'Dari Fasilkom, oleh Fasilkom, untuk Fasilkom!'
     )
     assert args[1] == expected_text
@@ -68,6 +78,314 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
+def test_oricon_books(mocker):
+    fake_output = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books', return_value=fake_output)
+    mock_message = Mock(text='/oricon books weekly 2001-01-01')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_input_overload(mocker):
+    fake_output = "Invalid command structure. Example: " \
+                  "'/oricon books weekly 2017-05-01'"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books weekly 2001-02-31 now!')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_not_weekly(mocker):
+    fake_output = 'Oricon books command currently only supports weekly ratings at this time.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books')
+    mock_message = Mock(text='/oricon books daily 2011-02-31')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_oricon_books_no_connection(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_oricon_books', side_effect=ConnectionError)
+    mock_message = Mock(text='/oricon books weekly 2017-05-01')
+
+    oricon_books(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Error connecting to the oricon.co.jp website.'
+
+
+def test_wiki(mocker):
+    fake_wiki = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', return_value=fake_wiki)
+    mock_message = Mock(text='/wiki Joko Widodo')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_wiki
+
+
+def test_wiki_none_term(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=ValueError)
+    mock_message = Mock(text='/wiki')
+
+    wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /wiki need an argument'
+
+
+def test_wiki_page_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_wiki', side_effect=IndexError)
+    mock_message = Mock(text='/wiki Wikipedia')
+
+    wiki(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == (
+        'Page id "Wikipedia" does not match any pages.'
+        ' Try another id!'
+    )
+
+
+def test_message_dist(mocker):
+    actual_dist = {'dist': {}}
+    actual_dist['dist'][str(0)] = {}
+    for i in range(0, 24):
+        actual_dist['dist'][str(0)][str(i)] = 0
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_message_dist', return_value=actual_dist)
+    mock_message = Mock(text='/message_dist')
+
+    message_dist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
+
+
+def test_marsfasilkom(mocker):
+    fake_marsfasilkom = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_marsfasilkom', return_value=fake_marsfasilkom)
+    mock_message = Mock(text='/marsfasilkom')
+
+    marsfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_marsfasilkom
+
+
+def test_marsfasilkom_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_marsfasilkom', side_effect=ValueError)
+    mock_message = Mock(text='/marsfasilkom some_arguments_here')
+
+    marsfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /marsfasilkom doesn\'t need any arguments'
+
+
+def test_yelfasilkom(mocker):
+    fake_yelfasilkom = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelfasilkom', return_value=fake_yelfasilkom)
+    mock_message = Mock(text='/yelfasilkom')
+
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_yelfasilkom
+
+
+def test_yelfasilkom_with_arguments(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_yelfasilkom', side_effect=ValueError)
+    mock_message = Mock(text='/yelfasilkom some_arguments_here')
+
+    yelfasilkom(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /yelfasilkom doesn\'t need any arguments'
+
+
+def test_discrete_number(mocker):
+    test_noconnection = 'Cannot connect to API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=test_noconnection)
+    mock_message = Mock(text='/tellme number theory')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == test_noconnection
+
+
+def test_discrete_gcd(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme gcd')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_lcm(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme lcm')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_relasi_rekurensi(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme relasi rekurensi')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_relasi_biner(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme relasi biner')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_domain(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme domain')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_discrete_range(mocker):
+    fake_discrete = ''
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.call_discrete_material', return_value=fake_discrete)
+    mock_message = Mock(text='/tellme range')
+
+    dm(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_discrete
+
+
+def test_notes_view(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
+def test_notes_invalid_json_notes(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', return_value='Notes added')
+    mock_message = Mock(text='/notes dasdsadassd')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Notes added'
+
+
+def test_notes_file_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.manage_notes', side_effect=FileNotFoundError)
+    mock_message = Mock(text='/notes view')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'No notes yet'
+
+
+def test_notes_no_argument(mocker):
+    fake_message = 'Usage :\n' + \
+                   '1. /notes view : View note in this group\n' + \
+                   '2. /notes [text] : Add new note in this group\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/notes')
+
+    note(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_message
+
+
+def test_definisi_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_definisi', side_effect=requests.ConnectionError)
+    mock_message = Mock(text='/definisi tralalala')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Oops! There was a problem. Maybe try again later :('
+
+
+def test_definisi_help(mocker):
+    fake_word = '/definisi [word] : return definition of' + \
+                ' the word in indonesian language\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_word
+
+
+def test_definisi(mocker):
+    fake_definisi = 'Nomina:\n1. perahu; kapal\n\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/definisi bahtera')
+
+    definisi(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_definisi
+
+
 def test_sceleNotif(mocker):
     fake_scele = 'scele'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -82,9 +400,9 @@ def test_sceleNotif(mocker):
 def test_tropicalBb(mocker):
     fake_bb = 'judul-artis'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.getTopTropical', return_value=fake_bb)
-    mock_message = Mock(text='/tropicaltop')
-    sceleNoticeHandler(mock_message)
+    mocker.patch('csuibot.handlers.checkTopTropical', return_value=fake_bb)
+    mock_message = Mock(text='/tropicaltop romeo')
+    tropicalArtistHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_bb
@@ -94,8 +412,19 @@ def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/topMangaOricon')
-    sceleNoticeHandler(mock_message)
+    mock_message = Mock(text='/topMangaOricon 2017-05-15')
+    oriconMangaHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
+
+def test_topMangaOriconMonthly(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopMangaMonthly', return_value=fake_manga)
+    mock_message = Mock(text='/topMangaOricon 2017-05')
+    oriconMangaMonthlyHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_manga
@@ -176,7 +505,7 @@ def test_compute_binary_valid_addtion(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 0011+0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '7'
@@ -186,7 +515,7 @@ def test_compute_binary_valid_subtraction(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 1000-0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '4'
@@ -196,7 +525,7 @@ def test_compute_binary_valid_multiplication(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 0011*0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '12'
@@ -206,7 +535,7 @@ def test_compute_binary_valid_division(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/compute 1000/0100')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == '2'
@@ -238,7 +567,7 @@ def test_compute_invalid_operator(mocker):
     mocker.patch('csuibot.handlers.compute', side_effect=ValueError)
     mock_message = Mock(text='/compute 0101M0111')
 
-    compute(mock_message)
+    compute_binary(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == "Operator is invalid, please use '+', '-', '*', or '/'"
@@ -571,7 +900,7 @@ def test_fetch_latest_xkcd_invalid(mocker):
     fake_xkcd_invalid = 'Command is invalid. You can only use "/xkcd" command.'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.fetch_latest_xkcd', side_effect=ValueError)
-    mock_message = Mock(text='/xkcd 123123')
+    mock_message = Mock(text='/xkcd123123')
 
     xkcd(mock_message)
 
@@ -703,27 +1032,26 @@ def test_yelkomputer_with_arguments(mocker):
 
 
 def test_composer(mocker):
-    fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione'\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-                      'The Chainsmokers - Closer (LIONE Remix) '\
-                      '4:45 '\
-                      'iamlione '\
-                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '\
-
+    fake_track_info = 'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix ' \
+                      'The Chainsmokers - Closer (LIONE Remix) ' \
+                      '4:45 ' \
+                      'iamlione ' \
+                      'https://soundcloud.com/iamlione/the-chainsmokers-closer-lione-remix '
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.call_composer', return_value=fake_track_info)
     mock_message = Mock(text='/sound_composer iamlione')
@@ -743,3 +1071,757 @@ def test_composer_no_connection(mocker):
     composer(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
+
+
+def test_compute_addition(mocker):
+    fake_result = 7
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_substraction(mocker):
+    fake_result = 3
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 10-7')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_multiplication(mocker):
+    fake_result = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4*3')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_division(mocker):
+    fake_result = 10
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 30/3')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_multiple_operator(mocker):
+    fake_result = 3
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 4+3-2*10/5')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_compute_division_by_zero(mocker):
+    fake_error = 'Cannot divide by zero'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=ZeroDivisionError)
+    mock_message = Mock(text='/compute 3/0')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_compute_single_digit(mocker):
+    fake_error = 12
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/compute 12')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_error_compute(mocker):
+    fake_error = 'Invalid command, please enter only numbers and operators'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.compute', side_effect=NameError)
+    mock_message = Mock(text='/compute asdf')
+
+    calculate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_dayofdate(mocker):
+    fake_day = 'boink'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', return_value=fake_day)
+    mock_message = Mock(text='/dayofdate 2016-05-13')
+
+    dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_day
+
+
+def test_dayofdate_invalid_command(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate invalid')
+
+    invalid_dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
+
+def test_dayofdate_no_argument(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_dayofdate', side_effect=ValueError)
+    mock_message = Mock(text='/dayofdate')
+
+    empty_dayofdate(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == ('Incorrect use of dayofdate command. '
+                       'Please write a valid date in the form of yyyy-mm-dd, '
+                       'such as 2016-05-13')
+
+
+def test_chuck(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck')
+    chuck(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert "Chuck" in args[1]
+
+
+def test_chuck_with_args(mocker):
+    fake_error = 'Command /chuck doesn\'t need any arguments'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.chuck')
+    mock_message = Mock(text='/chuck args')
+    chuck(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_hotcountry(mocker):
+    expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+    expected += "Brett Young - In Case You Didn't Know\n(3) "
+    expected += "Luke Combs - Hurricane\n(4) Keith Urban Featuring "
+    expected += "Carrie Underwood - The Fighter\n(5) Jon Pardi - "
+    expected += "Dirt On My Boots\n(6) Dierks Bentley - Black\n(7) "
+    expected += "Josh Turner - Hometown Girl\n(8) Darius Rucker - "
+    expected += "If I Told You\n(9) Kelsea Ballerini - "
+    expected += 'Yeah Boy\n(10) Brantley Gilbert - The Weekend'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_hotcountry', return_value=expected)
+    mock_message = Mock(text='/billboard hotcountry')
+
+    hotcountry(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == expected
+
+
+def test_hotcountry_no_connection(mocker):
+    fake_hotcountry = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_hotcountry', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard hotcountry')
+
+    hotcountry(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_hotcountry
+
+
+def test_request_comic(mocker):
+    fake_comic = 'https://imgs.xkcd.com/comics/lunch_order.png'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', return_value=fake_comic)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_comic
+
+
+def test_comic_error(mocker):
+    fake_error = 'Can\'t connect to the server. Please try again later'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/xkcd 1834')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_comic_format_error(mocker):
+    fake_error = 'Command is invalid. please user /xkcd <id> or /xkcd format'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_comic', return_value=fake_error)
+    mock_message = Mock(text='/xkcd 1834 1234')
+
+    xkcd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_billboard_with_valid_arguments(mocker):
+    fake_error = 'Invalid chart category'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.billboard_chart')
+    mock_message = Mock(text='/billboard hot100')
+
+    billboard_chart(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] != fake_error
+
+
+def test_billboard_with_invalid_arguments(mocker):
+    fake_error = 'Invalid chart category'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.billboard_chart')
+    mock_message = Mock(text='/billboard invalid')
+
+    billboard_chart(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_youtube_url(mocker):
+    fake_url_info = 'Gordon Ramsay Answers Cooking Questions From Twitter' \
+                    '| Tech Support | WIRED'\
+                    'WIRED'\
+                    '4390281'\
+                    '102154 & 1122'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', return_value=fake_url_info)
+    mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+
+    youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_youtube_no_url(mocker):
+    fake_url_info = "'youtube' command needs an url"
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', return_value=fake_url_info)
+    mock_message = Mock(text='/youtube ')
+
+    youtube_no_url(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_youtube_no_connection(mocker):
+    fake_url_info = 'Error connecting to Youtube'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_url', side_effect=ConnectionError)
+    mock_message = Mock(text='/youtube https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+
+    youtube(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_url_info
+
+
+def test_japanartist(mocker):
+    fake_artist = 'Your artist is present in Japan Top100' \
+                  'Kana Nishino'\
+                  'Pa'\
+                  '3'\
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_detect_lang(mocker):
+    fake_detect_lang = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_lang', return_value=fake_detect_lang)
+    mock_message = Mock(text='/detect_lang Lorem ipsum dolor sit amet, consectetur adipiscing')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_detect_lang
+
+
+def test_detect_lang_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.lookup_lang',
+        side_effect=ValueError('Command /detect_lang need an argument')
+    )
+    mock_message = Mock(text='/detect_lang')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /detect_lang need an argument'
+
+
+def test_detect_lang_lookup_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.lookup_lang',
+        side_effect=LookupError(
+            'Unable to download the web page, request got HTTP error code: 503'
+        )
+    )
+    mock_message = Mock(text='/detect_lang http://justsomerandomwebsite.com')
+
+    detect_lang(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Unable to download the web page, request got HTTP error code: 503'
+
+
+def test_fake_json(mocker):
+    fake_json_response = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_fake_json', return_value=fake_json_response)
+    mock_message = Mock(text='/fake_json')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_json_response
+
+
+def test_fake_json_value_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.get_fake_json',
+        side_effect=ValueError('Command /fake_json doesn\'t need any arguments')
+    )
+    mock_message = Mock(text='/fake_json some_arguments here')
+
+    fake_json(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /fake_json doesn\'t need any arguments'
+
+
+def test_similar_valid(mocker):
+    fake_result = '100%'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.similar_text', return_value=fake_result)
+    mock_message = Mock(text='/docs_sim a a')
+
+    similar(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_similar_text_invalid(mocker):
+    fake_error = 'Command invalid, please use /docs_sim <text1> <text2> format'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.similar_text', return_value=fake_error)
+    mock_message = Mock(text='/docs_sim a a a')
+
+    similar(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command invalid, please use /docs_sim <text1> <text2> format'
+
+
+def test_similar_url_invalid(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.similar_text', side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/docs_sim http://aku.com http://aku1.com')
+
+    similar(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP Error occurs, please try again later'
+
+
+def test_top_oricon_cd_invalid_date(mocker):
+    fake_output = 'Invalid date'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles weekly 9999-99-99')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_cd_unknown(mocker):
+    fake_output = "Oricon don't know chart in this date"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles daily 1854-01-02')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_cd_weekly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles weekly 2017-05-15')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_montly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2017-04')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_cd_yearly(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles 2016')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert len(args[1].split('\n')) >= 10
+
+
+def test_top_oricon_help(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_top_oricon_invalid_command(mocker):
+    fake_output = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                  ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                  ' date of the monday in that week'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+
+    mock_message = Mock(text='/oricon jpsingles Maki 2010-12-10')
+
+    oricon_cd(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_output
+
+
+def test_hot100_artist(mocker):
+    fake_artist = ("Russ\nLosin Control\n62\n")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hot100_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hot100 Russ')
+
+    hot100_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_newage_artist(mocker):
+    fake_artist = ("Enya\nDark Sky Island\n7\n")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.newage_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard newage Enya')
+
+    newage_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_hotcountry_artist(mocker):
+    fake_artist = ("Sam Hunt\nBody Like A Back Road\n1\n")
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.hotcountry_artist', return_value=fake_artist)
+    mock_message = Mock(text='/billboard hotcountry Sam Hunt')
+
+    hotcountry_artist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_artist
+
+
+def test_japanartist_no_connection(mocker):
+    fake_error = 'Error connecting to Billboard RSS Feed'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard japan100 Kana Nishino')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_japanartist_not_found(mocker):
+    fake_error = 'Artist not present on the Top 100 Chart'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_artist', return_value=fake_error)
+    mock_message = Mock(text='/billboard japan100 Justin Bieber')
+
+    japanartist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_newage(mocker):
+    expected = "(1) Armik - Enamor\n"
+    expected += "(2) The Piano Guys - Uncharted\n"
+    expected += "(3) Enya - Dark Sky Island\n"
+    expected += "(4) Armik - Solo Guitar Collection\n"
+    expected += "(5) Armik - Romantic Spanish Guitar, Vol. 3\n"
+    expected += "(6) Various Artists - Music For Deep Sleep\n"
+    expected += "(7) George Winston - Spring Carousel\n"
+    expected += "(8) Enigma - The Fall Of A Rebel Angel\n"
+    expected += "(9) Various Artists - 111 Tracks\n"
+    expected += "(10) Laura Sullivan - Calm Within"
+    fake_newage = expected
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', return_value=fake_newage)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
+
+
+def test_newage_no_connection(mocker):
+    fake_newage = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_newage', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard newage')
+
+    newage(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_newage
+
+
+def test_extract_colour(mocker):
+    fake_result = 'EXTRACT BGCOLOUR\n(R, G, B)\n#HEXSTR\nPercentage: ff.ff%'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.extract_colour',
+                 return_value=fake_result)
+    photo = mocker.Mock()
+    attrs = {'file_id': 'somestr'}
+    photo.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'photo': [photo], 'caption': '/fgcolour'}
+    mock_message.configure_mock(**attrs)
+    assert check_caption_colour(mock_message)
+    extract_colour_from_image(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_extract_colour_errors(mocker):
+    fake_index_error = 'Colour not extracted.'
+    fake_connection_error = 'A connection error occured. Please try again in a moment.'
+    fake_http_error = 'An HTTP error occured. Please try again in a moment.'
+    fake_request_exception = 'An error occured. Please try again in a moment.'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    photo = mocker.Mock()
+    attrs = {'file_id': 'somestr'}
+    photo.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'photo': [photo], 'caption': '/fgcolour'}
+    mock_message.configure_mock(**attrs)
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=IndexError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_index_error
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=requests.exceptions.ConnectionError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_connection_error
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=requests.exceptions.HTTPError)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_http_error
+
+    mocker.patch('csuibot.handlers.extract_colour',
+                 side_effect=requests.exceptions.RequestException)
+    extract_colour_from_image(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_request_exception
+
+
+def test_billArtist_Pentatonix(mocker):
+    fake_billArtist = "Pentatonix \n PTX Vol. IV: Classics (EP) \n Rank #93"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_billArtist', return_value=fake_billArtist)
+    mock_message = Mock(text='/billboard bill200 Pentatonix')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
+def test_billArtist_not_exist(mocker):
+    fake_billArtist = "Rhoma Irama doesn't exist in bill200"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/billboard bill200 Rhoma Irama')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
+def test_billArtist_no_connection(mocker):
+    fake_billArtist = 'Cannot connect to billboard API'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_billArtist', side_effect=ConnectionError)
+    mock_message = Mock(text='/billboard bill200 intan')
+
+    billArtist(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_billArtist
+
+
+def test_weton_senin(mocker):
+    fake_weton = 'Senin Pon'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-04')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_selasa(mocker):
+    fake_weton = 'Selasa Wage'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-05')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_rabu(mocker):
+    fake_weton = 'Rabu Kliwon'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-06')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_kamis(mocker):
+    fake_weton = 'Kamis Legi'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-07')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_jumat(mocker):
+    fake_weton = 'Jumat Pahing'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-08')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_sabtu(mocker):
+    fake_weton = 'Sabtu Pon'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-09')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
+
+
+def test_weton_minggu(mocker):
+    fake_weton = 'Minggu Wage'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/primbon 2015-05-10')
+
+    primbon(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_weton
