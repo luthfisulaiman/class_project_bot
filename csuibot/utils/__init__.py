@@ -446,5 +446,5 @@ def lookup_weton(year, month, day):
 
 
 def auto_tag(message):
-    photo_id = message.photo[-1].file_id
-    return tagging.Tagging(photo_id).getTag()
+    photoid = message.photo[-1].file_id
+    return tagging.Tagging(photoid).getTag()
