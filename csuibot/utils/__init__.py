@@ -2,11 +2,7 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
-<<<<<<< HEAD
-import feedparser
-=======
-import requests
->>>>>>> 5537b61e32a78c48f67fb1a4c59fe9dbfaaf6d06
+from bs4 import BeautifulSoup
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -364,14 +360,22 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-<<<<<<< HEAD
-def lookup_HotJapan100(url):
-    feed = feedparser.parse(url)
-    return_str = ""
+def lookup_HotJapan100(html):
+    string = ''
+    soup = BeautifulSoup(html, 'html.parser')
+    title = soup.find_all('title')[1:11]
+    artist = soup.find_all('artist')[1:11]
     for i in range(10):
-        return_str += "(" + i + ") "+feed['entries'][i]['artist']+" - " + feed['entries'][i]['title']+"\n"     
-    return return_str
-=======
+        if i < 9:
+            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-"+ artist[i].string
+            string += '\n'
+        elif i == 9:
+            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-"+ artist[i].string
+            string += '\n'
+            
+    return (string)
+
+
 def lookup_url(url):
     return youtube.Youtube().getURL(url)
 
@@ -424,4 +428,3 @@ def lookup_weton(year, month, day):
         return 'Year/Month/Day is invalid'
     except ValueError:
         return 'Year/Month/Day is invalid'
->>>>>>> 5537b61e32a78c48f67fb1a4c59fe9dbfaaf6d06

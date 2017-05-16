@@ -14,7 +14,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
-                    lookup_url, lookup_artist, extract_colour)
+                    lookup_url, lookup_artist, extract_colour, lookup_HotJapan100)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -599,19 +599,20 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-<<<<<<< HEAD
 @bot.message_handler(regexp=r'^/billboard japan100$')
 def japan100(message):
-    app.logger.debug("'billboard japan100' command detected")
     rss_url="http://www.billboard.com/rss/charts/japan-hot-100"
+    html = urllib.request.urlopen(rss_url).read()
+    html = str(html)
     try:
-        reply = lookup_HotJapan100(rss_url)
+        reply = lookup_HotJapan100(html)
     except ConnectionError:
         bot.reply_to(message, '''Sorry,the connection error
 Please try again in a few minutes''')
     else:
         bot.reply_to(message,reply)
-=======
+
+
 @bot.message_handler(regexp=r'^\/youtube\s*$')
 def youtube_no_url(message):
     bot.reply_to(message, "'youtube' command needs an url")
@@ -847,4 +848,3 @@ def extract_colour_from_image(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, extracted)
->>>>>>> 5537b61e32a78c48f67fb1a4c59fe9dbfaaf6d06

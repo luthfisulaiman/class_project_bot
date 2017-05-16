@@ -12,7 +12,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
-                              japanartist, extract_colour_from_image, check_caption_colour)
+                              japanartist, extract_colour_from_image, check_caption_colour, japan100)
 from requests.exceptions import ConnectionError
 
 
@@ -1790,3 +1790,14 @@ def test_weton_minggu(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_weton
+
+    
+def test_japan100(mocker):
+    fake_japan100 = "Stay tuned ya!"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/billboard japan100')
+
+    japan100(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_japan100
