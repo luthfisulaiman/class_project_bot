@@ -6,7 +6,6 @@ from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
 import os
 import re
 from requests.exceptions import ConnectionError
-from telebot.apihelper import ApiException
 import requests
 
 
@@ -820,7 +819,7 @@ class TestTopPoster:
     def test_get_top_poster(self):
         try:
             res = utils.get_top_poster()
-        except ApiException:
+        except KeyError:
             pass
         else:
             assert res is not None

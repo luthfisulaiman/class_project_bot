@@ -15,6 +15,8 @@ webhook_url_base = app.config['WEBHOOK_HOST']
 # Configure application logging
 app.logger.setLevel(app.config['LOG_LEVEL'])
 
+lastupdate = {}
+
 
 @app.route('/')
 def index():
@@ -27,6 +29,8 @@ def webhook():
     if json_data is not None:
         app.logger.debug('Update received')
         update = telebot.types.Update.de_json(json_data)
+        global lastupdate
+        lastupdate = json_data
         bot.process_new_messages([update.message])
         return ''
     else:

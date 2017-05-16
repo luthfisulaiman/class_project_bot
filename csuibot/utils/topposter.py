@@ -1,6 +1,5 @@
-from csuibot import bot
-import json
 import operator
+import csuibot
 
 
 class TopPoster:
@@ -65,6 +64,6 @@ class TopPoster:
         return group_id
 
     def get_all_bot_updates(self):
-        res = json.load(bot.get_updates())
+        res = csuibot.lastupdate
         res = res['result']
         return res

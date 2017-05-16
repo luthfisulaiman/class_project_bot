@@ -91,7 +91,7 @@ def plant_ask(message):
 
 @bot.message_handler(regexp=r'^/topposters$')
 def top_poster(message):
-    app.logger.debug("'topposter' command detected")
+    app.logger.debug("'topposters' command detected")
     try:
         msg = get_top_poster()
     except ValueError:
