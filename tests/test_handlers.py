@@ -1841,7 +1841,7 @@ Tag : power , Confidence : 19'''
     photo.configure_mock(**attrs)
     mock_message = mocker.Mock()
     attrs = {'photo': [photo], 'caption': '/tag'}
-    mock_message.configure_mock(*attrs)
+    mock_message.configure_mock(**attrs)
     assert check_caption_tag(mock_message)
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
