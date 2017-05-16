@@ -2,6 +2,7 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
+import urllib.error
 import requests
 from bs4 import BeautifulSoup
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
@@ -17,7 +18,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
-                           books, youtube, japanartist as ja, extractcolour)
+                           books, youtube, japanartist as ja, extractcolour,
+                           topTropical as trop, mangaTopOricon as mto, tagging)
 
 
 def lookup_zodiac(month, day):
@@ -150,6 +152,35 @@ def lookup_definisi(word):
 def takeSceleNotif():
     notif = n.notifTaker()
     return notif.getPost()
+
+
+def checkTopTropical(artist):
+    topTropical = trop.topTropicalBb()
+    return topTropical.checkTopTropical(artist)
+
+
+def getTopManga(year, month, day):
+    manga = mto.mangaTopOricon()
+    try:
+        hasil = manga.getTopManga(str(year), str(month), str(day))
+    except urllib.error.URLError as err:
+        if(err.code == 404):
+            return "Page not found, you may gave incorrect date"
+        else:
+            return "unexpected Error Happened"
+    return hasil
+
+
+def getTopMangaMonthly(year, month):
+    manga = mto.mangaTopOricon()
+    try:
+        hasil = manga.getTopMangaMonthly(str(year), str(month))
+    except urllib.error.URLError as err:
+        if(err.code == 404):
+            return "Page not found, you may gave incorrect date"
+        else:
+            return "unexpected Error Happened"
+    return hasil
 
 
 def lookup_isUpWeb(url):
@@ -429,3 +460,8 @@ def lookup_weton(year, month, day):
         return 'Year/Month/Day is invalid'
     except ValueError:
         return 'Year/Month/Day is invalid'
+
+
+def auto_tag(message):
+    photoid = message.photo[-1].file_id
+    return tagging.Tagging(photoid).getTag()
