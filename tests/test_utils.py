@@ -1424,4 +1424,3 @@ class TestWeton:
     def test_weton_value_error(self):
         look = utils.lookup_weton(1995, 12, 32)
         assert look == "Year/Month/Day is invalid"
->>>>>>> dd35c4c70823b7aae05e28579499341e7cca1d6e

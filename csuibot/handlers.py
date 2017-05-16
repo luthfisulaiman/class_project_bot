@@ -930,4 +930,3 @@ def tagimage(message):
         bot.reply_to(message, "Cannot connect to Immaga API")
     else:
         bot.reply_to(message, tag)
->>>>>>> dd35c4c70823b7aae05e28579499341e7cca1d6e

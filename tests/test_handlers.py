@@ -1870,4 +1870,3 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
->>>>>>> dd35c4c70823b7aae05e28579499341e7cca1d6e

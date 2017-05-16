@@ -455,4 +455,3 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
->>>>>>> dd35c4c70823b7aae05e28579499341e7cca1d6e
