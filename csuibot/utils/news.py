@@ -2,13 +2,6 @@ import requests
 import json
 
 
-def main():
-    str = '/getnews bryanza show'
-    command, keyword = str.split(' ', 1)
-    print(command)
-    print(keyword)
-
-
 class News:
 
     def get_news(self, query):
@@ -18,5 +11,3 @@ class News:
         r = requests.get(url, params=payload, headers=headers)
         news = r.json()
         return news
-
-main()
