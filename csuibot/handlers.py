@@ -16,7 +16,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
+                    lookup_HotJapan100)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -368,6 +369,15 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/sentiment \w+')
+def sentiment(message):
+    app.logger.debug("'sentiment' command detected")
+    _, word_str = message.text.split(' ', 1)
+    word_str = word_str.lower()
+    word = lookup_sentiment(word_str)
+    bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
