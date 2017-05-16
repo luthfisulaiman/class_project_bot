@@ -22,7 +22,6 @@ class mangaTopOricon:
 
     def getTopMangaMonthly(self, year, month):
         l = "http://www.oricon.co.jp/rank/cbm/m/" + year + "-" + month+"/"
-        print(l)
         r = urllib.request.urlopen(l)
         soup = BeautifulSoup(r, "html.parser")
         stl = "font-weight:bold; margin-bottom:2px; margin-top:2px;"
