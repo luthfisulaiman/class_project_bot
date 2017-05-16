@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import ConnectionError
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
@@ -16,8 +17,6 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100)
->>>>>>> dd35c4c70823b7aae05e28579499341e7cca1d6e
-from requests.exceptions import ConnectionError
 
 
 def test_help(mocker):
@@ -1858,3 +1857,4 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
+ 
