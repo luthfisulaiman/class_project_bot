@@ -532,6 +532,7 @@ def crop_image(message):
                  .format(API_TOKEN, file_name.file_path))
     app.logger.debug('Cropping {}'.format(crop_file))
     try:
+        app.logger.debug('entering try')
         image_crop = get_crop(crop_file)
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to Imagga API')
