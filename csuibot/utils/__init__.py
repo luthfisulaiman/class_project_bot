@@ -74,7 +74,6 @@ def lookup_sentiment(word):
     positive_vocab = (['good', 'nice', 'great', 'awesome', 'terrific',
                       ':)', ':-)', 'like', 'love'])
     negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
-    neutral_vocab = ['movie', 'the', 'sound', 'was', 'is', 'actors', 'did', 'know', 'not']
     positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
     negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
     train_set = negative_features + positive_features
