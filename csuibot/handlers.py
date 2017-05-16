@@ -523,12 +523,21 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/crop$')
-def loremipsum(message):
-    app.logger.debug("'crop' command detected")
+@bot.message_handler(content_types=['photo'], func=lambda message: message.caption == '/crop')
+def crop_image(message):
+    app.logger.debug("'/crop' command detected")
+    API_TOKEN = '346807084:AAFdjd8jogyr_jzAJI9wtjsKLSFPrzhNymU'
+    file_name = bot.get_file(message.photo[len(message.photo) - 1].file_id)
+    crop_file = ('https://api.telegram.org/file/bot{0}/{1}'
+                 .format(API_TOKEN, file_name.file_path))
     try:
-        crop = crop()
+        image_crop = crop(crop_file)
     except ConnectionError:
         bot.reply_to(message, 'Cannot connect to Imagga API')
+    except ValueError:
+        bot.reply_to(message, 'Invalid Command')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'You must upload an image with a caption in order to crop!')
     else:
-        bot.reply_to(message, crop)
+        bot.reply_to(message, image_crop[1])
+        bot.reply_to(message, image_crop[0])

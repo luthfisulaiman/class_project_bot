@@ -260,5 +260,9 @@ def get_chuck(message_text):
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
-def crop():
-    return crop.Crop().do_crop()
+
+def get_crop(crop_file):
+    if (crop_file == '/crop'):
+        return crop.Crop().do_crop(crop_file)
+    else:
+        raise ValueError('Command /crop doesn\'t need arguments')

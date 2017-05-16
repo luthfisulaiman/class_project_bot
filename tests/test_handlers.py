@@ -1102,7 +1102,9 @@ def test_chuck_with_args(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_error
 
+
 def test_crop(mocker):
+    error = 'Send an image with a caption!'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.crop')
     mock_message = Mock(text='/crop')
@@ -1110,7 +1112,8 @@ def test_crop(mocker):
     crop(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert "Crop" in args[1]
+    assert args[1] == error
+
 
 def test_crop_args(mocker):
     error = 'Command /crop doesn\'t need arguments'
