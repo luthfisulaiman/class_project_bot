@@ -1,6 +1,6 @@
 import operator
-import os
 import json
+import os
 
 
 class TopPoster:
@@ -66,8 +66,7 @@ class TopPoster:
 
     def get_all_bot_updates(self):
         path = os.path.dirname(os.path.abspath(__file__))
-        parent_path = os.path.abspath(path + "/../")
-        with open(parent_path + '/update_list.json') as input_file:
+        with open(path + '/test.json') as input_file:
             res = json.load(input_file)
             res = res['result']
         return res
