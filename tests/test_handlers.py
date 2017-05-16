@@ -8,7 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom, chuck, get_discrete_material as dm, message_dist,
-                              soundcliphelp, soundclip)
+                              soundcliphelp, soundclip, news, get_articles)
 from requests.exceptions import ConnectionError
 
 
@@ -144,15 +144,16 @@ def test_marsfasilkom(mocker):
 
 
 def test_news(mocker):
-    fake_news = 'foo bar'
-    mocked_reply_to = mocked.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.news')
-    mock_message = Mock(text='/news good news')
+    news_result = {'type': 'News', 'value': 'foo bar'}
+    fake_article = news_result['value']
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_articles', return_value = news_result)
+    mock_message = Mock(text='/getnews good news')
 
     news(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_news
+    assert args[1] == fake_article
 
 
 def test_marsfasilkom_with_arguments(mocker):

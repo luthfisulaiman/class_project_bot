@@ -6,11 +6,6 @@ from requests.exceptions import ConnectionError
 import requests
 import json
 
-class TestNews:
-    def test_new(self):
-        res = utils.get_news("foo")['type']
-        assert res == 'News'
-
 
 class TestZodiac:
     def test_aries_lower_bound(self):
@@ -777,3 +772,9 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestNews:
+    def test_news(self):
+        res = utils.get_articles("foo")['type']
+        assert res == 'News'

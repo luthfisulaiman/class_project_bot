@@ -9,7 +9,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           discretemath as dm, marsfasilkom, yelfasilkom, chuck)
+                           discretemath as dm, marsfasilkom, yelfasilkom, chuck, news)
 
 
 def lookup_zodiac(month, day):
@@ -268,3 +268,15 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+def get_articles(message_text):
+
+    articles = news.News().get_news(message_text)
+
+    out = ''
+    for values in articles['value'][0:5]:
+        out += ("[" + values['name'] + "]\n\n")
+        out += (values['description'] + "\n")
+        out += ("LINK: " + values['url'] + "\n\n\n")
+    res = {'type': articles['_type'], 'value':out}
+    return res
