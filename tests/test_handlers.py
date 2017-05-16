@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import help, zodiac, shio
+from csuibot.handlers import help, zodiac, shio, sentiment
 
 
 def test_help(mocker):
@@ -61,3 +61,16 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_sentiment(mocker):
+    fake_reply = 'Positive : 0.5\nNegative: 0.5'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_sentiment', return_value = fake_reply)
+    mock_message = Mock(text='/sentiment good nice bad terrible movie sound')
+
+    sentiment(mock_message)
+    args, _ = mocked_reply_to.call_args
+    
+    assert args[1] == fake_reply
+
+    

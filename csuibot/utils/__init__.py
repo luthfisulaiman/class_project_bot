@@ -1,4 +1,6 @@
+from nltk.classify import NaiveBayesClassifier
 from csuibot.utils import zodiac as z
+
 
 
 def lookup_zodiac(month, day):
@@ -43,3 +45,32 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def word_feats(words):
+    return dict([(word, True) for word in kata])
+
+
+def lookup_sentiment(word):
+    positive_vocab = ['good', 'nice', 'great', 'awesome', 'outstanding',
+    'fantastic', 'terrific', ':)', ':-)', 'like', 'love']
+    negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
+    neutral_vocab = ['movie','the','sound','was','is','actors','did','know','words','not']
+    positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
+    negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
+    neutral_features = [(word_feats(neu), 'neu') for neu in neutral_vocab]
+    train_set = negative_features + positive_features + neutral_features
+    classifier = NaiveBayesClassifier.train(train_set)
+    neg = 0
+    pos = 0
+    words = kata.split(' ')
+    for i in words:
+        classresult = classifier.classify(word_feats(i))
+        if classresult == 'neg':
+            neg = neg + 1
+        if classresult == 'pos':
+            pos = pos + 1
+    try:
+        return 'Positive: ' + str(float(pos)/len(words)) + '\nNegative: ' + str(float(neg)/len(words))
+    except KeyError:
+        return 'not found'    
