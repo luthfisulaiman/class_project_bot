@@ -4,6 +4,7 @@ from csuibot.handlers import help, zodiac, shio, air_quality
 
 from requests.exceptions import ConnectionError
 
+
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock()
@@ -64,63 +65,78 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
-def test_aqi(mocker):
-    fake_aqi = '75\nModerate\nAir quality is acceptable; however, for some pollutants' \
-               ' there may be a moderate health concern for a very small number of ' \
-               'people who are unusually sensitive to air pollution.'
+def test_aqi_good(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality', return_value=fake_aqi)
-    mock_message = Mock(text='/aqi llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Singapore')
 
     air_quality(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_aqi
+    assert args[1]
 
 
-def test_aqi_over_quota(mocker):
-    fake_aqi = 'Over quota on aqicn.org, please try again later'
+def test_aqi_moderate(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality', return_value=fake_aqi)
-    mock_message = Mock(text='/aqi llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Shanghai')
 
     air_quality(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_aqi
+    assert args[1]
 
 
-def test_aqi_invalid_city(mocker):
-    fake_aqi = 'City not found, please try again with a different city'
+def test_aqi_sensitive(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality', return_value=fake_aqi)
-    mock_message = Mock(text='/aqi llanfairpwllgwyngyllgogerycawdadqwdqdqz')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Beijing')
 
     air_quality(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_aqi
+    assert args[1]
 
 
-def test_aqi_invalid_key(mocker):
-    fake_aqi = 'Invalid API key, please contact administrator'
+def test_aqi_unhealthy(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality', return_value=fake_aqi)
-    mock_message = Mock(text='/aqi llanfairpwllgwyngyllgogerycawdadqwdqdqz')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Manali')
 
     air_quality(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_aqi
+    assert args[1]
 
 
-def test_aqi_connection_error(mocker):
-    fake_aqi = 'Unable to connect to aqicn.org, please try again later'
+def test_aqi_very_unhealthy(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality', side_effect=ConnectionError)
-    mock_message = Mock(text='/aqi llanfairpwllgwyngyllgogerycawdadqwdqdqz')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Yuzuncuyil')
 
     air_quality(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_aqi
+    assert args[1]
+
+
+def test_aqi_hazardous(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Yuzuncuyil')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_coord_moderate(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi 31.2304 121.4737')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]

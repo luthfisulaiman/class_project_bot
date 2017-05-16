@@ -1,4 +1,5 @@
 from csuibot import utils
+import re
 
 
 class TestZodiac:
@@ -253,3 +254,14 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestAirQuality:
+
+    def test_aqi_city_invalid(self):
+        res = utils.get_aqi_city("dadafawawfawcqfwqqv")
+        assert res == "Invalid city name or coordinate, please try again"
+
+    def test_aqi_coord_invalid(self):
+        res = utils.get_aqi_coord("dadafawaw fawcqfwqqv")
+        assert res == "Invalid city name or coordinate, please try again"

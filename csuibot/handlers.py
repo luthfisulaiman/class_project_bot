@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, get_aqi
+from .utils import lookup_zodiac, lookup_chinese_zodiac, get_aqi_coord, get_aqi_city
+import re
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,10 +45,31 @@ def shio(message):
 
 @bot.message_handler(commands=['aqi'])
 def air_quality(message):
-    pass
+    app.logger.debug("'aqi' command detected")
+    arr_loc = message.text.split(' ', 1)
+
+    if(len(arr_loc) > 1 and not arr_loc[1].isspace() and len(arr_loc[1]) > 0):
+        loc = arr_loc[1]
+
+        if(re.match(r'^(\d+[.]?\d+|\d) (\d+[.]?\d+|\d)$', loc)):
+            try:
+                result = get_aqi_coord(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+        elif (re.match(r'^[a-zA-Z0-9\s]*$', loc)):
+            try:
+                result = get_aqi_city(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+    else:
+        bot.reply_to(message, "Invalid city name or coordinate, please try again")
 
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
-
-
