@@ -2,6 +2,7 @@ from csuibot.utils import message_dist as md
 import json
 import re
 import time
+import requests
 from bs4 import BeautifulSoup
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
@@ -367,10 +368,10 @@ def lookup_HotJapan100(html):
     artist = soup.find_all('artist')[1:11]
     for i in range(10):
         if i < 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-"+ artist[i].string
+            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-" + artist[i].string
             string += '\n'
         elif i == 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-"+ artist[i].string
+            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
             string += '\n'
             
     return (string)

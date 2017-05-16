@@ -601,16 +601,16 @@ def marsfasilkom(message):
 
 @bot.message_handler(regexp=r'^/billboard japan100$')
 def japan100(message):
-    rss_url="http://www.billboard.com/rss/charts/japan-hot-100"
+    rss_url = "http://www.billboard.com/rss/charts/japan-hot-100"
     html = urllib.request.urlopen(rss_url).read()
     html = str(html)
     try:
         reply = lookup_HotJapan100(html)
     except ConnectionError:
-        bot.reply_to(message, '''Sorry,the connection error
+        bot.reply_to(message, '''The connection error
 Please try again in a few minutes''')
     else:
-        bot.reply_to(message,reply)
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(regexp=r'^\/youtube\s*$')
