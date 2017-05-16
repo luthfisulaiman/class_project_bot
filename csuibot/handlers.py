@@ -375,7 +375,7 @@ def sentiment(message):
     _, word_str = message.text.split(' ', 1)
     word_str = word_str.lower()
     word = lookup_sentiment(word_str)
-    bot.reply_to(message, 'This word is :\n' + word)
+    bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
