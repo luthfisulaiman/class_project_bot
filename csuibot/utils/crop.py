@@ -13,9 +13,7 @@ class Crop:
         y1 = response.json()['results'][0]['croppings'][0]['y1']
         x2 = response.json()['results'][0]['croppings'][0]['x2']
         y2 = response.json()['results'][0]['croppings'][0]['y2']
-        x_baru = x1-x2
-        y_baru = y1-y2
-        message_1 = 'Before: <{}, {}>\n'.format(x1, y1)
-        message_2 = 'After: <{}, {}>\n'.format(x_baru, y_baru)
+        message_1 = '<x1, y1> : <{}, {}>\n'.format(x1, y1)
+        message_2 = '<x2, y2> : <{}, {}>\n'.format(x2, y2)
         message = message_1 + message_2
         return message
