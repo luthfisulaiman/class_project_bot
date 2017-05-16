@@ -1829,7 +1829,17 @@ def test_weton_minggu(mocker):
 
 
 def test_japan100(mocker):
-    fake_japan100 = "Stay tuned ya!"
+    fake_japan100 = '''(1) Colors-BUMP OF CHICKEN
+(2) Ribbon-Kana Nishino
+(3) Pa-BTOB
+(4) Movie-Mag!C Prince
+(5) Update-Austin Mahone
+(6) Dirty Work-Gen Hoshino
+(7) Koi-Mai Kuraki
+(8) Togetsukyou  (Kimi Omofu)-Keyakizaka46
+(9) Fukyouwaon-Ariana Grande & John Legend
+(10) Beauty And The Beast-Nogizaka 46'''
+    
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/billboard japan100')
 
