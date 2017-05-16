@@ -273,10 +273,12 @@ def get_articles(message_text):
 
     articles = news.News().get_news(message_text)
 
-    out = ''
+    brackets = '=================================='
+    out = brackets
     for values in articles['value'][0:5]:
         out += ("[" + values['name'] + "]\n\n")
         out += (values['description'] + "\n")
-        out += ("LINK: " + values['url'] + "\n\n\n")
+        out += ("LINK: " + values['url'] + "\n\n")
+        out += brackets + '\n\n'
     res = {'type': articles['_type'], 'value':out}
     return res
