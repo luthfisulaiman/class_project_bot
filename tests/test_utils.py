@@ -760,7 +760,7 @@ class TestChuck:
 class TestCrop:
     def test_crop(self):
         try:
-            res = utils.crop('/crop')
+            res = utils.get_crop('/crop')
         except ConnectionError:
             pass
         else:
