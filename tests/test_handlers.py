@@ -8,7 +8,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
                               marsfasilkom, yelfasilkom,
-                              chuck, get_discrete_material as dm, message_dist, crop_image,
+                              chuck, get_discrete_material as dm, message_dist,
                               crop_no_image, crop_arguments)
 from requests.exceptions import ConnectionError
 
