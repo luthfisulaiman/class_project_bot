@@ -1107,7 +1107,7 @@ def test_chuck_with_args(mocker):
 def test_crop(mocker):
     error = 'You must upload an image with a caption in order to crop!'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.crop')
+    mocker.patch('csuibot.handlers.crop_no_image')
     mock_message = Mock(text='/crop')
 
     crop_no_image(mock_message)
@@ -1119,7 +1119,7 @@ def test_crop(mocker):
 def test_crop_args(mocker):
     error = 'Command /crop doesn\'t need arguments'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.crop')
+    mocker.patch('csuibot.handlers.crop_arguments')
     mock_message = Mock(text='/crop args')
 
     crop_arguments(mock_message)
