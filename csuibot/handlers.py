@@ -83,7 +83,7 @@ def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
     _, date_str = message.text.split(' ')
     year, month, day = parse_date(date_str)
-    app.logger.debug(year + " " + month + " " + day)
+    app.logger.debug(str(year) + " " + str(month) + " " + str(day))
     try:
         notification = getTopManga(year, month, day)
     except ConnectionError:
@@ -99,7 +99,7 @@ def oriconMangaMonthlyHandler(message):
     app.logger.debug("oricon Monthly command detected")
     _, date_str = message.text.split(' ')
     year, month = parse_date(date_str)
-    app.logger.debug(year + " === " + month)
+    app.logger.debug(str(year) + " === " + str(month))
     try:
         notification = getTopMangaMonthly(year, month)
     except ConnectionError:
