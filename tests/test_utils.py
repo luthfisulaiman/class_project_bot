@@ -217,30 +217,63 @@ class TestNotifTaker:
 
 class TestTropicalBb:
     def test_TropicalBbExist(self):
-        res = utils.getTopTropical()
+        res = utils.checkTopTropical("romeo santos")
         assert res != ""
-	
-	def test_TropicalConn(self):
-		try:
-			res = utils.takeSceleNotif()
-		except requests.ConnectionError as e:
-			return false
-		else:
-			assert res != ""
+
+    def test_TropicalConn(self):
+        try:
+            res = utils.checkTopTropical("romeo santos")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res != ""
+
+    def test_TropicalInChart(self):
+        try:
+            res = utils.checkTopTropical("romeo Santos")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res != "Artist is not in the chart"
+
+    def test_TropicalNotInChart(self):
+        try:
+            res = utils.checkTopTropical("querzatls")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res == "Artist is not in the chart"
 
 
 class TestMangaTopOricon:
-    def test_TropicalBbExist(self):
-        res = utils.getTopManga()
+    def test_TopOriconExist(self):
+        res = utils.getTopManga(2017, "05", 15)
         assert res != ""
-	
-	def test_TropicalConn(self):
-		try:
-			res = utils.getTopManga()
-		except requests.ConnectionError as e:
-			return false
-		else:
-			assert res != ""
+
+    def test_oriconConn(self):
+        try:
+            utils.getTopManga(2017, "05", 15)
+            utils.getTopMangaMonthly(2017, "05")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            return True
+
+    def test_oriconValid(self):
+        res = utils.getTopManga(2017, "05", 15)
+        assert res != "Page not found, you may gave incorrect date"
+
+    def test_oriconInvalid(self):
+        res = utils.getTopManga(2033, "05", 15)
+        assert res == "Page not found, you may gave incorrect date"
+
+    def test_oriconValidMonthly(self):
+        res = utils.getTopMangaMonthly(2017, "03")
+        assert res != "Page not found, you may gave incorrect date"
+
+    def test_oriconInvalidMonthly(self):
+        res = utils.getTopMangaMonthly(2019, "05")
+        assert res == "Page not found, you may gave incorrect date"
 
 
 class TestChineseZodiac:

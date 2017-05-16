@@ -6,7 +6,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
                     get_meme, generate_password, generate_custom_chuck_joke,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
-                    remind_me, lookup_isUpWeb, takeSceleNotif, getTopTropical, getTopManga)
+                    remind_me, lookup_isUpWeb, takeSceleNotif, checkTopTropical,
+                    getTopManga, getTopMangaMonthly)
 from requests.exceptions import ConnectionError
 
 
@@ -63,11 +64,12 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/tropicaltop$')
+@bot.message_handler(regexp=r'^/checktropical.+$')
 def tropicalArtistHandler(message):
     app.logger.debug("top tropical command detected")
+    artist = message.text.replace("/checktropical ", "")
     try:
-        notification = getTopTropical()
+        notification = checkTopTropical(artist)
     except ConnectionError:
         bot.reply_to(message, 'Error connecting to Billboard , please try again later.')
     except Exception as e:
@@ -76,11 +78,28 @@ def tropicalArtistHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon$')
+@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
 def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
     try:
-        notification = getTopManga()
+        notification = getTopManga(year, month, day)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to oricon website , please try again later.')
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
+def oriconMangaMonthlyHandler(message):
+    app.logger.debug("oricon Monthly command detected")
+    _, date_str = message.text.split(' ')
+    year, month = parse_date(date_str)
+    try:
+        notification = getTopMangaMonthly(year, month)
     except ConnectionError:
         bot.reply_to(message, 'Error connecting to oricon website , please try again later.')
     except Exception as e:

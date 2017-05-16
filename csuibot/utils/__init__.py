@@ -1,10 +1,12 @@
 import re
 import time
+import urllib.error
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
-                           calculate_binary as cb, isUpWeb as iuw, notifTaker as n ,topTropical as trop, mangaTopOricon as mto)
+                           calculate_binary as cb, isUpWeb as iuw,
+                           notifTaker as n, topTropical as trop, mangaTopOricon as mto)
 
 
 def lookup_zodiac(month, day):
@@ -57,15 +59,34 @@ def takeSceleNotif():
     return notif.getPost()
 
 
-def getTopTropical():
-	topTropical = trop.topTropicalBb()
-	return topTropical.getTopTropical()
+def checkTopTropical(artist):
+    topTropical = trop.topTropicalBb()
+    return topTropical.checkTopTropical(artist)
 
 
-def getTopManga():
-	manga = mto.mangaTopOricon()
-	return manga.getTopManga()
-	
+def getTopManga(year, month, day):
+    manga = mto.mangaTopOricon()
+    try:
+        hasil = manga.getTopManga(str(year), str(month), str(day))
+    except urllib.error.URLError as err:
+        if(err.code == 404):
+            return "Page not found, you may gave incorrect date"
+        else:
+            return "unexpected Error Happened"
+    return hasil
+
+
+def getTopMangaMonthly(year, month):
+    manga = mto.mangaTopOricon()
+    try:
+        hasil = manga.getTopMangaMonthly(str(year), str(month))
+    except urllib.error.URLError as err:
+        if(err.code == 404):
+            return "Page not found, you may gave incorrect date"
+        else:
+            return "unexpected Error Happened"
+    return hasil
+
 
 def lookup_isUpWeb(url):
     pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
