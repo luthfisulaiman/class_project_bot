@@ -42,19 +42,21 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
-def parse_date(text):
-    return tuple(map(int, text.split('-')))
-
-@bot.message_handler(regexp=r'^/tweet recent ?.*$')
+@bot.message_handler(regexp=r'^/tweet ?.* ?.*$')
 def get_notif_twitter(message):
     app.logger.debug("'tweet recent' command detected")
     try:
-        cmd1, cmd2, user = message.text.split(' ')
+        _, cmd2, user = message.text.split(' ')
     except ValueError:
-        bot.reply_to(message, 'Invalid user')
+        bot.reply_to(message, 'Wrong command')
     else:
-        if cmd1 == 'tweet' and cmd2 = 'recent':
+        app.logger.debug("option = {}".format(cmd2))
+        if cmd2 == 'recent':
             five_tweets = get_tweets(user)
             bot.reply_to(message, five_tweets)
         else:
-            bot.reply_to(message, 'Wrong command')
+            bot.reply_to(message, 'Wrong command or invalid user')
+
+
+def parse_date(text):
+    return tuple(map(int, text.split('-')))

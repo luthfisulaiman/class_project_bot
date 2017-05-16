@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import (zodiac as z, twitter_search as ts)
 
 
 def lookup_zodiac(month, day):
@@ -46,4 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def get_tweets(user):
-    pass
+    return ts.Twitter_Search().get_tweets(user)

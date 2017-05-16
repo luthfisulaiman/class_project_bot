@@ -65,22 +65,12 @@ def test_shio_invalid_year(mocker):
 
 def test_tweet_fine(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/tweet recents qurrata_yuna')
+    mock_message = Mock(text='/tweet recent qurratayuna')
 
     get_notif_twitter(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'sesuatu' #assert something
-
-
-def test_tweet_wrong(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/tweet recents nobody') #no user is in twitter
-
-    get_notif_twitter(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == 'sesuatu' #assert something
+    assert args[1] == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
 
 
 def test_tweet_bad_cmd(mocker):
@@ -90,24 +80,24 @@ def test_tweet_bad_cmd(mocker):
     get_notif_twitter(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'sesuatu' #assert something
+    assert args[1] == 'Wrong command or invalid user'
 
 
 def test_tweet_not_complete(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/tweet recents')
+    mock_message = Mock(text='/tweet recent')
 
     get_notif_twitter(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'sesuatu' #assert something
+    assert args[1] == 'Wrong command'
 
 
-def test_tweet_fine(mocker):
+def test_tweet_bad_wrong(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/tweet')
 
     get_notif_twitter(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Wrong command' #assert something
+    assert args[1] == 'Wrong command'

@@ -259,12 +259,8 @@ class TestTweet:
 
     def test_tweet_true(self):
         res = utils.get_tweets('qurratayuna')
-        assert = 'sesuatu' #not yet
+        assert res == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
 
-    def test_tweet_none(self):
-        res = utils.get_tweets('')
-        assert = 'sesuatu' #not done
-
-    def test_tweet_wrong_user(self):
-        res = utils.get_tweets('foo')
-        assert = 'sesuatu' #not done
+    # def test_tweet_wrong_user(self):
+    #     res = utils.get_tweets('foo')
+    #     assert == 'sesuatu' #not done
