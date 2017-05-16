@@ -18,7 +18,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
-                           topTropical as trop, mangaTopOricon as mto)
+                           topTropical as trop, mangaTopOricon as mto, tagging)
 
 
 def lookup_zodiac(month, day):
@@ -443,3 +443,8 @@ def lookup_weton(year, month, day):
         return 'Year/Month/Day is invalid'
     except ValueError:
         return 'Year/Month/Day is invalid'
+
+
+def auto_tag(message):
+    photoid = message.photo[-1].file_id
+    return tagging.Tagging(photoid).getTag()
