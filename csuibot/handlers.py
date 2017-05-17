@@ -415,13 +415,17 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/sentiment \w+')
+@bot.message_handler(commands=['sentiment'])
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
     input_text = message.text[11::]
     app.logger.debug('input_text = {}'.format(input_text))
-    result = lookup_sentiment(input_text)
-    bot.reply_to(message, result)
+    try:
+        result = lookup_sentiment(input_text)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, result)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
