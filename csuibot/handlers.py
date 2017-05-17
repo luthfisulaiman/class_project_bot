@@ -174,7 +174,7 @@ def tropicalArtistHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}\-\d{2}$')
 def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
     _, date_str = message.text.split(' ')
@@ -190,7 +190,7 @@ def oriconMangaHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}$')
 def oriconMangaMonthlyHandler(message):
     app.logger.debug("oricon Monthly command detected")
     _, date_str = message.text.split(' ')
