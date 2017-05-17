@@ -1,10 +1,11 @@
-from csuibot import utils
+from csuibot import utils, config
+from csuibot.utils import plant as p
+from csuibot.utils import data_processor as processor
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
 import os
 import re
 from requests.exceptions import ConnectionError
 import requests
-
 import json
 
 
@@ -213,10 +214,89 @@ class TestZodiac:
         assert res == 'Unknown zodiac'
 
 
+class TestSoundEffect:
+    def test_tom_scream(self):
+        res = utils.define_sound("/soundclip tom scream")
+        assert res == 'soundclip/tom_scream.mp3'
+
+    def test_wilhelm(self):
+        res = utils.define_sound("/soundclip wilhelm")
+        assert res == 'soundclip/wilhelm.mp3'
+
+    def test_tom_pain(self):
+        res = utils.define_sound("/soundclip tom pain")
+        assert res == 'soundclip/tom_pain.mp3'
+
+    def test_goofy(self):
+        res = utils.define_sound("/soundclip goofy")
+        assert res == 'soundclip/goofy.mp3'
+
+
 class TestNotifTaker:
     def test_notif_taker(self):
         res = utils.takeSceleNotif()
         assert res != ""
+
+
+class TestTropicalBb:
+    def test_TropicalBbExist(self):
+        res = utils.checkTopTropical("romeo santos")
+        assert res != ""
+
+    def test_TropicalConn(self):
+        try:
+            res = utils.checkTopTropical("romeo santos")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res != ""
+
+    def test_TropicalInChart(self):
+        try:
+            res = utils.checkTopTropical("romeo Santos")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res != "Artist is not in the chart"
+
+    def test_TropicalNotInChart(self):
+        try:
+            res = utils.checkTopTropical("querzatls")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            assert res == "Artist is not in the chart"
+
+
+class TestMangaTopOricon:
+    def test_TopOriconExist(self):
+        res = utils.getTopManga(2017, "05", 15)
+        assert res != ""
+
+    def test_oriconConn(self):
+        try:
+            utils.getTopManga(2017, "05", 15)
+            utils.getTopMangaMonthly(2017, "05")
+        except requests.ConnectionError as e:
+            return False
+        else:
+            return True
+
+    def test_oriconValid(self):
+        res = utils.getTopManga(2017, "05", 15)
+        assert res != "Page not found, you may gave incorrect date"
+
+    def test_oriconInvalid(self):
+        res = utils.getTopManga(2033, "05", 15)
+        assert res == "Page not found, you may gave incorrect date"
+
+    def test_oriconValidMonthly(self):
+        res = utils.getTopMangaMonthly(2017, "03")
+        assert res != "Page not found, you may gave incorrect date"
+
+    def test_oriconInvalidMonthly(self):
+        res = utils.getTopMangaMonthly(2019, "05")
+        assert res == "Page not found, you may gave incorrect date"
 
 
 class TestChineseZodiac:
@@ -264,6 +344,98 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestWiki:
+    wikipedia_summary = (
+        'The Ukrainian revolution of 2014 (also known as the'
+        ' Euromaidan Revolution or Revolution of Dignity; Ukrainian:'
+        ' Революція гідності, Revoliutsiia hidnosti) took place in'
+        ' Ukraine in February 2014, when a series of violent events'
+        ' involving protesters, riot police, and unknown shooters in'
+        ' the capital, Kiev, culminated in the ousting of Ukrainian'
+        ' President, Viktor Yanukovych. This was followed by a series'
+        ' of changes in Ukraine\'s sociopolitical system, including'
+        ' the formation of a new interim government, the restoration'
+        ' of the previous constitution, and a call to hold impromptu'
+        ' presidential elections within months.\n\n'
+        'source: https://en.wikipedia.org/wiki/2014_Ukrainian_revolution'
+    )
+
+    def test_wiki_wikipedia(self):
+        res = utils.lookup_wiki('The Ukrainian revolution of 2014')
+        assert res == self.wikipedia_summary
+
+    def test_wiki_tongkol(self):
+        res = utils.lookup_wiki('Tongkol')
+        assert res != self.wikipedia_summary
+
+    def test_wiki_value_error(self):
+        try:
+            utils.lookup_wiki('')
+        except ValueError as e:
+            assert str(e) == 'Command /wiki need an argument'
+
+    def test_wiki_page_error(self):
+        try:
+            utils.lookup_wiki('nama_nama_ikan')
+        except IndexError as e:
+            assert str(e) == (
+                'Page id "nama_nama_ikan" does not match any pages.'
+                ' Try another id!'
+            )
+
+
+class TestPlant:
+    def test_is_poisonous_true(self):
+        plant = p.Plant('test', True, 'test')
+        assert plant.is_poisonous is True
+
+    def test_is_poisonous_false(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.is_poisonous is False
+
+    def test_name(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.name == 'test'
+
+    def test_desription(self):
+        plant = p.Plant('test', False, 'test')
+        assert plant.description == 'test'
+
+
+class TestDataProcessor:
+    def test_fetch_data_is_poisonous(self):
+        test = processor.fetch_data('Daffodil')
+        assert test is not None
+
+    def test_fetch_data_not_poisonous(self):
+        test = processor.fetch_data('test')
+        assert test is not None
+
+    def test_fetch_all_data(self):
+        test = processor.fetch_all_data()
+        assert test is not None
+
+    def test_fetch_user_input(self):
+        test = processor.fetch_user_input('elephant')
+        assert test is None
+
+    def test_fetch_user_input_trivia(self):
+        test = processor.fetch_user_input('triviaplant')
+        assert test is not None
+
+    def test_fetch_user_input_ask_false(self):
+        test = processor.fetch_user_input('askplant apple')
+        assert test is not None
+
+    def test_fetch_user_input_ask_true(self):
+        test = processor.fetch_user_input('askplant Daffodil')
+        assert test is not None
+
+    def test_send_trivia(self):
+        test = processor.send_trivia()
+        assert test is not None
 
 
 class TestMessageDist:
@@ -332,7 +504,6 @@ class TestMessageDist:
 
 
 class TestMarsFasilkom:
-
     def test_marsfasilkom(self):
         marsfasilkom = (
             'Samudera laut ilmu\n'
@@ -354,7 +525,6 @@ class TestMarsFasilkom:
 
 
 class TestYelFasilkom:
-
     def test_yelFasilkom(self):
         yelfasilkom = (
             'Fasilkom!!!\n'
@@ -381,7 +551,6 @@ class TestYelFasilkom:
 
 
 class TestDiscreteMaterial:
-
     def test_number_theory(self):
         try:
             res = utils.call_discrete_material('number theory')
@@ -432,7 +601,6 @@ class TestDiscreteMaterial:
 
 
 class TestNotes:
-
     def run_test(self, command, text=''):
         if command == 'add':
             a = utils.manage_notes(command, text)
@@ -466,7 +634,6 @@ class TestNotes:
 
 
 class TestDefinisi:
-
     def run_test(self, word, expected_output):
         mean = utils.lookup_definisi(word)
         assert mean == expected_output
@@ -488,7 +655,6 @@ class TestDefinisi:
 
 
 class TestReminder:
-
     def test_reminder_return_text_one_word(self):
         output = utils.remind_me(0, "Test")
         assert output == "Test"
@@ -499,7 +665,6 @@ class TestReminder:
 
 
 class TestDefine:
-
     def test_define_diamond(self):
         res = utils.lookup_define('diamond')
         result = 'a precious stone consisting of a clear and colourless'
@@ -529,7 +694,6 @@ class TestDefine:
 
 
 class TestKelaskata:
-
     def run_test(self, word, expected):
         try:
             result = utils.lookup_kelaskata(word)
@@ -551,21 +715,50 @@ class TestKelaskata:
 
 
 class TestCustomChuckJoke:
-
     def test_custom_chuck(self):
         res = utils.custom_chuck.CustomChuckJoke().generate_custom_chuck_joke(
-                "Chuck", "Norris")
+            "Chuck", "Norris")
+
+        assert res is not None
+
+
+class TestOriconBooks:
+
+    def test_books(self):
+        res = utils.books.Books().get_top_10('2017-04-10')
 
         assert res is not None
 
     def test_fetch(self):
+        res = utils.get_oricon_books('2017-04-10')
+
+        assert res is not None
+
+    def test_no_entry(mocker):
+        res = utils.get_oricon_books('2017-10-16')
+
+        assert res == "No chart is found on this date."
+
+    def test_too_early(mocker):
+        res = utils.get_oricon_books('2017-04-03')
+
+        assert res == "Oricon books' earliest record is on 2017-04-10"
+
+    def test_not_monday(mocker):
+        res = utils.get_oricon_books('2017-05-12')
+
+        assert res == 'Oricon books command only accepts dates of Mondays.'
+
+    def test_invalid_date(mocker):
+        res = utils.get_oricon_books('2017-05-99')
+
+        assert res == 'Requested date is invalid.'
         res = utils.generate_custom_chuck_joke("Chuck", "Norris")
 
         assert res is not None
 
 
 class TestPassword:
-
     def test_minimum_length(self):
         res = utils.generate_password(1)
         assert len(res) == 1
@@ -590,7 +783,6 @@ class TestPassword:
 
 
 class TestIP:
-
     def test_wellformed_ip(self):
         res = utils.get_public_ip()
         pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
@@ -598,7 +790,6 @@ class TestIP:
 
 
 class TestHipster():
-
     def test_make_one_paragraph(self):
         res = utils.make_hipster(1)
         length = res.count("\n")
@@ -619,7 +810,6 @@ class TestHipster():
 
 
 class TestMeme:
-
     def test_success(self):
         res = utils.get_meme("Top", "Bottom")
         assert "http" in res
@@ -767,3 +957,505 @@ class TestIsSfw:
         photo_path = ''
         response = utils.image_is_sfw(photo_path)
         assert response == 'image is NSFW'
+
+
+class TestNews:
+    def test_news(self):
+        res = utils.get_articles("foo")['type']
+        assert res == 'News'
+
+
+class TestYoutube:
+    def test_get_url(self):
+        try:
+            res = utils.lookup_url('https://www.youtube.com/watch?v=kJ5PCbtiCpk')
+        except ConnectionError:
+            pass
+        except AttributeError:
+            pass
+        else:
+            assert res is not None
+
+    def test_video_not_found(self):
+        try:
+            res = utils.lookup_url('https://www.youtube.com/watch?v=kJ5PCbtwkwwkkwkwwk')
+        except ConnectionError:
+            pass
+        except AttributeError:
+            pass
+        else:
+            assert res == "This video is unavailable."
+
+    def test_no_http(self):
+        res = utils.lookup_url("youtube.com/watch?v=kJ5PCbtiCpk")
+        assert res == "Invalid URL, do you mean http://youtube.com/watch?v=kJ5PCbtiCpk ?"
+
+    def test_not_youtube_video(self):
+        res = utils.lookup_url("http://youtube.com")
+        assert res == "Please provide a YouTube video URL"
+
+
+class TestJapanArtist:
+    def test_get_artist(self):
+        try:
+            res = utils.lookup_artist('Kana Nishino')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_get_artist_not_found(self):
+        try:
+            res = utils.lookup_artist('Tulus')
+        except ConnectionError:
+            pass
+        else:
+            assert res == 'Artist not present on the Top 100 Chart'
+
+
+class TestTropicalChartBillboard:
+    def test_get_top10_200_chart(self):
+        res = utils.b.get_top10('200')
+        assert len(res['items']) == 10
+
+    def test_get_top10_tropical_chart(self):
+        res = utils.b.get_top10('tropical')
+        assert len(res['items']) == 10
+
+    def test_get_top10_hot100_chart(self):
+        res = utils.b.get_top10('hot100')
+        assert len(res['items']) == 10
+
+    def test_invalid_chart_category(self):
+        res = utils.b.get_top10('invalid')
+        assert res == 'Invalid chart category'
+
+
+class TestOriconCD:
+    def test_connection_error(self, mocker):
+        mocker.patch('csuibot.utils.ocd.Oricon_cd._get_page', side_effect=ConnectionError)
+
+        output = utils.top_ten_cd_oricon('w', '2017-05-05')
+
+        assert output == 'Error occured when connecting to Oricon website.'
+
+    def test_daily_chart(self):
+        output = utils.top_ten_cd_oricon('d', '2017-05-12')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_weekly_chart(self):
+        output = utils.top_ten_cd_oricon('w', '2017-05-15')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_montly_chart(self):
+        output = utils.top_ten_cd_oricon('m', '2017-04')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_yearly_chart(self):
+        output = utils.top_ten_cd_oricon('y', '2016')
+
+        assert len(output.split('\n')) >= 10
+
+    def test_unknown(self):
+        output = utils.top_ten_cd_oricon('d', '1854-05-05')
+
+        assert output == "Oricon don't know chart in this date"
+
+    def test_invalid_date(self):
+        output = utils.top_ten_cd_oricon('d', '9999-12-99')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_month(self):
+        output = utils.top_ten_cd_oricon('m', '2016-90')
+
+        assert output == 'Invalid date'
+
+    def test_invalid_date_format(self):
+        output = utils.top_ten_cd_oricon('d', 'Maki Cantik Sekali')
+
+        assert output == 'Invalid date'
+
+
+class TestHot100_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_hot100_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHot100_artist.err_msg
+
+    def test_h100artist_found(self):
+        exp = ("Russ\nLosin Control\n62\n")
+        self.run_test('Russ', exp)
+
+    def test_h100artist_notfound(self):
+        self.run_test('foo bar', TestHot100_artist.err_msg)
+
+
+class TestNewAge_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_newage_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestNewAge_artist.err_msg
+
+    def test_newageartist_found(self):
+        exp = ("Enya\nDark Sky Island\n7\n")
+        self.run_test('Enya', exp)
+
+    def test_newageartist_notfound(self):
+        self.run_test('foo bar', TestNewAge_artist.err_msg)
+
+
+class TestComic:
+    def test_valid(self):
+        comic = utils.get_comic('1834')
+        assert "https" in comic
+
+    def test_lower_bound(self):
+        comic = utils.get_comic('0')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+    def test_upper_bound(self):
+        comic = utils.get_comic('10000')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+    def test_invalid(self):
+        comic = utils.get_comic('abab')
+        error = 'Cant\'t found requested comic. Please ensure that your input is correct'
+        assert error == comic
+
+
+class TestHotCountry_artist:
+    err_msg = ("Artist is not present on chart or no such artist exists\n"
+               "Artist's name is case sensitive")
+
+    def run_test(self, artist, expectedresult):
+        try:
+            result = utils.find_hotcountry_artist(artist)
+            assert result == expectedresult
+        except requests.ConnectionError as ce:
+            assert str(ce) == TestHotCountry_artist.err_msg
+
+    def test_hcountryartist_found(self):
+        exp = ("Sam Hunt\nBody Like A Back Road\n1\n")
+
+        self.run_test('Sam Hunt', exp)
+
+    def test_hcountryartist_notfound(self):
+        self.run_test('foo bar', TestHotCountry_artist.err_msg)
+
+
+class TestHotcountry:
+    def run_test(self, expected):
+        try:
+            result = utils.lookup_hotcountry()
+            assert result == result  # ranking sudah berubah
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_hotcountry(self):
+        expected = "(1) Sam Hunt - Body Like A Back Road\n(2) "
+        expected += "Brett Young - In Case You Didn't Know\n(3) "
+        expected += "Luke Combs - Hurricane\n(4) Dierks Bentley - Black "
+        expected += "\n(5) Keith Urban Featuring Carrie"
+        expected += " Underwood - The Fighter\n(6) Darius Rucker - If I Told You\n(7) "
+        expected += "Jon Pardi - Dirt On My Boots\n(8) Florida Georgia Line Featuring"
+        expected += " Backstreet Boys - God, Your Mama, And Me\n(9) Kelsea Ballerini - "
+        expected += "Yeah Boy\n(10) Brantley Gilbert - The Weekend"
+        self.run_test(expected)
+
+
+class TestNewAge:
+    def run_test(self, expect):
+        try:
+            result = utils.lookup_newage()
+            assert result == result  # ranking sudah berubah
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_newage(self):
+        expected = "(1) Alice Coltrane - The Ecstatic Music Of Alice Coltrane\n"
+        expected += "(2) Armik - Enamor\n"
+        expected += "(3) Enya - Dark Sky Island\n"
+        expected += "(4) Michael S. Tyrrel - WHOLETONES\n"
+        expected += "(5) Armik - Solo Guitar Collectionn"
+        expected += "(6) Armik - Romantic Spanish Guitar, Vol. 3\n"
+        expected += "(7) Enya - Dark Sky Island\n"
+        expected += "(8) Various Artists - Music For Deep Sleep\n"
+        expected += "(9) Various Artists - 111 Tracks\n"
+        expected += "(10) George Winston - Spring Carousel"
+        self.run_test(expected)
+
+
+class TestBillArtist:
+    def run_test(self, command, expected):
+        try:
+            result = utils.lookup_billArtist(command)
+            assert result == expected
+        except requests.ConnectionError as e:
+            assert str(e) == ('Cannot connect to billboard API')
+
+    def test_billArtist_Taylor_Swift(self):
+        self.run_test('Taylor Swift', "Taylor Swift doesn't exist in bill200")
+
+    def test_billArtist_Rhoma_Irama(self):
+        self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
+
+    def test_billArtist_Pentatonix(self):
+        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #126")
+
+
+class TestSimilar:
+    def test_similar_text(self):
+        res = utils.similar_text('Tomorrow is Holiday', 'Tomorrow is Judgement day')
+        assert '%' in res
+
+    def test_similar_url(self):
+        url1 = 'https://docs.python.org/3/library/unittest.mock.html#quick-guide'
+        url2 = 'https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch'
+        res = utils.similar_text(url1, url2)
+        assert '%' in res
+
+    def test_connection_error(self):
+        res = utils.similar_text('http://www.aku1.com', 'http://www.aku2.com')
+        assert res == "Connection Error occurs, please check your url or try again later"
+
+    def test_bound(self):
+        fake1 = 'a' * 10000
+        fake2 = 'ab' * 5000
+        res = utils.similar_text(fake1, fake2)
+        assert res == "Your input is too long, please keep below 500 words"
+
+
+class TestExtractColour:
+    EXAMPLE_IMAGGA_JSON = {
+        "unsuccessful": [],
+        "results": [
+            {
+                "info": {
+                    "background_colors": [
+                        {
+                            "html_code": "#a9a9a0",
+                            "b": "160",
+                            "percentage": 67.04,
+                            "closest_palette_color": "twig",
+                            "closest_palette_distance": 4.36372161759075,
+                            "closest_palette_color_html_code": "#a29e92",
+                            "closest_palette_color_parent": "grey",
+                            "g": "169",
+                            "r": "169"
+                        }
+                    ],
+                    "foreground_colors": [
+                        {
+                            "html_code": "#2d2d21",
+                            "b": "33",
+                            "percentage": 100.0,
+                            "closest_palette_color": "graphite",
+                            "closest_palette_distance": 8.829642270845508,
+                            "closest_palette_color_html_code": "#3a3536",
+                            "closest_palette_color_parent": "black",
+                            "g": "45",
+                            "r": "45"
+                        }
+                    ],
+                    "color_percent_threshold": 1.75
+                },
+                "image": "https://api.telegram.org/file/botsomerandomstring/photos/file_2.jpg"
+            }
+        ]
+    }
+
+    EXAMPLE_TELEGRAM_JSON = {"ok": True, "result": {
+        "file_id": "id", "file_size": 65661, "file_path": "photo_path"}}
+
+    EXAMPLE_FOREGROUND_RES = "EXTRACT FGCOLOUR\n(45, 45, 33)\n#2d2d21\nPercentage: 100.0%"
+
+    EXAMPLE_BACKGROUND_RES = "EXTRACT BGCOLOUR\n(169, 169, 160)\n#a9a9a0\nPercentage: 67.04%"
+
+    # ExtractColour Class and its methods Tests #
+    def test_extract_colour_class(self, mocker):
+        # assert state
+        EC = utils.extractcolour.ExtractColour
+        instance = EC('photo_id')
+
+        # assert get_photo_url()
+        fake_response = requests.Response()
+        fake_response.status_code = 200
+        fake_response._content = bytes(json.dumps(self.EXAMPLE_TELEGRAM_JSON), 'utf-8')
+        mocker.patch('requests.get', return_value=fake_response)
+        assert instance.get_photo_url() == instance.TELEGRAM_FILE_URL.format(
+            config.TELEGRAM_BOT_TOKEN, "photo_path")
+
+        # assert extract()
+        mocker.patch('csuibot.utils.extractcolour.ExtractColour.get_photo_url',
+                     return_value='photo_path')
+        fake_response = requests.Response()
+        fake_response.status_code = 200
+        fake_response._content = bytes(json.dumps(self.EXAMPLE_IMAGGA_JSON), 'utf-8')
+        mocker.patch('requests.get', return_value=fake_response)
+
+        # for state BGCOLOUR
+        extracted = instance.extract()
+        assert extracted == self.EXAMPLE_BACKGROUND_RES
+
+        # for state FGCOLOUR
+        instance.state = EC.FGCOLOUR
+        extracted = instance.extract()
+        assert extracted == self.EXAMPLE_FOREGROUND_RES
+
+    # utils.extract_colour Tests #
+    def test_extract_colour_utils(self, mocker):
+        res = 'fake result'
+        photo = mocker.Mock()
+        attrs = {'file_id': 'somestr'}
+        photo.configure_mock(**attrs)
+        message = mocker.Mock()
+        attrs = {'photo': [photo], 'caption': '/bgcolour'}
+        message.configure_mock(**attrs)
+
+        mocker.patch('csuibot.utils.extractcolour.ExtractColour.extract',
+                     return_value='fake result')
+
+        assert utils.extract_colour(message) == res
+
+        message = mocker.Mock()
+        attrs = {'photo': [photo], 'caption': '/fgcolour'}
+        message.configure_mock(**attrs)
+
+        mocker.patch('csuibot.utils.extractcolour.ExtractColour.extract',
+                     return_value='fake result')
+
+        assert utils.extract_colour(message) == res
+
+
+class TestFakeJson:
+    def test_response(self):
+        expected = (
+            '{\n'
+            '  "userId": 1,\n'
+            '  "id": 1,\n'
+            '  "title": "sunt aut facere repellat provident occaecati excepturi'
+            ' optio reprehenderit",\n'
+            '  "body": "quia et suscipit\\nsuscipit recusandae consequuntur'
+            ' expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum'
+            ' rerum est autem sunt rem eveniet architecto"\n'
+            '}'
+        )
+
+        assert utils.get_fake_json('') == expected
+
+    def test_with_arguments(self):
+        try:
+            utils.get_fake_json('some_arguments here')
+        except ValueError as e:
+            assert str(e) == 'Command /fake_json doesn\'t need any arguments'
+
+
+class TestDetectLang:
+    def test_get_type_url(self):
+        url = 'http://google.com/'
+        assert 'url' == utils.detectlang.DetectLang(url).get_type()
+
+    def test_get_type_text(self):
+        text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        assert 'text' == utils.detectlang.DetectLang(text).get_type()
+
+    def test_text(self, mocker):
+        fake_detect_lang = {
+            'timestamp': '2017-05-10T14:00:46.882',
+            'detectedLangs': [
+                {
+                    'confidence': 0.9285,
+                    'lang': 'ro'
+                },
+                {
+                    'confidence': 0.0714,
+                    'lang': 'fr'
+                }
+            ],
+            'time': 1
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        res = utils.lookup_lang(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+            ' Vestibulum elementum condimentum suscipit. Sed semper,'
+            ' dolor eu ultrices interdum, elit quam mollis ligula,'
+            ' vel cursus nisi enim sed nunc.'
+        )
+        assert res == 'Romanian (92.85%)\nFrench (7.14%)\n'
+
+    def test_url(self, mocker):
+        fake_detect_lang = {
+            'timestamp': '2017-05-10T14:00:46.882',
+            'detectedLangs': [
+                {
+                    'confidence': 1.0,
+                    'lang': 'en'
+                }
+            ],
+            'time': 1
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        res = utils.lookup_lang('https://en.wikipedia.org/wiki/Barack_Obama')
+        assert res == 'English (100.0%)\n'
+
+    def test_null_argument(self):
+        try:
+            utils.lookup_lang('')
+        except ValueError as e:
+            assert str(e) == 'Command /detect_lang need an argument'
+
+    def test_lookup_error(self, mocker):
+        fake_detect_lang = {
+            'message': 'Unable to download the web page, request got HTTP error code: 503',
+            'code': 'error.badGateway',
+            'error': True,
+            'data': {}
+        }
+        mocker.patch(
+            'csuibot.utils.detectlang.DetectLang.make_request',
+            return_value=fake_detect_lang
+        )
+        try:
+            utils.lookup_lang('http://notrealwebsite.com')
+        except LookupError as e:
+            assert str(e) == (
+                'Unable to download the web page, request got HTTP error code: 503'
+            )
+
+
+class TestWeton:
+    def test_weton_type_error(self):
+        look = utils.lookup_weton("a", "b", "c")
+        assert look == "Year/Month/Day is invalid"
+
+    def test_weton_value_error(self):
+        look = utils.lookup_weton(1995, 12, 32)
+        assert look == "Year/Month/Day is invalid"
+
+
+class test_hot_japan_100:
+    def test_japan_100(self):
+        res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
+        assert res != "ups, something wrong is going on"

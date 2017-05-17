@@ -1,6 +1,7 @@
+from . import app, bot
 import requests
 import re
-from . import app, bot
+import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
@@ -8,8 +9,16 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist, image_is_sfw,
-                    lookup_marsfasilkom, lookup_yelfasilkom)
+                    define_sound, get_articles,
+                    lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
+                    find_hot100_artist, find_newage_artist, find_hotcountry_artist,
+                    top_ten_cd_oricon, lookup_top10_billboard_chart,
+                    lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
+                    lookup_billArtist, lookup_weton, get_oricon_books,
+                    lookup_url, lookup_artist, extract_colour, checkTopTropical,
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
+                    lookup_HotJapan100, image_is_sfw)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -21,11 +30,11 @@ def message_decorator(func):
         chat_id = message.chat.id
         add_message_dist(chat_id, hour)
         return func(message)
+
     return wrapper
 
 
 @bot.message_handler(regexp=r'^/about$')
-@message_decorator
 def help(message):
     app.logger.debug("'about' command detected")
     about_text = (
@@ -36,7 +45,6 @@ def help(message):
 
 
 @bot.message_handler(regexp=r'^/zodiac \d{4}\-\d{2}\-\d{2}$')
-@message_decorator
 def zodiac(message):
     app.logger.debug("'zodiac' command detected")
     _, date_str = message.text.split(' ')
@@ -52,7 +60,6 @@ def zodiac(message):
 
 
 @bot.message_handler(regexp=r'^/shio \d{4}\-\d{2}\-\d{2}$')
-@message_decorator
 def shio(message):
     app.logger.debug("'shio' command detected")
     _, date_str = message.text.split(' ')
@@ -65,6 +72,28 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^triviaplant')
+def plant_trivia(message):
+    try:
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^askplant')
+def plant_ask(message):
+    try:
+        txt = message.text
+        msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
 
 
 @bot.message_handler(commands=['yelfasilkom'])
@@ -98,8 +127,8 @@ def note(message):
         bot.reply_to(message, reply)
     else:
         bot.reply_to(message, 'Usage :\n' +
-                              '1. /notes view : View note in this group\n' +
-                              '2. /notes [text] : Add new note in this group\n')
+                     '1. /notes view : View note in this group\n' +
+                     '2. /notes [text] : Add new note in this group\n')
 
 
 @bot.message_handler(regexp=r'^/definisi [A-Za-z0-9 -]+$')
@@ -118,7 +147,7 @@ def definisi(message):
     else:
         app.logger.debug("'definisi_help' command detected")
         bot.reply_to(message, '/definisi [word] : return definition of' +
-                              ' the word in indonesian language\n')
+                     ' the word in indonesian language\n')
 
 
 @bot.message_handler(regexp=r'^/sceleNotif$')
@@ -126,8 +155,56 @@ def sceleNoticeHandler(message):
     app.logger.debug("scele command detected")
     try:
         notification = takeSceleNotif()
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Scele , please try again later.')
     except Exception as e:
-        bot.reply_to(message, 'Error catched')
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/checktropical.+$')
+def tropicalArtistHandler(message):
+    app.logger.debug("top tropical command detected")
+    artist = message.text.replace("/checktropical ", "")
+    try:
+        notification = checkTopTropical(artist)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Billboard , please try again later.')
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
+def oriconMangaHandler(message):
+    app.logger.debug("oricon command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+    app.logger.debug(str(year) + " " + str(month) + " " + str(day))
+    try:
+        notification = getTopManga(year, month, day)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to oricon website , please try again later.')
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
+def oriconMangaMonthlyHandler(message):
+    app.logger.debug("oricon Monthly command detected")
+    _, date_str = message.text.split(' ')
+    year, month = parse_date(date_str)
+    app.logger.debug(str(year) + " === " + str(month))
+    try:
+        notification = getTopMangaMonthly(year, month)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to oricon website , please try again later.')
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
     else:
         bot.reply_to(message, notification)
 
@@ -295,10 +372,92 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(regexp=r'^/soundhelp$')
+def soundcliphelp(message):
+    app.logger.debug("'about' command detected")
+    about_text = (
+        'SOUNDCLIPS!\n\n'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
+    )
+    bot.reply_to(message, about_text)
+
+
+@bot.message_handler(regexp=r'^/soundclip [a-z A-Z 0-9]*$')
+def soundclip(message):
+    soundtitle = define_sound(message.text.lower())
+
+    try:
+        soundclip = open(soundtitle, 'rb')
+    except FileNotFoundError:
+        bot.reply_to(message, 'Sound clip not found')
+    else:
+        bot.send_voice(message.chat.id, soundclip)
+
+
+@bot.message_handler(commands=['sentiment'])
+def sentiment(message):
+    app.logger.debug("'sentiment' command detected")
+    word_str = " ".join(message.text.split()[1:])
+    word_str = word_str.lower()
+
+    try:
+        word = lookup_sentiment(word_str)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, word)
+
+
+@bot.message_handler(regexp=r'^/oricon books ')
+def oricon_books(message):
+    app.logger.debug("'oricon' command detected")
+    app.logger.debug("oricon command type is 'books'")
+
+    try:
+        _, _, weekly, request_date = message.text.split(' ')
+        if (weekly != 'weekly'):
+            top10 = 'Oricon books command currently only supports '\
+                    'weekly ratings at this time.'
+        else:
+            app.logger.debug("oricon command type is 'weekly'")
+            top10 = get_oricon_books(request_date)
+    except ValueError:
+        error = "Invalid command structure. Example: " \
+                "'/oricon books weekly 2017-05-01'"
+        bot.reply_to(message, error)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to the oricon.co.jp website.')
+    else:
+        bot.reply_to(message, top10)
+
+
+@bot.message_handler(commands=['wiki'])
+def wiki(message):
+    app.logger.debug("'wiki' command detected")
+    term = " ".join(message.text.split()[1:])
+
+    try:
+        wiki_summary = lookup_wiki(term)
+    except ValueError:
+        bot.reply_to(message, 'Command /wiki need an argument')
+    except IndexError:
+        bot.reply_to(
+            message,
+            'Page id "' + term + '" does not match any pages. Try another id!'
+        )
+    else:
+        bot.reply_to(message, wiki_summary)
+
+
 @bot.message_handler(regexp=r'^/message_dist')
 @message_decorator
 def message_dist(message):
-
     app.logger.debug("'messagedist' command detected", message)
 
     try:
@@ -355,7 +514,7 @@ def remind(message):
     i = 2
     text = ""
     while (i < len(time_str)):
-        if(i == (len(time_str)-1)):
+        if (i == (len(time_str) - 1)):
             text += time_str[i]
         else:
             text += time_str[i] + " "
@@ -420,7 +579,7 @@ def define(message):
     except requests.HTTPError as e:
         bot.reply_to(
             message,
-            '"'+command + '" is not an english word')
+            '"' + command + '" is not an english word')
     except ValueError as e:
         bot.reply_to(message, 'Command /define need an argument')
     else:
@@ -439,7 +598,7 @@ def kelaskata(message):
     except requests.ConnectionError as e:
         bot.reply_to(
             message,
-            '"'+command + '" is not a word')
+            '"' + command + '" is not a word')
     else:
         bot.reply_to(message, kelas_kata)
 
@@ -466,21 +625,32 @@ def loremipsum(message):
         bot.reply_to(message, loripsum)
 
 
-@bot.message_handler(regexp=r'^/xkcd$')
+@bot.message_handler(regexp=r'^/xkcd')
 def xkcd(message):
     app.logger.debug("'xkcd' command detected")
-    try:
-        comic = fetch_latest_xkcd()
-    except ValueError:
-        bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
-    except requests.exceptions.ConnectionError:
-        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
-    except requests.exceptions.RequestException:
-        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    command = message.text.split(" ")
+    if (len(command) == 1):
+        try:
+            comic = fetch_latest_xkcd()
+        except ValueError:
+            bot.reply_to(message, 'Command is invalid. You can only use "/xkcd" command.')
+        except requests.exceptions.ConnectionError:
+            bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+        except requests.exceptions.RequestException:
+            bot.reply_to(message, 'An error occured. Please try again in a moment.')
+        else:
+            bot.reply_to(message, comic)
+    elif (len(command) == 2):
+        try:
+            comic = get_comic(command[1])
+        except requests.exceptions.ConnectionError:
+            bot.reply_to(message, 'Can\'t connect to the server. Please try again later')
+        else:
+            bot.reply_to(message, comic)
     else:
-        bot.reply_to(message, comic)
+        bot.reply_to(message, 'Command is invalid. please user /xkcd <id> or /xkcd format')
 
 
 @bot.message_handler(commands=['yelkomputer'])
@@ -543,3 +713,284 @@ def check_sfw_image(message):
     app.logger.debug(photo_file_path)
     sfw_check = image_is_sfw(photo_file_path)
     bot.reply_to(message, sfw_check)
+
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+def news(message):
+    app.logger.debug("'get news' command detected")
+    command, keyword = message.text.split(' ', 1)
+
+    try:
+        news = get_articles(message.text)['value']
+    except ConnectionError:
+        bot.reply_to(message, "Sorry, connection error. Try again later insyaAllah bisa")
+    else:
+        bot.reply_to(message, news)
+
+
+@bot.message_handler(regexp=r'^/billboard japan100$')
+def japan100(message):
+    rss_url = "http://www.billboard.com/rss/charts/japan-hot-100"
+    html = urllib.request.urlopen(rss_url).read()
+    html = str(html)
+    try:
+        reply = lookup_HotJapan100(html)
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(regexp=r'^\/youtube\s*$')
+def youtube_no_url(message):
+    bot.reply_to(message, "'youtube' command needs an url")
+
+
+@bot.message_handler(regexp=r'^(\/youtube) .+$')
+def youtube(message):
+    app.logger.debug("'youtube' command detected")
+    _, url = message.text.split(' ')
+
+    try:
+        youtube = lookup_url(url)
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Youtube')
+    else:
+        bot.reply_to(message, youtube)
+
+
+@bot.message_handler(regexp=r'^(\/billboard japan100) .+$')
+def japanartist(message):
+    app.logger.debug("'billboard japan100 artist comand detacted'")
+    artist = " ".join(message.text.split(' ')[2:])
+    app.logger.debug('artist = {}'.format(artist))
+
+    try:
+        _artist = lookup_artist(artist)
+    # except ValueError:
+    #     bot.reply_to(message, 'Command /billboard japan100 need an arguments')
+    except ConnectionError:
+        bot.reply_to(message, 'Error connecting to Billboard RSS Feed')
+    else:
+        bot.reply_to(message, _artist)
+
+
+@bot.message_handler(commands=['detect_lang'])
+def detect_lang(message):
+    app.logger.debug("'detect_lang' command detected")
+    arg = " ".join(message.text.split()[1:])
+
+    try:
+        used_langs = lookup_lang(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except LookupError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, used_langs)
+
+
+@bot.message_handler(commands=['fake_json'])
+def fake_json(message):
+    app.logger.debug("'fake_json' command detected")
+
+    arg = " ".join(message.text.split()[1:])
+    try:
+        fakejson = get_fake_json(arg)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, fakejson)
+
+
+@bot.message_handler(regexp=r'^\/docs_sim')
+def similar(message):
+    app.logger.debug("'similarity text' command detected")
+    command = message.text.split(' ')
+    if (len(command) != 3):
+        bot.reply_to(message, 'Command invalid, please use /docs_sim <text1> <text2> format')
+    else:
+        try:
+            percentage = similar_text(command[1], command[2])
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP Error occurs, please try again later')
+        else:
+            bot.reply_to(message, percentage)
+
+
+@bot.message_handler(regexp=r'/billboard (tropicial|hot100|200)$')
+def billboard_chart(message):
+    app.logger.debug("billboard command detected")
+    _, chart_category = message.text.split(' ')
+    app.logger.debug('chart category = {}'.format(str(chart_category)))
+    result = lookup_top10_billboard_chart(chart_category)
+    bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'/oricon jpsingles(| .*)$')
+def oricon_cd(message):
+    app.logger.debug("'oricon CD' command detected")
+    help_text = 'Usage: /oricon jpsingles [weekly|daily]' + \
+                ' YYYY[-MM[-DD]]\nNote: for weekly chart you must insert' + \
+                ' date of the monday in that week'
+
+    command = message.text.split(' ')
+    app.logger.debug(command)
+
+    if len(command) == 3:
+        if len(command[2].split('-')) == 1:
+            chart_type = 'y'
+        else:
+            chart_type = 'm'
+
+        chart = top_ten_cd_oricon(chart_type, command[2])
+        bot.reply_to(message, chart)
+    elif len(command) == 4:
+        if command[2] == 'weekly':
+            chart_type = 'w'
+        elif command[2] == 'daily':
+            chart_type = 'd'
+        else:
+            bot.reply_to(message, help_text)
+            return
+        chart = top_ten_cd_oricon(chart_type, command[3])
+        bot.reply_to(message, chart)
+    else:
+        bot.reply_to(message, help_text)
+
+
+@bot.message_handler(regexp=r'^/billboard hot100 .*$')
+def hot100_artist(message):
+    app.logger.debug("'billboard hot100' command detected")
+
+    s2 = "hot100 "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard hot100' argument is " + name)
+    try:
+        artist = find_hot100_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard newage .*$')
+def newage_artist(message):
+    app.logger.debug("'billboard newage' command detected")
+
+    s2 = "newage "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard newage' argument is " + name)
+    try:
+        artist = find_newage_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard hotcountry .*$')
+def hotcountry_artist(message):
+    app.logger.debug("'billboard hotcountry' command detected")
+
+    s2 = "hotcountry "
+
+    name = (message.text[message.text.index(s2) + len(s2):])
+
+    app.logger.debug("'billboard hotcountry' argument is " + name)
+    try:
+        artist = find_hotcountry_artist(name)
+    except ConnectionError:
+        bot.reply_to(message, "Connection Error")
+    else:
+        bot.reply_to(message, artist)
+
+
+@bot.message_handler(regexp=r'^/billboard hotcountry$')
+def hotcountry(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        hotcountry = lookup_hotcountry()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, hotcountry)
+
+
+@bot.message_handler(regexp=r'^/billboard newage$')
+def newage(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        newage = lookup_newage()
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, newage)
+
+
+@bot.message_handler(regexp=r'^/billboard bill200 (.*)$')
+def billArtist(message):
+    app.logger.debug("'billboard' command detected")
+    try:
+        name = message.text[message.text.index("bill200") + len("bill200") + 1:]
+        billArtist = lookup_billArtist(name)
+        app.logger.debug("artist's name" + name)
+        app.logger.debug("lookup result" + billArtist)
+    except ConnectionError:
+        bot.reply_to(message, 'Cannot connect to billboard API')
+    else:
+        bot.reply_to(message, billArtist)
+
+
+@bot.message_handler(regexp=r'^/primbon \d{4}\-\d{2}\-\d{2}$')
+@message_decorator
+def primbon(message):
+    app.logger.debug("'primbon' command detected")
+    _, date_str = message.text.split(' ')
+    year, month, day = parse_date(date_str)
+
+    weton = lookup_weton(year, month, day)
+    bot.reply_to(message, weton)
+
+
+def check_caption_colour(message):
+    return message.caption in ['/bgcolour', '/fgcolour']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_colour)
+def extract_colour_from_image(message):
+    app.logger.debug("'extract_colour_from_image' handler executed")
+    try:
+        extracted = extract_colour(message)
+    except IndexError:
+        bot.reply_to(message, 'Colour not extracted.')
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    else:
+        bot.reply_to(message, extracted)
+
+
+def check_caption_tag(message):
+    return message.caption in ['/tag']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_tag)
+def tagimage(message):
+    app.logger.debug("'tag image' command detected")
+    try:
+        tag = auto_tag(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Immaga API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        bot.reply_to(message, tag)

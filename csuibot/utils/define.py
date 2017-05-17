@@ -5,8 +5,8 @@ import json
 
 class define:
     def __init__(self, word):
-        self.app_id = 'f0d6d4d9'
-        self.app_key = '1194193a908a3b2612852bd7bd5ad2c3'
+        self.app_id = '66a5f32e'
+        self.app_key = '29e8f09707d685c0ae322ccfe67e3ee1'
 
         self.language = 'en'
         self.word_id = word
