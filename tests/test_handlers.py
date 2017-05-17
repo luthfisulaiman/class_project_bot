@@ -17,7 +17,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, sentiment, japan100,
-                              get_notif_twitter, air_quality)
+                              get_notif_twitter, air_quality,
+                              weather)
 from requests.exceptions import ConnectionError
 
 
@@ -2067,3 +2068,22 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+"""
+This is the BEGINNING of -weatherbot- testhandler code
+"""
+
+def test_weather(mocker):
+    pass
+
+
+def test_configure_weather(mocker):
+    pass
+
+
+def test_group_weather(mocker):
+    pass
+"""
+This is the END of -weatherbot- testhandler code
+"""

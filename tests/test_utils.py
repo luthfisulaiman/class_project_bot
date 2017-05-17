@@ -1465,3 +1465,22 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+"""
+This is the BEGINNING of -weatherbot- testutil code
+"""
+
+
+class TestLookupWeather:
+    pass
+
+
+class TestConfigureWeather:
+    pass
+
+class TestGroupLookupWeather:
+    pass
+
+"""
+This is the END of -weatherbot- testutil code
+"""
