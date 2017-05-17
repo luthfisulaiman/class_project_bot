@@ -1,6 +1,7 @@
 from . import app, bot
 import requests
 import re
+import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
@@ -16,7 +17,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, auto_tag)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
+                    lookup_HotJapan100)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -398,6 +400,15 @@ def soundclip(message):
         bot.send_voice(message.chat.id, soundclip)
 
 
+@bot.message_handler(regexp=r'^/sentiment \w+')
+def sentiment(message):
+    app.logger.debug("'sentiment' command detected")
+    _, word_str = message.text.split(' ', 1)
+    word_str = word_str.lower()
+    word = lookup_sentiment(word_str)
+    bot.reply_to(message, word)
+
+
 @bot.message_handler(regexp=r'^/oricon books ')
 def oricon_books(message):
     app.logger.debug("'oricon' command detected")
@@ -690,6 +701,20 @@ def news(message):
         bot.reply_to(message, news)
 
 
+@bot.message_handler(regexp=r'^/billboard japan100$')
+def japan100(message):
+    rss_url = "http://www.billboard.com/rss/charts/japan-hot-100"
+    html = urllib.request.urlopen(rss_url).read()
+    html = str(html)
+    try:
+        reply = lookup_HotJapan100(html)
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
+
+
 @bot.message_handler(regexp=r'^\/youtube\s*$')
 def youtube_no_url(message):
     bot.reply_to(message, "'youtube' command needs an url")
@@ -938,5 +963,7 @@ def tagimage(message):
         tag = auto_tag(message)
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to Immaga API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)

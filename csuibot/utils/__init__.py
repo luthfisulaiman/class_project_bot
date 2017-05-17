@@ -4,6 +4,8 @@ import re
 import time
 import urllib.error
 import requests
+from bs4 import BeautifulSoup
+from nltk.classify import NaiveBayesClassifier
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -71,6 +73,35 @@ def define_sound(inputKey):
     soundtitle = title.replace(" ", "_") + ".mp3"
 
     return 'soundclip/' + soundtitle
+
+
+def word_feats(words):
+    return dict([(word, True) for word in words])
+
+
+def lookup_sentiment(word):
+    positive_vocab = (['good', 'nice', 'great', 'awesome', 'terrific',
+                      ':)', ':-)', 'like', 'love'])
+    negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
+    positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
+    negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
+    train_set = negative_features + positive_features
+    classifier = NaiveBayesClassifier.train(train_set)
+    neg = 0
+    pos = 0
+    words = word.split(' ')
+
+    for i in words:
+        classresult = classifier.classify(word_feats(i))
+        if classresult == 'neg':
+            neg = neg + 1
+        if classresult == 'pos':
+            pos = pos + 1
+    try:
+        return ('Positive: ' + str(float(pos)/len(words)) +
+                '\nNegative: ' + str(float(neg)/len(words)))
+    except KeyError:
+        return 'not found'
 
 
 def get_oricon_books(date):
@@ -412,6 +443,21 @@ def get_articles(message_text):
         out += brackets + '\n\n'
     res = {'type': articles['_type'], 'value': out}
     return res
+
+
+def lookup_HotJapan100(html):
+    string = ''
+    soup = BeautifulSoup(html, 'html.parser')
+    title = soup.find_all('title')[1:11]
+    artist = soup.find_all('artist')[1:11]
+    for i in range(10):
+        if i < 9:
+            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-" + artist[i].string
+            string += '\n'
+        elif i == 9:
+            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
+            string += '\n'
+    return (string)
 
 
 def lookup_url(url):
