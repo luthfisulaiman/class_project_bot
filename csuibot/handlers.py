@@ -9,7 +9,6 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    define_sound, get_articles,
                     lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
@@ -18,7 +17,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets)
+                    lookup_HotJapan100)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -72,22 +71,6 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
-
-
-@bot.message_handler(regexp=r'^/tweet ?.* ?.*$')
-def get_notif_twitter(message):
-    app.logger.debug("'tweet recent' command detected")
-    try:
-        _, cmd2, user = message.text.split(' ')
-    except ValueError:
-        bot.reply_to(message, 'Wrong command')
-    else:
-        app.logger.debug("option = {}".format(cmd2))
-        if cmd2 == 'recent':
-            five_tweets = get_tweets(user)
-            bot.reply_to(message, five_tweets)
-        else:
-            bot.reply_to(message, 'Wrong command or invalid user')
 
 
 @bot.message_handler(regexp=r'^triviaplant')
@@ -193,10 +176,10 @@ def tropicalArtistHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}\-\d{2}$')
+@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
 def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
-    _, _, date_str = message.text.split(' ')
+    _, date_str = message.text.split(' ')
     year, month, day = parse_date(date_str)
     app.logger.debug(str(year) + " " + str(month) + " " + str(day))
     try:
@@ -209,10 +192,10 @@ def oriconMangaHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}$')
+@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
 def oriconMangaMonthlyHandler(message):
     app.logger.debug("oricon Monthly command detected")
-    _, _, date_str = message.text.split(' ')
+    _, date_str = message.text.split(' ')
     year, month = parse_date(date_str)
     app.logger.debug(str(year) + " === " + str(month))
     try:
@@ -388,46 +371,13 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'^/soundhelp$')
-def soundcliphelp(message):
-    app.logger.debug("'about' command detected")
-    about_text = (
-        'SOUNDCLIPS!\n\n'
-        'To use this bot, start with /soundclip\n'
-        'followed by a keyword\n\n'
-        'Available soundclips:\n'
-        '-Goofy\n'
-        '-Tom Pain\n'
-        '-Tom Scream\n'
-        '-Wilhelm\n'
-    )
-    bot.reply_to(message, about_text)
-
-
-@bot.message_handler(regexp=r'^/soundclip [a-z A-Z 0-9]*$')
-def soundclip(message):
-    soundtitle = define_sound(message.text.lower())
-
-    try:
-        soundclip = open(soundtitle, 'rb')
-    except FileNotFoundError:
-        bot.reply_to(message, 'Sound clip not found')
-    else:
-        bot.send_voice(message.chat.id, soundclip)
-
-
-@bot.message_handler(commands=['sentiment'])
+@bot.message_handler(regexp=r'^/sentiment \w+')
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
-    word_str = " ".join(message.text.split()[1:])
-    word_str = word_str.lower()
-
-    try:
-        word = lookup_sentiment(word_str)
-    except ValueError:
-        bot.reply_to(message, 'Command /sentiment need an argument')
-    else:
-        bot.reply_to(message, word)
+    input_text = message.text[11::]
+    app.logger.debug('input_text = {}'.format(input_text))
+    result = lookup_sentiment(input_text)
+    bot.reply_to(message, result)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
@@ -709,19 +659,6 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
-def news(message):
-    app.logger.debug("'get news' command detected")
-    command, keyword = message.text.split(' ', 1)
-
-    try:
-        news = get_articles(message.text)['value']
-    except ConnectionError:
-        bot.reply_to(message, "Sorry, connection error. Try again later insyaAllah bisa")
-    else:
-        bot.reply_to(message, news)
-
-
 @bot.message_handler(regexp=r'^/billboard japan100$')
 def japan100(message):
     rss_url = "http://www.billboard.com/rss/charts/japan-hot-100"
@@ -813,7 +750,7 @@ def similar(message):
             bot.reply_to(message, percentage)
 
 
-@bot.message_handler(regexp=r'/billboard (tropical|hot100|200)$')
+@bot.message_handler(regexp=r'/billboard (tropicial|hot100|200)$')
 def billboard_chart(message):
     app.logger.debug("billboard command detected")
     _, chart_category = message.text.split(' ')
