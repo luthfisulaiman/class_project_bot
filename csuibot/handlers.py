@@ -17,7 +17,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100)
+                    lookup_HotJapan100, get_tweets, get_aqi_city, get_aqi_coord)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -71,6 +71,50 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(commands=['aqi'])
+def air_quality(message):
+    app.logger.debug("'aqi' command detected")
+    arr_loc = message.text.split(' ', 1)
+
+    if(len(arr_loc) > 1 and not arr_loc[1].isspace() and len(arr_loc[1]) > 0):
+        loc = arr_loc[1]
+
+        if(re.match(r'^(\d+[.]?\d+|\d) (\d+[.]?\d+|\d)$', loc)):
+            try:
+                result = get_aqi_coord(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+        elif (re.match(r'^[a-zA-Z0-9\s]*$', loc)):
+            try:
+                result = get_aqi_city(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+    else:
+        bot.reply_to(message, "Invalid city name or coordinate, please try again")
+
+
+@bot.message_handler(regexp=r'^/tweet ?.* ?.*$')
+def get_notif_twitter(message):
+    app.logger.debug("'tweet recent' command detected")
+    try:
+        _, cmd2, user = message.text.split(' ')
+    except ValueError:
+        bot.reply_to(message, 'Wrong command')
+    else:
+        app.logger.debug("option = {}".format(cmd2))
+        if cmd2 == 'recent':
+            five_tweets = get_tweets(user)
+            bot.reply_to(message, five_tweets)
+        else:
+            bot.reply_to(message, 'Wrong command or invalid user')
 
 
 @bot.message_handler(regexp=r'^triviaplant')
