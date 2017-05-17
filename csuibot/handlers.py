@@ -18,7 +18,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100)
+                    lookup_HotJapan100, get_tweets)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -72,6 +72,22 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(regexp=r'^/tweet ?.* ?.*$')
+def get_notif_twitter(message):
+    app.logger.debug("'tweet recent' command detected")
+    try:
+        _, cmd2, user = message.text.split(' ')
+    except ValueError:
+        bot.reply_to(message, 'Wrong command')
+    else:
+        app.logger.debug("option = {}".format(cmd2))
+        if cmd2 == 'recent':
+            five_tweets = get_tweets(user)
+            bot.reply_to(message, five_tweets)
+        else:
+            bot.reply_to(message, 'Wrong command or invalid user')
 
 
 @bot.message_handler(regexp=r'^triviaplant')
@@ -177,10 +193,10 @@ def tropicalArtistHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}\-\d{2}$')
 def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
-    _, date_str = message.text.split(' ')
+    _, _, date_str = message.text.split(' ')
     year, month, day = parse_date(date_str)
     app.logger.debug(str(year) + " " + str(month) + " " + str(day))
     try:
@@ -193,10 +209,10 @@ def oriconMangaHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}$')
 def oriconMangaMonthlyHandler(message):
     app.logger.debug("oricon Monthly command detected")
-    _, date_str = message.text.split(' ')
+    _, _, date_str = message.text.split(' ')
     year, month = parse_date(date_str)
     app.logger.debug(str(year) + " === " + str(month))
     try:
@@ -693,7 +709,7 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)
@@ -797,7 +813,7 @@ def similar(message):
             bot.reply_to(message, percentage)
 
 
-@bot.message_handler(regexp=r'/billboard (tropicial|hot100|200)$')
+@bot.message_handler(regexp=r'/billboard (tropical|hot100|200)$')
 def billboard_chart(message):
     app.logger.debug("billboard command detected")
     _, chart_category = message.text.split(' ')

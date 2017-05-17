@@ -346,6 +346,13 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestTweet:
+
+    def test_tweet_true(self):
+        res = utils.get_tweets('qurratayuna')
+        assert res == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
+
+
 class TestWiki:
     wikipedia_summary = (
         'The Ukrainian revolution of 2014 (also known as the'
