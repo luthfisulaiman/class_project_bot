@@ -214,6 +214,24 @@ class TestZodiac:
         assert res == 'Unknown zodiac'
 
 
+class TestSoundEffect:
+    def test_tom_scream(self):
+        res = utils.define_sound("/soundclip tom scream")
+        assert res == 'soundclip/tom_scream.mp3'
+
+    def test_wilhelm(self):
+        res = utils.define_sound("/soundclip wilhelm")
+        assert res == 'soundclip/wilhelm.mp3'
+
+    def test_tom_pain(self):
+        res = utils.define_sound("/soundclip tom pain")
+        assert res == 'soundclip/tom_pain.mp3'
+
+    def test_goofy(self):
+        res = utils.define_sound("/soundclip goofy")
+        assert res == 'soundclip/goofy.mp3'
+
+
 class TestNotifTaker:
     def test_notif_taker(self):
         res = utils.takeSceleNotif()
@@ -929,6 +947,12 @@ class TestChuck:
             assert res is not None
 
 
+class TestNews:
+    def test_news(self):
+        res = utils.get_articles("foo")['type']
+        assert res == 'News'
+
+
 class TestYoutube:
     def test_get_url(self):
         try:
@@ -1417,3 +1441,9 @@ class TestWeton:
     def test_weton_value_error(self):
         look = utils.lookup_weton(1995, 12, 32)
         assert look == "Year/Month/Day is invalid"
+
+
+class test_hot_japan_100:
+    def test_japan_100(self):
+        res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
+        assert res != "ups, something wrong is going on"

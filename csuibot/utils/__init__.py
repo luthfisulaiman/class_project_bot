@@ -4,13 +4,14 @@ import re
 import time
 import urllib.error
 import requests
+from bs4 import BeautifulSoup
 from nltk.classify import NaiveBayesClassifier
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod,
+                           compute as co, definisi, note, dayofdate as dod, news,
                            chuck, discretemath as dm, marsfasilkom, yelfasilkom,
                            wiki, xkcd2 as x2, similar,
                            billboard_hot100_artist as felh,
@@ -64,6 +65,14 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def define_sound(inputKey):
+
+    title = inputKey.split(' ', 1)[1]
+    soundtitle = title.replace(" ", "_") + ".mp3"
+
+    return 'soundclip/' + soundtitle
 
 
 def word_feats(words):
@@ -419,6 +428,36 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def get_articles(message_text):
+
+    articles = news.News().get_news(message_text)
+
+    brackets = '========================='
+    out = brackets + '\n\n'
+    for values in articles['value'][0:5]:
+        out += ("[" + values['name'] + "]\n\n")
+        out += (values['description'] + "\n")
+        out += ("LINK: " + values['url'] + "\n\n")
+        out += brackets + '\n\n'
+    res = {'type': articles['_type'], 'value': out}
+    return res
+
+
+def lookup_HotJapan100(html):
+    string = ''
+    soup = BeautifulSoup(html, 'html.parser')
+    title = soup.find_all('title')[1:11]
+    artist = soup.find_all('artist')[1:11]
+    for i in range(10):
+        if i < 9:
+            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-" + artist[i].string
+            string += '\n'
+        elif i == 9:
+            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
+            string += '\n'
+    return (string)
 
 
 def lookup_url(url):
