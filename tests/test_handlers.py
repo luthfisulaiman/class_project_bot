@@ -7,15 +7,17 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               compute_help, compute_not_binary, composer,
                               remind, isUp, sceleNoticeHandler, definisi, note,
                               dayofdate, invalid_dayofdate, empty_dayofdate,
+                              soundcliphelp, soundclip, news,
                               marsfasilkom, yelfasilkom, wiki, youtube, youtube_no_url,
                               chuck, get_discrete_material as dm, message_dist, similar,
                               hot100_artist, newage_artist, hotcountry_artist,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
                               japanartist, extract_colour_from_image, check_caption_colour,
-                              tropicalArtistHandler, oriconMangaHandler,
-                              oriconMangaMonthlyHandler, tagimage,
-                              check_caption_tag, crop_no_image, crop_arguments)
+                              tropicalArtistHandler,
+                              oriconMangaHandler, oriconMangaMonthlyHandler,
+                              tagimage, check_caption_tag, sentiment, japan100,
+                              crop_no_image, crop_arguments)
 from requests.exceptions import ConnectionError
 
 
@@ -43,6 +45,50 @@ def test_zodiac(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_zodiac
+
+
+def test_invalidsound(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.soundclip', side_effect=FileNotFoundError)
+    mock_message = Mock(text='/soundclip jerry')
+
+    soundclip(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Sound clip not found'
+
+
+def test_soundclip(mocker):
+    directory = 'soundclip/wilhelm.mp3'
+    fake_soundclip = open(directory, 'rb')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_voice')
+    mocker.patch('csuibot.handlers.define_sound', return_value=directory)
+    mock_message = Mock(text='/soundclip wilhelm')
+
+    soundclip(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1].name is fake_soundclip.name
+
+
+def test_soundcliphelp(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+
+    soundcliphelp(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    expected_text = (
+        'SOUNDCLIPS!\n\n'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
+    )
+    assert args[1] == expected_text
 
 
 def test_zodiac_invalid_month_or_day(mocker):
@@ -77,6 +123,18 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_sentiment(mocker):
+    fake_reply = 'Positive: 0.5\nNegative: 0.5'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_sentiment', return_value=fake_reply)
+    mock_message = Mock(text='/sentiment good nice bad terrible')
+
+    sentiment(mock_message)
+    args, _ = mocked_reply_to.call_args
+
+    assert args[1] == fake_reply
 
 
 def test_oricon_books(mocker):
@@ -188,6 +246,19 @@ def test_marsfasilkom(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_marsfasilkom
+
+
+def test_news(mocker):
+    news_result = {'type': 'News', 'value': 'foo bar'}
+    fake_article = news_result['value']
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_articles', return_value=news_result)
+    mock_message = Mock(text='/getnews good news')
+
+    news(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_article
 
 
 def test_marsfasilkom_with_arguments(mocker):
@@ -1852,6 +1923,28 @@ def test_weton_minggu(mocker):
     assert args[1] == fake_weton
 
 
+def test_japan100(mocker):
+    fake_japan100 = '''(1) Colors-BUMP OF CHICKEN
+(2) Ribbon-Kana Nishino
+(3) Pa-BTOB
+(4) Movie-Mag!C Prince
+(5) Update-Austin Mahone
+(6) Dirty Work-Gen Hoshino
+(7) Koi-Mai Kuraki
+(8) Togetsukyou  (Kimi Omofu)-Keyakizaka46
+(9) Fukyouwaon-Ariana Grande & John Legend
+(10) Beauty And The Beast-Nogizaka 46
+'''
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/billboard japan100')
+
+    japan100(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_japan100
+
+
 def test_tag_image(mocker):
     fake_result = '''Tag : sky , Confidence : 38
 Tag : turbine , Confidence : 25
@@ -1869,4 +1962,4 @@ Tag : power , Confidence : 19'''
     assert check_caption_tag(mock_message)
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_result
+    assert args[1] == 'HTTP Error'
