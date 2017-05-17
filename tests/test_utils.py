@@ -947,18 +947,6 @@ class TestChuck:
             assert res is not None
 
 
-class TestIsSfw:
-    def test_sfw_image(self):
-        photo_path = ''
-        response = utils.image_is_sfw(photo_path)
-        assert response == 'image is SFW'
-
-    def test_nsfw_image(self):
-        photo_path = ''
-        response = utils.image_is_sfw(photo_path)
-        assert response == 'image is NSFW'
-
-
 class TestNews:
     def test_news(self):
         res = utils.get_articles("foo")['type']
