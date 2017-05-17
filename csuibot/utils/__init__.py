@@ -395,7 +395,9 @@ def get_crop(crop_file):
     if (crop_file == '/crop'):
         return 'You must upload an image with a caption in order to crop!'
     else:
-        return crop.Crop().do_crop(crop_file)
+        hasil = crop.Crop().do_crop(crop_file)
+        print(hasil)
+        return hasil
 
 
 def lookup_url(url):

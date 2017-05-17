@@ -664,8 +664,7 @@ def crop_image(message):
     except ValueError:
         bot.reply_to(message, 'Command /crop doesn\'t need arguments')
     else:
-        bot.reply_to(message, image_crop[1])
-        bot.reply_to(message, image_crop[0])
+        bot.reply_to(message, image_crop)
 
 
 @bot.message_handler(regexp=r'^/crop$')
