@@ -16,4 +16,5 @@ class Crop:
         message_1 = '<x1, y1> : <{}, {}>\n'.format(x1, y1)
         message_2 = '<x2, y2> : <{}, {}>\n'.format(x2, y2)
         message = message_1 + message_2
+        print(message)
         return message
