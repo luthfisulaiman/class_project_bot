@@ -1,6 +1,7 @@
 from . import app, bot
 import requests
 import re
+import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
@@ -8,6 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
+                    define_sound, get_articles,
                     lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
@@ -15,7 +17,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, get_tweets)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
+                    lookup_HotJapan100, get_tweets)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -385,6 +388,48 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(regexp=r'^/soundhelp$')
+def soundcliphelp(message):
+    app.logger.debug("'about' command detected")
+    about_text = (
+        'SOUNDCLIPS!\n\n'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
+    )
+    bot.reply_to(message, about_text)
+
+
+@bot.message_handler(regexp=r'^/soundclip [a-z A-Z 0-9]*$')
+def soundclip(message):
+    soundtitle = define_sound(message.text.lower())
+
+    try:
+        soundclip = open(soundtitle, 'rb')
+    except FileNotFoundError:
+        bot.reply_to(message, 'Sound clip not found')
+    else:
+        bot.send_voice(message.chat.id, soundclip)
+
+
+@bot.message_handler(regexp=r'^/sentiment \w+')
+def sentiment(message):
+    app.logger.debug("'sentiment' command detected")
+    word_str = " ".join(message.text.split()[1:])
+    word_str = word_str.lower()
+
+    try:
+        word = lookup_sentiment(word_str)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, word)
+
+
 @bot.message_handler(regexp=r'^/oricon books ')
 def oricon_books(message):
     app.logger.debug("'oricon' command detected")
@@ -664,6 +709,33 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+def news(message):
+    app.logger.debug("'get news' command detected")
+    command, keyword = message.text.split(' ', 1)
+
+    try:
+        news = get_articles(message.text)['value']
+    except ConnectionError:
+        bot.reply_to(message, "Sorry, connection error. Try again later insyaAllah bisa")
+    else:
+        bot.reply_to(message, news)
+
+
+@bot.message_handler(regexp=r'^/billboard japan100$')
+def japan100(message):
+    rss_url = "http://www.billboard.com/rss/charts/japan-hot-100"
+    html = urllib.request.urlopen(rss_url).read()
+    html = str(html)
+    try:
+        reply = lookup_HotJapan100(html)
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
+
+
 @bot.message_handler(regexp=r'^\/youtube\s*$')
 def youtube_no_url(message):
     bot.reply_to(message, "'youtube' command needs an url")
@@ -899,3 +971,20 @@ def extract_colour_from_image(message):
         bot.reply_to(message, 'An error occured. Please try again in a moment.')
     else:
         bot.reply_to(message, extracted)
+
+
+def check_caption_tag(message):
+    return message.caption in ['/tag']
+
+
+@bot.message_handler(content_types=['photo'], func=check_caption_tag)
+def tagimage(message):
+    app.logger.debug("'tag image' command detected")
+    try:
+        tag = auto_tag(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Immaga API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        bot.reply_to(message, tag)
