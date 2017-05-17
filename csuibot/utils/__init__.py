@@ -21,7 +21,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi)
+                           twitter_search as ts, aqi,
+                           weather)
 
 
 def lookup_zodiac(month, day):
@@ -530,3 +531,43 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+"""
+This is the BEGINNING of -weatherbot- init code
+"""
+
+def lookup_weather(location):
+    try:
+        pass
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        pass
+
+
+def update_configure_weather(config):
+    try:
+        pass
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        pass
+
+
+def lookup_group_weather(location):
+    try:
+        pass
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        pass
+"""
+This is the END of -weatherbot- init code
+"""

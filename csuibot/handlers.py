@@ -1,4 +1,5 @@
 from . import app, bot
+from telebot import types # telebot lib to create keyboard markup, imported by felicia for weatherbot
 import requests
 import re
 import urllib
@@ -1016,3 +1017,50 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+"""
+This is the BEGINNING of -weatherbot- handler code
+"""
+
+@bot.message_handler(commands=['weather'])
+def weather(message):
+    app.logger.debug("'weather' command detected")
+    try:
+        pass
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        pass
+
+
+@bot.message_handler(commands=['configure_weather'])
+def configure_weather(message):
+    app.logger.debug("'weather' command detected")
+    try:
+        pass
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        pass
+
+
+# filter on message contains "cuaca di X" and chat type group
+@bot.message_handler(func=lambda message: message.text == "cuaca di", message.chat.type == “group”)
+def group_weather(message):
+    app.logger.debug("'cuaca di' message detected in a group")
+    try:
+        pass
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        pass
+"""
+This is the END of -weatherbot- handler code
+"""
