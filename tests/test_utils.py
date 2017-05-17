@@ -346,13 +346,6 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
-class TestTweet:
-
-    def test_tweet_true(self):
-        res = utils.get_tweets('qurratayuna')
-        assert res == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
-
-
 class TestWiki:
     wikipedia_summary = (
         'The Ukrainian revolution of 2014 (also known as the'
@@ -1456,6 +1449,7 @@ class test_hot_japan_100:
         assert res != "ups, something wrong is going on"
 
 
-def test_sentiment_text():
-    res = utils.lookup_sentiment("good day")
-    assert res == "Sentiment: 0,916119"
+class test_sentiment:
+    def test_sentiment_text(self):
+        res = utils.lookup_sentiment("good day")
+        assert res == "Sentiment: 0,916119"

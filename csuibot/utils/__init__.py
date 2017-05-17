@@ -3,7 +3,7 @@ import json
 import re
 import time
 import urllib.error
-import urllib.requests
+import urllib.request
 import requests
 from bs4 import BeautifulSoup
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
