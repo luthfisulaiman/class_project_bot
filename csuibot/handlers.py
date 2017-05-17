@@ -18,7 +18,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets)
+                    lookup_HotJapan100, get_tweets, get_aqi_city, get_aqi_coord)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -72,6 +72,34 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(commands=['aqi'])
+def air_quality(message):
+    app.logger.debug("'aqi' command detected")
+    arr_loc = message.text.split(' ', 1)
+
+    if(len(arr_loc) > 1 and not arr_loc[1].isspace() and len(arr_loc[1]) > 0):
+        loc = arr_loc[1]
+
+        if(re.match(r'^(\d+[.]?\d+|\d) (\d+[.]?\d+|\d)$', loc)):
+            try:
+                result = get_aqi_coord(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+        elif (re.match(r'^[a-zA-Z0-9\s]*$', loc)):
+            try:
+                result = get_aqi_city(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+    else:
+        bot.reply_to(message, "Invalid city name or coordinate, please try again")
 
 
 @bot.message_handler(regexp=r'^/tweet ?.* ?.*$')
@@ -193,10 +221,10 @@ def tropicalArtistHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}\-\d{2}$')
 def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
-    _, date_str = message.text.split(' ')
+    _, _, date_str = message.text.split(' ')
     year, month, day = parse_date(date_str)
     app.logger.debug(str(year) + " " + str(month) + " " + str(day))
     try:
@@ -209,10 +237,10 @@ def oriconMangaHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}$')
 def oriconMangaMonthlyHandler(message):
     app.logger.debug("oricon Monthly command detected")
-    _, date_str = message.text.split(' ')
+    _, _, date_str = message.text.split(' ')
     year, month = parse_date(date_str)
     app.logger.debug(str(year) + " === " + str(month))
     try:
@@ -709,7 +737,7 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)
