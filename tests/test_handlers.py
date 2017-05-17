@@ -535,7 +535,7 @@ def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/topMangaOricon 2017-05-15')
+    mock_message = Mock(text='/oricon comic 2017-05-15')
     oriconMangaHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
@@ -546,7 +546,7 @@ def test_topMangaOriconMonthly(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopMangaMonthly', return_value=fake_manga)
-    mock_message = Mock(text='/topMangaOricon 2017-05')
+    mock_message = Mock(text='/oricon comic 2017-05')
     oriconMangaMonthlyHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args

@@ -193,10 +193,10 @@ def tropicalArtistHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}\-\d{2}$')
 def oriconMangaHandler(message):
     app.logger.debug("oricon command detected")
-    _, date_str = message.text.split(' ')
+    _, _, date_str = message.text.split(' ')
     year, month, day = parse_date(date_str)
     app.logger.debug(str(year) + " " + str(month) + " " + str(day))
     try:
@@ -209,10 +209,10 @@ def oriconMangaHandler(message):
         bot.reply_to(message, notification)
 
 
-@bot.message_handler(regexp=r'^/topMangaOricon \d{4}\-\d{2}$')
+@bot.message_handler(regexp=r'^/oricon comic \d{4}\-\d{2}$')
 def oriconMangaMonthlyHandler(message):
     app.logger.debug("oricon Monthly command detected")
-    _, date_str = message.text.split(' ')
+    _, _, date_str = message.text.split(' ')
     year, month = parse_date(date_str)
     app.logger.debug(str(year) + " === " + str(month))
     try:
