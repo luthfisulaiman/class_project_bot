@@ -1050,7 +1050,7 @@ def configure_weather(message):
 
 
 # filter on message contains "cuaca di X" and chat type group
-@bot.message_handler(func=lambda message: message.text == "cuaca di", message.chat.type == “group”)
+@bot.message_handler(func=lambda message: message.text == "cuaca di", func=lambda message: message.chat.type == “group”)
 def group_weather(message):
     app.logger.debug("'cuaca di' message detected in a group")
     try:
