@@ -101,7 +101,7 @@ def test_sentiment_none_text(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Command /sentiment need an argument'
 
-    
+
 def test_oricon_books(mocker):
     fake_output = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
