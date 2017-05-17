@@ -16,7 +16,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               japanartist, extract_colour_from_image, check_caption_colour,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
-                              tagimage, check_caption_tag, sentiment, japan100)
+                              tagimage, check_caption_tag, sentiment, japan100,
+                              get_notif_twitter)
 from requests.exceptions import ConnectionError
 
 
@@ -122,6 +123,46 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_tweet_fine(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recent qurratayuna')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
+
+
+def test_tweet_bad_cmd(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet huuuh qurrata_yuna')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command or invalid user'
+
+
+def test_tweet_not_complete(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recent')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command'
+
+
+def test_tweet_bad_wrong(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command'
 
 
 def test_sentiment(mocker):
