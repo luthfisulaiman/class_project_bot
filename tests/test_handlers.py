@@ -2067,4 +2067,3 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
->>>>>>> ab4d7e070a1328ea9dc7b92ea998087bb874bda7

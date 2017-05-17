@@ -410,7 +410,6 @@ def invalid_dayofdate(message):
                  'Incorrect use of dayofdate command. '
                  'Please write a valid date in the form of yyyy-mm-dd, '
                  'such as 2016-05-13')
->>>>>>> ab4d7e070a1328ea9dc7b92ea998087bb874bda7
 
 
 def parse_date(text):
