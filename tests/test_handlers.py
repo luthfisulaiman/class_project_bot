@@ -141,7 +141,7 @@ def test_sentiment_none_text(mocker):
     mocker.patch('csuibot.handlers.lookup_sentiment', side_effect=ValueError)
     mock_message = Mock(text='/sentiment')
 
-    wiki(mock_message)
+    sentiment(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Command /sentiment need an argument'
