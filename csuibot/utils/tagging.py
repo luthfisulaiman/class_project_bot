@@ -22,8 +22,8 @@ class Tagging:
         for i in range(4):
             msg += "Tag:{},Confidence:{}\n".format(self.get_json_tag(i),
                                                    self.get_json_confidence(i))
-        msg += "Tag:{},Confidence:{}".format(self.get_json_tag(i),
-                                             self.get_json_confidence(i))
+        msg += "Tag:{},Confidence:{}".format(self.get_json_tag(5),
+                                             self.get_json_confidence(5))
         return msg
 
     def getTag(self):

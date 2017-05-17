@@ -514,6 +514,6 @@ def lookup_weton(year, month, day):
         return 'Year/Month/Day is invalid'
 
 
-def auto_tag(message):
-    photoid = message.photo[-1].file_id
-    return tagging.Tagging(photoid).getTag()
+def auto_tag(file_name):
+    t = tagging.Tagging(file_name)
+    return t.getTag()

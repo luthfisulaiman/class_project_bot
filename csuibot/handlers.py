@@ -965,8 +965,9 @@ def check_caption_tag(message):
 @bot.message_handler(content_types=['photo'], func=check_caption_tag)
 def tagimage(message):
     app.logger.debug("'tag image' command detected")
+    file_name = message.photo[-1].file_id
     try:
-        tag = auto_tag(message)
+        tag = auto_tag(file_name)
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to Immaga API")
     except requests.exceptions.HTTPError:
