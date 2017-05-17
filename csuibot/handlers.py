@@ -415,6 +415,34 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(regexp=r'^/soundhelp$')
+def soundcliphelp(message):
+    app.logger.debug("'about' command detected")
+    about_text = (
+        'SOUNDCLIPS!\n\n'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
+    )
+    bot.reply_to(message, about_text)
+
+
+@bot.message_handler(regexp=r'^/soundclip [a-z A-Z 0-9]*$')
+def soundclip(message):
+    soundtitle = define_sound(message.text.lower())
+
+    try:
+        soundclip = open(soundtitle, 'rb')
+    except FileNotFoundError:
+        bot.reply_to(message, 'Sound clip not found')
+    else:
+        bot.send_voice(message.chat.id, soundclip)
+
+
 @bot.message_handler(commands=['sentiment'])
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
