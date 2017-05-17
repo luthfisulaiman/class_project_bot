@@ -403,10 +403,15 @@ def soundclip(message):
 @bot.message_handler(regexp=r'^/sentiment \w+')
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
-    _, word_str = message.text.split(' ', 1)
+    word_str = " ".join(message.text.split()[1:])
     word_str = word_str.lower()
-    word = lookup_sentiment(word_str)
-    bot.reply_to(message, word)
+
+    try:
+        word = lookup_sentiment(word_str)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
