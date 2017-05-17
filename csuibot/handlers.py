@@ -9,6 +9,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
+                    define_sound, get_articles,
                     lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
                     lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
@@ -371,6 +372,34 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(regexp=r'^/soundhelp$')
+def soundcliphelp(message):
+    app.logger.debug("'about' command detected")
+    about_text = (
+        'SOUNDCLIPS!\n\n'
+        'To use this bot, start with /soundclip\n'
+        'followed by a keyword\n\n'
+        'Available soundclips:\n'
+        '-Goofy\n'
+        '-Tom Pain\n'
+        '-Tom Scream\n'
+        '-Wilhelm\n'
+    )
+    bot.reply_to(message, about_text)
+
+
+@bot.message_handler(regexp=r'^/soundclip [a-z A-Z 0-9]*$')
+def soundclip(message):
+    soundtitle = define_sound(message.text.lower())
+
+    try:
+        soundclip = open(soundtitle, 'rb')
+    except FileNotFoundError:
+        bot.reply_to(message, 'Sound clip not found')
+    else:
+        bot.send_voice(message.chat.id, soundclip)
+
+
 @bot.message_handler(regexp=r'^/sentiment \w+')
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
@@ -657,6 +686,19 @@ def marsfasilkom(message):
         bot.reply_to(message, 'Command /marsfasilkom doesn\'t need any arguments')
     else:
         bot.reply_to(message, marsfasilkom)
+
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+def news(message):
+    app.logger.debug("'get news' command detected")
+    command, keyword = message.text.split(' ', 1)
+
+    try:
+        news = get_articles(message.text)['value']
+    except ConnectionError:
+        bot.reply_to(message, "Sorry, connection error. Try again later insyaAllah bisa")
+    else:
+        bot.reply_to(message, news)
 
 
 @bot.message_handler(regexp=r'^/billboard japan100$')

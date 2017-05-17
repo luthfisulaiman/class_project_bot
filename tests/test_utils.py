@@ -214,6 +214,24 @@ class TestZodiac:
         assert res == 'Unknown zodiac'
 
 
+class TestSoundEffect:
+    def test_tom_scream(self):
+        res = utils.define_sound("/soundclip tom scream")
+        assert res == 'soundclip/tom_scream.mp3'
+
+    def test_wilhelm(self):
+        res = utils.define_sound("/soundclip wilhelm")
+        assert res == 'soundclip/wilhelm.mp3'
+
+    def test_tom_pain(self):
+        res = utils.define_sound("/soundclip tom pain")
+        assert res == 'soundclip/tom_pain.mp3'
+
+    def test_goofy(self):
+        res = utils.define_sound("/soundclip goofy")
+        assert res == 'soundclip/goofy.mp3'
+
+
 class TestNotifTaker:
     def test_notif_taker(self):
         res = utils.takeSceleNotif()
@@ -927,6 +945,12 @@ class TestChuck:
             pass
         else:
             assert res is not None
+
+
+class TestNews:
+    def test_news(self):
+        res = utils.get_articles("foo")['type']
+        assert res == 'News'
 
 
 class TestYoutube:
