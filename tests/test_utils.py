@@ -1465,4 +1465,3 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
->>>>>>> ab4d7e070a1328ea9dc7b92ea998087bb874bda7

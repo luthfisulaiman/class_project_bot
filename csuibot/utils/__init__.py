@@ -68,7 +68,6 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-
 def get_aqi_coord(coord):
     return aqi.GetAQICoord(coord)
 
