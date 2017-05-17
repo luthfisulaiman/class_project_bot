@@ -3,6 +3,7 @@ import json
 import re
 import time
 import urllib.error
+import urllib.requests
 import requests
 from bs4 import BeautifulSoup
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
@@ -19,8 +20,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
-                           topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts)
+                           topTropical as trop, mangaTopOricon as mto, tagging)
 
 
 def lookup_zodiac(month, day):
@@ -65,10 +65,6 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
-
-
-def get_tweets(user):
-    return ts.Twitter_Search().get_tweets(user)
 
 
 def define_sound(inputKey):
