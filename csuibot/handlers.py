@@ -403,7 +403,7 @@ def soundclip(message):
 @bot.message_handler(regexp=r'^/sentiment \w+')
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
-    _, word_str = message.text.split(' ', 1)
+    word_str = " ".join(message.text.split()[1:])
     word_str = word_str.lower()
 
     try:
