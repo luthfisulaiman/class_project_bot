@@ -125,10 +125,10 @@ def test_shio_invalid_year(mocker):
 
 
 def test_sentiment(mocker):
-    fake_reply = 'Positive: 0.5\nNegative: 0.5'
+    fake_reply = 'Sentiment: 0.916119'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_sentiment', return_value=fake_reply)
-    mock_message = Mock(text='/sentiment good nice bad terrible')
+    mock_message = Mock(text='/sentiment good day')
 
     sentiment(mock_message)
     args, _ = mocked_reply_to.call_args

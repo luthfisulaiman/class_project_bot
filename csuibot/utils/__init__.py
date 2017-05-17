@@ -5,7 +5,6 @@ import time
 import urllib.error
 import requests
 from bs4 import BeautifulSoup
-from nltk.classify import NaiveBayesClassifier
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -75,33 +74,20 @@ def define_sound(inputKey):
     return 'soundclip/' + soundtitle
 
 
-def word_feats(words):
-    return dict([(word, True) for word in words])
-
-
-def lookup_sentiment(word):
-    positive_vocab = (['good', 'nice', 'great', 'awesome', 'terrific',
-                      ':)', ':-)', 'like', 'love'])
-    negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
-    positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
-    negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
-    train_set = negative_features + positive_features
-    classifier = NaiveBayesClassifier.train(train_set)
-    neg = 0
-    pos = 0
-    words = word.split(' ')
-
-    for i in words:
-        classresult = classifier.classify(word_feats(i))
-        if classresult == 'neg':
-            neg = neg + 1
-        if classresult == 'pos':
-            pos = pos + 1
-    try:
-        return ('Positive: ' + str(float(pos)/len(words)) +
-                '\nNegative: ' + str(float(neg)/len(words)))
-    except KeyError:
-        return 'not found'
+def lookup_sentiment(text):
+    microsoft_api = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment'
+    acc_key = '4c831ddf14ba43bd98d6f1aa527b3de66'
+    headers = {}
+    headers['Ocp-Apim-Subscription-Key'] = acc_key
+    headers['Content-Type'] = 'application/json'
+    headers['Accept'] = 'application/json'
+    postdata1 = json.dumps({"documents":  [{"id": "1", "language": "en", "text": text}]})
+    postdata2 = postdata1.encode('utf-8')
+    request = urllib.request.Request(microsoft_api, postdata2, headers)
+    response = urllib.request.urlopen(request)
+    responsejson = json.loads(response.read().decode('utf-8'))
+    sentiment = responsejson['documents'][0]['score']
+    return ('Sentiment: %f' % sentiment)
 
 
 def get_oricon_books(date):
