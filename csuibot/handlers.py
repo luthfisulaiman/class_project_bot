@@ -688,7 +688,7 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)
