@@ -17,7 +17,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, sentiment, japan100,
-                              get_notif_twitter, air_quality)
+                              get_notif_twitter)
 from requests.exceptions import ConnectionError
 
 
@@ -35,6 +35,7 @@ def test_tag_image_httperror(mocker):
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
 
 def test_help(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -138,83 +139,6 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
-
-
-def test_aqi_good(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi Singapore')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
-
-
-def test_aqi_moderate(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi Shanghai')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
-
-
-def test_aqi_sensitive(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi Beijing')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
-
-
-def test_aqi_unhealthy(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi Manali')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
-
-
-def test_aqi_very_unhealthy(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi Yuzuncuyil')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
-
-
-def test_aqi_hazardous(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi Yuzuncuyil')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
-
-
-def test_aqi_coord_moderate(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.air_quality')
-    mock_message = Mock(text='/aqi 31.2304 121.4737')
-
-    air_quality(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1]
 
 
 def test_tweet_fine(mocker):
@@ -627,7 +551,7 @@ def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/oricon comic 2017-05-15')
+    mock_message = Mock(text='/topMangaOricon 2017-05-15')
     oriconMangaHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
@@ -638,7 +562,7 @@ def test_topMangaOriconMonthly(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopMangaMonthly', return_value=fake_manga)
-    mock_message = Mock(text='/oricon comic 2017-05')
+    mock_message = Mock(text='/topMangaOricon 2017-05')
     oriconMangaMonthlyHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
