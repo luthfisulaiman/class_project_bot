@@ -758,5 +758,12 @@ class TestChuck:
 
 
 class TestIsSfw:
-    def test_is_sfw():
-        pass
+    def test_sfw_image(self):
+        photo_path = ''
+        response = utils.image_is_sfw(photo_path)
+        assert response == 'image is SFW'
+
+    def test_nsfw_image(self):
+        photo_path = ''
+        response = utils.image_is_sfw(photo_path)
+        assert response == 'image is NSFW'

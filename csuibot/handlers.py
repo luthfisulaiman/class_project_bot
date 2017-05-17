@@ -8,7 +8,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    lookup_message_dist, add_message_dist,
+                    lookup_message_dist, add_message_dist, image_is_sfw,
                     lookup_marsfasilkom, lookup_yelfasilkom)
 from requests.exceptions import ConnectionError
 import datetime
@@ -523,6 +523,23 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(commands=['is_sfw'])
-def is_sfw(message):
-    app.logger.debug("'is_sfw' command detected")
+@bot.message_handler(regexp=r'/is_sfw( .*)?')
+def check_sfw_command(message):
+    app.logger.debug("invalid is_sfw command detected")
+
+    bot.reply_to(message, 'to use is_sfw command, send photo caption with /is_sfw')
+
+
+def is_caption_image(message):
+    sfw_captions = ['/is_sfw']
+    return message.caption in sfw_captions
+
+
+@bot.message_handler(func=is_caption_image, content_types=['photo'])
+def check_sfw_image(message):
+    app.logger.debug("'is_sfw' command detected with photo sent")
+
+    photo_file_path = bot.get_file(message.photo[1].file_id).file_path
+    app.logger.debug(photo_file_path)
+    sfw_check = image_is_sfw(photo_file_path)
+    bot.reply_to(message, sfw_check)

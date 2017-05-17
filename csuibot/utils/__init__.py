@@ -8,7 +8,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
                            compute as co, definisi, note, dayofdate as dod,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom)
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, issfw)
 
 
 def lookup_zodiac(month, day):
@@ -261,5 +261,13 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def lookup_is_sfw():
-    pass
+def image_is_sfw(file_path):
+    try:
+        is_sfw = issfw.is_sfw(file_path)
+    except ValueError:
+        return 'An error prevented image from being categorized. Please try again'
+    else:
+        if is_sfw:
+            return 'image is SFW'
+        else:
+            return 'image is NSFW'
