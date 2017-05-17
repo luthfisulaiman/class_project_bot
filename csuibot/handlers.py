@@ -400,7 +400,7 @@ def soundclip(message):
         bot.send_voice(message.chat.id, soundclip)
 
 
-@bot.message_handler(regexp=r'^/sentiment \w+')
+@bot.message_handler(commands=['sentiment'])
 def sentiment(message):
     app.logger.debug("'sentiment' command detected")
     word_str = " ".join(message.text.split()[1:])
