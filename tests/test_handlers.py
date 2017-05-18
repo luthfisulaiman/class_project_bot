@@ -61,3 +61,15 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_jadwal(mocker):
+    fake_schedule = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_schedules', return_value=fake_schedule)
+    mock_message = Mock(text='/jadwal')
+
+    jadwal(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_schedule

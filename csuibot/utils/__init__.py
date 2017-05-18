@@ -51,3 +51,7 @@ def check_schedule(date):
 
 def create_schedule(date, time):
     pass
+
+
+def get_schedules():
+    pass

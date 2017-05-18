@@ -253,3 +253,11 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestSchedule:
+
+    def test_check_schedule(self):
+        res = utils.check_schedule('2017-05-18')
+
+        assert res is not None
