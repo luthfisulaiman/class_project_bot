@@ -2028,16 +2028,16 @@ def test_weton_minggu(mocker):
 
 
 def test_japan100(mocker):
-    fake_japan100 = '''(1) Colors-BUMP OF CHICKEN
-(2) Ribbon-Kana Nishino
-(3) Pa-BTOB
-(4) Movie-Mag!C Prince
-(5) Update-Austin Mahone
-(6) Dirty Work-Gen Hoshino
-(7) Koi-Mai Kuraki
-(8) Togetsukyou  (Kimi Omofu)-Keyakizaka46
-(9) Fukyouwaon-Ariana Grande & John Legend
-(10) Beauty And The Beast-Nogizaka 46
+    fake_japan100 = '''(1) Chi.Ase.Namida-RADWIMPS
+(2) Saihate Aini-M!LK
+(3) Ternero Fighter-Che'Nelle
+(4) Destiny-Kana Nishino
+(5) Pa-Mai Kuraki
+(6) Togetsukyou  (Kimi Omofu)-DOBERMAN INFINITY
+(7) Do Party-Cyaron!
+(8) Kinmirai Happy End-Gen Hoshino
+(9) Koi-CNBLUE
+(10) Shake-Keyakizaka46
 '''
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
