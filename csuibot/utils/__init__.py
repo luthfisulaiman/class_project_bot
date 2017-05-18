@@ -1,11 +1,11 @@
 from csuibot.utils import message_dist as md
 import json
+import urllib.request
 import re
 import time
 import urllib.error
 import requests
 from bs4 import BeautifulSoup
-from nltk.classify import NaiveBayesClassifier
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -68,6 +68,24 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
+def lookup_sentiment_new(text):
+    base_url = 'https://westus.api.cognitive.microsoft.com/'
+    sentiment_api = 'text/analytics/v2.0/sentiment'
+    sentimentUri = base_url + sentiment_api
+    apiKey = '4c831ddf14ba43bd98d6f1aa527b3de6'
+    headers = {}
+    headers['Ocp-Apim-Subscription-Key'] = apiKey
+    headers['Content-Type'] = 'application/json'
+    headers['Accept'] = 'application/json'
+    postData1 = json.dumps({"documents": [{"id": "1", "language": "en", "text": text}]})
+    postData2 = postData1.encode('utf-8')
+    request2 = urllib.request.Request(sentimentUri, postData2, headers)
+    response2 = urllib.request.urlopen(request2)
+    response2json = json.loads(response2.read().decode('utf-8'))
+    sentiment = response2json['documents'][0]['score']
+    return ('Sentiment:  %f' % sentiment)
+
+
 def get_aqi_coord(coord):
     return aqi.GetAQICoord(coord)
 
@@ -90,31 +108,6 @@ def define_sound(inputKey):
 
 def word_feats(words):
     return dict([(word, True) for word in words])
-
-
-def lookup_sentiment(word):
-    positive_vocab = (['good', 'nice', 'great', 'awesome', 'terrific',
-                      ':)', ':-)', 'like', 'love'])
-    negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
-    positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
-    negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
-    train_set = negative_features + positive_features
-    classifier = NaiveBayesClassifier.train(train_set)
-    neg = 0
-    pos = 0
-    words = word.split(' ')
-
-    for i in words:
-        classresult = classifier.classify(word_feats(i))
-        if classresult == 'neg':
-            neg = neg + 1
-        if classresult == 'pos':
-            pos = pos + 1
-    try:
-        return ('Positive: ' + str(float(pos)/len(words)) +
-                '\nNegative: ' + str(float(neg)/len(words)))
-    except KeyError:
-        return 'not found'
 
 
 def get_oricon_books(date):

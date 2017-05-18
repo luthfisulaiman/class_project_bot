@@ -16,8 +16,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               japanartist, extract_colour_from_image, check_caption_colour,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
-                              tagimage, check_caption_tag, sentiment, japan100,
-                              get_notif_twitter, air_quality)
+                              tagimage, check_caption_tag, japan100,
+                              get_notif_twitter, air_quality, sentiment_new)
 from requests.exceptions import ConnectionError
 
 
@@ -123,6 +123,29 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_sentiment_new(mocker):
+    fake_sentiment = "Sentiment:  0.916119"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_sentiment_new', return_value=fake_sentiment)
+    mock_message = Mock(text='/sentiment good day')
+
+    sentiment_new(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_sentiment
+
+
+def test_sentiment_invalid_input(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_sentiment_new', side_effect=ValueError)
+    mock_message = Mock(text='/sentiment')
+
+    sentiment_new(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /sentiment need an argument'
 
 
 def test_aqi_good(mocker):
@@ -240,29 +263,6 @@ def test_tweet_bad_wrong(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Wrong command'
-
-
-def test_sentiment(mocker):
-    fake_reply = 'Positive: 0.5\nNegative: 0.5'
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_sentiment', return_value=fake_reply)
-    mock_message = Mock(text='/sentiment good nice bad terrible')
-
-    sentiment(mock_message)
-    args, _ = mocked_reply_to.call_args
-
-    assert args[1] == fake_reply
-
-
-def test_sentiment_none_text(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_sentiment', side_effect=ValueError)
-    mock_message = Mock(text='/sentiment')
-
-    sentiment(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Command /sentiment need an argument'
 
 
 def test_oricon_books(mocker):

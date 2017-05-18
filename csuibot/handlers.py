@@ -17,8 +17,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets, get_aqi_city, get_aqi_coord)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -416,6 +416,19 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(commands=['sentiment'])
+def sentiment_new(message):
+    app.logger.debug("'sentiment' command detected")
+    text = message.text[11::]
+    app.logger.debug('text = {}'.format(text))
+    try:
+        result = lookup_sentiment_new(text)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, result)
+
+
 @bot.message_handler(regexp=r'^/soundhelp$')
 def soundcliphelp(message):
     app.logger.debug("'about' command detected")
@@ -442,20 +455,6 @@ def soundclip(message):
         bot.reply_to(message, 'Sound clip not found')
     else:
         bot.send_voice(message.chat.id, soundclip)
-
-
-@bot.message_handler(commands=['sentiment'])
-def sentiment(message):
-    app.logger.debug("'sentiment' command detected")
-    word_str = " ".join(message.text.split()[1:])
-    word_str = word_str.lower()
-
-    try:
-        word = lookup_sentiment(word_str)
-    except ValueError:
-        bot.reply_to(message, 'Command /sentiment need an argument')
-    else:
-        bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')

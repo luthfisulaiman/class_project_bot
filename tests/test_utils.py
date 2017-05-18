@@ -346,6 +346,12 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestSentimentNew:
+    def test_sentiment(self):
+        res = utils.lookup_sentiment_new("good day")
+        assert res == "Sentiment:  0.916119"
+
+
 class TestAirQuality:
 
     def test_aqi_city_invalid(self):
