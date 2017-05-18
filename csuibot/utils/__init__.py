@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import (zodiac as z, schedule)
 
 
 def lookup_zodiac(month, day):
@@ -45,12 +45,8 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def check_schedule(date):
-    pass
-
-
 def create_schedule(date, time):
-    pass
+    return schedule.Schedule.create_schedule(date, time)
 
 
 def get_schedules():

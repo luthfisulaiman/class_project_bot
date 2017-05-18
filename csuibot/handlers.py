@@ -52,8 +52,9 @@ def jadwal(message):
     pass
 
 
-@bot.message_handler(commands=['create_schedule'], func=lambda message: message.chat.type == "group")
-def schedule(message):
+@bot.message_handler(commands=['create_schedule'],
+                     func=lambda message: message.chat.type == "group")
+def create_schedule(message):
     app.logger.debug("'create_schedule' command detected")
     pass
 
