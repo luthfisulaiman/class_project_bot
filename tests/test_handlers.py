@@ -64,15 +64,15 @@ def test_shio_invalid_year(mocker):
 
 
 def test_sentiment_new(mocker):
-    fake_shio = 'foo bar'
+    fake_sentiment = "Sentiment:  0.916119"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_sentiment_new', return_value=fake_shio)
+    mocker.patch('csuibot.handlers.lookup_sentiment_new', return_value=fake_sentiment)
     mock_message = Mock(text='/sentiment good day')
 
     sentiment_new(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == "Sentiment:  0.916119"
+    assert args[1] == fake_sentiment
 
 
 def test_sentiment_invalid_input(mocker):
