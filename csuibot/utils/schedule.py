@@ -21,11 +21,12 @@ class Schedule:
                 for str_date, value in data['schedules'].items():
                     y, m, d = str_date.split('-')
                     the_date = date(int(y), int(m), int(d))
-                    for str_time in value.keys():
-                        the_time = time(int(str_time))
-                        if the_date > current_date or (the_date == current_date and
-                                                       the_time >= current_time):
-                            datetimes.append(datetime.combine(the_date, the_time))
+                    if the_date >= current_date:
+                        for str_time in value.keys():
+                            the_time = time(int(str_time))
+                            if the_date > current_date or (the_date == current_date and
+                                                           the_time >= current_time):
+                                datetimes.append(datetime.combine(the_date, the_time))
                 datetimes.sort()
                 for the_datetime in datetimes:
                     str_date = the_datetime.strftime("%Y-%m-%d")
