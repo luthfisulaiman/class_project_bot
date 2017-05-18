@@ -258,4 +258,4 @@ class TestChineseZodiac:
 class TestSentimentNew:
     def test_sentiment(self):
         res = utils.lookup_sentiment_new("good day")
-        assert res == "Sentiment: 0.916119"
+        assert res == "Sentiment:  0.916119"
