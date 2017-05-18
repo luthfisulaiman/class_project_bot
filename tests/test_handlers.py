@@ -14,7 +14,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
                               japanartist, extract_colour_from_image, check_caption_colour,
-                              tropicalArtistHandler,
+                              tropicalArtistHandler, uber, add_destination, remove_destination,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
                               get_notif_twitter, air_quality, sentiment_new)
@@ -2067,3 +2067,46 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_uber(mocker):
+    fake_result = 'Destination: Gedung C Fasilkom (33 kilometers from current position)\
+                   Estimated travel time and fares for each Uber services:\
+                   - UberX (60 minutes, 77000 rupiah)\
+                   - UberPool (60 minutes, 55000 rupiah)\
+                   - UberBlack (80 minutes, 123000 rupiah)\
+                   - UberMotor (60 minutes, 20000 rupiah)'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    mocked_message = Mock('\uber')
+    
+    uber(mocked_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_add_destination(mocker):
+
+    fake_result = 'Added a destination'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    mocked_message = Mock('\uber')
+    
+    uber(mocked_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+def test_remove_destination(mocker):
+
+    fake_result = 'Removed a destination'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    mocked_message = Mock('\uber')
+    
+    uber(mocked_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result

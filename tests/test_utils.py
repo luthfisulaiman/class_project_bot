@@ -1471,3 +1471,29 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+class test_uber:
+
+    def test_uber(self):
+        try:
+            res = utils.uber_info('Gedung C Fasilkom')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_add_destination(self):
+        try:
+            res = utils.uber_add('Gedung C Fasilkom')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_remove_destination(self):
+        try:
+            res = utils.uber_remove('Gedung C Fasilkom')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
