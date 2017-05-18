@@ -1017,16 +1017,19 @@ def tagimage(message):
         bot.reply_to(message, tag)
 
 
-@bot.message_handler(regexp=r'^\/uber\s*$')
+@bot.message_handler(regexp=r'^\/uber\s*$', func=lambda message: message.chat.type == "private")
 def uber(message):
+    app.logger.debug("\uber command detected")
     pass
 
 
-@bot.message_handler(regexp=r'^\/add_destination\s*$')
+@bot.message_handler(regexp=r'^\/add_destination\s*$', func=lambda message: message.chat.type == "private")
 def add_destination(message):
+    app.logger.debug('\add_destination command detected')
     pass
 
 
-@bot.message_handler(regexp=r'^\/remove_destination\s*$')
+@bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
 def remove_destination(message):
+    app.logger.debug("\remove_destination command detected")
     pass
