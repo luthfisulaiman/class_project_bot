@@ -253,3 +253,9 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestSentimentNew:
+    def test_sentiment(self):
+        res = utils.lookup_sentiment_new("good day")
+        assert res == "Sentiment: 0.916119"

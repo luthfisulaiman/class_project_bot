@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_sentiment_new
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +44,15 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+def sentiment_new(message):
+    app.logger.debug("'sentiment' command detected")
+    text = message.text[11::]
+    app.logger.debug('text = {}'.format(text))
+    try:
+        result = lookup_sentiment_new(text)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, result)
