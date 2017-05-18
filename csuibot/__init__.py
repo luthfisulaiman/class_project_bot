@@ -5,6 +5,7 @@ app = Flask(__name__)
 app.config.from_object('{}.config'.format(__name__))
 
 bot = telebot.TeleBot(app.config['TELEGRAM_BOT_TOKEN'], threaded=False)
+last_update = {}
 
 from . import handlers  # noqa
 
@@ -27,6 +28,8 @@ def webhook():
     if json_data is not None:
         app.logger.debug('Update received')
         update = telebot.types.Update.de_json(json_data)
+        global last_update
+        last_update = update
         bot.process_new_messages([update.message])
         return ''
     else:

@@ -1,24 +1,77 @@
 import operator
 import json
 import os
+from pathlib import Path
 
 
 class TopPoster:
 
-    def __init__(self):
-        self.all_data = self.get_all_bot_updates()
-        self.group_id = self.get_group_chat_id()
-        self.group_members = self.get_all_members_id()
+    def __init__(self, update):
 
-    def get_top_poster(self):
+        self.posters_data = []
+        self.last_chat_id = ''
+
+        self.read_json_posters()
+        self.process_update(update)
+
+    def read_json_posters(self):
+        file_path = os.path.dirname(os.path.abspath(__file__)) + '/posters_data.json'
+        check_file = Path(file_path)
+        if check_file.is_file():
+            with open(file_path) as input_file:
+                try:
+                    res = json.load(input_file)
+                except ValueError:
+                    pass
+                else:
+                    self.posters_data = res['posters']
+
+    def process_update(self, update):
+        poster_id = update['message']['from']['id']
+        chat_id = update['message']['chat']['id']
+        first_name = update['message']['from']['first_name']
+        last_name = update['message']['from']['last_name']
+
+        self.last_chat_id = chat_id
+        self.posters_data.append({'id': poster_id, 'chat_id': chat_id,
+                                  'first_name': first_name, 'last_name': last_name})
+
+        self.save_json_posters()
+
+    def save_json_posters(self):
+        file_path = os.path.dirname(os.path.abspath(__file__)) + '/posters_data.json'
+        with open(file_path, 'w') as output_file:
+            data_to_dump = {'posters': self.posters_data}
+            json.dump(data_to_dump, output_file)
+
+    def get_name(self, user_id):
+        name = ""
+        for entry in self.posters_data:
+            if str(entry['id']) == user_id:
+                name = entry['first_name'] + " "
+                name += entry['last_name']
+
+        return name
+
+    def get_group_chat_id_list(self):
+        group_posters = set()
+
+        for data in self.posters_data:
+            if data['chat_id'] == self.last_chat_id:
+                group_posters.add(data['chat_id'])
+
+        return group_posters
+
+    def count_posters(self):
+
         post_list = {}
-        grp = self.group_members
-        while grp:
-            member = grp.pop()
-            for index, member_id in enumerate(self.all_data):
-                x = self.all_data[index]['message']['from']['id']
-                y = self.all_data[index]['message']['chat']['id']
-                if x == member and y == self.group_id:
+        group_posters = self.get_group_chat_id_list()
+        while group_posters:
+            member = group_posters.pop()
+            for index, entry in enumerate(self.posters_data):
+                id_poster = self.posters_data[index]['id']
+                chat_id = self.posters_data[index]['chat_id']
+                if id_poster == member and chat_id == self.last_chat_id:
                     if str(member) in post_list:
                         post_list[str(member)] += 1
                     else:
@@ -43,30 +96,3 @@ class TopPoster:
             last_post_num = entry[1]
 
         return message
-
-    def get_all_members_id(self):
-        members = []
-        for index, member_id in enumerate(self.all_data):
-            if self.all_data[index]['message']['chat']['id'] == self.group_id:
-                members.append(self.all_data[index]['message']['from']['id'])
-        return set(members)
-
-    def get_name(self, user_id):
-        name = ""
-        for entry in self.all_data:
-            if str(entry['message']['from']['id']) == user_id:
-                name = entry['message']['from']['first_name'] + " "
-                name += entry['message']['from']['last_name']
-
-        return name
-
-    def get_group_chat_id(self):
-        group_id = self.all_data[len(self.all_data)-1]['message']['chat']['id']
-        return group_id
-
-    def get_all_bot_updates(self):
-        path = os.path.dirname(os.path.abspath(__file__))
-        with open(path + '/test.json') as input_file:
-            res = json.load(input_file)
-            res = res['result']
-        return res
