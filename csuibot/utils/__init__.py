@@ -43,3 +43,11 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def check_schedule(date):
+    pass
+
+
+def create_schedule(date, time):
+    pass

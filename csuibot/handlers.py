@@ -44,3 +44,25 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'jadwal', func=lambda message: message.chat.type == "group")
+def jadwal(message):
+    app.logger.debug("'jadwal' command detected")
+    pass
+
+
+@bot.message_handler(commands=['create_schedule'], func=lambda message: message.chat.type == "group")
+def schedule(message):
+    app.logger.debug("'create_schedule' command detected")
+    pass
+
+
+def date_of_schedule(message):
+    app.logger.debug("date of schedule is {}".format(message))
+    pass
+
+
+def time_of_schedule(message):
+    app.logger.debug("time of schedule is {}".format(message))
+    pass
