@@ -21,7 +21,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi)
+                           twitter_search as ts, aqi, uber, add_destination, remove_destination)
 
 
 def lookup_zodiac(month, day):
@@ -523,3 +523,15 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def uber_info():
+    pass
+
+
+def uber_add();
+    pass
+
+
+def uber_remove();
+    pass

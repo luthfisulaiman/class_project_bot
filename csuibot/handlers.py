@@ -1015,3 +1015,18 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^\/uber\s*$')
+def uber(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^\/add_destination\s*$')
+def add_destination(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^\/remove_destination\s*$')
+def remove_destination(message):
+    pass
