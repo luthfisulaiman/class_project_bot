@@ -61,7 +61,7 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
-    
+
 
 def test_sentiment_new(mocker):
     fake_shio = 'foo bar'
