@@ -346,6 +346,23 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestSentimentNew:
+    def test_sentiment(self):
+        res = utils.lookup_sentiment_new("good day")
+        assert res == "Sentiment:  0.916119"
+
+
+class TestAirQuality:
+
+    def test_aqi_city_invalid(self):
+        res = utils.get_aqi_city("dadafawawfawcqfwqqv")
+        assert res == "Invalid city name or coordinate, please try again"
+
+    def test_aqi_coord_invalid(self):
+        res = utils.get_aqi_coord("dadafawaw fawcqfwqqv")
+        assert res == "Invalid city name or coordinate, please try again"
+
+
 class TestTweet:
     def test_tweet_true(self):
         res = utils.get_tweets('qurratayuna')
@@ -1452,6 +1469,422 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class TestMediaWiki:
+
+    def test_save_mediawiki_url(self):
+        res = utils.save_mediawiki_url('http://en.wikipedia.org/w/api.php')
+        assert res == 'Url saved!'
+
+    def test_save_mediawiki_url_value_error(self):
+        try:
+            utils.save_mediawiki_url('')
+        except ValueError as e:
+            assert str(e) == 'Command /add_wiki need an argument'
+
+    def test_save_mediawiki_url_connection_error(self):
+        try:
+            utils.save_mediawiki_url('http://en.wikipedia.orgtest/w/api.php')
+        except Exception as e:
+            assert str(e) == 'Invalid url or url is not WikiMedia endpoint'
+
+    def test_save_mediawiki_url_unexpected_exception(self, mocker):
+        mocker.patch('csuibot.utils.mediawiki.MediaWiki', side_effect=Exception)
+        try:
+            utils.save_mediawiki_url('http://en.wikipedia.org/w/api.php')
+        except Exception as e:
+            assert str(e) == 'Invalid url or url is not WikiMedia endpoint'
+
+    def test_get_mediawiki_environment_error(self, mocker):
+        class FakePath:
+            def __init__(self, arg):
+                pass
+
+            def is_file(self):
+                return False
+
+        mocker.patch('csuibot.utils.Path', return_value=FakePath('.url_wiki'))
+        try:
+            utils.get_mediawiki('')
+        except EnvironmentError as e:
+            assert str(e) == (
+                'WikiMedia url is not found. Please add wiki url'
+                ' with command /add_wiki [endpoint wiki url].'
+            )
+
+    def test_list_pages(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return [
+                    {'title': 'Barack Obama'},
+                    {'title': 'Donald Trump'},
+                    {'title': 'Indonesia'},
+                    {'title': 'Foo'},
+                    {'title': 'Bar'},
+                    {'title': 'John Doe'}
+                ]
+
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        res = utils.get_mediawiki('')
+        assert res == [
+            '/random_wiki_article Barack Obama',
+            '/random_wiki_article Donald Trump',
+            '/random_wiki_article Indonesia',
+            '/random_wiki_article Foo',
+            '/random_wiki_article Bar'
+        ]
+
+    def test_list_pages_null_pages(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return []
+
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        res = utils.get_mediawiki('')
+        assert res == []
+
+    def test_get_page(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return [
+                    {'title': 'Barack Obama'},
+                    {'title': 'Donald Trump'},
+                    {'title': 'Indonesia'},
+                    {'title': 'Foo'},
+                    {'title': 'Bar'},
+                ]
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        class FakePage:
+            def __init__(self, arg1, arg2):
+                self.name = 'Example'
+
+            def images(self):
+                class FakeImage:
+                    def __init__(self):
+                        self.imageinfo = {'url': 'http://exampleimage.com'}
+
+                results = []
+                results.append(FakeImage())
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.page.Page',
+            return_value=FakePage('site', 'en.wikipedia.org')
+        )
+
+        class FakeBeautifulSoup:
+            def __init__(self, arg1, arg2):
+                pass
+
+            def select(self, arg):
+                class FakeElement:
+                    def __init__(self):
+                        pass
+
+                    def get_text(self):
+                        return (
+                            'Lorem Ipsum is simply dummy text of the printing and typesetting '
+                            'industry. Lorem Ipsum has been the industry\'s standard dummy '
+                            'text ever since the 1500s, when an unknown printer took a galley '
+                            'of type and scrambled it to make a type specimen book. It has '
+                            'survived not only five centuries, but also the leap into '
+                            'electronic typesetting, remaining essentially unchanged. It was '
+                            'popularised in the 1960s with the release of Letraset sheets '
+                            'containing Lorem Ipsum passages, and more recently with desktop '
+                            'publishing software like Aldus PageMaker including versions of '
+                            'Lorem Ipsum.'
+                        )
+                results = []
+                results.append(FakeElement())
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.BeautifulSoup',
+            return_value=FakeBeautifulSoup('htmlcode', 'html.parser')
+        )
+
+        res = utils.get_mediawiki('Barack Obama')
+        desc = (
+            '\nLorem Ipsum is simply dummy text of the printing and typesetting '
+            'industry. Lorem Ipsum has been the industry\'s standard dummy '
+            'text ever since the 1500s, when an unknown printer took a galley '
+            'of type and scrambled it to make a type specimen book. It has '
+            'survived not only five centuries, but also the leap into electronic '
+            'typesetting, remaining essentially unchanged. It was popularised '
+            'in the 1960s with the release of Letraset sheets containing Lorem '
+            'Ipsum passages, and more recently with desktop publishing software '
+            'like Aldus PageMaker including versions of Lorem Ipsum.'
+        )
+        assert res == '{}\n{}\n\nimage: {}\n\nsource: {}'.format(
+            'Example', desc, 'http://exampleimage.com', 'http://en.wikipedia.org/wiki/Example'
+        )
+
+    def test_get_page_null_images(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return [
+                    {'title': 'Barack Obama'},
+                    {'title': 'Donald Trump'},
+                    {'title': 'Indonesia'},
+                    {'title': 'Foo'},
+                    {'title': 'Bar'},
+                ]
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        class FakePage:
+            def __init__(self, arg1, arg2):
+                self.name = 'Example'
+
+            def images(self):
+                results = []
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.page.Page',
+            return_value=FakePage('site', 'en.wikipedia.org')
+        )
+
+        class FakeBeautifulSoup:
+            def __init__(self, arg1, arg2):
+                pass
+
+            def select(self, arg):
+                class FakeElement:
+                    def __init__(self):
+                        pass
+
+                    def get_text(self):
+                        return (
+                            'Lorem Ipsum is simply dummy text of the printing and typesetting '
+                            'industry. Lorem Ipsum has been the industry\'s standard dummy '
+                            'text ever since the 1500s, when an unknown printer took a galley '
+                            'of type and scrambled it to make a type specimen book. It has '
+                            'survived not only five centuries, but also the leap into '
+                            'electronic typesetting, remaining essentially unchanged. It was '
+                            'popularised in the 1960s with the release of Letraset sheets '
+                            'containing Lorem Ipsum passages, and more recently with desktop '
+                            'publishing software like Aldus PageMaker including versions of '
+                            'Lorem Ipsum.'
+                        )
+                results = []
+                results.append(FakeElement())
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.BeautifulSoup',
+            return_value=FakeBeautifulSoup('htmlcode', 'html.parser')
+        )
+
+        res = utils.get_mediawiki('Barack Obama')
+        desc = (
+            '\nLorem Ipsum is simply dummy text of the printing and typesetting '
+            'industry. Lorem Ipsum has been the industry\'s standard dummy '
+            'text ever since the 1500s, when an unknown printer took a galley '
+            'of type and scrambled it to make a type specimen book. It has '
+            'survived not only five centuries, but also the leap into electronic '
+            'typesetting, remaining essentially unchanged. It was popularised '
+            'in the 1960s with the release of Letraset sheets containing Lorem '
+            'Ipsum passages, and more recently with desktop publishing software '
+            'like Aldus PageMaker including versions of Lorem Ipsum.'
+        )
+        assert res == '{}\n{}\n\nimage: {}\n\nsource: {}'.format(
+            'Example', desc, ' - ', 'http://en.wikipedia.org/wiki/Example'
+        )
+
+    def test_get_page_null_elements(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return [
+                    {'title': 'Barack Obama'},
+                    {'title': 'Donald Trump'},
+                    {'title': 'Indonesia'},
+                    {'title': 'Foo'},
+                    {'title': 'Bar'},
+                ]
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        class FakePage:
+            def __init__(self, arg1, arg2):
+                self.name = 'Example'
+
+            def images(self):
+                results = []
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.page.Page',
+            return_value=FakePage('site', 'en.wikipedia.org')
+        )
+
+        class FakeBeautifulSoup:
+            def __init__(self, arg1, arg2):
+                pass
+
+            def select(self, arg):
+                results = []
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.BeautifulSoup',
+            return_value=FakeBeautifulSoup('htmlcode', 'html.parser')
+        )
+
+        res = utils.get_mediawiki('Barack Obama')
+        assert res == '{}\n\n{}\n\nimage: {}\n\nsource: {}'.format(
+            'Example', '', ' - ', 'http://en.wikipedia.org/wiki/Example'
+        )
+
+    def test_get_page_many_element(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return [
+                    {'title': 'Barack Obama'},
+                    {'title': 'Donald Trump'},
+                    {'title': 'Indonesia'},
+                    {'title': 'Foo'},
+                    {'title': 'Bar'},
+                ]
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        class FakePage:
+            def __init__(self, arg1, arg2):
+                self.name = 'Example'
+
+            def images(self):
+                results = []
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.page.Page',
+            return_value=FakePage('site', 'en.wikipedia.org')
+        )
+
+        class FakeBeautifulSoup:
+            def __init__(self, arg1, arg2):
+                pass
+
+            def select(self, arg):
+                class FakeElement:
+                    def get_text(self):
+                        return (
+                            'Lorem Ipsum is simply dummy text of the printing and typesetting'
+                        )
+
+                class FakeOtherElement:
+                    def get_text(self):
+                        return (
+                            'Lorem Ipsum is simply dummy text of the printing and typesetting '
+                            'industry. Lorem Ipsum has been the industry\'s standard dummy '
+                            'text ever since the 1500s, when an unknown printer took a galley '
+                            'of type and scrambled it to make a type specimen book.'
+                        )
+                results = []
+                results.append(FakeElement())
+                results.append(FakeOtherElement())
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.BeautifulSoup',
+            return_value=FakeBeautifulSoup('htmlcode', 'html.parser')
+        )
+
+        res = utils.get_mediawiki('Barack Obama')
+        desc = (
+            '\nLorem Ipsum is simply dummy text of the printing and typesetting\n'
+            'Lorem Ipsum is simply dummy text of the printing and typesetting '
+            'industry. Lorem Ipsum has been the industry\'s standard dummy '
+            'text ever since the 1500s, when an unknown printer took a galley '
+            'of type and scrambled it to make a type specimen book.'
+        )
+        assert res == '{}\n{}\n\nimage: {}\n\nsource: {}'.format(
+            'Example', desc, ' - ', 'http://en.wikipedia.org/wiki/Example'
+        )
+
+    def test_get_page_empty_elements(self, mocker):
+        class FakeSite:
+            def __init__(self, host, path=None):
+                pass
+
+            def random(self, ns, limit=0):
+                return [
+                    {'title': 'Barack Obama'},
+                    {'title': 'Donald Trump'},
+                    {'title': 'Indonesia'},
+                    {'title': 'Foo'},
+                    {'title': 'Bar'},
+                ]
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.Site',
+            return_value=FakeSite('en.wikipedia.org')
+        )
+
+        class FakePage:
+            def __init__(self, arg1, arg2):
+                self.name = 'Example'
+
+            def images(self):
+                results = []
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.mwclient.page.Page',
+            return_value=FakePage('site', 'en.wikipedia.org')
+        )
+
+        class FakeBeautifulSoup:
+            def __init__(self, arg1, arg2):
+                pass
+
+            def select(self, arg):
+                class FakeElement:
+                    def __init__(self):
+                        pass
+
+                    def get_text(self):
+                        return ''
+                results = []
+                results.append(FakeElement())
+                return results
+        mocker.patch(
+            'csuibot.utils.mediawiki.BeautifulSoup',
+            return_value=FakeBeautifulSoup('htmlcode', 'html.parser')
+        )
+
+        res = utils.get_mediawiki('Barack Obama')
+        assert res == '{}\n\n{}\n\nimage: {}\n\nsource: {}'.format(
+            'Example', '', ' - ', 'http://en.wikipedia.org/wiki/Example'
+        )
 
 
 class TestHospital:

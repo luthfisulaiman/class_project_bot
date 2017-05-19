@@ -1,4 +1,5 @@
 from . import app, bot
+from telebot import types
 import requests
 import re
 import urllib
@@ -17,8 +18,9 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets, lookup_hospital,
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    image_is_sfw, get_mediawiki, save_mediawiki_url, lookup_hospital,
                     lookup_random_hospital, reply_random_hospital)
 from requests.exceptions import ConnectionError
 import datetime
@@ -74,6 +76,34 @@ def shio(message):
         bot.reply_to(message, 'Year is invalid')
     else:
         bot.reply_to(message, zodiac)
+
+
+@bot.message_handler(commands=['aqi'])
+def air_quality(message):
+    app.logger.debug("'aqi' command detected")
+    arr_loc = message.text.split(' ', 1)
+
+    if(len(arr_loc) > 1 and not arr_loc[1].isspace() and len(arr_loc[1]) > 0):
+        loc = arr_loc[1]
+
+        if(re.match(r'^(\d+[.]?\d+|\d) (\d+[.]?\d+|\d)$', loc)):
+            try:
+                result = get_aqi_coord(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+        elif (re.match(r'^[a-zA-Z0-9\s]*$', loc)):
+            try:
+                result = get_aqi_city(loc)
+            except ConnectionError:
+                bot.reply_to(message, "Unable to connect to aqicn.org, please try again later")
+            else:
+                bot.reply_to(message, result)
+
+    else:
+        bot.reply_to(message, "Invalid city name or coordinate, please try again")
 
 
 @bot.message_handler(regexp=r'^/tweet ?.* ?.*$')
@@ -390,6 +420,19 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(commands=['sentiment'])
+def sentiment_new(message):
+    app.logger.debug("'sentiment' command detected")
+    text = message.text[11::]
+    app.logger.debug('text = {}'.format(text))
+    try:
+        result = lookup_sentiment_new(text)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, result)
+
+
 @bot.message_handler(regexp=r'^/soundhelp$')
 def soundcliphelp(message):
     app.logger.debug("'about' command detected")
@@ -416,20 +459,6 @@ def soundclip(message):
         bot.reply_to(message, 'Sound clip not found')
     else:
         bot.send_voice(message.chat.id, soundclip)
-
-
-@bot.message_handler(commands=['sentiment'])
-def sentiment(message):
-    app.logger.debug("'sentiment' command detected")
-    word_str = " ".join(message.text.split()[1:])
-    word_str = word_str.lower()
-
-    try:
-        word = lookup_sentiment(word_str)
-    except ValueError:
-        bot.reply_to(message, 'Command /sentiment need an argument')
-    else:
-        bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
@@ -711,7 +740,29 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'/is_sfw( .*)?')
+def check_sfw_command(message):
+    app.logger.debug("invalid is_sfw command detected")
+
+    bot.reply_to(message, 'to use is_sfw command, send photo caption with /is_sfw')
+
+
+def is_caption_image(message):
+    sfw_captions = ['/is_sfw']
+    return message.caption in sfw_captions
+
+
+@bot.message_handler(func=is_caption_image, content_types=['photo'])
+def check_sfw_image(message):
+    app.logger.debug("'is_sfw' command detected with photo sent")
+
+    photo_file_path = bot.get_file(message.photo[1].file_id).file_path
+    app.logger.debug(photo_file_path)
+    sfw_check = image_is_sfw(photo_file_path)
+    bot.reply_to(message, sfw_check)
+
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)
@@ -990,6 +1041,38 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(commands=['add_wiki'])
+def add_wiki(message):
+    app.logger.debug("'add_wiki' command detected")
+    url = " ".join(message.text.split()[1:])
+    try:
+        result = save_mediawiki_url(url)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, result)
+
+
+@bot.message_handler(commands=['random_wiki_article'])
+def random_wiki_article(message):
+    app.logger.debug("'random_wiki_article' command detected")
+    args = " ".join(message.text.split()[1:])
+    try:
+        result = get_mediawiki(args)
+    except EnvironmentError as e:
+        bot.reply_to(message, str(e))
+    else:
+        if args is '':
+            keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, row_width=1)
+            for title in result:
+                keyboard.add(title)
+            bot.send_message(message.chat.id, 'Select an article...', reply_markup=keyboard)
+        else:
+            bot.reply_to(message, result)
 
 
 @bot.message_handler(regexp=r'^/hospital$')
