@@ -460,6 +460,11 @@ class TestDataProcessor:
     def test_send_trivia(self):
         test = processor.send_trivia()
         assert test is not None
+		
+
+class TestHangout:
+    def test_fetch_data_hangout(self):
+        pass
 
 
 class TestMessageDist:
