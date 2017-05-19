@@ -17,7 +17,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new)
+                              get_notif_twitter, air_quality, sentiment_new,
+                              cgv_gold, cgv_reg, cgv_3dcinema, cgv_velvet, cgv_sweetbox,
+                              cgv_change)
 from requests.exceptions import ConnectionError
 
 
@@ -2067,3 +2069,83 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_cgv_gold(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_gold_class')
+
+    cgv_gold(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_reg(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_regular_2d')
+
+    cgv_reg(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_3dcinema(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_4dx_3d_cinema')
+
+    cgv_3dcinema(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_velvet(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_velvet')
+
+    cgv_gold(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_sweetbox(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_sweet_box')
+
+    cgv_sweetbox(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_change(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_change_cinema url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_wrongcmd(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
+
+
+def test_cgv_wrongurl(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_change_cinema url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == '' #this has to be something
