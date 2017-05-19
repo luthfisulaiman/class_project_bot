@@ -17,7 +17,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, sentiment, japan100,
-                              get_notif_twitter)
+                              get_notif_twitter, coinRandomHandler)
 from requests.exceptions import ConnectionError
 
 
@@ -534,42 +534,43 @@ def test_tropicalBb(mocker):
 def test_coinRandom(mocker):
     fake_coin = 'tail'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.', return_value=fake_manga)
+    mocker.patch('csuibot.handlers.coinRandomHandler', return_value=fake_coin)
     mock_message = Mock(text='/coin')
-    oriconMangaHandler(mock_message)
+    coinRandomHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_manga
+    assert args[1] == fake_coin
 
 def test_rollRandom(mocker):
-    fake_manga = 'judul-Mangaka'
+    fake_random = 'Result: 2d100 (25, 66)'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/oricon comic 2017-05-15')
-    oriconMangaHandler(mock_message)
+    mocker.patch('csuibot.handlers.rollRandomHandler', return_value=fake_coin)
+    mock_message = Mock(text='/roll 2d100')
+    rollRandomHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_manga
+    assert args[1] == fake_random
 
 def test_multRollRandom(mocker):
-    fake_manga = 'judul-Mangaka'
+    fake_random = "2d6 (5, 2)\n2d6 (1, 3)"
+'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/oricon comic 2017-05-15')
-    oriconMangaHandler(mock_message)
+    mocker.patch('csuibot.handlers.multRollRandomHandler', return_value=fake_random)
+    mock_message = Mock(text='/multiroll 2 2d6')
+    multRollRandomHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_manga
+    assert args[1] == fake_random
 
 def test_isLucky(mocker):
-    fake_manga = 'judul-Mangaka'
+    fake_random = '3 appears 2'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/oricon comic 2017-05-15')
-    oriconMangaHandler(mock_message)
+    mocker.patch('csuibot.handlers.is_luckyHandler', return_value=fake_random)
+    mock_message = Mock(text='/is_lucky 3 4d5')
+    is_luckyHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_manga
+    assert args[1] == fake_random
 
 def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'

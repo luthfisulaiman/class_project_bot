@@ -1,10 +1,12 @@
+from random import randint
 class diceSim:
 
     def __init__:
         self.post = "dice"
 
     def coin(self):
-        return "coin Sim"
+        possib = ["head","tail]
+        return possib[randint(0,1)]
 
     def roll(x,y):
         return "roll Sim"

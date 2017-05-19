@@ -188,7 +188,35 @@ def coinRandomHandler(message):
     else:
         bot.reply_to(message, "ini adalah koin")
 
+@bot.message_handler(regexp=r'^/roll$')
+def rollRandomHandler(message):
+    app.logger.debug("roll command detected")
+    try:
+        # notification = checkTopTropical(artist)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, "ini adalah roll")
 
+@bot.message_handler(regexp=r'^/roll$')
+def multRollRandomHandler(message):
+    app.logger.debug("multi roll command detected")
+    try:
+        # notification = checkTopTropical(artist)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, "ini adalah multi roll")
+
+@bot.message_handler(regexp=r'^/roll$')
+def is_luckyHandler(message):
+    app.logger.debug("is lucky command detected")
+    try:
+        # notification = checkTopTropical(artist)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, "ini adalah lucky")
 
 @bot.message_handler(regexp=r'^/checktropical.+$')
 def tropicalArtistHandler(message):

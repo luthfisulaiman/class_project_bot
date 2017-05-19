@@ -271,7 +271,7 @@ class TestTropicalBb:
 class testDiceSim(self):
     def test_diceSim(self):
         res = utils.coin()
-        assert res != ""
+        assert res == "face" || res == "tail"
 
     def test_roll(self):
         res = utils.roll(2,3)
