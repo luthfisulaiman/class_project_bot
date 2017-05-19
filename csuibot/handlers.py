@@ -1,5 +1,4 @@
 from . import app, bot
-from telebot import types
 import requests
 import re
 import urllib
