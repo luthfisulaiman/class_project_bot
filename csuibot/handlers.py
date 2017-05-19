@@ -20,7 +20,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
-                    get_mediawiki, save_mediawiki_url)
+                    image_is_sfw, get_mediawiki, save_mediawiki_url)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -738,7 +738,29 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'/is_sfw( .*)?')
+def check_sfw_command(message):
+    app.logger.debug("invalid is_sfw command detected")
+
+    bot.reply_to(message, 'to use is_sfw command, send photo caption with /is_sfw')
+
+
+def is_caption_image(message):
+    sfw_captions = ['/is_sfw']
+    return message.caption in sfw_captions
+
+
+@bot.message_handler(func=is_caption_image, content_types=['photo'])
+def check_sfw_image(message):
+    app.logger.debug("'is_sfw' command detected with photo sent")
+
+    photo_file_path = bot.get_file(message.photo[1].file_id).file_path
+    app.logger.debug(photo_file_path)
+    sfw_check = image_is_sfw(photo_file_path)
+    bot.reply_to(message, sfw_check)
+
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)

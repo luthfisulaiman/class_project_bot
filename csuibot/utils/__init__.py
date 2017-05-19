@@ -22,7 +22,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, mediawiki)
+                           twitter_search as ts, aqi, issfw, mediawiki)
 
 
 def lookup_zodiac(month, day):
@@ -435,6 +435,18 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def image_is_sfw(file_path):
+    try:
+        is_sfw = issfw.is_sfw(file_path)
+    except ValueError:
+        return 'An error prevented image from being categorized. Please try again'
+    else:
+        if is_sfw:
+            return 'image is SFW'
+        else:
+            return 'image is NSFW'
 
 
 def get_articles(message_text):
