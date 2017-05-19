@@ -3,15 +3,15 @@ class diceSim:
     def __init__:
         self.post = "dice"
 
-    def coin:
-        pass
+    def coin(self):
+        return "coin Sim"
 
-    def roll:
-        pass
+    def roll(x,y):
+        return "roll Sim"
 
-    def multiroll:
-        pass
+    def multiroll(x,y,z):
+        return "mult roll Sim"
 
-    def is_lucky:
-        pass
+    def is_lucky(x,y):
+        return "lucky Sim"
     

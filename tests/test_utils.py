@@ -268,6 +268,23 @@ class TestTropicalBb:
             assert res == "Artist is not in the chart"
 
 
+class testDiceSim(self):
+    def test_diceSim(self):
+        res = utils.coin()
+        assert res != ""
+
+    def test_roll(self):
+        res = utils.roll(2,3)
+        assert res != ""
+
+    def test_mult_roll(self):
+        res = utils.mult_roll(10,2,2)
+        assert res != ""
+
+    def test_is_lucky(self):
+        res = utils.is_lucky(1,9)
+        assert res != ""
+
 class TestMangaTopOricon:
     def test_TopOriconExist(self):
         res = utils.getTopManga(2017, "05", 15)
