@@ -1,4 +1,6 @@
 from csuibot.utils import zodiac as z
+from lxml import html
+import requests
 
 
 def lookup_zodiac(month, day):
@@ -43,3 +45,14 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+    
+def lookup_album_price:
+    string = ''
+    page = requests.get('http://vgmdb.net/db/calendar.php?year=2017&month=5')
+    tree = html.fromstring(page.content)
+    album = tree.xpath('//span[@class="albumtitle"]/text()')
+    prices = tree.xpath('//span[@class="label"]/text()')
+    for i in range(len(album)):
+            string += album[i] + " : " + prices[i] + " IDR"
+            string += '\n'
+    return (string)
