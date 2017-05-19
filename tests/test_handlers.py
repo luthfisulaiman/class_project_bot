@@ -61,3 +61,37 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_enterkomputer(mocker):
+    fake_result = 'DJI OSMO - Rp 6,990,000'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', side_effect=ValueError)
+    mock_message = Mock(text='/enterkomputer Drone DJI OSMO')
+
+    shio(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_enterkomputer_no_category(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', side_effect=ValueError)
+    mock_message = Mock(text='/enterkomputer Nendoroid Nendoroid Megumi Kato')
+
+    shio(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Category Not Found'
+
+
+def test_enterkomputer_no_item(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_chinese_zodiac', side_effect=ValueError)
+    mock_message = Mock(text='/enterkomputer Processor AMD i7')
+
+    shio(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Item Not Found'
