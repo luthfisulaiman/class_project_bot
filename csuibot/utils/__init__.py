@@ -1,4 +1,4 @@
-from csuibot.utils import zodiac as z
+from csuibot.utils import zodiac as z, trivia as trv
 
 
 def lookup_zodiac(month, day):
@@ -43,3 +43,12 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+def add_question_trivia(arrayOfQuestion):
+    return trv.Trivia().add_question(arrayOfQuestion)
+
+def change_question_trivia(arrayOfQuestion):
+    return trv.Trivia().change_question(self, arrayOfQuestion)
+
+def play_trivia_game():
+    return trv.Trivia().play_game
