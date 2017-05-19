@@ -1041,6 +1041,24 @@ def tagimage(message):
 
 
 @bot.message_handler(regexp=r'^/bible$')
-def newage(message):
+def bible(message):
     app.logger.debug("'bible' command detected")
+    pass
+
+
+@bot.message_handler(regexp=r'^/bible (.*)$')
+def bible(message):
+    app.logger.debug("'bible' command detected")
+    pass
+
+
+@bot.message_handler(regexp=r'^gospel (.*)$')
+def bible(message):
+    app.logger.debug("'gospel' command detected")
+    pass
+
+
+@bot.message_handler(regexp=r'^gospel$')
+def bible(message):
+    app.logger.debug("'gospel' command detected")
     pass

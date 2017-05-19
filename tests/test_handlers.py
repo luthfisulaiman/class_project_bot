@@ -2069,5 +2069,9 @@ Tag : power , Confidence : 19'''
     assert args[1] == 'HTTP Error'
 
 
-def test_bible verse(mocker):
+def test_bible(mocker):
+    pass
+
+
+def test_bible_verse_not_found(mocker):
     pass
