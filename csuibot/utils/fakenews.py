@@ -3,14 +3,22 @@ import os.path
 import json
 
 
-class FakeNews:
+# Utilizes Alex Martelli's 'Borg' Singleton pattern
+class Borg:
+    _shared_state = {}
+
+    def __init__(self):
+        self.__dict__ = self._shared_state
+
+
+class FakeNews(Borg):
     JSON_URL = ("https://raw.githubusercontent.com/BigMcLargeHuge"
                 "/opensources/master/sources/sources.json")
     JSON_FILE_LOC = (".sources_cache.json")
     json = None
 
     def __init__(self):
-        self.__load_json()
+        Borg.__init__(self)
 
     def __save_json(self):
         with open(self.JSON_FILE_LOC, 'w') as json_file:
@@ -27,11 +35,13 @@ class FakeNews:
                 self.__save_json()
 
     def check(self, hostname):
+        self.__load_json()
         if hostname in self.json:
             return self.json[hostname]
         return {'type': 'safe'}
 
     def add_filter(self, hostname, news_type):
+        self.__load_json()
         if hostname in self.json:
             json_element = self.json[hostname]
             if json_element['2nd type'] == "":
