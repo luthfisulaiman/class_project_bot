@@ -7,6 +7,7 @@ import re
 from requests.exceptions import ConnectionError
 import requests
 import json
+from collections import namedtuple
 
 
 class TestZodiac:
@@ -974,10 +975,20 @@ class TestChuck:
 class TestTopPoster:
     def test_get_top_poster(self):
         try:
-            user = dict(id=12345, first_name='Kaga', last_lame='Kouko')
-            chat = dict(id=3123)
-            message = {'from': user, 'chat': chat}
-            res = utils.count_posters(dict(update_id=12345, message=message))
+
+            tmp_user = namedtuple('user', 'id first_name last_name')
+            user = tmp_user(id=12345, first_name='Kaga', last_lame='Kouko')
+
+            tmp_chat = namedtuple('chat', 'id')
+            chat = tmp_chat(id=3123)
+
+            tmp_message = namedtuple('message', 'from_user chat')
+            message = tmp_message(from_user=user, chat=chat)
+
+            tmp_update = namedtuple('update', 'update_id message')
+            update = tmp_update(update_id=12345, message=message)
+
+            res = utils.count_posters(update)
         except KeyError:
             pass
         else:
