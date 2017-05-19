@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_enter_item
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -47,4 +47,16 @@ def parse_date(text):
 
 @bot.message_handler(commands=['enterkomputer'])
 def enterkomputer(message):
-    pass
+    arr_input = message.text.split(" ", 2)
+    if(len(arr_input) < 3):
+        bot.reply_to(message, "Not enough arguments, please provide category and item name with the format /enterkomputer CATEGORY ITEM")
+    else:
+        category = arr_input[1];
+        item = arr_input[2];
+
+        try:
+            result = lookup_enter_item(category, item)
+        except ConnectionError:
+            bot.reply_to(message, 'Unable to connect to Enterkomputer')
+        else:
+            bot.reply_to(message, result)
