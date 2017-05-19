@@ -46,8 +46,7 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(func=lambda message: "jadwal" in message.text and
-                                          message.chat.type == "group")
+@bot.message_handler(func=lambda message: message.chat.type == "group", regexp="jadwal")
 def jadwal(message):
     app.logger.debug("'jadwal' command detected")
     future_schedules = get_schedules(message.chat.id)
