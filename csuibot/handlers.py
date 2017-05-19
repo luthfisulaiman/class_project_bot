@@ -1015,3 +1015,7 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+@bot.message_handler(regexp=r'^/is_airing')
+def airing(message):
+    raise NotImplemented
