@@ -1038,3 +1038,9 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/bible$')
+def newage(message):
+    app.logger.debug("'bible' command detected")
+    pass
