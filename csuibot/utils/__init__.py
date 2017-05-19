@@ -558,4 +558,9 @@ def lookup_anime(genre, season, year):
         return 'Invalid genre'
     if season not in seasons:
         return 'Invalid season'
-    return anime_livechart.get_anime_list(genre, season, year)
+    anime_list = anime_livechart.get_anime_list(genre, season, year)
+    response = 'Here are anime(s) that matches with your genre:\n'
+    for anime in anime_list:
+        info = '{}\n{}\n'.format(anime['title'], anime['synopsis'])
+        response += info
+    return response

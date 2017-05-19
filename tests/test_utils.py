@@ -1476,7 +1476,7 @@ class test_hot_japan_100:
 class TestAnimeLiveChart:
     def test_valid_response(self):
         res = utils.lookup_anime('Action', 'spring', '2017')
-        assert res is not None
+        assert 'Here are anime(s) that matches with your genre' in res
 
     def test_invalid_genre(self):
         res = utils.lookup_anime('gen', 'winter', '2017')
