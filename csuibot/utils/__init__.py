@@ -563,3 +563,6 @@ def get_mediawiki(args):
             return mw.get_list_pages()
         else:
             return mw.get_page(args)
+
+def fetch_apod():
+    pass

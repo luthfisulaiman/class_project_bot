@@ -1081,3 +1081,7 @@ def random_wiki_article(message):
 #         import time
 #         app.logger.debug(e)
 #         time.sleep(5)
+
+@bot.message_handler(regexp=r'^/apod$')
+def apod(message):
+    pass
