@@ -1471,3 +1471,27 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+#this is a class to test CGV cinema
+class TestCgv:
+    def test_gold(self):
+        pass
+
+    def test_2d(self):
+        pass
+
+    def test_3d(self):
+        pass
+
+    def test_velvet(self):
+        pass
+
+    def test_sweet(self):
+        pass
+
+    def test_change(self):
+        pass
+
+    def test_wrongurl(self):
+        pass
