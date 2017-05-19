@@ -977,7 +977,7 @@ class TestTopPoster:
         try:
 
             tmp_user = namedtuple('user', 'id first_name last_name')
-            user = tmp_user(id=12345, first_name='Kaga', last_lame='Kouko')
+            user = tmp_user(id=12345, first_name='Kaga', last_name='Kouko')
 
             tmp_chat = namedtuple('chat', 'id')
             chat = tmp_chat(id=3123)
