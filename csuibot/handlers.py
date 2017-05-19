@@ -65,8 +65,15 @@ def jadwal(message):
 def create_schedule(message):
 
     def date_schedule(date_message):
+        if date_message.text == '/cancel':
+            bot.reply_to(date_message, 'create_schedule canceled.')
+            return
 
         def time_schedule(time_message):
+            if date_message.text == '/cancel':
+                bot.reply_to(time_message, 'create_schedule canceled.')
+                return
+
             app.logger.debug("time of schedule is {}".format(time_message.text))
             print("{} {} {}".format(message.chat.id, date_message.text, time_message.text))
             result = generate_schedule(message.chat.id, date_message.text, time_message.text)
@@ -78,7 +85,12 @@ def create_schedule(message):
             y, m, d = parse_date(date_message.text)
             if datetime.date(y, m, d) >= datetime.datetime.now().date():
                 markup = types.ReplyKeyboardMarkup()
-                for avl_hour in get_available_schedules(message.chat.id, date_message.text):
+                avl_hours = get_available_schedules(message.chat.id, date_message.text)
+                if len(avl_hours) <= 0:
+                    error_text = "That date's full. Try another date or use /cancel to cancel."
+                    msg = bot.reply_to(date_message, error_text)
+                    bot.register_next_step_handler(msg, date_schedule)
+                for avl_hour in avl_hours:
                     markup.add(types.KeyboardButton("{}.00".format(avl_hour)))
                 msg = bot.send_message(date_message.from_user.id,
                                        'Here are the available hours for {}.'.format(
