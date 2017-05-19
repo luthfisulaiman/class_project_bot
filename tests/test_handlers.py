@@ -1990,3 +1990,33 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_create_character(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+
+    create_character(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    expected_text = ('Input your character name:')
+    assert args[1] == expected_text
+
+
+def test_give_option_keyboard(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock()
+
+    give_option_keyboard(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    expected_reply = [[telegram.KeyboardButton("Edit Str")],
+                      [telegram.KeyboardButton("Edit Int")],
+                      [telegram.KeyboardButton("Edit Agi")],
+                      [telegram.KeyboardButton("Edit Dex")],
+                      [telegram.KeyboardButton("Edit Luk")],
+                      [telegram.KeyboardButton("Add picture")],
+                      [telegram.KeyboardButton("Randomize character")],
+                      [telegram.KeyboardButton("Finish Character")],
+                     ]
+    assert args[1] == expected_reply

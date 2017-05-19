@@ -995,6 +995,45 @@ def create_character(message):
     pass
 
 
+def process_name_step(message):
+    pass
+
+
+def give_option_keyboard(message):
+    pass
+
+def determine_status_input(message):
+
+
+def process_process_str_step(message):
+    pass
+
+
+def process_process_int_step(message):
+    pass
+
+
+def process_process_agi_step(message):
+    pass
+
+
+def process_process_dex_step(message):
+    pass
+
+
+def process_process_luk_step(message):
+    pass
+
+
+def process_add_picture(content_types=['photo']):
+    pass
+
+def process_randomize(message):
+    pass
+
+
+
+
 @bot.message_handler(regexp=r'^/edit_character$')
 def edit_character(message):
     pass
