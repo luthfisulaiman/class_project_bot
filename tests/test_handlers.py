@@ -17,7 +17,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new)
+                              get_notif_twitter, air_quality, sentiment_new, quran)
 from requests.exceptions import ConnectionError
 
 
@@ -2067,3 +2067,36 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+def test_quran(mocker):
+    faker = 'foobar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_quran', return_value=faker)
+    mock_message = Mock(text='/qs')
+
+    quran(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == faker
+
+
+def test_quran_ayat_not_found(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_quran', side_effect=ValueError)
+    mock_message = Mock(text='/qs 0:0')
+
+    quran(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please input valid chapter'
+
+def test_quran_no_connection(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_quran', side_effect=ConnectionError)
+    mock_message = Mock(text='/qs 13:11')
+
+    quran(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'There are no connection'
+    

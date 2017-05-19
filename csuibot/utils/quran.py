@@ -2,5 +2,5 @@ class quran:
     def __init__(self):
         pass
 
-    def getQuran(self):
+    def lookup_Quran(self):
         pass
