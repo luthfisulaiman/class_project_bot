@@ -524,5 +524,10 @@ def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
 
+
 def airing_check():
+    raise NotImplemented
+
+
+def lookup_airing():
     raise NotImplemented

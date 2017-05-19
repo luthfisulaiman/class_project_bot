@@ -16,7 +16,7 @@ class AirToday():
     def __init__():
         raise NotImplemented
 
-    def fetch():
+    def look():
         raise NotImplemented
 
 class MALRequester():

@@ -1019,3 +1019,7 @@ def tagimage(message):
 @bot.message_handler(regexp=r'^/is_airing')
 def airing(message):
     raise NotImplemented
+
+@bot.message_handler(regexp=r'/hari ini nonton apa?/')
+def lookup_airing(message):
+    raise NotImplemented

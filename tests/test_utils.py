@@ -1471,3 +1471,25 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class test_airing:
+    def test_check_airing_now(self):
+        res = utils.airing_check("Sagrada Reset")
+        assert res == "ANIME is airing from 2017-04-05 until ?"
+
+    def test_check_airing_tba(self):
+        res = utils.airing_check("Mahoutsukai no Yome")
+        assert res == "ANIME will air starting at 2017-10-00"
+
+    def test_check_airing_complete(self):
+        res = utils.airing_check("Gochiusa")
+        assert res == "ANIME has finished airing at 2014-06-26"
+
+    def test_check_airing_invalid(self):
+        res = utils.airing_check("Si Unyil")
+        assert res == "Anime is not found"
+
+    def test_lookup(self):
+        res = utils.lookup_airing("2017-05-19")
+        assert res is not None
