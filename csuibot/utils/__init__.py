@@ -529,5 +529,5 @@ def find_movies():
     pass
 
 
-def change_movies():
+def change_cinema():
     pass

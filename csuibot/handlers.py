@@ -18,7 +18,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
-                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    find_movies, change_cinema)
 from requests.exceptions import ConnectionError
 import datetime
 
