@@ -21,7 +21,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts)
+                           twitter_search as ts, hospital as rsku)
 
 
 def lookup_zodiac(month, day):
@@ -73,7 +73,6 @@ def get_tweets(user):
 
 
 def define_sound(inputKey):
-
     title = inputKey.split(' ', 1)[1]
     soundtitle = title.replace(" ", "_") + ".mp3"
 
@@ -86,7 +85,7 @@ def word_feats(words):
 
 def lookup_sentiment(word):
     positive_vocab = (['good', 'nice', 'great', 'awesome', 'terrific',
-                      ':)', ':-)', 'like', 'love'])
+                       ':)', ':-)', 'like', 'love'])
     negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
     positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
     negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
@@ -103,8 +102,8 @@ def lookup_sentiment(word):
         if classresult == 'pos':
             pos = pos + 1
     try:
-        return ('Positive: ' + str(float(pos)/len(words)) +
-                '\nNegative: ' + str(float(neg)/len(words)))
+        return ('Positive: ' + str(float(pos) / len(words)) +
+                '\nNegative: ' + str(float(neg) / len(words)))
     except KeyError:
         return 'not found'
 
@@ -207,7 +206,7 @@ def getTopManga(year, month, day):
     try:
         hasil = manga.getTopManga(str(year), str(month), str(day))
     except urllib.error.URLError as err:
-        if(err.code == 404):
+        if (err.code == 404):
             return "Page not found, you may gave incorrect date"
         else:
             return "unexpected Error Happened"
@@ -219,7 +218,7 @@ def getTopMangaMonthly(year, month):
     try:
         hasil = manga.getTopMangaMonthly(str(year), str(month))
     except urllib.error.URLError as err:
-        if(err.code == 404):
+        if (err.code == 404):
             return "Page not found, you may gave incorrect date"
         else:
             return "unexpected Error Happened"
@@ -436,7 +435,6 @@ def get_chuck(message_text):
 
 
 def get_articles(message_text):
-
     articles = news.News().get_news(message_text)
 
     brackets = '========================='
@@ -457,10 +455,10 @@ def lookup_HotJapan100(html):
     artist = soup.find_all('artist')[1:11]
     for i in range(10):
         if i < 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-" + artist[i].string
+            string += '(' + str(i + 1) + ') ' + title[i].string[3:] + "-" + artist[i].string
             string += '\n'
         elif i == 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
+            string += '(' + str(i + 1) + ') ' + title[i].string[4:] + "-" + artist[i].string
             string += '\n'
     return (string)
 
@@ -522,3 +520,18 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def lookup_hospital(long, lat):
+    rs = rsku.Hospital(long, lat)
+    return rs.calculate_dist_rumah_sakit()
+
+
+def lookup_random_hospital():
+    rs = rsku.Hospital()
+    return rs.get_random_rumah_sakit()
+
+
+def reply_random_hospital(id):
+    rs = rsku.Hospital()
+    return rs.get_by_id(id)

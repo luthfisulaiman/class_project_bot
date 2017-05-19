@@ -18,9 +18,11 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets)
+                    lookup_HotJapan100, get_tweets, lookup_hospital,
+                    lookup_random_hospital, reply_random_hospital)
 from requests.exceptions import ConnectionError
 import datetime
+from telebot import types
 
 
 def message_decorator(func):
@@ -438,7 +440,7 @@ def oricon_books(message):
     try:
         _, _, weekly, request_date = message.text.split(' ')
         if (weekly != 'weekly'):
-            top10 = 'Oricon books command currently only supports '\
+            top10 = 'Oricon books command currently only supports ' \
                     'weekly ratings at this time.'
         else:
             app.logger.debug("oricon command type is 'weekly'")
@@ -988,3 +990,31 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/hospital$')
+def hospital(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/random_hospital$')
+def random_hospital(message):
+    pass
+
+
+def check_reply_hospital_location(message):
+    pass
+
+
+@bot.message_handler(content_types=['location'], func=check_reply_hospital_location)
+def get_user_location(message):
+    pass
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def parse_callback(call):
+    pass
+
+
+def reply_hospital(chat_id, rs):
+    pass

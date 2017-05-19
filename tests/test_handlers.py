@@ -17,8 +17,12 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, sentiment, japan100,
-                              get_notif_twitter)
+                              get_notif_twitter,
+                              hospital, random_hospital)
 from requests.exceptions import ConnectionError
+import json
+
+from telebot import types
 
 
 def test_help(mocker):
@@ -1990,3 +1994,43 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_hospital(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    message = json.dumps({'chat':
+                              {'type': 'private',
+                               'last_name': 'Divy',
+                               'first_name': 'Prakash',
+                               'username': 'prakash_divy',
+                               'id': 121508145,
+                               'title': None,
+                               'all_members_are_administrators': None
+                               },
+                          'date': 1495177065,
+                          'message_id': 4567})
+    message = types.Message.de_json(message)
+    Mock(text='/hospital')
+    hospital(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
+
+
+def test_random_hospital(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    message = json.dumps({'chat':
+                              {'type': 'private',
+                               'last_name': 'Divy',
+                               'first_name': 'Prakash',
+                               'username': 'prakash_divy',
+                               'id': 121508145,
+                               'title': None,
+                               'all_members_are_administrators': None
+                               },
+                          'date': 1495177065,
+                          'message_id': 4567})
+    message = types.Message.de_json(message)
+    Mock(text='/random_hospital')
+    random_hospital(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
