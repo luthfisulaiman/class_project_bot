@@ -50,7 +50,7 @@ def parse_date(text):
                                           message.chat.type == "group")
 def jadwal(message):
     app.logger.debug("'jadwal' command detected")
-    future_schedules = get_schedules(message.chat)
+    future_schedules = get_schedules(message.chat.id)
     for schedule in future_schedules:
         bot.send_message(message.chat, schedule)
 
