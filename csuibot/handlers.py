@@ -18,7 +18,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_crop)
+                    lookup_HotJapan100, get_crop, acronym_new, acronym_update,
+                    acronym_delete)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -998,3 +999,45 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/add_acronym$')
+def new_acronym(message):
+    app.logger.debug("'/add_acronym' command detected")
+    acro = "belom nich"
+    new_acronym = "belom nih"
+    app.logger.debug('Adding {}'.format(new_acronym))
+    try:
+        add_new_acronym = acronym_new(new_acronym)
+    except ValueError:
+        bot.reply_to(message, 'Command /add_acronym doesn\'t need arguments')
+    else:
+        bot.reply_to(message, add_new_acronym)
+
+
+@bot.message_handler(regexp=r'^/update_acronym$')
+def update_acronym(message):
+    app.logger.debug("'/update_acronym' command detected")
+    acro = "belom nich"
+    update_acronym = "belom nih"
+    app.logger.debug('Adding {}'.format(update_acronym))
+    try:
+        update__acronym = acronym_new(update_acronym)
+    except ValueError:
+        bot.reply_to(message, 'Command /update_acronym doesn\'t need arguments')
+    else:
+        bot.reply_to(message, update__acronym)
+
+
+@bot.message_handler(regexp=r'^/delete_acronym$')
+def update_acronym(message):
+    app.logger.debug("'/delete_acronym' command detected")
+    acro = "belom nich"
+    delete_acronym = "belom nih"
+    app.logger.debug('Adding {}'.format(delete_acronym))
+    try:
+        delete__acronym = acronym_new(delete_acronym)
+    except ValueError:
+        bot.reply_to(message, 'Command /update_acronym doesn\'t need arguments')
+    else:
+        bot.reply_to(message, delete__acronym)

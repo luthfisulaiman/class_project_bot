@@ -956,6 +956,32 @@ class TestCrop:
         else:
             assert res is not None
 
+class TestAcronym:
+    def test_add_acronym(self):
+        try:
+            res = utils.acronym_new('/add_acronym')
+        except ValueError:
+            pass
+        else:
+            assert res is not None
+
+
+    def test_update_acronym(self):
+        try:
+            res = utils.acronym_update('/update_acronym')
+        except ValueError:
+            pass
+        else:
+            assert res is not None
+
+    def test_delete_acronym(self):
+        try:
+            res = utils.acronym_delete('/delete_acronym')
+        except ValueError:
+            pass
+        else:
+            assert res is not None
+
 
 class TestNews:
     def test_news(self):

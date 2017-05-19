@@ -20,7 +20,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
-                           topTropical as trop, mangaTopOricon as mto, tagging, crop)
+                           topTropical as trop, mangaTopOricon as mto, tagging, crop, acronym)
 
 
 def lookup_zodiac(month, day):
@@ -435,7 +435,6 @@ def get_crop(crop_file):
         return 'You must upload an image with a caption in order to crop!'
     else:
         hasil = crop.Crop().do_crop(crop_file)
-        print(hasil)
         return hasil
 
 
@@ -526,3 +525,15 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def acronym_new(message):
+    return acronym.Acronym().new_acronym(message)
+
+
+def acronym_update(message):
+    return acronym.Acronym().update_acronym(message)
+
+
+def acronym_delete(message):
+    return acronym.Acronym().delete_acronym(message)
