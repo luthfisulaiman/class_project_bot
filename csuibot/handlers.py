@@ -1015,3 +1015,33 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/cgv_gold_class$')
+def cgv_gold(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/cgv_regular_2d$')
+def cgv_reg(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
+def cgv_3dcinema(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/cgv_velvet$')
+def cgv_velvet(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/cgv_sweet_box$')
+def cgv_sweetbox(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
+def cgv_change(message):
+    pass
