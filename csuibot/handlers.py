@@ -1015,3 +1015,34 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+def is_private_message(message):
+    return message.chat.type == 'private'
+
+
+def parse_check_fake_news_group(message):
+    return (any([e.type == 'url' for e in message.entities])
+            if (message.chat.type == 'group' and
+                message.text is not None and
+                message.entities is not None)
+            else False)
+
+
+POSSIBLE_NEWS_TYPES = ['fake', 'political', 'satire', 'unreliable', 'bias', 'conspiracy']
+
+
+@bot.message_handler(func=is_private_message,
+                     commands=["is_{}".format(news_type) for news_type in POSSIBLE_NEWS_TYPES])
+def check_fake_news_private(message):
+    pass
+
+
+@bot.message_handler(func=is_private_message, commands=['add_filter'])
+def add_fake_news_filter_private(message):
+    pass
+
+
+@bot.message_handler(func=parse_check_fake_news_group)
+def check_fake_news_group(message):
+    pass

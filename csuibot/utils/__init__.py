@@ -523,3 +523,11 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def check_fake_news(url, news_type=None):
+    pass
+
+
+def add_filter_news(url, news_type):
+    pass
