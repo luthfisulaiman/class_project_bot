@@ -27,8 +27,6 @@ class TopPoster:
                     self.posters_data = res['posters']
 
     def process_update(self, update):
-        print(update)
-        print(type(update))
         poster_id = update['message']['from']['id']
         chat_id = update['message']['chat']['id']
         first_name = update['message']['from']['first_name']

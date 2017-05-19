@@ -1,4 +1,5 @@
-from . import app, bot, last_update
+from . import app, bot
+import csuibot
 import requests
 import re
 import urllib
@@ -145,7 +146,7 @@ def plant_ask(message):
 def top_poster(message):
     app.logger.debug("'topposters' command detected")
     try:
-        msg = count_posters(last_update)
+        msg = count_posters(csuibot.last_update)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:

@@ -30,8 +30,6 @@ def webhook():
         update = telebot.types.Update.de_json(json_data)
         global last_update
         last_update = update
-        print(update)
-        print('hehehe')
         bot.process_new_messages([update.message])
         return ''
     else:
