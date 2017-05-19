@@ -1471,3 +1471,23 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class TestSFW:
+    def test_sfw_image(self):
+        photo_path = 'https://www.google.com/search?q=picture&client=firefox-b&tbm='
+        photo_path += 'isch&imgil=j-U8au6L6da10M%253A%253Bkv9bdZIJ_x2lnM%253Bhttp'
+        photo_path += '%25253A%25252F%25252Fcoolwildlife.com%25252Fgallery%25252F'
+        photo_path += 'fox-pictures%25252F&source=iu&pf=m&fir=j-U8au6L6da10M%253A'
+        photo_path += '%252Ckv9bdZIJ_x2lnM%252C_&usg=__Mks1pF2v8labLOtSpk4OR7lZ70Q'
+        photo_path += '%3D&biw=1366&bih=659&ved=0ahUKEwiPheTZ4_vTAhVFMo8KHUklDXIQyj'
+        photo_path += 'cIMg&ei=-sweWY-gHcXkvATJyrSQBw#imgrc=j-U8au6L6da10M:'
+        response = utils.image_is_sfw(photo_path)
+        assert response == 'image is SFW'
+
+    def test_nsfw_image(self):
+        photo_path = 'https://www.google.com/search?q=nsfw&client=firefox-b&source'
+        photo_path += '=lnms&tbm=isch&sa=X&ved=0ahUKEwjCxbKP5PvTAhWKwI8KHS0xATIQ_A'
+        photo_path += 'UICigB&biw=1366&bih=659#imgrc=874oANnj-UX6GM:'
+        response = utils.image_is_sfw(photo_path)
+        assert response == 'image is NSFW'
