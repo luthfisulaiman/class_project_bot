@@ -1963,3 +1963,15 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_acronym(mocker):
+    error = 'Command /add_acronym doesn\'t need arguments'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.new_acronym')
+    mock_message = Mock(text='/add_acronym args')
+
+    new_acronym(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == error
