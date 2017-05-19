@@ -1020,29 +1020,38 @@ def tagimage(message):
 
 @bot.message_handler(regexp=r'^/cgv_gold_class$')
 def cgv_gold(message):
+    app.logger.debug("'cgv_gold_class' command detected")
     pass
 
 
 @bot.message_handler(regexp=r'^/cgv_regular_2d$')
 def cgv_reg(message):
+    app.logger.debug("'cgv_regular' command detected")
     pass
 
 
 @bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
 def cgv_3dcinema(message):
+    app.logger.debug("'cgv_4dx_3d_cinema' command detected")
     pass
 
 
 @bot.message_handler(regexp=r'^/cgv_velvet$')
 def cgv_velvet(message):
+    app.logger.debug("'cgv_velvet' command detected")
     pass
 
 
 @bot.message_handler(regexp=r'^/cgv_sweet_box$')
 def cgv_sweetbox(message):
+    app.logger.debug("'cgv_sweet_box' command detected")
     pass
 
 
 @bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
 def cgv_change(message):
+    app.logger.debug("'cgv_change_cinema' command detected")
+    _, url = message.text.split(' ')
+
+    app.logger.debug("url is {}".format(url))
     pass
