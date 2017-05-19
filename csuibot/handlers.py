@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, get_schedules)
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -46,10 +46,13 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
-@bot.message_handler(regexp=r'jadwal', func=lambda message: message.chat.type == "group")
+@bot.message_handler(func=lambda message: "jadwal" in message.text and
+                                          message.chat.type == "group")
 def jadwal(message):
     app.logger.debug("'jadwal' command detected")
-    pass
+    future_schedules = get_schedules(message.chat)
+    for schedule in future_schedules:
+        bot.send_message(message.chat, schedule)
 
 
 @bot.message_handler(commands=['create_schedule'],

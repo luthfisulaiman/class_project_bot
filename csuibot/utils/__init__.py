@@ -49,5 +49,5 @@ def create_schedule(date, time):
     return schedule.Schedule.create_schedule(date, time)
 
 
-def get_schedules():
-    pass
+def get_schedules(chat_id):
+    return schedule.Schedule().get_schedules(chat_id)
