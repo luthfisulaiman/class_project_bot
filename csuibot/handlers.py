@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac, 
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, add_question_trivia,
+                    change_question_trivia, play_trivia_game)
 
 
 @bot.message_handler(regexp=r'^/about$')

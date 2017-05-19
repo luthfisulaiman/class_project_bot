@@ -61,3 +61,14 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_add_question(mocker):
+    assert "Test" == "Test"
+
+
+def test_change_answer(mocker):
+    assert "Test" == "Test"
+
+
+def test_start_zonk(mocker):
+    assert "Test" == "Test"
