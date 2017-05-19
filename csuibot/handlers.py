@@ -1055,6 +1055,7 @@ def add_wiki(message):
         bot.reply_to(message, result)
 
 
+
 @bot.message_handler(commands=['random_wiki_article'])
 def random_wiki_article(message):
     app.logger.debug("'random_wiki_article' command detected")
@@ -1071,6 +1072,10 @@ def random_wiki_article(message):
             bot.send_message(message.chat.id, 'Select an article...', reply_markup=keyboard)
         else:
             bot.reply_to(message, result)
+
+
+def preview_music():
+    raise NotImplemented
 
 
 # bot.remove_webhook()
