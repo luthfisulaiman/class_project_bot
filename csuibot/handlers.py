@@ -1015,3 +1015,27 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+@bot.message_handler(regexp=r'^/qs$')
+def quran(message):
+    app.logger.debug("'Quran' command detected")
+    try:
+       pass
+
+@bot.message_handler(regexp=r'^/qs (.*)$')
+def quran(message):
+    app.logger.debug("'Quran' command detected")
+    try:
+       pass
+
+@bot.message_handler(regexp=r'^ngaji$')
+def quran(message):
+    app.logger.debug("'Ngaji' command detected")
+    try:
+       pass
+
+@bot.message_handler(regexp=r'^ngaji (.)*$')
+def quran(message):
+    app.logger.debug("'Ngaji' command detected")
+    try:
+       pass
