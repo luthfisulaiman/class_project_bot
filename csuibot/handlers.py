@@ -51,8 +51,11 @@ def parse_date(text):
 def jadwal(message):
     app.logger.debug("'jadwal' command detected")
     future_schedules = get_schedules(message.chat.id)
-    for schedule in future_schedules:
-        bot.send_message(message.chat, schedule)
+    if len(future_schedules) > 0:
+        for schedule in future_schedules:
+            bot.send_message(message.chat, schedule)
+    else:
+        bot.send_message(message.chat, 'No future schedules are found.')
 
 
 @bot.message_handler(commands=['create_schedule'],
