@@ -59,4 +59,3 @@ def album_price(message):
 Please try again in a few minutes''')
     else:
         bot.reply_to(message, reply)
-

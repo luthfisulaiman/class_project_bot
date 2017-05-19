@@ -46,6 +46,7 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
     
+
 def lookup_album_price(url):
     string = ''
     page = requests.get(url)

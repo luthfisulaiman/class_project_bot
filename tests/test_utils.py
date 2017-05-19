@@ -253,3 +253,9 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestAlbumPrice:
+    def test_album_exist(self):
+        res = utils.lookup_album_price('http://vgmdb.net/db/calendar.php?year=2017&month=5')
+        asert res != ""    
