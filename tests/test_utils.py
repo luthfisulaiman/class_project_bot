@@ -1887,3 +1887,14 @@ class TestMediaWiki:
         assert res == '{}\n\n{}\n\nimage: {}\n\nsource: {}'.format(
             'Example', '', ' - ', 'http://en.wikipedia.org/wiki/Example'
         )
+
+
+class test_preview:
+
+    def test_valid(self):
+        res = utils.preview_music("Bruno Mars")
+        assert "https" in res
+
+    def test_invalid(self):
+        res = utils.preview_music("ABCD")
+        assert res == "Can\'t found the requested artist"

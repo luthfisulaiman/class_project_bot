@@ -2148,3 +2148,51 @@ def test_random_wiki_article_environment_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_response
+
+
+def test_preview_valid(mocker):
+    fake_response = 'https://itunes.apple.com/us/album/better-together/id879273552?i=879273565&uo=4'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview_music(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_preview_invalid(mocker):
+    fake_error = 'Command not found, please use /itunes_preview <Artist> and change space to underscore (_)'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_error)
+    mock_message = Mock(text='/itunes_preview Jack Johnson')
+
+    preview_music(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_preview_http_error(mocker):
+    fake_error = 'HTTP error occurs, please try again in a minute'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview_music(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
+def test_preview_connection_error(mocker):
+    fake_error = 'Connection error occurs, please try again in a minute'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=ConnectionError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview_music(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
