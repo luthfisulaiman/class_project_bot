@@ -1,5 +1,4 @@
 from .. import app
-from request import get
 
 
 api_key = 'acc_639b88467681d49'
@@ -11,7 +10,7 @@ imagga_link = 'https://api.imagga.com/v1/categorizations/nsfw_beta?url=%s'
 def is_sfw(data):
 
     photo_url = telephoto_url % (app.config['TELEGRAM_BOT_TOKEN'], data)
-    response = get(imagga_link % photo_url, auth=(api_key, api_secret))
+    response = request.get(imagga_link % photo_url, auth=(api_key, api_secret))
 
     response_json = response.json()
     results = response_json['results']
