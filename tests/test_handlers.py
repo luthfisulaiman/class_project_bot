@@ -2070,12 +2070,7 @@ Tag : power , Confidence : 19'''
 
 
 def test_uber(mocker):
-    fake_result = 'Destination: Gedung C Fasilkom (33 kilometers from current position)\
-                   Estimated travel time and fares for each Uber services:\
-                   - UberX (60 minutes, 77000 rupiah)\
-                   - UberPool (60 minutes, 55000 rupiah)\
-                   - UberBlack (80 minutes, 123000 rupiah)\
-                   - UberMotor (60 minutes, 20000 rupiah)'
+    fake_result = 'Please share your location'
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
@@ -2086,12 +2081,14 @@ def test_uber(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
 
+
+
 def test_add_destination(mocker):
 
-    fake_result = 'Added a destination'
+    fake_result = 'Please share a location to be added'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
-    mocked_message = Mock('\uber')
+    mocked_message = Mock('\add_destination')
     
     uber(mocked_message)
 
@@ -2100,11 +2097,11 @@ def test_add_destination(mocker):
 
 def test_remove_destination(mocker):
 
-    fake_result = 'Removed a destination'
+    fake_result = 'Please share a location to be removed'
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
-    mocked_message = Mock('\uber')
+    mocked_message = Mock('\remove_destination')
     
     uber(mocked_message)
 

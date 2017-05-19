@@ -1023,6 +1023,12 @@ def uber(message):
     pass
 
 
+@bot.message_handler(content_types=['location'], func=uber)
+def uber_location(message):
+    app.logger.debug("location detected command detected")
+    pass
+
+
 @bot.message_handler(regexp=r'^\/add_destination\s*$', func=lambda message: message.chat.type == "private")
 def add_destination(message):
     app.logger.debug('\add_destination command detected')
