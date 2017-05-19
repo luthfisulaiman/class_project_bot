@@ -1760,7 +1760,7 @@ class TestMediaWiki:
         )
 
         res = utils.get_mediawiki('Barack Obama')
-        assert res == '{}\n{}\n\nimage: {}\n\nsource: {}'.format(
+        assert res == '{}\n\n{}\n\nimage: {}\n\nsource: {}'.format(
             'Example', '', ' - ', 'http://en.wikipedia.org/wiki/Example'
         )
 
@@ -1884,6 +1884,6 @@ class TestMediaWiki:
         )
 
         res = utils.get_mediawiki('Barack Obama')
-        assert res == '{}\n{}\n\nimage: {}\n\nsource: {}'.format(
+        assert res == '{}\n\n{}\n\nimage: {}\n\nsource: {}'.format(
             'Example', '', ' - ', 'http://en.wikipedia.org/wiki/Example'
         )

@@ -1,4 +1,5 @@
 from . import app, bot
+from telebot import types
 import requests
 import re
 import urllib
@@ -18,7 +19,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
-                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    get_mediawiki, save_mediawiki_url)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1019,12 +1021,34 @@ def tagimage(message):
 
 @bot.message_handler(commands=['add_wiki'])
 def add_wiki(message):
-    pass
+    app.logger.debug("'add_wiki' command detected")
+    url = " ".join(message.text.split()[1:])
+    try:
+        result = save_mediawiki_url(url)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, result)
 
 
 @bot.message_handler(commands=['random_wiki_article'])
 def random_wiki_article(message):
-    pass
+    app.logger.debug("'random_wiki_article' command detected")
+    args = " ".join(message.text.split()[1:])
+    try:
+        result = get_mediawiki(args)
+    except EnvironmentError as e:
+        bot.reply_to(message, str(e))
+    else:
+        if args is '':
+            keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, row_width=1)
+            for title in result:
+                keyboard.add(title)
+            bot.send_message(message.chat.id, 'Select an article...', reply_markup=keyboard)
+        else:
+            bot.reply_to(message, result)
 
 
 # bot.remove_webhook()
