@@ -16,7 +16,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               japanartist, extract_colour_from_image, check_caption_colour,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
-                              tagimage, check_caption_tag, sentiment, japan100)
+                              tagimage, check_caption_tag, japan100,
+                              get_notif_twitter, air_quality, sentiment_new)
 from requests.exceptions import ConnectionError
 
 
@@ -124,27 +125,144 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
-def test_sentiment(mocker):
-    fake_reply = 'Positive: 0.5\nNegative: 0.5'
+def test_sentiment_new(mocker):
+    fake_sentiment = "Sentiment:  0.916119"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_sentiment', return_value=fake_reply)
-    mock_message = Mock(text='/sentiment good nice bad terrible')
+    mocker.patch('csuibot.handlers.lookup_sentiment_new', return_value=fake_sentiment)
+    mock_message = Mock(text='/sentiment good day')
 
-    sentiment(mock_message)
+    sentiment_new(mock_message)
+
     args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_sentiment
 
-    assert args[1] == fake_reply
 
-
-def test_sentiment_none_text(mocker):
+def test_sentiment_invalid_input(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_sentiment', side_effect=ValueError)
+    mocker.patch('csuibot.handlers.lookup_sentiment_new', side_effect=ValueError)
     mock_message = Mock(text='/sentiment')
 
-    sentiment(mock_message)
+    sentiment_new(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Command /sentiment need an argument'
+
+
+def test_aqi_good(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Singapore')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_moderate(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Shanghai')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_sensitive(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Beijing')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_unhealthy(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Manali')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_very_unhealthy(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Yuzuncuyil')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_hazardous(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi Yuzuncuyil')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_aqi_coord_moderate(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.air_quality')
+    mock_message = Mock(text='/aqi 31.2304 121.4737')
+
+    air_quality(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_tweet_fine(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recent qurratayuna')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
+
+
+def test_tweet_bad_cmd(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet huuuh qurrata_yuna')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command or invalid user'
+
+
+def test_tweet_not_complete(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet recent')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command'
+
+
+def test_tweet_bad_wrong(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/tweet')
+
+    get_notif_twitter(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command'
 
 
 def test_oricon_books(mocker):
@@ -494,7 +612,7 @@ def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
-    mock_message = Mock(text='/topMangaOricon 2017-05-15')
+    mock_message = Mock(text='/oricon comic 2017-05-15')
     oriconMangaHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
@@ -505,7 +623,7 @@ def test_topMangaOriconMonthly(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.getTopMangaMonthly', return_value=fake_manga)
-    mock_message = Mock(text='/topMangaOricon 2017-05')
+    mock_message = Mock(text='/oricon comic 2017-05')
     oriconMangaMonthlyHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
@@ -1910,16 +2028,16 @@ def test_weton_minggu(mocker):
 
 
 def test_japan100(mocker):
-    fake_japan100 = '''(1) Colors-BUMP OF CHICKEN
-(2) Ribbon-Kana Nishino
-(3) Pa-BTOB
-(4) Movie-Mag!C Prince
-(5) Update-Austin Mahone
-(6) Dirty Work-Gen Hoshino
-(7) Koi-Mai Kuraki
-(8) Togetsukyou  (Kimi Omofu)-Keyakizaka46
-(9) Fukyouwaon-Ariana Grande & John Legend
-(10) Beauty And The Beast-Nogizaka 46
+    fake_japan100 = '''(1) Chi.Ase.Namida-RADWIMPS
+(2) Saihate Aini-M!LK
+(3) Ternero Fighter-Che'Nelle
+(4) Destiny-Kana Nishino
+(5) Pa-Mai Kuraki
+(6) Togetsukyou  (Kimi Omofu)-DOBERMAN INFINITY
+(7) Do Party-Cyaron!
+(8) Kinmirai Happy End-Gen Hoshino
+(9) Koi-CNBLUE
+(10) Shake-Keyakizaka46
 '''
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

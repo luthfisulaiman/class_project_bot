@@ -346,6 +346,30 @@ class TestChineseZodiac:
         self.run_test('Unknown zodiac', years)
 
 
+class TestSentimentNew:
+    def test_sentiment(self):
+        res = utils.lookup_sentiment_new("good day")
+        assert res == "Sentiment:  0.916119"
+
+
+class TestAirQuality:
+
+    def test_aqi_city_invalid(self):
+        res = utils.get_aqi_city("dadafawawfawcqfwqqv")
+        assert res == "Invalid city name or coordinate, please try again"
+
+    def test_aqi_coord_invalid(self):
+        res = utils.get_aqi_coord("dadafawaw fawcqfwqqv")
+        assert res == "Invalid city name or coordinate, please try again"
+
+
+class TestTweet:
+
+    def test_tweet_true(self):
+        res = utils.get_tweets('qurratayuna')
+        assert res == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
+
+
 class TestWiki:
     wikipedia_summary = (
         'The Ukrainian revolution of 2014 (also known as the'
