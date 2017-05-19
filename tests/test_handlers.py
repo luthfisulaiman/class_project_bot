@@ -17,7 +17,10 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new)
+                              get_notif_twitter, air_quality, sentiment_new,
+                              check_fake_news_private, is_private_message,
+                              add_fake_news_filter_private, POSSIBLE_NEWS_TYPES,
+                              check_fake_news_group, parse_check_fake_news_group)
 from requests.exceptions import ConnectionError
 
 
@@ -2067,3 +2070,129 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_check_fake_news_private(mocker):
+    fake_result = ['The url is not of type: {}'.format(nt) for nt in POSSIBLE_NEWS_TYPES]
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=False)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/is_fake url'}
+    mock_message.configure_mock(**attrs)
+    assert is_private_message(mock_message)
+    check_fake_news_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] in fake_result
+
+    fake_result = ['The url is of type: {}'.format(nt) for nt in POSSIBLE_NEWS_TYPES]
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=True)
+    check_fake_news_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] in fake_result
+
+
+def test_check_fake_news_private_errors(mocker):
+    fake_value_error = 'Please provide url with HTTP format.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=True)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/is_fake'}
+    mock_message.configure_mock(**attrs)
+    check_fake_news_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_value_error
+
+
+def test_add_fake_news_filter_private(mocker):
+    fake_result = 'Added to filter list successfully.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.add_filter_news', return_value=None)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/add_filter url fake'}
+    mock_message.configure_mock(**attrs)
+    assert is_private_message(mock_message)
+    add_fake_news_filter_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_add_fake_news_filter_private_errors(mocker):
+    fake_value_error = ("Please use the correct format: '/add_filter URL TYPE'\n"
+                        "Make sure the URL is in HTTP format,"
+                        " and the TYPE is one of [{}]".format(', '.join(POSSIBLE_NEWS_TYPES)))
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.add_filter_news', return_value=None)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/add_filter url errortype'}
+    mock_message.configure_mock(**attrs)
+    add_fake_news_filter_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_value_error
+
+
+def test_check_fake_news_group(mocker):
+    fake_result = 'The url is safe to visit'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=['safe'])
+    entity = mocker.Mock()
+    attrs = {'type': 'url', 'offset': 0, 'length': 17}
+    entity.configure_mock(**attrs)
+    entity2 = mocker.Mock()
+    attrs = {'type': 'fake'}
+    entity2.configure_mock(**attrs)
+    chat = mocker.Mock()
+    attrs = {'type': 'group'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'entities': [entity2, entity], 'chat': chat, 'text': 'http://google.com'}
+    mock_message.configure_mock(**attrs)
+    assert parse_check_fake_news_group(mock_message)
+    check_fake_news_group(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+    mock_message = mocker.Mock()
+    attrs = {'entities': [entity2], 'chat': chat, 'text': 'no url'}
+    mock_message.configure_mock(**attrs)
+    assert parse_check_fake_news_group(mock_message) is False
+
+    mock_message = mocker.Mock()
+    attrs = {'entities': None, 'chat': chat, 'text': 'no url'}
+    mock_message.configure_mock(**attrs)
+    assert parse_check_fake_news_group(mock_message) is False
+
+
+def test_check_fake_news_group_errors(mocker):
+    fake_value_error = None
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', side_effect=ValueError)
+    entity = mocker.Mock()
+    attrs = {'type': 'url', 'offset': 0, 'length': 10}
+    entity.configure_mock(**attrs)
+    chat = mocker.Mock()
+    attrs = {'type': 'group'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'entities': [entity], 'chat': chat, 'text': 'google.com'}
+    mock_message.configure_mock(**attrs)
+    check_fake_news_group(mock_message)
+
+    assert mocked_reply_to.call_args == fake_value_error

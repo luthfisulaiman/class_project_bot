@@ -1471,3 +1471,106 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class TestFakeNews:
+    TEST_JSON_LOC = 'csuibot/utils/.test_sources.json'
+    JSON_SAMPLE = {"abeldanger.net": {
+        "type": "conspiracy",
+        "2nd type": "",
+        "3rd type": "",
+        "Source Notes (things to know?)": ""
+    }}
+    fk = utils.fakenews.FakeNews()
+
+    def test_check_fake_news(self, mocker):
+        try:
+            os.remove(self.TEST_JSON_LOC)
+        except OSError:
+            pass
+
+        real_loc = self.fk.JSON_FILE_LOC
+        self.fk.JSON_FILE_LOC = self.TEST_JSON_LOC
+        self.fk.json = None
+
+        # Test request file
+        fake_response = requests.Response()
+        fake_response.status_code = 200
+        fake_response._content = bytes(json.dumps(self.JSON_SAMPLE), 'utf-8')
+        mocker.patch('requests.get', return_value=fake_response)
+        url = 'http://google.com'
+        news_type = 'fake'
+        res = utils.check_fake_news(url, news_type)
+
+        assert res is False
+
+        # Test request url not using HTTP protocol
+        url = 'someprotocol://google.com'
+        try:
+            utils.check_fake_news(url, news_type)
+        except ValueError:
+            assert True
+        else:
+            assert False
+
+        # Test if file exists but json is None
+        self.fk.json = None
+        url = 'http://abeldanger.net/stuffs/etc'
+        news_type = 'conspiracy'
+        res = utils.check_fake_news(url, news_type)
+
+        assert res
+
+        # Test if json is not None
+        url = 'http://abeldanger.net/stuffs/etc'
+        news_type = 'bias'
+        res = utils.check_fake_news(url, news_type)
+
+        assert res is False
+
+        self.fk.JSON_FILE_LOC = real_loc
+
+    def test_add_fake_news_filter(self, mocker):
+        # file TEST_JSON_LOC and FakeNews.json exists because of the test above
+        real_loc = self.fk.JSON_FILE_LOC
+        self.fk.JSON_FILE_LOC = self.TEST_JSON_LOC
+
+        url = 'someprotocol://abeldanger.net/stuffs/etc'
+        news_type = 'bias'
+        try:
+            utils.add_filter_news(url, news_type)
+        except ValueError:
+            assert True
+        else:
+            assert False
+
+        # Test existing hostname, write to '2nd type'
+        url = 'http://abeldanger.net/stuffs/etc'
+        utils.add_filter_news(url, news_type)
+
+        assert self.fk.json['abeldanger.net']['2nd type'] == news_type
+
+        # Test existing hostname, write to '3rd type'
+        news_type = 'fake'
+        utils.add_filter_news(url, news_type)
+
+        assert self.fk.json['abeldanger.net']['3rd type'] == news_type
+
+        # Test existing hostname, rewrite '3rd type'
+        news_type = 'satire'
+        utils.add_filter_news(url, news_type)
+
+        assert self.fk.json['abeldanger.net']['3rd type'] == news_type
+
+        # Test new hostname, write to 'type'
+        url = 'http://newurl.com/stuffs/etc'
+        news_type = 'fake'
+        utils.add_filter_news(url, news_type)
+
+        assert self.fk.json['newurl.com']['type'] == news_type
+
+        self.fk.JSON_FILE_LOC = real_loc
+        try:
+            os.remove(self.TEST_JSON_LOC)
+        except OSError:
+            pass
