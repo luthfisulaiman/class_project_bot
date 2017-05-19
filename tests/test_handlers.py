@@ -531,6 +531,46 @@ def test_tropicalBb(mocker):
     assert args[1] == fake_bb
 
 
+def test_coinRandom(mocker):
+    fake_coin = 'tail'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.', return_value=fake_manga)
+    mock_message = Mock(text='/coin')
+    oriconMangaHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
+def test_rollRandom(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
+    mock_message = Mock(text='/oricon comic 2017-05-15')
+    oriconMangaHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
+def test_multRollRandom(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
+    mock_message = Mock(text='/oricon comic 2017-05-15')
+    oriconMangaHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
+def test_isLucky(mocker):
+    fake_manga = 'judul-Mangaka'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.getTopManga', return_value=fake_manga)
+    mock_message = Mock(text='/oricon comic 2017-05-15')
+    oriconMangaHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_manga
+
 def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')

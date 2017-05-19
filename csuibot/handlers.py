@@ -178,6 +178,17 @@ def sceleNoticeHandler(message):
     else:
         bot.reply_to(message, notification)
 
+@bot.message_handler(regexp=r'^/coin$')
+def coinRandomHandler(message):
+    app.logger.debug("coin command detected")
+    try:
+        # notification = checkTopTropical(artist)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, "ini adalah koin")
+
+
 
 @bot.message_handler(regexp=r'^/checktropical.+$')
 def tropicalArtistHandler(message):
