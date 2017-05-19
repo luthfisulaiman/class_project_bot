@@ -44,11 +44,14 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
 
+
 def add_question_trivia(arrayOfQuestion):
     return trv.Trivia().add_question(arrayOfQuestion)
 
+
 def change_question_trivia(arrayOfQuestion):
-    return trv.Trivia().change_question(self, arrayOfQuestion)
+    return trv.Trivia().change_question(arrayOfQuestion)
+
 
 def play_trivia_game():
     return trv.Trivia().play_game

@@ -1,6 +1,5 @@
 from . import app, bot
-from .utils import (lookup_zodiac, lookup_chinese_zodiac, add_question_trivia,
-                    change_question_trivia, play_trivia_game)
+from .utils import (lookup_zodiac, lookup_chinese_zodiac)
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -63,4 +62,3 @@ def change_answer(message):
 def start_zonk(message):
     app.logger.debug("'start zonk' command detected")
     pass
-
