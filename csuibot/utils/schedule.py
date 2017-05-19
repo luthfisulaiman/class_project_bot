@@ -8,7 +8,7 @@ class Schedule:
         self.path_schedules = '../../schedules/'
 
     def create_schedule(self, chat_id, date, time):
-        pass
+        print("{} {} {}".format(chat_id, date_time))
 
     def get_schedules(self, chat_id):
         try:
