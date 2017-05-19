@@ -53,9 +53,9 @@ def jadwal(message):
     future_schedules = get_schedules(message.chat.id)
     if len(future_schedules) > 0:
         for schedule in future_schedules:
-            bot.send_message(message.chat, schedule)
+            bot.send_message(message.chat.id, schedule)
     else:
-        bot.send_message(message.chat, 'No future schedules are found.')
+        bot.send_message(message.chat.id, 'No future schedules are found.')
 
 
 @bot.message_handler(commands=['create_schedule'],
