@@ -12,7 +12,7 @@ class Schedule:
 
     def get_schedules(self, chat_id):
         try:
-            with open(self.path_schedules + int(chat_id) + '.json', 'r') as data_json:
+            with open(self.path_schedules + str(chat_id) + '.json', 'r') as data_json:
                 data = json.load(data_json)
 
             current_date = datetime.now().date()
