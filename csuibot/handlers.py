@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import (lookup_zodiac, lookup_chinese_zodiac, create_schedule, get_schedules)
+from .utils import (lookup_zodiac, lookup_chinese_zodiac, generate_schedule,
+                    get_available_schedules, get_schedules)
 from telebot import types
 import datetime
 
@@ -68,7 +69,8 @@ def create_schedule(message):
         def time_schedule(time_message):
             app.logger.debug("time of schedule is {}".format(time_message.text))
             print("{} {} {}".format(message.chat.id, date_message.text, time_message.text))
-            result = create_schedule(message.chat.id, date_message.text, time_message.text)
+            result = generate_schedule(message.chat.id, date_message.text, time_message.text)
+            print(result)
 
         app.logger.debug("date of schedule is {}".format(date_message.text))
 
@@ -76,13 +78,8 @@ def create_schedule(message):
             y, m, d = parse_date(date_message.text)
             if datetime.date(y, m, d) >= datetime.datetime.now().date():
                 markup = types.ReplyKeyboardMarkup()
-                btn09 = types.KeyboardButton('09.00')
-                btn10 = types.KeyboardButton('10.00')
-                btn11 = types.KeyboardButton('11.00')
-                btn12 = types.KeyboardButton('12.00')
-                btn13 = types.KeyboardButton('13.00')
-                btn14 = types.KeyboardButton('14.00')
-                markup.add(btn09, btn10, btn11, btn12, btn13, btn14)
+                for avl_hour in get_available_schedules(message.chat.id, date_message.text):
+                    markup.add(types.KeyboardButton("{}.00".format(avl_hour)))
                 msg = bot.send_message(date_message.from_user.id,
                                        'Here are the available hours for {}.'.format(
                                             date_message.text),

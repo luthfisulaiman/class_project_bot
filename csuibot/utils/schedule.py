@@ -7,8 +7,20 @@ class Schedule:
     def __init__(self):
         self.path_schedules = '../../schedules/'
 
-    def create_schedule(self, chat_id, date, time):
-        print("{} {} {}".format(chat_id, date_time))
+    def create_schedule(self, chat_id, req_date, req_time):
+        return "{} {} {}".format(chat_id, req_date, req_time)
+
+    def get_available_schedules(self, chat_id, req_date):
+        hours = ['09', '10', '11', '12', '13', '14']
+        try:
+            with open(self.path_schedules + str(chat_id) + '.json', 'r') as data_json:
+                data = json.load(data_json)
+
+            return list(set(hours) - data['schedules'][req_date].keys())
+        except FileNotFoundError:
+            return hours
+        except KeyError:
+            return hours
 
     def get_schedules(self, chat_id):
         try:
@@ -43,4 +55,4 @@ class Schedule:
 
 
 if __name__ == '__main__':
-    print(Schedule().get_schedules('tes'))
+    print(Schedule().get_available_schedules('tes', "2017-05-30"))
