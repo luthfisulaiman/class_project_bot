@@ -6,6 +6,7 @@ import time
 import urllib.error
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urlsplit
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -21,7 +22,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi)
+                           twitter_search as ts, aqi, fakenews)
 
 
 def lookup_zodiac(month, day):
@@ -526,8 +527,18 @@ def auto_tag(message):
 
 
 def check_fake_news(url, news_type=None):
-    pass
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    result = fakenews.FakeNews().check(hostname)
+    type_keys = ['type', '2nd type', '3rd type']
+    type_list = [result[k] for k in type_keys if k in result and result[k] != '']
+    return news_type in type_list if news_type else type_list
 
 
 def add_filter_news(url, news_type):
-    pass
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    hostname = "{0.netloc}".format(urlsplit(url))
+    fakenews.FakeNews().add_filter(hostname, news_type)

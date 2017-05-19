@@ -18,7 +18,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
-                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    check_fake_news, add_filter_news)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1035,14 +1036,57 @@ POSSIBLE_NEWS_TYPES = ['fake', 'political', 'satire', 'unreliable', 'bias', 'con
 @bot.message_handler(func=is_private_message,
                      commands=["is_{}".format(news_type) for news_type in POSSIBLE_NEWS_TYPES])
 def check_fake_news_private(message):
-    pass
+    app.logger.debug("'is_NEWS_TYPE' command detected")
+    try:
+        command, url = message.text.split()
+        news_type = command[4:]  # get type from '/is_{type}'
+        app.logger.debug("'is_{}' command detected".format(news_type))
+        is_of_type = check_fake_news(url, news_type)
+        app.logger.debug("The url is of type described: {}".format(is_of_type))
+    except ValueError as e:
+        app.logger.debug(e)
+        bot.reply_to(message, "Please provide url with HTTP format.")
+    else:
+        reply = ("The url is of type: {}".format(news_type) if is_of_type
+                 else "The url is not of type: {}".format(news_type))
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(func=is_private_message, commands=['add_filter'])
 def add_fake_news_filter_private(message):
-    pass
+    app.logger.debug("'add_filter' command detected")
+    try:
+        app.logger.debug(message.text)
+        _, url, news_type = message.text.split()
+        if news_type not in POSSIBLE_NEWS_TYPES:
+            raise ValueError
+        add_filter_news(url, news_type)
+    except ValueError as e:
+        app.logger.debug(e)
+        reply = ("Please use the correct format: '/add_filter URL TYPE'\n"
+                 "Make sure the URL is in HTTP format,"
+                 " and the TYPE is one of [{}]".format(', '.join(POSSIBLE_NEWS_TYPES)))
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, "Added to filter list successfully.")
 
 
 @bot.message_handler(func=parse_check_fake_news_group)
 def check_fake_news_group(message):
-    pass
+    # message is guaranteed to have an entity with type url
+    app.logger.debug("'url in group chat' scenario detected")
+    try:
+        # Find first entity with type url
+        index = [e.type for e in message.entities].index('url')
+        url_entity = message.entities[index]
+        url_offset = url_entity.offset
+        url_length = url_entity.length
+        url = message.text[url_offset:url_offset + url_length]
+        list_of_types = check_fake_news(url)
+        app.logger.debug(list_of_types)
+    except ValueError as e:
+        app.logger.debug(e)  # Do nothing since it is a group chat
+    else:
+        reply = ("The url is safe to visit" if 'safe' in list_of_types
+                 else "The url may not be safe to visit")
+        bot.reply_to(message, reply)
