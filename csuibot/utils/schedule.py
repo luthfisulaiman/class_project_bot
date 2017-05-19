@@ -5,10 +5,21 @@ import json
 class Schedule:
 
     def __init__(self):
-        self.path_schedules = '../../schedules/'
+        self.path_schedules = 'schedules/'
 
-    def create_schedule(self, chat_id, req_date, req_time):
-        return "{} {} {}".format(chat_id, req_date, req_time)
+    def create_schedule(self, chat_id, req_date, req_time, req_desc):
+        try:
+            with open(self.path_schedules + str(chat_id) + '.json', 'r') as data_json:
+                data = json.load(data_json)
+        except IOError:
+            data = {}
+            data['schedules'] = {}
+            data['schedules'][req_date] = {}
+
+        data['schedules'][req_date][req_time] = req_desc
+
+        with open(self.path_schedules + str(chat_id) + '.json', 'w') as file_json:
+            json.dump(data, file_json)
 
     def get_available_schedules(self, chat_id, req_date):
         hours = ['09', '10', '11', '12', '13', '14']
@@ -17,7 +28,7 @@ class Schedule:
                 data = json.load(data_json)
 
             return list(set(hours) - data['schedules'][req_date].keys())
-        except FileNotFoundError:
+        except IOError:
             return hours
         except KeyError:
             return hours
@@ -45,14 +56,14 @@ class Schedule:
             for the_datetime in datetimes:
                 str_date = the_datetime.strftime("%Y-%m-%d")
                 str_time = the_datetime.strftime("%H")
-                output.append("{} jam {}: {}"
+                output.append("{} jam {}.00: {}"
                               .format(str_date,
                                       str_time,
                                       data['schedules'][str_date][str_time]))
             return output
-        except FileNotFoundError:
+        except IOError:
             return []
 
 
 if __name__ == '__main__':
-    print(Schedule().get_available_schedules('tes', "2017-05-30"))
+    print(Schedule().create_schedule('testis', "2017-05-30", "12", "Lunch"))

@@ -74,10 +74,19 @@ def create_schedule(message):
                 bot.reply_to(time_message, 'create_schedule canceled.')
                 return
 
+            def desc_schedule(desc_message):
+                if desc_message.text == '/cancel':
+                    bot.reply_to(desc_message, 'create_schedule canceled.')
+
+                generate_schedule(message.chat.id, date_message.text,
+                                  time_message.text.split('.')[0], desc_message.text)
+                bot.reply_to(desc_message, 'Schedule created.')
+                bot.send_message(message.chat.id, 'A schedule has been created.')
+
             app.logger.debug("time of schedule is {}".format(time_message.text))
-            print("{} {} {}".format(message.chat.id, date_message.text, time_message.text))
-            result = generate_schedule(message.chat.id, date_message.text, time_message.text)
-            print(result)
+            msg = bot.reply_to(time_message, 'Give a description for this schedule.',
+                               reply_markup=types.ReplyKeyboardRemove())
+            bot.register_next_step_handler(msg, desc_schedule)
 
         app.logger.debug("date of schedule is {}".format(date_message.text))
 
@@ -86,6 +95,7 @@ def create_schedule(message):
             if datetime.date(y, m, d) >= datetime.datetime.now().date():
                 markup = types.ReplyKeyboardMarkup()
                 avl_hours = get_available_schedules(message.chat.id, date_message.text)
+                avl_hours.sort()
                 if len(avl_hours) <= 0:
                     error_text = "That date's full. Try another date or use /cancel to cancel."
                     msg = bot.reply_to(date_message, error_text)

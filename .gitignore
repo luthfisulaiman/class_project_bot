@@ -64,6 +64,3 @@ tags
 
 # OSX stuff
 .DS_Store
-
-# Schedules for story #101
-schedules/*.json

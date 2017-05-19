@@ -45,8 +45,8 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def generate_schedule(chat_id, date, time):
-    return schedule.Schedule().create_schedule(chat_id, date, time)
+def generate_schedule(chat_id, date, time, desc):
+    return schedule.Schedule().create_schedule(chat_id, date, time, desc)
 
 
 def get_available_schedules(chat_id, date):
