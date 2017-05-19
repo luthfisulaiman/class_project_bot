@@ -46,9 +46,9 @@ def lookup_chinese_zodiac(year):
     except KeyError:
         return 'Unknown zodiac'
     
-def lookup_album_price:
+def lookup_album_price(url):
     string = ''
-    page = requests.get('http://vgmdb.net/db/calendar.php?year=2017&month=5')
+    page = requests.get(url)
     tree = html.fromstring(page.content)
     album = tree.xpath('//span[@class="albumtitle"]/text()')
     prices = tree.xpath('//span[@class="label"]/text()')

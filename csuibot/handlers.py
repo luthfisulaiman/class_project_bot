@@ -1,5 +1,6 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_album_price
+import urllib
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +45,18 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/vgmdb OST this month$')
+def album_price(message):
+    web_url = "http://vgmdb.net/db/calendar.php?year=2017&month=5"
+    html = urllib.request.urlopen(web_url).read()
+    html = str(html)
+    try:
+        reply = lookup_album_price(html)
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
+
