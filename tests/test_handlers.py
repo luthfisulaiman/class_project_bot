@@ -1998,17 +1998,19 @@ Tag : power , Confidence : 19'''
 
 def test_hospital(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
-    message = json.dumps({'chat':
-                              {'type': 'private',
-                               'last_name': 'Divy',
-                               'first_name': 'Prakash',
-                               'username': 'prakash_divy',
-                               'id': 121508145,
-                               'title': None,
-                               'all_members_are_administrators': None
-                               },
-                          'date': 1495177065,
-                          'message_id': 4567})
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
     message = types.Message.de_json(message)
     Mock(text='/hospital')
     hospital(message)
@@ -2018,17 +2020,19 @@ def test_hospital(mocker):
 
 def test_random_hospital(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
-    message = json.dumps({'chat':
-                              {'type': 'private',
-                               'last_name': 'Divy',
-                               'first_name': 'Prakash',
-                               'username': 'prakash_divy',
-                               'id': 121508145,
-                               'title': None,
-                               'all_members_are_administrators': None
-                               },
-                          'date': 1495177065,
-                          'message_id': 4567})
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
     message = types.Message.de_json(message)
     Mock(text='/random_hospital')
     random_hospital(message)
