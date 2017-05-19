@@ -1015,3 +1015,23 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(commands=['add_wiki'])
+def add_wiki(message):
+    pass
+
+
+@bot.message_handler(commands=['random_wiki_article'])
+def random_wiki_article(message):
+    pass
+
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         import time
+#         app.logger.debug(e)
+#         time.sleep(5)
