@@ -1,5 +1,5 @@
 from .. import app
-from request import get
+from requests import get
 
 
 api_key = 'acc_639b88467681d49'
