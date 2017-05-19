@@ -1,5 +1,7 @@
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, get_schedules)
+from telebot import types
+import datetime
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -61,14 +63,39 @@ def jadwal(message):
                      func=lambda message: message.chat.type == "group")
 def create_schedule(message):
     app.logger.debug("'create_schedule' command detected")
-    pass
+    msg = bot.send_message(message.from_user.id, 'When should the schedule be created?',
+                           reply_markup=types.ForceReply())
+    bot.register_next_step_handler(msg, date_schedule)
 
 
-def date_of_schedule(message):
-    app.logger.debug("date of schedule is {}".format(message))
-    pass
+def date_schedule(message):
+    app.logger.debug("date of schedule is {}".format(message.text))
+
+    try:
+        y, m, d = parse_date(message.text)
+        if datetime.date(y, m, d) >= datetime.datetime.now().date(): #input date is correct
+            markup = types.ReplyKeyboardMarkup()
+            btn09 = types.KeyboardButton('{} jam 09'.format(message.text))
+            btn10 = types.KeyboardButton('{} jam 10'.format(message.text))
+            btn11 = types.KeyboardButton('{} jam 11'.format(message.text))
+            btn12 = types.KeyboardButton('{} jam 12'.format(message.text))
+            btn13 = types.KeyboardButton('{} jam 13'.format(message.text))
+            btn14 = types.KeyboardButton('{} jam 14'.format(message.text))
+            markup.add(btn09, btn10, btn11, btn12, btn13, btn14)
+            msg = bot.send_message(message.from_user.id,
+                                   'When should the schedule be created?',
+                                   reply_markup=markup)
+            bot.register_next_step_handler(msg, time_schedule)
+        else: #input date is for the past
+            msg = bot.reply_to(message, 'You cannot make a schedule for the past. Try again.',
+                               reply_markup=types.ForceReply())
+            bot.register_next_step_handler(msg, date_schedule)
+    except ValueError: #input date is not a date
+        msg = bot.reply_to(message, 'The requested date is invalid. Try again.',
+                           reply_markup=types.ForceReply())
+        bot.register_next_step_handler(msg, date_schedule)
 
 
-def time_of_schedule(message):
+def time_schedule(message):
     app.logger.debug("time of schedule is {}".format(message))
-    pass
+    print('you made it here')

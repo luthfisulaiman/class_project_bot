@@ -7,7 +7,7 @@ class Schedule:
     def __init__(self):
         self.path_schedules = '../../schedules/'
 
-    def create_schedule(self, date, time):
+    def create_schedule(self, chat_id, date, time):
         pass
 
     def get_schedules(self, chat_id):
