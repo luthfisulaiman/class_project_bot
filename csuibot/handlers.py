@@ -1,5 +1,5 @@
 from . import app, bot
-from .utils import lookup_zodiac, lookup_chinese_zodiac
+from .utils import lookup_zodiac, lookup_chinese_zodiac, 
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -44,3 +44,22 @@ def shio(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/add_question$')
+def add_question(message):
+    app.logger.debug("'Add trivia question' command detected")
+    pass
+
+
+@bot.message_handler(regexp=r'^/change_answer$')
+def change_answer(message):
+    app.logger.debug("'Change answer' command detected")
+    pass
+
+
+@bot.message_handler(regexp=r'^start zonk$')
+def start_zonk(message):
+    app.logger.debug("'start zonk' command detected")
+    pass
+
