@@ -994,27 +994,68 @@ def tagimage(message):
 
 @bot.message_handler(regexp=r'^/hospital$')
 def hospital(message):
-    pass
+    app.logger.debug("'hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    text = "Please share your location so we can get your nearest location!"
+    bot.send_message(chat_id, text, message_id, reply_markup=markup)
 
 
 @bot.message_handler(regexp=r'^/random_hospital$')
 def random_hospital(message):
-    pass
+    app.logger.debug("'random_hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    rs_list = lookup_random_hospital()
+    markup = types.InlineKeyboardMarkup()
+    for rs in rs_list:
+        text = "Rumah Sakit " + rs['nama']
+        callback = "RS_ID=" + str(rs['id'])
+        butt = types.InlineKeyboardButton(text, callback_data=callback)
+        markup.add(butt)
+    text = "Please select one hospital below!"
+    bot.send_message(chat_id, text, message_id, reply_markup=markup)
 
 
 def check_reply_hospital_location(message):
-    pass
+    try:
+        text = "Please share your location so we can get your nearest location!"
+        is_location_reply = message.reply_to_message.text == text
+    except AttributeError:
+        return False
+    else:
+        return is_location_reply
 
 
 @bot.message_handler(content_types=['location'], func=check_reply_hospital_location)
 def get_user_location(message):
-    pass
+    app.logger.debug("'get user location for hospital' handler executed")
+    chat_id = message.chat.id
+    lat = message.location.latitude
+    long = message.location.longitude
+    rs = lookup_hospital(long, lat)
+    reply_hospital(chat_id, rs)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def parse_callback(call):
-    pass
+    message = call.message
+    data = call.data
+    chat_id = message.chat.id
+    if len(data.split("RS_ID=")) == 2:
+        rs_id = data.split("RS_ID=")[1]
+        rs = reply_random_hospital(rs_id)
+        reply_hospital(chat_id, rs)
 
 
 def reply_hospital(chat_id, rs):
-    pass
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(chat_id, "Here is the result:", reply_markup=markup)
+    bot.send_location(chat_id, rs['lat'], rs['long'])
+    bot.send_photo(chat_id, urllib.request.urlopen(rs['image']).read())
+    bot.send_message(chat_id, rs['message'])
+    if 'distance' in rs:
+        bot.send_message(chat_id, rs['distance'])
