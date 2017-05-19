@@ -13,7 +13,7 @@ class FakeNews:
         self.__load_json()
 
     def __save_json(self):
-        with open(self.json_file, 'w') as json_file:
+        with open(self.JSON_FILE_LOC, 'w') as json_file:
             json.dump(self.json, json_file)
 
     def __load_json(self):
