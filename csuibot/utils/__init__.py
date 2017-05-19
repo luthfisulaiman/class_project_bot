@@ -21,7 +21,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts)
+                           DungeonsnDragons as dnd)
 
 
 def lookup_zodiac(month, day):
@@ -66,10 +66,6 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
-
-
-def get_tweets(user):
-    return ts.Twitter_Search().get_tweets(user)
 
 
 def define_sound(inputKey):
@@ -522,3 +518,14 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def create_character(message):
+    pass
+
+
+def edit_character(message):
+    pass
+
+def randomize_character(arg):
+    pass

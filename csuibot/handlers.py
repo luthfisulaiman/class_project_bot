@@ -988,3 +988,13 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/create_character$')
+def create_character(message):
+    pass
+
+
+@bot.message_handler(regexp=r'^/edit_character$')
+def edit_character(message):
+    pass
