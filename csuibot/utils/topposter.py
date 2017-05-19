@@ -27,10 +27,10 @@ class TopPoster:
                     self.posters_data = res['posters']
 
     def process_update(self, update):
-        poster_id = update['message']['from']['id']
-        chat_id = update['message']['chat']['id']
-        first_name = update['message']['from']['first_name']
-        last_name = update['message']['from']['last_name']
+        poster_id = update.message.from_user.id
+        chat_id = update.message.chat.id
+        first_name = update.message.from_user.first_name
+        last_name = update.message.from_user.last_name
 
         self.last_chat_id = chat_id
         self.posters_data.append({'id': poster_id, 'chat_id': chat_id,
