@@ -17,7 +17,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new)
+                              get_notif_twitter, air_quality, sentiment_new, add_wiki,
+                              random_wiki_article)
 from requests.exceptions import ConnectionError
 
 
@@ -2067,3 +2068,83 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_add_wiki(mocker):
+    fake_response = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.save_mediawiki_url', return_value=fake_response)
+    mock_message = Mock(text='/add_wiki https://en.wikipedia.org/w/api.php')
+
+    add_wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_add_wiki_without_url(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.save_mediawiki_url',
+        side_effect=ValueError('Command /add_wiki need an argument')
+    )
+    mock_message = Mock(text='/add_wiki')
+
+    add_wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Command /add_wiki need an argument'
+
+
+def test_add_wiki_invalid_url(mocker):
+    fake_response = 'Invalid url or url is not WikiMedia endpoint'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch(
+        'csuibot.handlers.save_mediawiki_url',
+        side_effect=ConnectionError(fake_response)
+    )
+    mock_message = Mock(text='/add_wiki http://scele.cs.ui.ac.id')
+
+    add_wiki(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_random_wiki_article(mocker):
+    fake_response = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_mediawiki', return_value=fake_response)
+    mock_message = Mock(text='/random_wiki_article Barack Obama')
+
+    random_wiki_article(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_random_wiki_article_without_arguments(mocker):
+    fake_response = ['foo', 'bar']
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    mocker.patch('csuibot.handlers.get_mediawiki', return_value=fake_response)
+    mock_message = Mock(text='/random_wiki_article')
+
+    random_wiki_article(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Select an article...'
+
+
+def test_random_wiki_article_environment_error(mocker):
+    fake_response = (
+        'WikiMedia url is not found. Please add wiki url'
+        ' with command /add_wiki [endpoint wiki url].'
+    )
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_mediawiki', side_effect=EnvironmentError(fake_response))
+    mock_message = Mock(text='/random_wiki_article asdfghjklqwertyuio')
+
+    random_wiki_article(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response

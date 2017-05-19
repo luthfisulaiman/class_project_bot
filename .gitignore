@@ -70,3 +70,6 @@ tags
 notes.json
 .idea
 dist.txt
+
+# story mediawiki
+.url_wiki
