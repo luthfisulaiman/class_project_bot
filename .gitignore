@@ -64,3 +64,6 @@ tags
 
 # OSX stuff
 .DS_Store
+
+# create_schedule testing
+schedules/test_create_schedule.json

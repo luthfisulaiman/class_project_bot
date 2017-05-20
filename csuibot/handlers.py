@@ -74,9 +74,9 @@ def jadwal(message):
                      func=lambda message: message.chat.type == "group")
 def create_schedule(message):
     app.logger.debug("'create_schedule' command detected")
-    msg = bot.send_message(message.from_user.id, 'When should the schedule be created?')
     entry = EntrySchedule(message.chat.id)
     schedules[message.from_user.id] = entry
+    msg = bot.send_message(message.from_user.id, 'When should the schedule be created?')
     bot.register_next_step_handler(msg, date_schedule)
 
 
@@ -144,8 +144,8 @@ def desc_schedule(desc_message):
     app.logger.debug("desc of schedule is {}".format(desc_message.text))
     entry = schedules[desc_message.from_user.id]
     generate_schedule(entry.group, entry.date, entry.time, desc_message.text)
-    schedules.pop(desc_message.from_user.id)
     bot.reply_to(desc_message, 'Schedule created successfully.')
     bot.send_message(entry.group, 'A schedule has been created.')
     bot.send_message(entry.group,
-                     "{} jam {}:{}".format(entry.date, entry.time, desc_message.text))
+                     "{} jam {}.00: {}".format(entry.date, entry.time, desc_message.text))
+    schedules.pop(desc_message.from_user.id)
