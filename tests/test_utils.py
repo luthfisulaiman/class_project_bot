@@ -1465,3 +1465,20 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class TestAnisonRadio:
+    def test_detect_name_song_in_group(self):
+        pass
+
+    def test_song_name_not_found_in_group(self):
+        pass
+
+    def test_add_song_private(self):
+        pass
+
+    def test_remove_song_private(self):
+        pass
+
+    def test_get_song_from_list(self):
+        pass

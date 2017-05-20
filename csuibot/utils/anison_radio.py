@@ -58,3 +58,20 @@ class ClipHandler:
 
     def convert_aac_to_mp3(self):
         pass
+
+class anison_radio:
+    @classmethod
+    def get_clip(cls):
+        pass
+
+    @classmethod
+    def search_song(cls):
+        pass
+
+    @classmethod
+    def add_song(cls):
+        pass
+
+    @classmethod
+    def remove_song(cls):
+        pass
