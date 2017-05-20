@@ -257,7 +257,12 @@ class TestChineseZodiac:
 
 class TestSchedule:
 
-    def test_check_schedule(self):
-        res = utils.check_schedule('2017-05-18')
+    def test_get_schedules(self):
+        res = utils.get_schedules('tes')
 
-        assert res is not None
+        assert res is not []
+
+    def test_get_schedules_fake_chatid(self):
+        res = utils.get_schedules('fake')
+
+        assert res is []

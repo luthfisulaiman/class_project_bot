@@ -63,7 +63,3 @@ class Schedule:
             return output
         except IOError:
             return []
-
-
-if __name__ == '__main__':
-    print(Schedule().create_schedule('testis', "2017-05-30", "12", "Lunch"))
