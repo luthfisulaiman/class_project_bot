@@ -1022,6 +1022,7 @@ def anison_radio(message):
     app.logger.debug("'anison' commands detected")
     pass
 
-@bot.message_handler(func=lambda message: message.chat.type == "group")
+# TODO: tolong ini ditaro di paling bawah :)
+@bot.message_handler(func=lambda m: m.chat.type == "group")
 def anison_radio_group(message):
     pass

@@ -532,5 +532,5 @@ def auto_tag(message):
     return tagging.Tagging(photoid).getTag()
 
 
-def manage_love_live_song():
+def manage_love_live_song(command, query=None, username="fersandi"):
     pass

@@ -1469,16 +1469,25 @@ class test_hot_japan_100:
 
 class TestAnisonRadio:
     def test_detect_name_song_in_group(self):
-        pass
+        output = utils.manage_love_live_song("group", "snow halation")
+        assert output == ("@fersandi, please chat me if you" + 
+                          "want to listen to that song")
 
     def test_song_name_not_found_in_group(self):
+        output = utils.manage_love_live_song("group", "GO MY WAY!!")
+        assert output is None
+
+    def test_add_song_private_success(self, mocker):
         pass
 
-    def test_add_song_private(self):
+    def test_add_song_private_not_found(self, mocker):
         pass
 
+    def test_add_song_privete_itunesid_null(self, mocker):
+        pass
+        
     def test_remove_song_private(self):
         pass
 
-    def test_get_song_from_list(self):
+    def test_get_song_from_list(self, mocker):
         pass
