@@ -15,7 +15,6 @@ class Schedule:
     def __getattr__(self, name):
         return getattr(self.instance, name)
 
-
     def create_schedule(self, chat_id, req_date, req_time, req_desc):
         try:
             with open(self.path_schedules + str(chat_id) + '.json', 'r') as data_json:

@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
-from csuibot.handlers import (help, zodiac, shio, jadwal, create_schedule, date_schedule, time_schedule, desc_schedule)
+from csuibot.handlers import (help, zodiac, shio, jadwal, create_schedule,
+                              date_schedule, time_schedule, desc_schedule)
 
 
 def test_help(mocker):
@@ -78,7 +79,8 @@ def test_jadwal_no_schedule(mocker):
 def test_jadwal_with_schedule(mocker):
     fake_schedule = "2017-05-25 jam 09.00: Breakfast at Tiffany's."
     mocked_send_message = mocker.patch('csuibot.handlers.bot.send_message')
-    mocker.patch('csuibot.handlers.get_schedules', return_value=["2017-05-25 jam 09.00: Breakfast at Tiffany's."])
+    mocker.patch('csuibot.handlers.get_schedules',
+                 return_value=["2017-05-25 jam 09.00: Breakfast at Tiffany's."])
     mock_message = Mock(text='/jadwal', chat=Mock(id='foobar'))
 
     jadwal(mock_message)
@@ -196,7 +198,7 @@ def test_desc_schedule_cancel(mocker):
 def test_desc_schedule_success(mocker):
     fake_response = 'Schedule created successfully.'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocked_send_message = mocker.patch('csuibot.handlers.bot.send_message')
+    mocker.patch('csuibot.handlers.bot.send_message')
     mocker.patch('csuibot.handlers.generate_schedule')
     mocker.patch.dict('csuibot.handlers.schedules',
                       {'foobar': Mock(group='test_create_schedule', date='date', time='time')})

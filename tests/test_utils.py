@@ -1,4 +1,6 @@
 from csuibot import utils
+import json
+import os
 
 
 class TestZodiac:
@@ -257,6 +259,39 @@ class TestChineseZodiac:
 
 class TestSchedule:
 
+    def test_generate_schedule(self):
+        utils.generate_schedule('tes', '2017-05-18', '10', 'Company-wide meeting')
+
+        with open('schedules/tes.json', 'r') as file_schedule:
+            data = json.load(file_schedule)
+
+        assert data['schedules']['2017-05-18']['10'] == 'Company-wide meeting'
+
+    def test_generate_schedule_new_group(self):
+        utils.generate_schedule('tes_02', '2017-05-18', '10', 'Company-wide meeting')
+
+        with open('schedules/tes_02.json', 'r') as file_schedule:
+            data = json.load(file_schedule)
+
+        assert data['schedules']['2017-05-18']['10'] == 'Company-wide meeting'
+        os.remove('schedules/tes_02.json')
+
+    def test_get_available_schedules(self):
+        res = utils.get_available_schedules('tes', '2017-05-18')
+        res.sort()
+
+        assert res == ['09', '11', '12', '13']
+
+    def test_get_available_schedules_new_group(self):
+        res = utils.get_available_schedules('fake', '2017-05-18')
+
+        assert res == ['09', '10', '11', '12', '13', '14']
+
+    def test_get_available_schedules_new_date(self):
+        res = utils.get_available_schedules('tes', '2017-05-25')
+
+        assert res == ['09', '10', '11', '12', '13', '14']
+
     def test_get_schedules(self):
         res = utils.get_schedules('tes')
 
@@ -265,4 +300,4 @@ class TestSchedule:
     def test_get_schedules_fake_chatid(self):
         res = utils.get_schedules('fake')
 
-        assert res is []
+        assert res == []
