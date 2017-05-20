@@ -3,9 +3,18 @@ import json
 
 
 class Schedule:
+    class __Schedule:
+        def __init__(self):
+            self.path_schedules = 'schedules/'
+    instance = None
 
     def __init__(self):
-        self.path_schedules = 'schedules/'
+        if not Schedule.instance:
+            Schedule.instance = Schedule.__Schedule()
+
+    def __getattr__(self, name):
+        return getattr(self.instance, name)
+
 
     def create_schedule(self, chat_id, req_date, req_time, req_desc):
         try:
