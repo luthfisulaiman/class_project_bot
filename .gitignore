@@ -6,6 +6,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.idea/
 .Python
 env/
 build/
@@ -65,5 +66,10 @@ tags
 # OSX stuff
 .DS_Store
 
-# create_schedule testing
-schedules/test_create_schedule.json
+# Notes for story-9
+notes.json
+.idea
+dist.txt
+
+# story mediawiki
+.url_wiki
