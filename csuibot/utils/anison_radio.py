@@ -12,7 +12,9 @@ class PersistentStorage:
     TABLE_SCHEMA = """
                    CREATE TABLE IF NOT EXIST love_live_song(
                    ID SERIAL PRIMARY KEY,
-                   song_name VARCHAR(255) NOT NULL,
+                   japan_name VARCHAR(255) NOT NULL,
+                   romaji_name VARCHAR(255),
+                   english_name VARCHAR(255),
                    artist_name VARCHAR(255) NOT NULL,
                    preview_url VARCHAR(255) NOT NULL
                    )
@@ -53,11 +55,12 @@ class ClipHandler:
     def send_clip(self):
         pass
 
-    def get_clip_from_itunes(self)
+    def get_clip_from_itunes(self):
         pass
 
     def convert_aac_to_mp3(self):
         pass
+
 
 class anison_radio:
     @classmethod

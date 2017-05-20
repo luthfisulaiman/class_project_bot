@@ -1016,3 +1016,12 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+@bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
+def anison_radio(message):
+    app.logger.debug("'anison' commands detected")
+    pass
+
+@bot.message_handler(func=lambda message: message.chat.type == "group")
+def anison_radio_group(message):
+    pass
