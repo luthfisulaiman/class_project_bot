@@ -22,7 +22,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, issfw, mediawiki)
+                           twitter_search as ts, aqi, issfw, mediawiki, schedule)
 
 
 def lookup_zodiac(month, day):
@@ -67,6 +67,18 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def generate_schedule(chat_id, date, time, desc):
+    return schedule.Schedule().create_schedule(chat_id, date, time, desc)
+
+
+def get_available_schedules(chat_id, date):
+    return schedule.Schedule().get_available_schedules(chat_id, date)
+
+
+def get_schedules(chat_id):
+    return schedule.Schedule().get_schedules(chat_id)
 
 
 def lookup_sentiment_new(text):
