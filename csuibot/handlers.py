@@ -1053,7 +1053,7 @@ def process_location_step(message):
         locations[message.chat.id] = loc
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
         bot.register_next_step(msg, process_name_step)
-    except Exception e:
+    except Exception as e:
         msg = bot.send_message(message.chat.id, "Please share your location")
         bot.register_next_step(msg, process_location_step)
 
@@ -1068,7 +1068,7 @@ def process_name_step(message):
         app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
         uber_add(loc)
         bot.send_message(message.chat.id, "Location Saved")
-    except Exception e :
+    except Exception as e :
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
         bot.register_next_step(msg, process_name_step)
 
