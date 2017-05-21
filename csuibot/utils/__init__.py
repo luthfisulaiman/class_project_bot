@@ -526,12 +526,16 @@ def auto_tag(message):
 
 
 def uber_info(location):
-    pass
+    return uber.Uber().get_route_info()
+
+
+def uber_get(location):
+    return uber.Uber().get_locations()
 
 
 def uber_add(location):
-    pass
+    return uber.Uber().add_location(location)
 
 
 def uber_remove(location):
-    pass
+    return uber.Uber().remove_location(location)
