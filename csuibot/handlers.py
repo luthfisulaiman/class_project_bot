@@ -1049,7 +1049,7 @@ def process_location_step(message):
     app.logger.debug(message.location)
     try:
         lon = message.location['longitude']
-        lat = message.location.['latitude']
+        lat = message.location['latitude']
         app.logger('{}{}'.format(lon, lat))
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
