@@ -30,7 +30,7 @@ class Uber:
             self.locations_dict[location.name] = {}
             self.locations_dict[location.name]['latitude'] = location.lat
             self.locations_dict[location.name]['longitude'] = location.lon     
-            exportJSON()       
+            self.exportJSON()       
 
         def remove_location(self, location_name):
             self.locations_dict.pop(location_name, None)
