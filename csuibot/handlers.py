@@ -20,6 +20,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
 from requests.exceptions import ConnectionError
+from telebot import types
 import datetime
 
 locations = {}
