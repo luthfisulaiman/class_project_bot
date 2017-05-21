@@ -22,7 +22,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, issfw, mediawiki, schedule,  anime_livechart)
+                           twitter_search as ts, aqi, issfw, mediawiki, schedule,
+                           anime_livechart)
 
 
 def lookup_zodiac(month, day):
@@ -568,13 +569,15 @@ def lookup_anime(genre, season, year):
 
     seasons = ['spring', 'fall', 'summer', 'winter']
     if genre not in genres:
-        return 'Invalid genre'
+        return 'Invalid genre.'
     if season not in seasons:
-        return 'Invalid season'
+        return 'Invalid season.'
     anime_list = anime_livechart.get_anime_list(genre, season, year)
     response = 'Here are anime(s) that matches with your genre:\n'
-    for anime in anime_list:
-        info = '{}\n{}\n'.format(anime['title'], anime['synopsis'])
+    for i, anime in enumerate(anime_list):
+        if i >= 10:
+            break
+        info = '{}\n{}\n\n'.format(anime['title'], anime['synopsis'][:300])
         response += info
     return response
 

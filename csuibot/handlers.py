@@ -38,7 +38,7 @@ def message_decorator(func):
 
 
 schedules = {}
-
+lookup_anime_property = {}
 
 class EntrySchedule:
     def __init__(self, group):
@@ -1148,9 +1148,10 @@ def tagimage(message):
 def lookup_anime_livechart(message):
     app.logger.debug("'lookup_anime' command detected.")
     markup = types.ReplyKeyboardMarkup()
+    lookup_anime_property[message.from_user.id] = {}
     try:
         for year in range(2001, 2017):
-            markup.add(types.ReplyKeyboardRemove(str(year)))
+            markup.add(types.KeyboardButton('{}'.format(str(year))))
         msg = bot.send_message(message.from_user.id, 'Choose year', reply_markup=markup)
         bot.register_next_step_handler(msg, lookup_anime_season)
     except ConnectionError as e:
@@ -1160,37 +1161,43 @@ def lookup_anime_livechart(message):
 def lookup_anime_season(message):
     app.logger.debug("'lookup_anime' Choose season")
     year = message.text
+    lookup_anime_property[message.from_user.id]['year'] = year
     seasons = ['spring', 'fall', 'summer', 'winter']
     markup = types.ReplyKeyboardMarkup()
     for s in seasons:
-        markup.add(types.ReplyKeyboardRemove(s))
+        markup.add(types.KeyboardButton(s))
     try:
         msg = bot.reply_to(message, 'Choose season', reply_markup=markup)
-        season = msg.text
-        bot.register_next_step_handler(message, year, season, lookup_anime_genre)
+        bot.register_next_step_handler(msg, lookup_anime_genre)
     except ConnectionError as e:
         bot.reply_to(message, str(e))
 
 
-def lookup_anime_genre(message, year, season):
+def lookup_anime_genre(message):
+    season = message.text
+    lookup_anime_property[message.from_user.id]['season'] = str(season)
     app.logger.debug("'lookup_anime' Type genre")
     try:
         msg = bot.reply_to(message, 'Type genre')
-        bot.register_next_step_handler(msg, year, season, lookup_anime_list)
-    except ConnectionError as e:
-        bot.reply_to(msg, str(e))
-
-
-def lookup_anime_list(message, year, season):
-    genre = message.text
-    try:
-        result = lookup_anime(genre, year, season)
+        app.logger.debug('Choosed genre {}'.format(msg.text))
+        bot.register_next_step_handler(msg, lookup_anime_list)
     except ConnectionError as e:
         bot.reply_to(message, str(e))
-    except Exception as e:
-        bot.reply_to(message, 'cannot find anime that matches with user')
+
+
+def lookup_anime_list(message):
+    try:
+        year = lookup_anime_property[message.from_user.id]['year']
+        season = lookup_anime_property[message.from_user.id]['season']
+        genre = message.text
+        app.logger.debug('::: {} {} {} '.format(year, season, genre))
+        result = lookup_anime(genre, season, year)
+    except ConnectionError as e:
+        bot.reply_to(message, 'Request timeout {} '.format(str(e)), reply_markup=types.ReplyKeyboardRemove())
+    except Exception:
+        bot.reply_to(message, 'cannot find anime that matches with user', reply_markup=types.ReplyKeyboardRemove())
     else:
-        bot.reply_to(message, result)
+        bot.reply_to(message, result, reply_markup=types.ReplyKeyboardRemove())
 
 
 @bot.message_handler(commands=['add_wiki'])

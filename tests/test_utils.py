@@ -1532,10 +1532,6 @@ class TestAnimeLiveChart:
         res = utils.lookup_anime('Action', 'winta', '2016')
         assert res == 'Invalid season.'
 
-    def test_invalid_year(self):
-        res = utils.lookup_anime('gen', 'winter', '2012')
-        assert res == 'Invalid year.'
-
 
 class TestMediaWiki:
 
