@@ -1032,15 +1032,14 @@ def uber(message):
     pass
 
 
-@bot.message_handler(regexp=r'^\/add_destination\s*$', func=lambda message: message.chat.type == "private")
+@bot.message_handler(commands=['add_destination'], func=lambda message: message.chat.type == "private")
 def add_destination(message):
     app.logger.debug('add_destination command detected')
     chat_id = message.chat.id
-    message_id = message.message_id
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button = types.KeyboardButton('Share Location', request_location=True)
     markup.row(button)
-    msg = bot.send_message(chat_id, "Please share your location", message_id, reply_markup=markup)
+    msg = bot.reply_to(chat_id, "Please share your location", reply_markup=markup)
     bot.register_next_step_handler(msg, process_location_step)
 
 
