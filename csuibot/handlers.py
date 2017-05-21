@@ -21,7 +21,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
-                    get_available_schedules, get_schedules)
+                    get_available_schedules, get_schedules, lookup_anime)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1146,7 +1146,51 @@ def tagimage(message):
 
 @bot.message_handler(regexp=r'^/lookup_anime')
 def lookup_anime_livechart(message):
-    pass
+    app.logger.debug("'lookup_anime' command detected.")
+    markup = types.ReplyKeyboardMarkup()
+    try:
+        for year in range(2001, 2017):
+            markup.add(types.ReplyKeyboardRemove(str(year)))
+        msg = bot.send_message(message.from_user.id, 'Choose year', reply_markup=markup)
+        bot.register_next_step_handler(msg, lookup_anime_season)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_season(message):
+    app.logger.debug("'lookup_anime' Choose season")
+    year = message.text
+    seasons = ['spring', 'fall', 'summer', 'winter']
+    markup = types.ReplyKeyboardMarkup()
+    for s in seasons:
+        markup.add(types.ReplyKeyboardRemove(s))
+    try:
+        msg = bot.reply_to(message, 'Choose season', reply_markup=markup)
+        season = msg.text
+        bot.register_next_step_handler(message, year, season, lookup_anime_genre)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_genre(message, year, season):
+    app.logger.debug("'lookup_anime' Type genre")
+    try:
+        msg = bot.reply_to(message, 'Type genre')
+        bot.register_next_step_handler(msg, year, season, lookup_anime_list)
+    except ConnectionError as e:
+        bot.reply_to(msg, str(e))
+
+
+def lookup_anime_list(message, year, season):
+    genre = message.text
+    try:
+        result = lookup_anime(genre, year, season)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+    except Exception as e:
+        bot.reply_to(message, 'cannot find anime that matches with user')
+    else:
+        bot.reply_to(message, result)
 
 
 @bot.message_handler(commands=['add_wiki'])
