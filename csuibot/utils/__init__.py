@@ -529,7 +529,7 @@ def uber_info(location):
     return uber.Uber().get_route_info()
 
 
-def uber_get(location):
+def uber_get():
     return uber.Uber().get_locations()
 
 
