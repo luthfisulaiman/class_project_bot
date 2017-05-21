@@ -22,7 +22,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, issfw, mediawiki, itunes)
+                           twitter_search as ts, aqi, issfw, mediawiki, schedule,
+                           anime_livechart,  itunes)
 
 
 def lookup_zodiac(month, day):
@@ -67,6 +68,18 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def generate_schedule(chat_id, date, time, desc):
+    return schedule.Schedule().create_schedule(chat_id, date, time, desc)
+
+
+def get_available_schedules(chat_id, date):
+    return schedule.Schedule().get_available_schedules(chat_id, date)
+
+
+def get_schedules(chat_id):
+    return schedule.Schedule().get_schedules(chat_id)
 
 
 def lookup_sentiment_new(text):
@@ -536,6 +549,37 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def lookup_anime(genre, season, year):
+    genres = ['Action', 'Adventure', 'Cars', 'Comedy',
+              'Cyberpunk', 'Demons', 'Drama', 'Ecchi',
+              'Fantasy', 'Flash Animation', 'Game', 'Game Adaptation',
+              'Gender Bender', 'Harem', 'Historical', 'Horror',
+              'Josei', 'Kids', 'Light Novel Adaptation', 'Magic',
+              'Manga Adaptation', 'Martial Arts', 'Mecha', 'Military',
+              'Music', 'Mystery', 'ONA', 'Original Story', 'OVA',
+              'Parody', 'Police', 'Psychological', 'Romance', 'Samurai',
+              'School', 'Sci-Fi', 'Seinen', 'Sequel', 'Short Episodes',
+              'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Slice of Life',
+              'Space', 'Special', 'Sports', 'Streaming @ Crunchyroll',
+              'Streaming @ Daisuki', 'Streaming @ Funimation', 'Streaming @ Netflix',
+              'Supernatural', 'Super Power', 'Thriller', 'Vampire',
+              'Visual Novel Adaptation', 'Yaoi', 'Yuri']
+
+    seasons = ['spring', 'fall', 'summer', 'winter']
+    if genre not in genres:
+        return 'Invalid genre.'
+    if season not in seasons:
+        return 'Invalid season.'
+    anime_list = anime_livechart.get_anime_list(genre, season, year)
+    response = 'Here are anime(s) that matches with your genre:\n'
+    for i, anime in enumerate(anime_list):
+        if i >= 10:
+            break
+        info = '{}\n{}\n\n'.format(anime['title'], anime['synopsis'][:300])
+        response += info
+    return response
 
 
 def save_mediawiki_url(url):
