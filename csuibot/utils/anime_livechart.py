@@ -12,7 +12,7 @@ def get_anime_list(genre, season, year):
     for block in anime_blocks:
         tags = block.find(class_='anime-tags').find_all('li')
         genres = [t.get_text() for t in tags]
-        if (genre in genres): #check genre
+        if (genre in genres):
             title = block.find('h3', class_='main-title').get_text()
             synopsis = block.find('div', class_='anime-synopsis').get_text()
             anime = {'title': title, 'synopsis': synopsis}
