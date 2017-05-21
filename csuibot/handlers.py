@@ -1078,8 +1078,8 @@ def preview(message):
     app.logger.debug("'itunes preview' command detected")
     command = message.text.split(' ')
     if (len(command) != 2):
-        output = ('Command invalid, please use /itunes_preview')
-        (' <artist> format, and seperate word in artist name with _')
+        output = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
         bot.reply_to(message, output)
     else:
         words = list(command[1])

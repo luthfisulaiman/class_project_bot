@@ -2151,10 +2151,10 @@ def test_random_wiki_article_environment_error(mocker):
 
 
 def test_preview_valid(mocker):
-    url = ('https://itunes.apple.com/us/')
-    ('album/better-together/id879273552?i=879273565&uo=4')
-    logo = ("https://upload.wikimedia.org/")
-    ("wikipedia/commons/5/55/Download_on_iTunes.svg")
+    url = ('https://itunes.apple.com/us/'
+           'album/better-together/id879273552?i=879273565&uo=4')
+    logo = ('https://upload.wikimedia.org/wik'
+            'ipedia/commons/5/55/Download_on_iTunes.svg')
     fake_response = {"result": url, "logo": logo}
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
@@ -2163,13 +2163,13 @@ def test_preview_valid(mocker):
     preview(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == ('https://itunes.apple.com/us/')
-    ('album/better-together/id879273552?i=879273565&uo=4')
+    assert args[1] == ('https://itunes.apple.com/us/'
+                       'album/better-together/id879273552?i=879273565&uo=4')
 
 
 def test_preview_invalid(mocker):
-    fake_error = ('Command invalid, please use /itunes_preview')
-    (' <artist> format, and seperate word in artist name with _')
+    fake_error = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.preview_music', return_value=fake_error)
     mock_message = Mock(text='/itunes_preview Jack Johnson')
