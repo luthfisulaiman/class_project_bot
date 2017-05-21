@@ -40,6 +40,7 @@ def message_decorator(func):
 schedules = {}
 lookup_anime_property = {}
 
+
 class EntrySchedule:
     def __init__(self, group):
         self.group = group
@@ -1193,11 +1194,14 @@ def lookup_anime_list(message):
         app.logger.debug('::: {} {} {} '.format(year, season, genre))
         result = lookup_anime(genre, season, year)
     except ConnectionError as e:
-        bot.reply_to(message, 'Request timeout {} '.format(str(e)), reply_markup=types.ReplyKeyboardRemove())
+        bot.reply_to(message, 'Request timeout {} '.format(str(e)),
+                     reply_markup=types.ReplyKeyboardRemove())
     except Exception:
-        bot.reply_to(message, 'cannot find anime that matches with user', reply_markup=types.ReplyKeyboardRemove())
+        bot.reply_to(message, 'cannot find anime that matches with user',
+                     reply_markup=types.ReplyKeyboardRemove())
     else:
-        bot.reply_to(message, result, reply_markup=types.ReplyKeyboardRemove())
+        bot.reply_to(message, result,
+                     reply_markup=types.ReplyKeyboardRemove())
 
 
 @bot.message_handler(commands=['add_wiki'])
