@@ -1049,7 +1049,7 @@ def process_location_step(message):
     try:
         lon = message.location.longitude
         lat = message.location.latitude
-        app.loger.debug('{}{}'.format(lat, lon))
+        app.logger.debug('{}{}'.format(lat, lon))
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         app.loger.debug("Inserting")
