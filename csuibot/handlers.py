@@ -1041,7 +1041,7 @@ def add_destination(message):
     button = types.KeyboardButton('Share Location', request_location=True)
     markup.row(button)
     msg = bot.send_message(chat_id, "Please share your location", message_id, reply_markup=markup)
-    bot.register_next_step(msg, process_location_step)
+    bot.register_next_step_handler(msg, process_location_step)
 
 
 def process_location_step(message):
@@ -1055,7 +1055,7 @@ def process_location_step(message):
         bot.register_next_step(msg, process_name_step)
     except Exception as e:
         msg = bot.send_message(message.chat.id, "Please share your location")
-        bot.register_next_step(msg, process_location_step)
+        bot.register_next_step_handler(msg, process_location_step)
 
 
 def process_name_step(message):
@@ -1070,7 +1070,7 @@ def process_name_step(message):
         bot.send_message(message.chat.id, "Location Saved")
     except Exception as e :
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
-        bot.register_next_step(msg, process_name_step)
+        bot.register_next_step_handler(msg, process_name_step)
 
 
 @bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
