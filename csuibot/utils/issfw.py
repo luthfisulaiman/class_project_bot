@@ -1,7 +1,6 @@
 from .. import app
 from requests import get
 
-
 api_key = 'acc_639b88467681d49'
 api_secret = 'c1ca154340d33c0c6feef02eaa2561f8'
 telephoto_url = 'https://api.telegram.org/file/bot%s/%s'

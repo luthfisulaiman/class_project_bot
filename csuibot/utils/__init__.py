@@ -5,6 +5,7 @@ import re
 import time
 import urllib.error
 import requests
+from pathlib import Path
 from bs4 import BeautifulSoup
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
@@ -21,7 +22,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, issfw, anime_livechart)
+                           twitter_search as ts, aqi, issfw, mediawiki, schedule,  anime_livechart)
 
 
 def lookup_zodiac(month, day):
@@ -66,6 +67,18 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def generate_schedule(chat_id, date, time, desc):
+    return schedule.Schedule().create_schedule(chat_id, date, time, desc)
+
+
+def get_available_schedules(chat_id, date):
+    return schedule.Schedule().get_available_schedules(chat_id, date)
+
+
+def get_schedules(chat_id):
+    return schedule.Schedule().get_schedules(chat_id)
 
 
 def lookup_sentiment_new(text):
@@ -564,3 +577,30 @@ def lookup_anime(genre, season, year):
         info = '{}\n{}\n'.format(anime['title'], anime['synopsis'])
         response += info
     return response
+
+
+def save_mediawiki_url(url):
+    if url is '':
+        raise ValueError('Command /add_wiki need an argument')
+    try:
+        mw = mediawiki.MediaWiki(url)
+    except Exception as e:
+        raise ConnectionError('Invalid url or url is not WikiMedia endpoint')
+    else:
+        return mw.save_url()
+
+
+def get_mediawiki(args):
+    url_wiki_file = Path('.url_wiki')
+    if not url_wiki_file.is_file():
+        raise EnvironmentError(
+            'WikiMedia url is not found. Please add wiki url'
+            ' with command /add_wiki [endpoint wiki url].'
+        )
+
+    with open(".url_wiki") as file:
+        mw = mediawiki.MediaWiki(file.read())
+        if args is '':
+            return mw.get_list_pages()
+        else:
+            return mw.get_page(args)
