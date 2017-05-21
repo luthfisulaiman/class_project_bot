@@ -24,7 +24,7 @@ class Uber:
                 json.dump(self.locations_dict, locations_json)
 
         def get_locations(self):
-            return self.locations_dict.keys()
+            return self.locations_dict
 
         def add_destination(self, location):
             self.locations_dict[location.name] = {}
