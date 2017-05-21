@@ -1039,7 +1039,7 @@ def add_destination(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button = types.KeyboardButton('Share Location', request_location=True)
     markup.row(button)
-    msg = bot.reply_to(chat_id, "Please share your location", reply_markup=markup)
+    msg = bot.send_message(chat_id, "Please share your location", reply_markup=markup)
     bot.register_next_step_handler(msg, process_location_step)
 
 
