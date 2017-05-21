@@ -21,7 +21,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, uber, add_destination, remove_destination)
+                           twitter_search as ts, aqi, uber)
 
 
 def lookup_zodiac(month, day):
