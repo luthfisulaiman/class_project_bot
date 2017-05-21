@@ -525,13 +525,13 @@ def auto_tag(message):
     return tagging.Tagging(photoid).getTag()
 
 
-def uber_info(destination):
+def uber_info(location):
     pass
 
 
-def uber_add(destination);
+def uber_add(location);
     pass
 
 
-def uber_remove(destination);
+def uber_remove(location):
     pass
