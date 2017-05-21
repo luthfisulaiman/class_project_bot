@@ -1087,8 +1087,7 @@ def remove_destination(message):
         msg = bot.send_message(message.chat.id, "Please select a location to be removed", reply_markup=markup)
         bot.register_next_step_handler(msg, process_delete_step)
     else:
-        msg = bot.send_message(message.chat.id, "No locations have been added, \
-                               please add with \\add_destination command")
+        msg = bot.send_message(message.chat.id, "No locations have been added, please add with \\add_destination command")
 
 
 def process_delete_step(message):
