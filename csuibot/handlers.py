@@ -1049,12 +1049,13 @@ def process_location_step(message):
     try:
         lon = message.longitude
         lat = message.latitude
+        app.logger('{}{}'.format(lon, lat))
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
         bot.register_next_step(msg, process_name_step)
     except Exception as e:
-        msg = bot.send_message(message.chat.id, "Please share your location")
+        msg = bot.send_message(message.chat.id, "oops! please share your location")
         bot.register_next_step_handler(msg, process_location_step)
 
 
