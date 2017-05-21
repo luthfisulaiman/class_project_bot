@@ -31,7 +31,8 @@ class FakeNews(Borg):
                     self.json = json.load(json_file)
             else:
                 r = requests.get(self.JSON_URL)
-                self.json = r.json()
+                # Change keys to lowercase
+                self.json = dict(((k.lower(), v) for (k, v) in r.json().items()))
                 self.__save_json()
 
     def check(self, hostname):

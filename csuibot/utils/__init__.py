@@ -530,9 +530,9 @@ def check_fake_news(url, news_type=None):
     scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
     if scheme not in ['http', 'https']:
         raise ValueError
-    result = fakenews.FakeNews().check(hostname)
+    result = fakenews.FakeNews().check(hostname.lower())
     type_keys = ['type', '2nd type', '3rd type']
-    type_list = [result[k] for k in type_keys if k in result and result[k] != '']
+    type_list = [result[k].lower() for k in type_keys if k in result and result[k] != '']
     return news_type in type_list if news_type else type_list
 
 
@@ -541,4 +541,4 @@ def add_filter_news(url, news_type):
     if scheme not in ['http', 'https']:
         raise ValueError
     hostname = "{0.netloc}".format(urlsplit(url))
-    fakenews.FakeNews().add_filter(hostname, news_type)
+    fakenews.FakeNews().add_filter(hostname.lower(), news_type)

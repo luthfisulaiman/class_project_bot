@@ -1058,6 +1058,7 @@ def add_fake_news_filter_private(message):
     try:
         app.logger.debug(message.text)
         _, url, news_type = message.text.split()
+        news_type = news_type.lower()
         if news_type not in POSSIBLE_NEWS_TYPES:
             raise ValueError
         add_filter_news(url, news_type)
