@@ -1892,9 +1892,9 @@ class TestMediaWiki:
 class test_preview:
 
     def test_valid(self):
-        res = utils.preview_music("Bruno Mars")
-        assert "https" in res
+        res = utils.preview_music("Supercell")
+        assert "http" in res
 
     def test_invalid(self):
-        res = utils.preview_music("ABCD")
+        res = utils.preview_music("Ilyas Fahreza")
         assert res == "Can\'t found the requested artist"

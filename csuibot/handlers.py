@@ -20,7 +20,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
-                    image_is_sfw, get_mediawiki, save_mediawiki_url)
+                    image_is_sfw, get_mediawiki, save_mediawiki_url, preview_music)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1055,7 +1055,6 @@ def add_wiki(message):
         bot.reply_to(message, result)
 
 
-
 @bot.message_handler(commands=['random_wiki_article'])
 def random_wiki_article(message):
     app.logger.debug("'random_wiki_article' command detected")
@@ -1074,15 +1073,29 @@ def random_wiki_article(message):
             bot.reply_to(message, result)
 
 
-def preview_music():
-    raise NotImplemented
-
-
-# bot.remove_webhook()
-# while True:
-#     try:
-#         bot.polling(none_stop=True)
-#     except Exception as e:
-#         import time
-#         app.logger.debug(e)
-#         time.sleep(5)
+@bot.message_handler(regexp=r'^/itunes_preview')
+def preview(message):
+    app.logger.debug("'itunes preview' command detected")
+    command = message.text.split(' ')
+    if (len(command) != 2):
+        output = ('Command invalid, please use /itunes_preview')
+        (' <artist> format, and seperate word in artist name with _')
+        bot.reply_to(message, output)
+    else:
+        words = list(command[1])
+        artist = ""
+        for word in words:
+            if(word == "_"):
+                artist += " "
+            else:
+                artist += word
+        try:
+            res = preview_music(artist)
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        else:
+            if "http" in res['result']:
+                bot.reply_to(message, res['logo'])
+            bot.reply_to(message, res['result'])

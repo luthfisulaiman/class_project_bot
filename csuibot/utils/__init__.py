@@ -22,7 +22,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, issfw, mediawiki)
+                           twitter_search as ts, aqi, issfw, mediawiki, itunes)
 
 
 def lookup_zodiac(month, day):
@@ -229,7 +229,7 @@ def getTopMangaMonthly(year, month):
 
 
 def lookup_isUpWeb(url):
-    pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
+    pattern = re.compile(r"^(https?)://[^\s/$.?#].[^\s]*$")
     if (pattern.match(url)):
         return iuw.IsUpWeb(url).isUp()
     else:
@@ -565,5 +565,9 @@ def get_mediawiki(args):
             return mw.get_page(args)
 
 
-def preview_music():
-    raise NotImplemented
+def preview_music(artist):
+    try:
+        res = itunes.req_preview(artist)
+        return res
+    except ValueError:
+        return {"result": "Can\'t found the requested artist"}
