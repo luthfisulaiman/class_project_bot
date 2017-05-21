@@ -23,7 +23,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
-                           anime_livechart)
+                           anime_livechart,  itunes)
 
 
 def lookup_zodiac(month, day):
@@ -242,7 +242,7 @@ def getTopMangaMonthly(year, month):
 
 
 def lookup_isUpWeb(url):
-    pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
+    pattern = re.compile(r"^(https?)://[^\s/$.?#].[^\s]*$")
     if (pattern.match(url)):
         return iuw.IsUpWeb(url).isUp()
     else:
@@ -607,3 +607,13 @@ def get_mediawiki(args):
             return mw.get_list_pages()
         else:
             return mw.get_page(args)
+
+
+def preview_music(artist):
+    try:
+        manager = itunes.Manager()
+        manager.get_preview(artist)
+        manager.download_url()
+        return "success"
+    except ValueError:
+        return "Can\'t found the requested artist"

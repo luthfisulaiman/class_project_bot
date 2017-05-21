@@ -1,4 +1,5 @@
 import requests
+import io
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
@@ -19,7 +20,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tagimage, check_caption_tag, japan100,
                               get_notif_twitter, air_quality, sentiment_new, add_wiki,
                               random_wiki_article, jadwal, create_schedule,
-                              date_schedule, time_schedule, desc_schedule)
+                              date_schedule, time_schedule, desc_schedule, preview)
 from requests.exceptions import ConnectionError
 
 
@@ -2291,3 +2292,74 @@ def test_random_wiki_article_environment_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_response
+
+
+def test_preview_valid(mocker):
+    fake_response = "success"
+    mocked_send_audio = mocker.patch('csuibot.handlers.bot.send_audio')
+    mocker.patch('csuibot.handlers.bot.send_photo')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_send_audio.call_args
+    assert type(args[1]) == io.BufferedReader
+
+
+def test_preview_cant_find(mocker):
+    fake_response = "Can\'t found the requested artist"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_preview_invalid(mocker):
+    fake_error = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_error)
+    mock_message = Mock(text='/itunes_preview Jack Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_preview_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
+def test_preview_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=ConnectionError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_preview_permission_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=PermissionError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please stop the audio file before requesting new file'

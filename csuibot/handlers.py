@@ -2,6 +2,7 @@ from . import app, bot
 from telebot import types
 import requests
 import re
+import os
 import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
@@ -21,7 +22,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
-                    get_available_schedules, get_schedules, lookup_anime)
+                    get_available_schedules, get_schedules, lookup_anime, preview_music)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1235,6 +1236,43 @@ def random_wiki_article(message):
         else:
             bot.reply_to(message, result)
 
+
+@bot.message_handler(regexp=r'^/itunes_preview')
+def preview(message):
+    app.logger.debug("'itunes preview' command detected")
+    command = message.text.split(' ')
+    if (len(command) != 2):
+        output = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
+        bot.reply_to(message, output)
+    else:
+        words = list(command[1])
+        artist = ""
+        for word in words:
+            if(word == "_"):
+                artist += " "
+            else:
+                artist += word
+        try:
+            res = preview_music(artist)
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        except PermissionError:
+            bot.reply_to(message, 'Please stop the audio file before requesting new file')
+        else:
+            if res == "success":
+                photo = open(get_path('utils/itunes-logo.png'), 'rb')
+                audio = open(get_path('utils/preview.mp3'), 'rb')
+                bot.send_photo(message.chat.id, photo)
+                bot.send_audio(message.chat.id, audio)
+            else:
+                bot.reply_to(message, res)
+
+
+def get_path(file):
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), file))
 
 # bot.remove_webhook()
 # while True:

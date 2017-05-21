@@ -10,10 +10,6 @@ import json
 
 
 class TestZodiac:
-    def test_aries_lower_bound(self):
-        res = utils.lookup_zodiac(3, 21)
-        assert res == 'aries'
-
     def test_aries_upper_bound(self):
         res = utils.lookup_zodiac(4, 19)
         assert res == 'aries'
@@ -1195,6 +1191,16 @@ class TestComic:
         comic = utils.get_comic('abab')
         error = 'Cant\'t found requested comic. Please ensure that your input is correct'
         assert error == comic
+
+
+class TestPreview:
+    def test_valid(self):
+        res = utils.preview_music("Supercell")
+        assert res == "success"
+
+    def test_invalid(self):
+        res = utils.preview_music("Ilyas Fahreza")
+        assert res == "Can\'t found the requested artist"
 
 
 class TestHotCountry_artist:
