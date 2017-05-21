@@ -1046,12 +1046,9 @@ def add_destination(message):
 
 def process_location_step(message):
     app.logger.debug('location step detected')
-    app.logger.debug(message.location.longitude)
-    app.logger.debug(message.location.latitude)
     try:
-        lon = message.location['longitude']
-        lat = message.location['latitude']
-        app.logger('{}{}'.format(lon, lat))
+        lon = message.location.longitude
+        lat = message.location.latitude
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
