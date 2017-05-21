@@ -22,6 +22,14 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
 from requests.exceptions import ConnectionError
 import datetime
 
+locations = {}
+
+class Location:
+    def __init__(self, lat, lon):
+        self.lat = lat
+        self.lon = lon
+        self.name = None
+
 
 def message_decorator(func):
     def wrapper(message):
@@ -1023,16 +1031,46 @@ def uber(message):
     pass
 
 
-@bot.message_handler(content_types=['location'], func=uber)
-def uber_location(message):
-    app.logger.debug("location detected command detected")
-    pass
-
 
 @bot.message_handler(regexp=r'^\/add_destination\s*$', func=lambda message: message.chat.type == "private")
 def add_destination(message):
     app.logger.debug('\add_destination command detected')
-    pass
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    msg = bot.send_message(chat_id, "Please share your location", message_id, reply_markup=markup)
+    bot.register_next_step(msg, process_location_step)
+
+
+def process_location_step(message):
+    app.logger.debug('location step detected')
+    try:
+        lon = message.longitude
+        lat = message.latitude
+        loc = Location(lat, lon)
+        locations[message.chat.id] = loc
+        msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
+        bot.register_next_step(msg, process_name_step)
+    except Exception e:
+        msg = bot.send_message(message.chat.id, "Please share your location")
+        bot.register_next_step(msg, process_location_step)
+
+
+def process_name_step(message):
+    app.logger.debug('name step detected')
+    try:
+        name = message.text
+        loc = locations[message.chat.id]
+        loc.name = name
+
+        app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
+        uber_add(loc)
+        bot.send_message(message.chat.id, "Location Saved")
+    except Exception e :
+        msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
+        bot.register_next_step(msg, process_name_step)
 
 
 @bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
