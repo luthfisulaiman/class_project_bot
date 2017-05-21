@@ -2,6 +2,7 @@ import requests
 from random import randint
 from urllib.parse import quote
 import urllib
+import os
 
 
 class ItunesPreviewer():
@@ -43,7 +44,8 @@ class MusicDownloader:
         self.url = url
 
     def download(self):
-        urllib.request.urlretrieve(self.url, "preview.mp3")
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__), "preview.mp3"))
+        urllib.request.urlretrieve(self.url, path)
 
 
 class Manager:
