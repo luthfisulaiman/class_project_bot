@@ -26,13 +26,13 @@ class Uber:
         def get_locations(self):
             return self.locations_dict
 
-        def add_destination(self, location):
+        def add_location(self, location):
             self.locations_dict[location.name] = {}
             self.locations_dict[location.name]['latitude'] = location.lat
             self.locations_dict[location.name]['longitude'] = location.lon     
             exportJSON()       
 
-        def remove_destination(self, location_name):
+        def remove_location(self, location_name):
             self.locations_dict.pop(location_name, None)
 
     instance = None
