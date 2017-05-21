@@ -19,7 +19,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new, uber_add,
-                    uber_remove, uber_info)
+                    uber_remove, uber_info, uber_get)
 from requests.exceptions import ConnectionError
 from telebot import types
 import datetime
