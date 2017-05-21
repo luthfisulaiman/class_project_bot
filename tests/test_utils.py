@@ -1098,7 +1098,7 @@ class TestOriconCD:
         assert output == 'Error occured when connecting to Oricon website.'
 
     def test_daily_chart(self):
-        output = utils.top_ten_cd_oricon('d', '2017-05-12')
+        output = utils.top_ten_cd_oricon('d', '2017-05-19')
 
         assert len(output.split('\n')) >= 10
 
@@ -1517,6 +1517,20 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class TestAnimeLiveChart:
+    def test_valid_response(self):
+        res = utils.lookup_anime('Action', 'spring', '2017')
+        assert 'Here are anime(s) that matches with your genre' in res
+
+    def test_invalid_genre(self):
+        res = utils.lookup_anime('gen', 'winter', '2017')
+        assert res == 'Invalid genre.'
+
+    def test_invalid_season(self):
+        res = utils.lookup_anime('Action', 'winta', '2016')
+        assert res == 'Invalid season.'
 
 
 class TestMediaWiki:
