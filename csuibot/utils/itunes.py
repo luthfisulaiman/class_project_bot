@@ -38,8 +38,8 @@ class ItunesRequester():
 class ItunesLogo:
 
     def __init__(self):
-        self.logo = ('https://upload.wikimedia.org/wik'
-                     'ipedia/commons/5/55/Download_on_iTunes.svg')
+        self.logo = ('https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Download_'
+                     'on_iTunes.svg/2000px-Download_on_iTunes.svg.png')
 
     def get_logo(self):
         return self.logo
