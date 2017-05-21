@@ -1889,12 +1889,12 @@ class TestMediaWiki:
         )
 
 
-class test_preview:
+class TestPreview:
 
     def test_valid(self):
         res = utils.preview_music("Supercell")
-        assert "http" in res
+        assert "http" in res['result']
 
     def test_invalid(self):
         res = utils.preview_music("Ilyas Fahreza")
-        assert res == "Can\'t found the requested artist"
+        assert res['result'] == "Can\'t found the requested artist"
