@@ -1069,8 +1069,7 @@ def process_name_step(message):
         app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
         uber_add(loc)
         bot.send_message(message.chat.id, "Location Saved")
-        return
-    except Exception as e :
+    except ValueError:
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
         bot.register_next_step_handler(msg, process_name_step)
 
