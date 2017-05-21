@@ -1027,14 +1027,13 @@ def tagimage(message):
 
 @bot.message_handler(regexp=r'^\/uber\s*$', func=lambda message: message.chat.type == "private")
 def uber(message):
-    app.logger.debug("\uber command detected")
+    app.logger.debug("uber command detected")
     pass
-
 
 
 @bot.message_handler(regexp=r'^\/add_destination\s*$', func=lambda message: message.chat.type == "private")
 def add_destination(message):
-    app.logger.debug('\add_destination command detected')
+    app.logger.debug('add_destination command detected')
     chat_id = message.chat.id
     message_id = message.message_id
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
