@@ -1098,4 +1098,6 @@ def preview(message):
         else:
             if "http" in res['result']:
                 bot.reply_to(message, res['logo'])
+                audio = open('preview.mp3', 'rb')
+                bot.send_audio(message.chat.id, audio)
             bot.reply_to(message, res['result'])

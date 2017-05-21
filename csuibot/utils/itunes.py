@@ -1,6 +1,7 @@
 import requests
 from random import randint
 from urllib.parse import quote
+import urllib
 
 
 class ItunesPreviewer():
@@ -45,9 +46,24 @@ class ItunesLogo:
         return self.logo
 
 
+class MusicDownloader:
+
+    def __init__(self):
+        self.url = ""
+
+    def set_url(self, url):
+        self.url = url
+
+    def download(self):
+        urllib.request.urlretrieve(self.url, "preview.mp3")
+
+
 def req_preview(artist):
     previewer = ItunesPreviewer()
+    downloader = MusicDownloader()
     logo = ItunesLogo()
     url = previewer.get_preview(artist)
+    downloader.set_url(url)
+    downloader.download()
 
     return {"result": url, "logo": logo.get_logo()}
