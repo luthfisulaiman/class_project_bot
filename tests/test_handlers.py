@@ -2068,7 +2068,7 @@ Tag : power , Confidence : 19'''
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
 
-def test_quran(mocker):
+def test_quran_keyboard_input(mocker):
     faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.lookup_quran', return_value=faker)
@@ -2079,6 +2079,16 @@ def test_quran(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == faker
 
+def test_quran_custom_input(mocker):
+    faker = 'foobar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_quran', return_value=faker)
+    mock_message = Mock(text='/qs 144:1')
+
+    quran(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == faker
 
 def test_quran_ayat_not_found(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -2088,15 +2098,26 @@ def test_quran_ayat_not_found(mocker):
     quran(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Please input valid chapter'
+    assert args[1] == 'Please input valid chapter and verse'
 
-def test_quran_no_connection(mocker):
+def test_quran_ngaji(mocker):
+    faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_quran', side_effect=ConnectionError)
-    mock_message = Mock(text='/qs 13:11')
+    mocker.patch('csuibot.handlers.lookup_quran', side_effect=faker)
+    mock_message = Mock(text='kepengen ngaji alfatihah')
 
     quran(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'There are no connection'
-    
+    assert args[1] == 'Please input valid chapter and verse'
+
+def test_quran_ngaji_random(mocker):
+    faker = 'foobar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_quran', side_effect=faker)
+    mock_message = Mock(text='Kepengen ngaji dah')
+
+    quran(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please input valid chapter and verse'

@@ -1022,20 +1022,14 @@ def quran(message):
     try:
        pass
 
-@bot.message_handler(regexp=r'^/qs (.*)$')
+@bot.message_handler(regexp=r'^/qs [0-9]+:[0-9]+$')
 def quran(message):
-    app.logger.debug("'Quran' command detected")
+    app.logger.debug("'Quran C:V' command detected")
     try:
        pass
 
-@bot.message_handler(regexp=r'^ngaji$')
+@bot.message_handler(regexp=r'ngaji( ?[a-z]*)')
 def quran(message):
-    app.logger.debug("'Ngaji' command detected")
-    try:
-       pass
-
-@bot.message_handler(regexp=r'^ngaji (.)*$')
-def quran(message):
-    app.logger.debug("'Ngaji' command detected")
+    app.logger.debug("'Ngaji C' command detected")
     try:
        pass

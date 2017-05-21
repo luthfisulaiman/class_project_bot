@@ -1472,14 +1472,27 @@ class test_hot_japan_100:
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
 
+
 class TestQuran:
-    def run_test(self, expect):
+    def run_test(self, command, expect):
         try:
             result = utils.lookup_quran()
             assert result == expect
         except requests.ConnectionError as e:
             assert str(e) == ('Cannot connect to Quran API')
 
-    def test_quran(self):
+    def test_quran_alfatihah(self):
+        expected = "foobar"
+        self.run_test(expected)
+
+    def test_quran_verse_not_found(self):
+        expected = "foobar"
+        self.run_test(expected)
+
+    def test_quran_ngaji_alfatihah(self):
+        expected = "foobar"
+        self.run_test(expected)
+
+    def test_quran_ngaji_random(self):
         expected = "foobar"
         self.run_test(expected)
