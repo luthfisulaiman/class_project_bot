@@ -1097,10 +1097,10 @@ class TestOriconCD:
 
         assert output == 'Error occured when connecting to Oricon website.'
 
-    # def test_daily_chart(self):
-    #     output = utils.top_ten_cd_oricon('d', '2017-05-12')
-    #
-    #     assert len(output.split('\n')) >= 10
+    def test_daily_chart(self):
+        output = utils.top_ten_cd_oricon('d', '2017-05-19')
+
+        assert len(output.split('\n')) >= 10
 
     def test_weekly_chart(self):
         output = utils.top_ten_cd_oricon('w', '2017-05-15')
