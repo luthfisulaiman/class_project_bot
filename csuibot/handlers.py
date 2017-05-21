@@ -2,6 +2,7 @@ from . import app, bot
 from telebot import types
 import requests
 import re
+import os
 import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
@@ -1095,9 +1096,17 @@ def preview(message):
             bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
         except ConnectionError:
             bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        except PermissionError:
+            bot.reply_to(message, 'Please stop the audio file before requesting new file')
         else:
-            if "http" in res['result']:
-                bot.reply_to(message, res['logo'])
-                audio = open('preview.mp3', 'rb')
+            if res == "success":
+                photo = open(get_path('utils/itunes-logo.png'), 'rb')
+                audio = open(get_path('utils/preview.mp3'), 'rb')
+                bot.send_photo(message.chat.id, photo)
                 bot.send_audio(message.chat.id, audio)
-            bot.reply_to(message, res['result'])
+            else:
+                bot.reply_to(message, res)
+
+
+def get_path(file):
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), file))

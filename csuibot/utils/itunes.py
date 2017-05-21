@@ -9,10 +9,7 @@ class ItunesPreviewer():
     def __init__(self):
         self.songs = []
 
-    def get_preview(self, artist):
-        search_result = ItunesRequester.make_request(artist)
-        self.add_artist_song(search_result, artist)
-
+    def get_preview(self):
         if not self.songs:
             raise ValueError("Can\'t found the requested artist")
         surprise_me = randint(0, len(self.songs) - 1)
@@ -26,24 +23,15 @@ class ItunesPreviewer():
 
 class ItunesRequester():
 
-    @staticmethod
-    def make_request(artist):
-        url = "https://itunes.apple.com/search?"
+    def __init__(self):
+        self.url = "https://itunes.apple.com/search?"
+
+    def request(self, artist):
         en_artist = "term=" + quote(str(artist), safe='')
         media = "media=music"
-        url = url + "{}&{}".format(en_artist, media)
-        res = requests.get(url)
+        task = self.url + "{}&{}".format(en_artist, media)
+        res = requests.get(task)
         return res.json()['results']
-
-
-class ItunesLogo:
-
-    def __init__(self):
-        self.logo = ('https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Download_'
-                     'on_iTunes.svg/2000px-Download_on_iTunes.svg.png')
-
-    def get_logo(self):
-        return self.logo
 
 
 class MusicDownloader:
@@ -58,12 +46,18 @@ class MusicDownloader:
         urllib.request.urlretrieve(self.url, "preview.mp3")
 
 
-def req_preview(artist):
-    previewer = ItunesPreviewer()
-    downloader = MusicDownloader()
-    logo = ItunesLogo()
-    url = previewer.get_preview(artist)
-    downloader.set_url(url)
-    downloader.download()
+class Manager:
 
-    return {"result": url, "logo": logo.get_logo()}
+    def __init__(self):
+        self._downloader = MusicDownloader()
+        self._previewer = ItunesPreviewer()
+        self._requester = ItunesRequester()
+
+    def get_preview(self, artist):
+        req = self._requester.request(artist)
+        self._previewer.add_artist_song(req, artist)
+        self.url = self._previewer.get_preview()
+
+    def download_url(self):
+        self._downloader.set_url(self.url)
+        self._downloader.download()

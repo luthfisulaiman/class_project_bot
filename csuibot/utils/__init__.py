@@ -567,7 +567,9 @@ def get_mediawiki(args):
 
 def preview_music(artist):
     try:
-        res = itunes.req_preview(artist)
-        return res
+        manager = itunes.Manager()
+        manager.get_preview(artist)
+        manager.download_url()
+        return "success"
     except ValueError:
-        return {"result": "Can\'t found the requested artist"}
+        return "Can\'t found the requested artist"

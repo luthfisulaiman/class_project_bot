@@ -1,4 +1,5 @@
 import requests
+import io
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
@@ -2151,11 +2152,20 @@ def test_random_wiki_article_environment_error(mocker):
 
 
 def test_preview_valid(mocker):
-    url = ('https://itunes.apple.com/us/'
-           'album/better-together/id879273552?i=879273565&uo=4')
-    logo = ('https://upload.wikimedia.org/wik'
-            'ipedia/commons/5/55/Download_on_iTunes.svg')
-    fake_response = {"result": url, "logo": logo}
+    fake_response = "success"
+    mocked_send_audio = mocker.patch('csuibot.handlers.bot.send_audio')
+    mocked_send_photo = mocker.patch('csuibot.handlers.bot.send_photo')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_send_audio.call_args
+    assert type(args[1]) == io.BufferedReader
+
+
+def test_preview_cant_find(mocker):
+    fake_response = "Can\'t found the requested artist"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
     mock_message = Mock(text='/itunes_preview Jack_Johnson')
@@ -2163,8 +2173,7 @@ def test_preview_valid(mocker):
     preview(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == ('https://itunes.apple.com/us/'
-                       'album/better-together/id879273552?i=879273565&uo=4')
+    assert args[1] == fake_response
 
 
 def test_preview_invalid(mocker):
@@ -2200,3 +2209,14 @@ def test_preview_connection_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_preview_permission_erro(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=PermissionError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please stop the audio file before requesting new file'
