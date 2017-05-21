@@ -1046,7 +1046,8 @@ def add_destination(message):
 
 def process_location_step(message):
     app.logger.debug('location step detected')
-    app.logger.debug(message.location)
+    app.logger.debug(message.location.longitude)
+    app.logger.debug(message.location.latitude)
     try:
         lon = message.location['longitude']
         lat = message.location['latitude']
