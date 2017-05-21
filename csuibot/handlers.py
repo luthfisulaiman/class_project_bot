@@ -1079,7 +1079,7 @@ def process_name_step(message):
 def remove_destination(message):
     app.logger.debug("remove_destination command detected")
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    locations = uber_get()
+    locations = uber_get()['locations']
     app.logger.debug(locations)
     if(len(locations)):
         for name in locations:
