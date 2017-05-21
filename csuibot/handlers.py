@@ -1055,10 +1055,9 @@ def process_location_step(message):
         app.logger.debug("Inserting")
         msg = bot.send_message(message.chat.id, "OK, please enter a name for the location given")
         bot.register_next_step_handler(msg, process_name_step)
-    except Exception as e:
+    except ValueError:
         msg = bot.send_message(message.chat.id, "oops! please share your location")
         bot.register_next_step_handler(msg, process_location_step)
-        return
 
 
 def process_name_step(message):
@@ -1071,6 +1070,7 @@ def process_name_step(message):
         app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
         uber_add(loc)
         bot.send_message(message.chat.id, "Location Saved")
+        return
     except Exception as e :
         msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
         bot.register_next_step_handler(msg, process_name_step)
@@ -1078,5 +1078,5 @@ def process_name_step(message):
 
 @bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
 def remove_destination(message):
-    app.logger.debug("\remove_destination command detected")
+    app.logger.debug("remove_destination command detected")
     pass
