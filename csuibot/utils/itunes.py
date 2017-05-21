@@ -50,4 +50,4 @@ def req_preview(artist):
     logo = ItunesLogo()
     url = previewer.get_preview(artist)
 
-    return {"result": "\"" + url + "\"", "logo": "\"" + logo.get_logo() + "\""}
+    return {"result": url, "logo": logo.get_logo()}
