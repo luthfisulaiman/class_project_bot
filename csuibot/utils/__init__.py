@@ -23,7 +23,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
-                           anime_livechart, itunes, airing)
+                           anime_livechart, itunes, airing, apod)
 
 
 def lookup_zodiac(month, day):
@@ -631,3 +631,7 @@ def preview_music(artist):
         return "success"
     except ValueError:
         return "Can\'t found the requested artist"
+
+
+def fetch_apod():
+    return apod.Apod().fetch_apod()

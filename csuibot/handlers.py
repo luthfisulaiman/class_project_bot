@@ -23,7 +23,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
-                    airing_check, lookup_airing)
+                    airing_check, lookup_airing, fetch_apod)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1324,3 +1324,21 @@ def get_path(file):
 #         import time
 #         app.logger.debug(e)
 #         time.sleep(5)\
+
+
+@bot.message_handler(commands=['apod'])
+def apod(message):
+    app.logger.debug("'apod' command detected")
+
+    try:
+        apod = fetch_apod()
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    except ValueError as e:
+        bot.reply_to(message, '/apod doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, apod)

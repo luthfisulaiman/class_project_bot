@@ -1976,3 +1976,10 @@ class TestMediaWiki:
         assert res == '{}\n\n{}\n\nimage: {}\n\nsource: {}'.format(
             'Example', '', ' - ', 'http://en.wikipedia.org/wiki/Example'
         )
+
+
+class TestApod:
+    def test_apod(self):
+        res = utils.apod.Apod().fetch_apod()
+
+        assert res is not None
