@@ -10,10 +10,6 @@ import json
 
 
 class TestZodiac:
-    def test_aries_lower_bound(self):
-        res = utils.lookup_zodiac(3, 21)
-        assert res == 'aries'
-
     def test_aries_upper_bound(self):
         res = utils.lookup_zodiac(4, 19)
         assert res == 'aries'
@@ -344,6 +340,52 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestSchedule:
+
+    def test_generate_schedule(self):
+        utils.generate_schedule('tes', '2017-05-18', '10', 'Company-wide meeting')
+
+        with open('schedules/tes.json', 'r') as file_schedule:
+            data = json.load(file_schedule)
+
+        assert data['schedules']['2017-05-18']['10'] == 'Company-wide meeting'
+
+    def test_generate_schedule_new_group(self):
+        utils.generate_schedule('tes_02', '2017-05-18', '10', 'Company-wide meeting')
+
+        with open('schedules/tes_02.json', 'r') as file_schedule:
+            data = json.load(file_schedule)
+
+        assert data['schedules']['2017-05-18']['10'] == 'Company-wide meeting'
+        os.remove('schedules/tes_02.json')
+
+    def test_get_available_schedules(self):
+        res = utils.get_available_schedules('tes', '2017-05-18')
+        res.sort()
+
+        assert res == ['09', '11', '12', '13']
+
+    def test_get_available_schedules_new_group(self):
+        res = utils.get_available_schedules('fake', '2017-05-18')
+
+        assert res == ['09', '10', '11', '12', '13', '14']
+
+    def test_get_available_schedules_new_date(self):
+        res = utils.get_available_schedules('tes', '2017-05-25')
+
+        assert res == ['09', '10', '11', '12', '13', '14']
+
+    def test_get_schedules(self):
+        res = utils.get_schedules('tes')
+
+        assert res is not []
+
+    def test_get_schedules_fake_chatid(self):
+        res = utils.get_schedules('fake')
+
+        assert res == []
 
 
 class TestSentimentNew:
@@ -1052,7 +1094,7 @@ class TestOriconCD:
         assert output == 'Error occured when connecting to Oricon website.'
 
     def test_daily_chart(self):
-        output = utils.top_ten_cd_oricon('d', '2017-05-12')
+        output = utils.top_ten_cd_oricon('d', '2017-05-19')
 
         assert len(output.split('\n')) >= 10
 
@@ -1149,6 +1191,16 @@ class TestComic:
         comic = utils.get_comic('abab')
         error = 'Cant\'t found requested comic. Please ensure that your input is correct'
         assert error == comic
+
+
+class TestPreview:
+    def test_valid(self):
+        res = utils.preview_music("Supercell")
+        assert res == "success"
+
+    def test_invalid(self):
+        res = utils.preview_music("Ilyas Fahreza")
+        assert res == "Can\'t found the requested artist"
 
 
 class TestHotCountry_artist:
@@ -1471,6 +1523,20 @@ class test_hot_japan_100:
     def test_japan_100(self):
         res = utils.lookup_HotJapan100("http://www.billboard.com/rss/charts/japan-hot-100")
         assert res != "ups, something wrong is going on"
+
+
+class TestAnimeLiveChart:
+    def test_valid_response(self):
+        res = utils.lookup_anime('Action', 'spring', '2017')
+        assert 'Here are anime(s) that matches with your genre' in res
+
+    def test_invalid_genre(self):
+        res = utils.lookup_anime('gen', 'winter', '2017')
+        assert res == 'Invalid genre.'
+
+    def test_invalid_season(self):
+        res = utils.lookup_anime('Action', 'winta', '2016')
+        assert res == 'Invalid season.'
 
 
 class TestMediaWiki:
