@@ -25,13 +25,20 @@ class DatabaseStorage:
                    """
 
     SEARCH_QUERY = """
-                   SELECT *
+                   SELECT japan_name, artist_name, storage_url
                    FROM love_live_song
                    WHERE itunes_id = %s;
                    """
 
+    SEARCH_QUERY_2 = """
+                     SELECT japan_name, artist_name, storage_url
+                     FROM love_live_song
+                     WHERE LOWER(japan_name) = LOWER(%s)
+                     OR LOWER(romaji_name) = LOWER(%s)
+                     """
+
     ALL_QUERY = """
-                SELECT id, japan_name,  artist name
+                SELECT id, japan_name,  artist_name
                 FROM love_live_song
                 """
 
@@ -71,6 +78,14 @@ class DatabaseStorage:
         cur.close()
         return res
 
+    def get_song_by_name(self, query):
+        cur = self.conn.cursor()
+
+        cur.execute(self.SEARCH_QUERY_2, (query, query))
+        res = cur.fetchone()
+        cur.close()
+        return res
+
     def get_all_songs(self):
         cur = self.conn.cursor()
 
@@ -79,7 +94,7 @@ class DatabaseStorage:
         except psycopg2.ProgrammingError:
             self.create_table_schema()
             cur.execute(self.ALL_QUERY)
-        res = cur.getchone()
+        res = cur.fetchall()
         cur.close()
         return res
 
@@ -123,6 +138,18 @@ class CloudStorage:
 
         return url
 
+    def check_file(self, filename):
+        result = self.dbx.files_search('', filename)
+
+        if result.start == 0:
+            return False
+
+        file_path = result.matches[0].metadata.path_display
+        url = self.dbx.sharing_create_shared_link(file_path).url
+        url = url.replace("www.dropbox", "dl.dropboxusercontent")
+
+        return url
+
 
 class ClipHandler:
     LOVE_LIVE_API_URL = u"http://schoolido.lu/api/songs/?search={search}"
@@ -159,6 +186,8 @@ class ClipHandler:
 
     def remove_song(self, query):
         song = self.search_song(query)
+        if not song:
+            return "Song not found"
 
         itunes_id = song['itunes_id']
         self.db.delete_song(itunes_id)
@@ -167,6 +196,11 @@ class ClipHandler:
 
     def get_all_songs(self):
         songlist = self.db.get_all_songs()
+        return songlist
+
+    def search_song_in_db(self, query):
+        db_song = self.db.get_song_by_name(query)
+        return db_song
 
     def search_song(self, query):
         r = requests.get(self.LOVE_LIVE_API_URL.format(search=query))
@@ -185,6 +219,10 @@ class ClipHandler:
         return info_json['results'][0]['previewUrl']
 
     def store_song(self, itunes_id, url):
+        check = self.storage.check_file(itunes_id)
+        if check:
+            return check
+
         r = requests.get(url)
 
         filename = str(itunes_id) + ".m4a"
@@ -196,11 +234,21 @@ class ClipHandler:
 
         return self.storage.store_file(converted_song, str(itunes_id) + ".mp3")
 
-    def send_clip(self, query):
-        pass
+    def get_clip(self, query):
+        song = self.search_song(query)
+        if not song:
+            return "Song not found"
+
+        itunes_id = song['itunes_id']
+        try:
+            url = self.db.get_song(itunes_id)[0]
+        except TypeError:
+            return "Song not found"
+        else:
+            return url
 
     def convert_m4a_to_mp3(self, itunes_id):
-        song = AudioSegment.from_file   (str(itunes_id) + ".m4a", format="m4a")
+        song = AudioSegment.from_file(str(itunes_id) + ".m4a", format="m4a")
         converted_song = song.export(str(itunes_id) + ".mp3")
 
         return converted_song
@@ -208,17 +256,30 @@ class ClipHandler:
 
 class AnisonRadio:
     @classmethod
-    def get_clip(cls):
-        pass
+    def get_clip(cls, query):
+        clip_handler = ClipHandler()
+        return clip_handler.get_clip(query)
 
     @classmethod
-    def search_song(cls):
-        pass
+    def get_song_list(cls):
+        clip_handler = ClipHandler()
+        return clip_handler.get_all_songs()
 
     @classmethod
-    def add_song(cls):
-        pass
+    def add_song(cls, query):
+        clip_handler = ClipHandler(True)
+        return clip_handler.add_song(query)
 
     @classmethod
-    def remove_song(cls):
-        pass
+    def remove_song(cls, query):
+        clip_handler = ClipHandler()
+        return clip_handler.remove_song(query)
+
+    @classmethod
+    def search_song(cls, username, query):
+        clip_handler = ClipHandler()
+        res = clip_handler.search_song_in_db(query)
+
+        if res is not None:
+            return "@{} , please chat me if you".format(username) +\
+                   " want to listen to that song"

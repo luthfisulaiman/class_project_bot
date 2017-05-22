@@ -1017,10 +1017,12 @@ def tagimage(message):
     else:
         bot.reply_to(message, tag)
 
+
 @bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
 def anison_radio(message):
     app.logger.debug("'anison' commands detected")
     pass
+
 
 # TODO: tolong ini ditaro di paling bawah :)
 @bot.message_handler(func=lambda m: m.chat.type == "group")
