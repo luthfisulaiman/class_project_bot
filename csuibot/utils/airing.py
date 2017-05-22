@@ -1,6 +1,5 @@
 import requests
-
-class 
+from xml.etree import ElementTree as ET
 
 
 class AiringChecking():
@@ -21,5 +20,13 @@ class AirToday():
 
 class MALRequester():
 
-    def make_request():
-        raise NotImplemented
+    @staticmethod
+    def make_request(anime):
+        url = "https://myanimelist.net/api/anime/search.xml?q="
+        en_anime = quote(anime, safe='')
+        url = url + "{}".format(anime)
+        task = {"username":"fiersome08", "password":"fiersome"}
+        res = requests.get(url, params=task)
+        return res.json()
+
+print(MALRequester.make_request("gochiusa"))
