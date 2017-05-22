@@ -1,9 +1,10 @@
 import requests
-import pydub
 import psycopg2
+import dropbox
+import cloudconvert
 
 
-class PersistentStorage:
+class DatabaseStorage:
     POSTGRES_HOST = "ec2-54-83-26-65.compute-1.amazonaws.com"
     POSTGRES_DB = "desfv1778rcs9q"
     POSTGRES_USERNAME = "idqeyhxhszyuek"
@@ -12,12 +13,13 @@ class PersistentStorage:
     TABLE_SCHEMA = """
                    CREATE TABLE IF NOT EXIST love_live_song(
                    ID SERIAL PRIMARY KEY,
+                   itunes_id INT NOT NULL,
                    japan_name VARCHAR(255) NOT NULL,
                    romaji_name VARCHAR(255),
                    english_name VARCHAR(255),
                    artist_name VARCHAR(255) NOT NULL,
                    preview_url VARCHAR(255) NOT NULL
-                   )
+                   );
                    """
 
     def __init__(self):
@@ -42,6 +44,16 @@ class PersistentStorage:
         pass
 
 
+class SoundConverter:
+    API_KEY = "HkuY2vec8dRIw12X5HpyNWSSHOj3sK-yJOnXEmwf1pZdS_eUk_B8j-6ABOBN5JQ6olQXhy4Qsy5yZI4buKKkbA"
+
+
+class CloudStorage:
+    ACCESS_TOKEN = "zBTjwpY7xaYAAAAAAAAH4hiVQl6j6bH7VAsK5H3aCi-BqLp1a8mlvbiQtZBICZSI"
+
+    def __init__(self):
+
+
 class ClipHandler:
     LOVE_LIVE_API_URL = "http://schoolido.lu/api/songs/?search={search}"
     ITUNES_LOOKUP_URL = "https://itunes.apple.com/lookup?id={id}"
@@ -62,7 +74,7 @@ class ClipHandler:
         pass
 
 
-class anison_radio:
+class AnisonRadio:
     @classmethod
     def get_clip(cls):
         pass
