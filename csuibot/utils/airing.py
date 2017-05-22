@@ -53,7 +53,7 @@ class Requester:
 
     def __init__(self):
         self.malurl = "https://myanimelist.net/api/anime/search.xml?q="
-        self.lcharturl = "https://www.livechart.me/spring-2017/tv"
+        self.lcharturl = "https://www.livechart.me/"
 
     def lchart_crawling(self):
         res = requests.get(self.lcharturl)
