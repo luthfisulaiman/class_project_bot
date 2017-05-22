@@ -1532,7 +1532,8 @@ class test_airing:
 
     def test_check_airing_tba(self):
         res = utils.airing_check("Yuuki Yuuna wa Yuusha de Aru: Yuusha no Shou")
-        assert res == "Yuuki Yuuna wa Yuusha de Aru: Yuusha no Shou will air starting at 2017-10-00"
+        output = "Yuuki Yuuna wa Yuusha de Aru: Yuusha no Shou will air starting at 2017-10-00"
+        assert res == output
 
     def test_check_airing_complete(self):
         res = utils.airing_check("Gochiusa")

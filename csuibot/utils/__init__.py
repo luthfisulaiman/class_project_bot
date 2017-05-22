@@ -556,7 +556,7 @@ def airing_check(anime):
     try:
         manager.request(anime)
         return manager.get_date()
-    except ValueError
+    except ValueError:
         return "Can\'t find the requested anime"
 
 

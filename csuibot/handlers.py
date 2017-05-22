@@ -1169,7 +1169,9 @@ def airing(message):
             else:
                 bot.reply_to(message, res)
         else:
-            bot.reply_to(message, 'Command invalid, please use /is_airing <anime> format and replace space in <anime> with underscore (_)')
+            output = ('Command invalid, please use /is_airing <anime>'
+                      'format and replace space in <anime> with underscore (_)')
+            bot.reply_to(message, output)
 
 
 @bot.message_handler(regexp=r'hari ini nonton apa?')

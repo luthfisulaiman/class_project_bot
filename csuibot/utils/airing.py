@@ -1,9 +1,9 @@
 import requests
-import urllib
 from urllib.parse import quote
 from xml.etree import ElementTree as ET
 from bs4 import BeautifulSoup
 import time
+
 
 def checkdate(function):
     def wrapper(*args, **kwargs):
@@ -12,6 +12,7 @@ def checkdate(function):
             date = "unknown"
         return date
     return wrapper
+
 
 class AnimeInfo:
 
@@ -61,20 +62,21 @@ class Requester:
         animelist = []
         for div in anime_div:
             name = div.find('h3', class_='main-title').text
-            date, _ = div.find('time', {'datetime':True})['datetime'].split('T')
+            date, _ = div.find('time', {'datetime': True})['datetime'].split('T')
             temp, _, _ = div.find('div', class_='episode-countdown').text.split(':')
             episode = temp[2:len(temp)]
-            animelist.append({"name":name, "date":date, "episode":episode})
+            animelist.append({"name": name, "date": date, "episode": episode})
         return animelist
 
     def make_request(self, anime):
         en_anime = quote(anime, safe='')
-        task = self.malurl + "{}".format(anime)
+        task = self.malurl + "{}".format(en_anime)
         res = requests.get(task, auth=("fiersome08", "fiersome"))
         return res
 
+
 class AiringManager:
-    
+
     def __init__(self):
         self.animecenter = AnimeInfo()
         self.requester = Requester()

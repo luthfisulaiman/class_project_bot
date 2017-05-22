@@ -2183,7 +2183,7 @@ def test_airing_valid(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.airing_check', return_value=fake_result)
     mock_type = Mock(type='private')
-    mock_message = Mock(text='/is_airing Sagrada Reset', chat=mock_type)
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
 
     airing(mock_message)
 
@@ -2192,7 +2192,8 @@ def test_airing_valid(mocker):
 
 
 def test_airing_invalid(mocker):
-    fake_error = 'Command invalid, please use /is_airing <anime> format and replace space in <anime> with underscore (_)'
+    fake_error = ('Command invalid, please use /is_airing <anime>'
+                  'format and replace space in <anime> with underscore (_)')
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.airing_check', return_value=fake_error)
     mock_type = Mock(type='private')
@@ -2208,7 +2209,7 @@ def test_airing_connection_error(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.airing_check', side_effect=ConnectionError)
     mock_type = Mock(type='private')
-    mock_message = Mock(text='/is_airing Sagrada Reset', chat=mock_type)
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
 
     airing(mock_message)
 
@@ -2220,7 +2221,7 @@ def test_airing_http_error(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.airing_check', side_effect=requests.exceptions.HTTPError)
     mock_type = Mock(type='private')
-    mock_message = Mock(text='/is_airing Sagrada Reset', chat=mock_type)
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
 
     airing(mock_message)
 
@@ -2235,7 +2236,7 @@ def test_anime_lookup_valid(mocker):
     mock_type = Mock(type='group')
     mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
 
-    lookup_airing(mock_message)
+    lookup_today(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
@@ -2247,7 +2248,7 @@ def test_anime_lookup_connection_error(mocker):
     mock_type = Mock(type='group')
     mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
 
-    lookup_airing(mock_message)
+    lookup_today(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Connection error occurs, please try again in a minute'
@@ -2259,7 +2260,7 @@ def test_anime_lookup_http_error(mocker):
     mock_type = Mock(type='group')
     mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
 
-    lookup_airing(mock_message)
+    lookup_today(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP error occurs, please try again in a minute'
