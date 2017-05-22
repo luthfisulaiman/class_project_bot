@@ -1,7 +1,8 @@
 from . import app, bot
-from telebot import types # telebot lib to create keyboard markup, imported by felicia for weatherbot
+from telebot import types
 import requests
 import re
+import os
 import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
@@ -18,8 +19,11 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
-                    getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets, get_aqi_city, get_aqi_coord)
+                    getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
+                    get_available_schedules, get_schedules, lookup_anime, preview_music,
+                    fetch_apod)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -33,6 +37,17 @@ def message_decorator(func):
         return func(message)
 
     return wrapper
+
+
+schedules = {}
+lookup_anime_property = {}
+
+
+class EntrySchedule:
+    def __init__(self, group):
+        self.group = group
+        self.date = None
+        self.time = None
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -417,6 +432,111 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(func=lambda message: message.chat.type == "group", regexp="jadwal")
+def jadwal(message):
+    app.logger.debug("'jadwal' command detected")
+    future_schedules = get_schedules(message.chat.id)
+    if len(future_schedules) > 0:
+        for schedule in future_schedules:
+            bot.send_message(message.chat.id, schedule)
+    else:
+        bot.send_message(message.chat.id, 'No future schedules are found.')
+
+
+@bot.message_handler(commands=['create_schedule'],
+                     func=lambda message: message.chat.type == "group")
+def create_schedule(message):
+    app.logger.debug("'create_schedule' command detected")
+    entry = EntrySchedule(message.chat.id)
+    schedules[message.from_user.id] = entry
+    msg = bot.send_message(message.from_user.id, 'When should the schedule be created?')
+    bot.register_next_step_handler(msg, date_schedule)
+
+
+def date_schedule(date_message):
+    app.logger.debug("date of schedule step started")
+    if date_message.text == '/cancel':
+        schedules.pop(date_message.from_user.id)
+        bot.reply_to(date_message, 'create_schedule canceled.')
+        return
+
+    try:
+        y, m, d = parse_date(date_message.text)
+        if datetime.date(y, m, d) >= datetime.datetime.now().date():
+            entry = schedules[date_message.from_user.id]
+
+            avl_hours = get_available_schedules(entry.group, date_message.text)
+            avl_hours.sort()
+            if len(avl_hours) <= 0:
+                error_text = "That date's full. Try another date or use /cancel to cancel."
+                msg = bot.reply_to(date_message, error_text)
+                bot.register_next_step_handler(msg, date_schedule)
+                return
+
+            app.logger.debug("date of schedule is {}".format(date_message.text))
+            entry.date = date_message.text
+            markup = types.ReplyKeyboardMarkup()
+            for avl_hour in avl_hours:
+                markup.add(types.KeyboardButton("{}.00".format(avl_hour)))
+            msg = bot.send_message(date_message.from_user.id,
+                                   'Here are the available hours for {}.'.format(
+                                        date_message.text),
+                                   reply_markup=markup)
+            bot.register_next_step_handler(msg, time_schedule)
+        else:
+            msg = bot.reply_to(date_message,
+                               'You cannot make a schedule for the past. Try again.')
+            bot.register_next_step_handler(msg, date_schedule)
+    except ValueError:
+        msg = bot.reply_to(date_message, 'The requested date is invalid. Try again.')
+        bot.register_next_step_handler(msg, date_schedule)
+
+
+def time_schedule(time_message):
+    app.logger.debug("time of schedule started")
+    if time_message.text == '/cancel':
+        schedules.pop(time_message.from_user.id)
+        bot.reply_to(time_message, 'create_schedule canceled.')
+        return
+
+    app.logger.debug("time of schedule is {}".format(time_message.text))
+    entry = schedules[time_message.from_user.id]
+    entry.time = time_message.text.split('.')[0]
+    msg = bot.reply_to(time_message, 'Give a description for this schedule.',
+                       reply_markup=types.ReplyKeyboardRemove())
+    bot.register_next_step_handler(msg, desc_schedule)
+
+
+def desc_schedule(desc_message):
+    app.logger.debug("desc of schedule started")
+    if desc_message.text == '/cancel':
+        schedules.pop(desc_message.from_user.id)
+        bot.reply_to(desc_message, 'create_schedule canceled.')
+        return
+
+    app.logger.debug("desc of schedule is {}".format(desc_message.text))
+    entry = schedules[desc_message.from_user.id]
+    generate_schedule(entry.group, entry.date, entry.time, desc_message.text)
+    bot.reply_to(desc_message, 'Schedule created successfully.')
+    bot.send_message(entry.group, 'A schedule has been created.')
+    bot.send_message(entry.group,
+                     "{} jam {}.00: {}".format(entry.date, entry.time, desc_message.text))
+    schedules.pop(desc_message.from_user.id)
+
+
+@bot.message_handler(commands=['sentiment'])
+def sentiment_new(message):
+    app.logger.debug("'sentiment' command detected")
+    text = message.text[11::]
+    app.logger.debug('text = {}'.format(text))
+    try:
+        result = lookup_sentiment_new(text)
+    except ValueError:
+        bot.reply_to(message, 'Command /sentiment need an argument')
+    else:
+        bot.reply_to(message, result)
+
+
 @bot.message_handler(regexp=r'^/soundhelp$')
 def soundcliphelp(message):
     app.logger.debug("'about' command detected")
@@ -443,20 +563,6 @@ def soundclip(message):
         bot.reply_to(message, 'Sound clip not found')
     else:
         bot.send_voice(message.chat.id, soundclip)
-
-
-@bot.message_handler(commands=['sentiment'])
-def sentiment(message):
-    app.logger.debug("'sentiment' command detected")
-    word_str = " ".join(message.text.split()[1:])
-    word_str = word_str.lower()
-
-    try:
-        word = lookup_sentiment(word_str)
-    except ValueError:
-        bot.reply_to(message, 'Command /sentiment need an argument')
-    else:
-        bot.reply_to(message, word)
 
 
 @bot.message_handler(regexp=r'^/oricon books ')
@@ -738,7 +844,29 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'/is_sfw( .*)?')
+def check_sfw_command(message):
+    app.logger.debug("invalid is_sfw command detected")
+
+    bot.reply_to(message, 'to use is_sfw command, send photo caption with /is_sfw')
+
+
+def is_caption_image(message):
+    sfw_captions = ['/is_sfw']
+    return message.caption in sfw_captions
+
+
+@bot.message_handler(func=is_caption_image, content_types=['photo'])
+def check_sfw_image(message):
+    app.logger.debug("'is_sfw' command detected with photo sent")
+
+    photo_file_path = bot.get_file(message.photo[1].file_id).file_path
+    app.logger.debug(photo_file_path)
+    sfw_check = image_is_sfw(photo_file_path)
+    bot.reply_to(message, sfw_check)
+
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)
@@ -1017,6 +1145,162 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/lookup_anime')
+def lookup_anime_livechart(message):
+    app.logger.debug("'lookup_anime' command detected.")
+    markup = types.ReplyKeyboardMarkup()
+    lookup_anime_property[message.from_user.id] = {}
+    try:
+        for year in range(2001, 2017):
+            markup.add(types.KeyboardButton('{}'.format(str(year))))
+        msg = bot.send_message(message.from_user.id, 'Choose year', reply_markup=markup)
+        bot.register_next_step_handler(msg, lookup_anime_season)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_season(message):
+    app.logger.debug("'lookup_anime' Choose season")
+    year = message.text
+    lookup_anime_property[message.from_user.id]['year'] = year
+    seasons = ['spring', 'fall', 'summer', 'winter']
+    markup = types.ReplyKeyboardMarkup()
+    for s in seasons:
+        markup.add(types.KeyboardButton(s))
+    try:
+        msg = bot.reply_to(message, 'Choose season', reply_markup=markup)
+        bot.register_next_step_handler(msg, lookup_anime_genre)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_genre(message):
+    season = message.text
+    lookup_anime_property[message.from_user.id]['season'] = str(season)
+    app.logger.debug("'lookup_anime' Type genre")
+    try:
+        msg = bot.reply_to(message, 'Type genre')
+        app.logger.debug('Choosed genre {}'.format(msg.text))
+        bot.register_next_step_handler(msg, lookup_anime_list)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_list(message):
+    try:
+        year = lookup_anime_property[message.from_user.id]['year']
+        season = lookup_anime_property[message.from_user.id]['season']
+        genre = message.text
+        app.logger.debug('::: {} {} {} '.format(year, season, genre))
+        result = lookup_anime(genre, season, year)
+    except ConnectionError as e:
+        bot.reply_to(message, 'Request timeout {} '.format(str(e)),
+                     reply_markup=types.ReplyKeyboardRemove())
+    except Exception:
+        bot.reply_to(message, 'cannot find anime that matches with user',
+                     reply_markup=types.ReplyKeyboardRemove())
+    else:
+        bot.reply_to(message, result,
+                     reply_markup=types.ReplyKeyboardRemove())
+
+
+@bot.message_handler(commands=['add_wiki'])
+def add_wiki(message):
+    app.logger.debug("'add_wiki' command detected")
+    url = " ".join(message.text.split()[1:])
+    try:
+        result = save_mediawiki_url(url)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, result)
+
+
+@bot.message_handler(commands=['random_wiki_article'])
+def random_wiki_article(message):
+    app.logger.debug("'random_wiki_article' command detected")
+    args = " ".join(message.text.split()[1:])
+    try:
+        result = get_mediawiki(args)
+    except EnvironmentError as e:
+        bot.reply_to(message, str(e))
+    else:
+        if args is '':
+            keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, row_width=1)
+            for title in result:
+                keyboard.add(title)
+            bot.send_message(message.chat.id, 'Select an article...', reply_markup=keyboard)
+        else:
+            bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'^/itunes_preview')
+def preview(message):
+    app.logger.debug("'itunes preview' command detected")
+    command = message.text.split(' ')
+    if (len(command) != 2):
+        output = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
+        bot.reply_to(message, output)
+    else:
+        words = list(command[1])
+        artist = ""
+        for word in words:
+            if(word == "_"):
+                artist += " "
+            else:
+                artist += word
+        try:
+            res = preview_music(artist)
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        except PermissionError:
+            bot.reply_to(message, 'Please stop the audio file before requesting new file')
+        else:
+            if res == "success":
+                photo = open(get_path('utils/itunes-logo.png'), 'rb')
+                audio = open(get_path('utils/preview.mp3'), 'rb')
+                bot.send_photo(message.chat.id, photo)
+                bot.send_audio(message.chat.id, audio)
+            else:
+                bot.reply_to(message, res)
+
+
+def get_path(file):
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), file))
+
+# bot.remove_webhook()
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#     except Exception as e:
+#         import time
+#         app.logger.debug(e)
+#         time.sleep(5)\
+
+
+@bot.message_handler(commands=['apod'])
+def apod(message):
+    app.logger.debug("'apod' command detected")
+
+    try:
+        apod = fetch_apod()
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    except ValueError as e:
+        bot.reply_to(message, '/apod doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, apod)
 
 
 """
