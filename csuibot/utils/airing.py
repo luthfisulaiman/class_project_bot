@@ -97,7 +97,7 @@ class AiringManager:
             output = "{} has finished airing at {}".format(name, fdate)
         elif status.lower() == "Not yet aired".lower():
             output = "{} will air starting at {}".format(name, sdate)
-        elif status.lower() == "Currently Airing".lower():
+        else:
             output = "{} is airing from {} until {}".format(name, sdate, fdate)
         return output
 
