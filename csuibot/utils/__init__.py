@@ -23,7 +23,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
-                           anime_livechart,  itunes, apod)
+                           anime_livechart, itunes, airing, apod)
 
 
 def lookup_zodiac(month, day):
@@ -549,6 +549,20 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def airing_check(anime):
+    manager = airing.AiringManager()
+    try:
+        manager.request(anime)
+        return manager.get_date()
+    except ValueError:
+        return "Can\'t find the requested anime"
+
+
+def lookup_airing():
+    manager = airing.AiringManager()
+    return manager.get_today_anime()
 
 
 def lookup_anime(genre, season, year):

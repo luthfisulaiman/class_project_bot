@@ -1525,6 +1525,29 @@ class test_hot_japan_100:
         assert res != "ups, something wrong is going on"
 
 
+class TestAiring:
+    def test_check_airing_now(self):
+        res = utils.airing_check("tsuki ga kirei")
+        assert res == "Tsuki ga Kirei is airing from 2017-04-07 until unknown"
+
+    def test_check_airing_tba(self):
+        res = utils.airing_check("Yuuki Yuuna wa Yuusha de Aru: Yuusha no Shou")
+        output = "Yuuki Yuuna wa Yuusha de Aru: Yuusha no Shou will air starting at 2017-10-00"
+        assert res == output
+
+    def test_check_airing_complete(self):
+        res = utils.airing_check("Gochiusa")
+        assert res == "Gochuumon wa Usagi Desu ka? has finished airing at 2014-06-26"
+
+    def test_check_airing_invalid(self):
+        res = utils.airing_check("cory in the house")
+        assert res == "Can\'t find the requested anime"
+
+    def test_lookup(self):
+        res = utils.lookup_airing()
+        assert "\n" in res
+
+
 class TestAnimeLiveChart:
     def test_valid_response(self):
         res = utils.lookup_anime('Action', 'spring', '2017')

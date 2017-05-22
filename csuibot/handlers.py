@@ -23,7 +23,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
-                    fetch_apod)
+                    airing_check, lookup_airing, fetch_apod)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1145,6 +1145,47 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/is_airing')
+def airing(message):
+    if message.chat.type == "private":
+        app.logger.debug("'airing anime' command detected")
+        command = message.text.split(" ")
+        if len(command) == 2:
+            words = list(command[1])
+            anime = ""
+            for word in words:
+                if(word == "_"):
+                    anime += " "
+                else:
+                    anime += word
+            try:
+                res = airing_check(anime)
+            except requests.exceptions.HTTPError:
+                bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+            except ConnectionError:
+                bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+            else:
+                bot.reply_to(message, res)
+        else:
+            output = ('Command invalid, please use /is_airing <anime>'
+                      'format and replace space in <anime> with underscore (_)')
+            bot.reply_to(message, output)
+
+
+@bot.message_handler(regexp=r'hari ini nonton apa?')
+def lookup_today(message):
+    if message.chat.type == "group":
+        app.logger.debug("'lookup anime today' command detected")
+        try:
+            res = lookup_airing()
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        else:
+            bot.reply_to(message, res)
 
 
 @bot.message_handler(regexp=r'^/lookup_anime')

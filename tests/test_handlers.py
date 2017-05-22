@@ -21,7 +21,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               get_notif_twitter, air_quality, sentiment_new, add_wiki,
                               random_wiki_article, jadwal, create_schedule,
                               date_schedule, time_schedule, desc_schedule, preview,
-                              apod)
+                              airing, lookup_today, apod)
 from requests.exceptions import ConnectionError
 
 
@@ -2176,6 +2176,94 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_airing_valid(mocker):
+    fake_result = 'Sakurada Reset is airing from 2017-04-05 until unknown'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', return_value=fake_result)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_airing_invalid(mocker):
+    fake_error = ('Command invalid, please use /is_airing <anime>'
+                  'format and replace space in <anime> with underscore (_)')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', return_value=fake_error)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_airing_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', side_effect=ConnectionError)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_airing_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', side_effect=requests.exceptions.HTTPError)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
+def test_anime_lookup_valid(mocker):
+    fake_result = 'SukaSuka 6'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', return_value=fake_result)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_anime_lookup_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', side_effect=ConnectionError)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_anime_lookup_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', side_effect=requests.exceptions.HTTPError)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
 
 
 def test_add_wiki(mocker):
