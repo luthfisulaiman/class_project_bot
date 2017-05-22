@@ -20,7 +20,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tagimage, check_caption_tag, japan100,
                               get_notif_twitter, air_quality, sentiment_new, add_wiki,
                               random_wiki_article, jadwal, create_schedule,
-                              date_schedule, time_schedule, desc_schedule, preview)
+                              date_schedule, time_schedule, desc_schedule, preview,
+                              apod)
 from requests.exceptions import ConnectionError
 
 
@@ -2363,3 +2364,54 @@ def test_preview_permission_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Please stop the audio file before requesting new file'
+
+
+def test_fetch_apod(mocker):
+    fake_apod = 'foo img'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod', return_value=fake_apod)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod
+
+
+def test_fetch_apod_connection_error(mocker):
+    fake_apod_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod_error
+
+
+def test_fetch_latest_apod_http_error(mocker):
+    fake_apod_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod_error
+
+
+def test_fetch_latest_apod_error(mocker):
+    fake_apod_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod_error
