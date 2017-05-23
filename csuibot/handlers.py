@@ -1043,6 +1043,7 @@ def add_destination(message):
     bot.register_next_step_handler(msg, process_location_step)
 
 
+@bot.callback_query_handler(func=lambda call: True)
 def process_location_step(message):
     app.logger.debug('location step detected')
     if(message.text == "/cancel"):
@@ -1062,6 +1063,7 @@ def process_location_step(message):
         bot.register_next_step_handler(msg, process_name_step)
 
 
+@bot.callback_query_handler(func=lambda call: True)
 def process_name_step(message):
     app.logger.debug('name step detected')
     if(message.text == "/cancel"):
@@ -1097,6 +1099,7 @@ def remove_destination(message):
         bot.reply_to(message, "No locations have been added, please add with /add_destination command")
 
 
+@bot.callback_query_handler(func=lambda call: True)
 def process_delete_step(message):
     app.logger.debug("remove step detected")
     if(message.text == "/cancel"):
