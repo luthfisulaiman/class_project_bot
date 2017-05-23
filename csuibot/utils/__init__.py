@@ -525,9 +525,19 @@ def auto_tag(message):
     return tagging.Tagging(photoid).getTag()
 
 
-def find_movies():
-    pass
+def find_movies(message):
+    msg = message.text
+    if msg == '/cgv_gold_class':
+        return movie.Movie_Cinema().find_gold()
+    elif msg == '/cgv_regular_2d':
+        return movie.Movie_Cinema().find_reg2d()
+    elif msg == '/cgv_4dx_3d_cinema':
+        return movie.Movie_Cinema().find_3d()
+    elif msg == '/cgv_velvet':
+        return movie.Movie_Cinema().find_velvet()
+    else:
+        return movie.Movie_Cinema().find_sweetbox()
 
 
-def change_cinema():
-    pass
+def change_cinema(nurl):
+    return movie.Movie_Cinema().change_cinema(nurl)

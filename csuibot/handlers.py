@@ -1021,37 +1021,72 @@ def tagimage(message):
 @bot.message_handler(regexp=r'^/cgv_gold_class$')
 def cgv_gold(message):
     app.logger.debug("'cgv_gold_class' command detected")
-    pass
+    try:
+        gold = find_movies(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, gold)
 
 
 @bot.message_handler(regexp=r'^/cgv_regular_2d$')
 def cgv_reg(message):
     app.logger.debug("'cgv_regular' command detected")
-    pass
+    try:
+        twod = find_movies(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannoct connect to CGV Blitz")
+    else:
+        bot.reply_to(message, twod)
 
 
 @bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
 def cgv_3dcinema(message):
     app.logger.debug("'cgv_4dx_3d_cinema' command detected")
-    pass
+    try:
+        threed = find_movies(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, threed)
 
 
 @bot.message_handler(regexp=r'^/cgv_velvet$')
 def cgv_velvet(message):
     app.logger.debug("'cgv_velvet' command detected")
-    pass
+    try:
+        velvet = find_movies(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, velvet)
 
 
 @bot.message_handler(regexp=r'^/cgv_sweet_box$')
 def cgv_sweetbox(message):
     app.logger.debug("'cgv_sweet_box' command detected")
-    pass
+    try:
+        sweetbox = find_movies(message)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, sweetbox)
 
 
 @bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
 def cgv_change(message):
     app.logger.debug("'cgv_change_cinema' command detected")
-    _, url = message.text.split(' ')
+    cmd1, url = message.text.split(' ')
 
     app.logger.debug("url is {}".format(url))
-    pass
+    try:
+        if cmd1 == '/cgv_change_cinema':
+            changed = change_cinema(url)
+        else:
+            raise Exception
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    except Exception:
+        bot.reply_to(message, "Wrong command")
+    else:
+        bot.reply_to(message, changed)

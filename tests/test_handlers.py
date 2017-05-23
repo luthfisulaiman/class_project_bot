@@ -2138,7 +2138,7 @@ def test_cgv_wrongcmd(mocker):
     cgv_change(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
+    assert args[1] == 'Wrong command'
 
 
 def test_cgv_wrongurl(mocker):
@@ -2148,4 +2148,4 @@ def test_cgv_wrongurl(mocker):
     cgv_change(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
+    assert args[1] == 'invalid url'
