@@ -1079,7 +1079,7 @@ def anison_radio_listen(message):
 def anison_radio_group(message):
     app.logger.debug("'anison in group' command detected")
     app.logger.debug(message.text)
-    output = manage_love_live_song("group", message.text)
+    output = manage_love_live_song("group", message.text, message.from_user.username)
 
     if output is not None:
         bot.reply_to(message, output)
