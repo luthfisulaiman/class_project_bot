@@ -1049,19 +1049,18 @@ def process_location_step(message):
         bot.send_message("adding location canceled")
         return
 
-    if(message.text != "/add_destination"):
-        try:
-            lon = message.location.longitude
-            lat = message.location.latitude
-        except ValueError:
-            msg = bot.send_message(message.chat.id, "oops! please share your location")
-            bot.register_next_step_handler(msg, process_location_step)
-        else:
-            loc = Location(lat, lon)
-            locations[message.chat.id] = loc
-            app.logger.debug('{} {}'.format(lat, lon))
-            msg = bot.send_message(message.chat.id, "OK, please enter a name for the location given")
-            bot.register_next_step_handler(msg, process_name_step)
+    try:
+        lon = message.location.longitude
+        lat = message.location.latitude
+    except ValueError:
+        msg = bot.send_message(message.chat.id, "oops! please share your location")
+        bot.register_next_step_handler(msg, process_location_step)
+    else:
+        loc = Location(lat, lon)
+        locations[message.chat.id] = loc
+        app.logger.debug('{} {}'.format(lat, lon))
+        msg = bot.send_message(message.chat.id, "OK, please enter a name for the location given")
+        bot.register_next_step_handler(msg, process_name_step)
 
 
 def process_name_step(message):
