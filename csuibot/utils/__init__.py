@@ -525,8 +525,8 @@ def auto_tag(message):
     return tagging.Tagging(photoid).getTag()
 
 
-def uber_info(location):
-    return uber.Uber().get_route_info()
+def uber_info(location_from, location_to):
+    return uber.Uber().get_route_info(location_from, location_to)
 
 
 def uber_get():
