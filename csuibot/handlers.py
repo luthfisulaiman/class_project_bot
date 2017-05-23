@@ -195,7 +195,7 @@ def coinRandomHandler(message):
 def rollRandomHandler(message):
     app.logger.debug("roll command detected")
     _, info = message.text.split(' ')
-    x, y = info.text.split('d')
+    x, y = info.split('d')
     try:
         mes = diceSimRoll(x, y)
     except Exception as e:
@@ -208,7 +208,7 @@ def rollRandomHandler(message):
 def multRollRandomHandler(message):
     app.logger.debug("multi roll command detected")
     _, z, info = message.text.split(' ')
-    x, y = info.text.split('d')
+    x, y = info.split('d')
     try:
         mes = diceSimMultRoll(x, y, z)
     except Exception as e:
@@ -221,7 +221,7 @@ def multRollRandomHandler(message):
 def is_luckyHandler(message):
     app.logger.debug("is lucky command detected")
     _, n, info = message.text.split(' ')
-    x, y = info.text.split('d')
+    x, y = info.split('d')
     try:
         mes = diceSimIsLucky(n, x, y)
     except Exception as e:
