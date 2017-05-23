@@ -23,7 +23,11 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               date_schedule, time_schedule, desc_schedule, preview,
                               airing, lookup_today, apod, hospital, random_hospital,
                               ask_darurat_location, coinRandomHandler, rollRandomHandler,
+<<<<<<< HEAD
                               multRollRandomHandler, is_luckyHandler, album_price)
+=======
+                              multRollRandomHandler, is_luckyHandler, enterkomputer)
+>>>>>>> 79debc7a38c2446cad38537f3a76655c4b143454
 from requests.exceptions import ConnectionError
 import json
 from telebot import types
@@ -133,6 +137,7 @@ def test_shio_invalid_year(mocker):
     assert args[1] == 'Year is invalid'
 
 
+<<<<<<< HEAD
 def test_album_price(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/vgmdb OST this months')
@@ -140,6 +145,18 @@ def test_album_price(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] is not None
+=======
+def test_enterkomputer(mocker):
+    fake_result = 'DJI OSMO - Rp 6,990,000\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Drone DJI OSMO')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+>>>>>>> 79debc7a38c2446cad38537f3a76655c4b143454
 
 
 def test_jadwal_no_schedule(mocker):
@@ -2040,6 +2057,51 @@ def test_extract_colour(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
+
+
+def test_enterkomputer_multi_item(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Mouse Logitech')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_enterkomputer_no_category(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Nendoroid Nendoroid Megumi Kato')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Category Not Found'
+
+
+def test_enterkomputer_no_item(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Processor aqwesqeq')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Item Not Found'
+
+
+def test_enterkomputer_insufficient_args(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == "Not enough arguments, please provide category and item " \
+                      "name with the format /enterkomputer CATEGORY ITEM"
 
 
 def test_extract_colour_errors(mocker):

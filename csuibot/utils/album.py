@@ -1,25 +1,23 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import requests
-import abc
 
 
-class Album(metaclass=abc.ABCMeta):
+class Facade:
 
     def __init__(self):
-        self.BASE_URL = "http://vgmdb.net/db/albums-search.php?do=results&action=upcoming"
+        self._subsystem = Album()
+        
 
-    def template_method(self):
-        return self.lookup_album_price()
-
-    def lookup_album_price(self):
-        pass
+    def operation(self):
+        self._subsystem.operation()
 
 
-class Concrete_Album(Album):
+class Album:
 
-    def lookup_album_price(self):
-        album = requests.get(self.BASE_URL)
+    def operation(self):
+        BASE_URL = "http://vgmdb.net/db/albums-search.php?do=results&action=upcoming"
+        album = requests.get(BASE_URL)
         soup = BeautifulSoup(album.text, "html.parser")
         title = soup.find_all('span', {'class': 'albumtitle', 'lang': 'en'})
         date = soup.find_all('td', {'style': 'padding: 4px; font-size:9pt; text-align: right'})

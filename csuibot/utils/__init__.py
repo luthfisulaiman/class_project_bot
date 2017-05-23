@@ -24,7 +24,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
-                           diceSim as dice, album)
+                           diceSim as dice, enterkomputer, album)
 
 
 def lookup_zodiac(month, day):
@@ -72,7 +72,11 @@ def lookup_chinese_zodiac(year):
 
 
 def lookup_album_price():
-    return album.Concrete_Album.template_method()
+    return album.Facade().operation()
+
+
+def lookup_enter_item(category, item):
+    return enterkomputer.Enterkomputer(category, item)
 
 
 def generate_schedule(chat_id, date, time, desc):
