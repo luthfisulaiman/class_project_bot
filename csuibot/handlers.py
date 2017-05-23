@@ -1057,7 +1057,7 @@ def anison_radio_remove_song(message):
     chat_id = message.chat.id
     song_name = message.text.split(' ', 1)[1]
 
-    output = manage_love_live_song("add", song_name)
+    output = manage_love_live_song("remove", song_name)
     bot.send_message(chat_id, output)
 
 
