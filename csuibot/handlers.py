@@ -1022,6 +1022,7 @@ def tagimage(message):
 @bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
 def anison_radio(message):
     app.logger.debug("'anison' commands detected")
+    app.logger.debug(message.reply_to_message)
     if message.chat.type == "private":
         if "add_song" not in message.text:
             markup = manage_love_live_song("list")
@@ -1044,6 +1045,7 @@ def anison_radio(message):
 
 def anison_radio_add_song(message):
     app.logger.debug("'add song' commands detected")
+    app.logger.debug(message.reply_to_message)
     chat_id = message.chat.id
     song_name = message.text
 
@@ -1053,6 +1055,7 @@ def anison_radio_add_song(message):
 
 def anison_radio_remove_song(message):
     app.logger.debug("'remove song' commands detected")
+    app.logger.debug(message.reply_to_message)
     chat_id = message.chat.id
     song_name = message.text
 
@@ -1062,6 +1065,7 @@ def anison_radio_remove_song(message):
 
 def anison_radio_listen(message):
     app.logger.debug("'listen song' commands detected")
+    app.logger.debug(message.reply_to_message)
     chat_id = message.chat.id
     song_name = message.text
 
@@ -1069,6 +1073,7 @@ def anison_radio_listen(message):
     if type(output) == str:
         bot.send_message(chat_id, output)
     else:
+        app.logger.debug(str(output))
         bot.send_audio(chat_id, output[2], performer=output[1], title=output[0])
 
 

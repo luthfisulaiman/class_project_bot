@@ -269,7 +269,7 @@ class AnisonRadio:
         if songs is None:
             return "Currently, you don't have any song"
 
-        markup = types.ReplyKeyboardMarkup(row_width=1)
+        markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
         for song in songs:
             btn = types.KeyboardButton(song[0] + ' - ' + song[1])
             markup.add(btn)
