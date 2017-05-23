@@ -22,7 +22,6 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     acronym_delete)
 from requests.exceptions import ConnectionError
 from telebot import types
-from telebot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 import datetime
 
 
