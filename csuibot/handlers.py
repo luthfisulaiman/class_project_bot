@@ -57,7 +57,11 @@ def hangout_nearby(message):
     reply_keyboard.add(keyboard)
 
     bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
-    loc = get_location()
+
+
+@bot.message_handler(content_types=['location'])
+def get_location(message):
+    loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
 
     try:
         msg, nearest = get_nearest_hangout(loc['longitude'], loc['latitude'])
@@ -66,12 +70,6 @@ def hangout_nearby(message):
     else:
         bot.send_photo(message.chat.id, nearest.image_dir)
         bot.reply_to(message, msg)
-
-
-@bot.message_handler(content_types=['location'])
-def get_location(message):
-    loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
-    return loc
 
 
 def parse_date(text):
