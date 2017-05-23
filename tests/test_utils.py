@@ -1513,7 +1513,7 @@ class TestAnisonRadio:
     def test_get_list_song_zero(self, mocker):
         mocker.patch(
                      "csuibot.utils.anison_radio.ClipHandler.get_all_songs",
-                     return_value=None
+                     return_value=[]
                     )
         output = utils.manage_love_live_song("list")
         assert output == "Currently, you don't have any song"
