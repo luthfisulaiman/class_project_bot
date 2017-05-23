@@ -1067,9 +1067,10 @@ def quran(message):
 def quran_ngaji(message):
     app.logger.debug("'Ngaji C' command detected")
     try:
-        pass
+        qurantext = random_quran()
+        bot.reply_to(message, qurantext)
     except IndexError:
-        pass
+        bot.reply_to(message, 'oooops')
 
 
 def process_quran_button(message):
