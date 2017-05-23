@@ -37,8 +37,14 @@ class FakeNews(Borg):
 
     def check(self, hostname):
         self.__load_json()
-        if hostname in self.json:
-            return self.json[hostname]
+        # Split hostname (a.b.c.d.e) into [a.b.c.d.e, b.c.d.e, c.d.e, d.e]
+        split_hostname = hostname.split('.')
+        hostnames = ['.'.join(h) for h in
+                     [split_hostname[k:]
+                      for k in range(len(split_hostname) - 1)]]
+        for h in hostnames:
+            if h in self.json:
+                return self.json[h]
         return {'type': 'safe'}
 
     def add_filter(self, hostname, news_type):
