@@ -89,7 +89,7 @@ def test_enterkomputer_no_category(mocker):
 def test_enterkomputer_no_item(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.enterkomputer')
-    mock_message = Mock(text='/enterkomputer Processor AMD i7')
+    mock_message = Mock(text='/enterkomputer Processor aqwesqeq')
 
     enterkomputer(mock_message)
 
