@@ -1030,7 +1030,11 @@ def tagimage(message):
 @bot.message_handler(regexp=r'^\/uber\s*$', func=lambda message: message.chat.type == "private")
 def uber(message):
     app.logger.debug("uber command detected")
-    pass
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    msg = bot.reply_to(message, "Please share your location", reply_markup=markup)
+    bot.register_next_step_handler(msg, process_location_step)
 
 
 @bot.message_handler(commands=['add_destination'], func=lambda message: message.chat.type == "private")

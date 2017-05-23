@@ -8,6 +8,7 @@ class Uber:
         def __init__(self):
             self.locations_json_path = \
             path.abspath(path.join(path.dirname(__file__), "locations.json"))
+            self.importJSON()
 
         def importJSON(self):
             try:
@@ -44,7 +45,7 @@ class Uber:
 
         def getRoute(self, location_from, location_to):
             pass
-        
+
     instance = None
     def __new__(cls):
         if not Uber.instance:
