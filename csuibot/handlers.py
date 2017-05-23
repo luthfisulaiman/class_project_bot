@@ -1055,7 +1055,7 @@ def process_location_from_step(message):
         app.logger.debug('{} {}'.format(lat, lon))
         
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-        locations = uber_get()['locations']
+        locations_list = uber_get()['locations']
         app.logger.debug(locations)
         if(len(locations)):
             for name in locations:
