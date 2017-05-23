@@ -7,6 +7,7 @@ import urllib.error
 import requests
 from pathlib import Path
 from bs4 import BeautifulSoup
+from urllib.parse import urlsplit
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -24,7 +25,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
-                           diceSim as dice, enterkomputer, album)
+                           diceSim as dice, enterkomputer, fakenews, album)
 
 
 def lookup_zodiac(month, day):
@@ -592,6 +593,23 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def check_fake_news(url, news_type=None):
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    result = fakenews.FakeNews().check(hostname.lower())
+    type_list = [t for t in result if t != '']
+    return news_type in type_list if news_type else type_list
+
+
+def add_filter_news(url, news_type):
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    hostname = "{0.netloc}".format(urlsplit(url))
+    fakenews.FakeNews().add_filter(hostname.lower(), news_type)
 
 
 def airing_check(anime):

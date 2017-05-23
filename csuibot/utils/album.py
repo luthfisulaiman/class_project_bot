@@ -7,7 +7,6 @@ class Facade:
 
     def __init__(self):
         self._subsystem = Album()
-        
 
     def operation(self):
         self._subsystem.operation()
