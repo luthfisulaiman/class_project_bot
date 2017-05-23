@@ -1056,9 +1056,9 @@ def process_location_from_step(message):
         
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
         locations_list = uber_get()['locations']
-        app.logger.debug(locations)
-        if(len(locations)):
-            for name in locations:
+        app.logger.debug(locations_list)
+        if(len(locations_list)):
+            for name in locations_list:
                 markup.row(name)
             msg = bot.reply_to(message, "Please select your destination", reply_markup=markup)
             bot.register_next_step_handler(msg, process_location_to_step)
