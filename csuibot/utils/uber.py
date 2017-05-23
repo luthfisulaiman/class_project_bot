@@ -33,7 +33,7 @@ class Uber:
             self.exportJSON()       
 
         def remove_location(self, location_name):
-            self.locations_dict.pop(location_name, None)
+            self.locations_dict['locations'].pop(location_name, None)
 
     instance = None
     def __new__(cls):
