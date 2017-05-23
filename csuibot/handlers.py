@@ -1081,7 +1081,7 @@ def process_quran_button(message):
         msg = bot.reply_to(message, 'Please enter the verse (number only):')
         bot.register_next_step_handler(msg, process_chapter)
     except Exception as e:
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, 'oooops chapter error')
 
 
 def process_chapter(message):
@@ -1091,8 +1091,8 @@ def process_chapter(message):
         verse = message.text
         quran.setVerse(verse)
         verse_num = verse.split(":")
-        qurantext = lookup_quran(quran.chapter, verse_num)
+        qurantext = lookup_quran(quran.chapter, verse_num[1])
     except Exception as e:
-        bot.reply_to(message, 'oooops')
+        bot.reply_to(message, 'oooops verse error')
     else:
         bot.reply_to(message, qurantext)
