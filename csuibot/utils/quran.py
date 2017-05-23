@@ -14,8 +14,8 @@ class quran:
         try:
             chapter = int(chapter)
             verse = int(verse)
-            ayat = self.quran['data']['surahs'][chapter]['ayahs'][verse]['text']
-            translation = self.qurantr['data']['surahs'][chapter]['ayahs'][verse]['text']
+            ayat = self.quran['data']['surahs'][chapter+1]['ayahs'][verse]['text']
+            translation = self.qurantr['data']['surahs'][chapter+1]['ayahs'][verse]['text']
             return ayat[::-1] + "\n" + translation + "\n"
         except IndexError:
             return "Please enter the valid chapter and verse"

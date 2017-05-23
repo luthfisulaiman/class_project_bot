@@ -2093,12 +2093,12 @@ def test_quran_custom_input(mocker):
 
 def test_quran_ayat_not_found(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/qs 0:0')
+    mock_message = Mock(text='/qs 1000:1000')
 
     quran_c_v(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == 'Please input valid chapter and verse'
+    assert args[1] == 'Please enter the valid chapter and verse'
 
 
 # def test_quran_ngaji(mocker):
