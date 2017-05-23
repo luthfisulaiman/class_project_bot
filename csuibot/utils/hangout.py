@@ -55,10 +55,10 @@ def create_hangout_list():
 def find_nearest_place(hangout_list, user_long, user_lat):
 
     n_dist = sys.maxsize
-    nearest = None
+    nearest = ''
     for data in hangout_list:
         x = data.count_distance(user_long, user_lat)
-        if n_dist < x:
+        if x < n_dist:
             n_dist = x
             nearest = data
 
