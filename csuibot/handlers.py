@@ -1082,7 +1082,7 @@ def hospital(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     button = types.KeyboardButton('Share Location', request_location=True)
     markup.row(button)
-    text = "Please share your location so we can get your nearest location!"
+    text = "Please share your location so we can get your nearest hospital!"
     bot.send_message(chat_id, text, message_id, reply_markup=markup)
 
 
@@ -1104,7 +1104,7 @@ def random_hospital(message):
 
 def check_reply_hospital_location(message):
     try:
-        text = "Please share your location so we can get your nearest location!"
+        text = "Please share your location so we can get your nearest hospital!"
         is_location_reply = message.reply_to_message.text == text
     except AttributeError:
         return False
@@ -1113,7 +1113,7 @@ def check_reply_hospital_location(message):
 
 
 @bot.message_handler(content_types=['location'], func=check_reply_hospital_location)
-def get_user_location(message):
+def get_user_location_hospital(message):
     app.logger.debug("'get user location for hospital' handler executed")
     chat_id = message.chat.id
     lat = message.location.latitude
