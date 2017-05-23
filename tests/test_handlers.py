@@ -2417,20 +2417,45 @@ def test_fetch_latest_apod_error(mocker):
     assert args[1] == fake_apod_error
 
 
-"""
-This is the BEGINNING of -weatherbot- testhandler code
-"""
-
-def test_weather(mocker):
-    pass
-
-
-def test_configure_weather(mocker):
-    pass
+def test_lookup_weather(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "foo"
+    chat['first_name'] = "bar"
+    chat['username'] = "sushi"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='/weather')
+    weather(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
 
 
 def test_group_weather(mocker):
-    pass
-"""
-This is the END of -weatherbot- testhandler code
-"""
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "group"
+    chat['last_name'] = "foo"
+    chat['first_name'] = "bar"
+    chat['username'] = "sushi"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='cuaca di London,GB')
+    group_weather(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None

@@ -628,37 +628,11 @@ def fetch_apod():
 This is the BEGINNING of -weatherbot- init code
 """
 
-def lookup_weather(location):
-    try:
-        pass
-    except ConnectionError:
-        bot.reply_to(message, "Cannot connect to OpenWeather API")
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, "HTTP Error")
-    else:
-        pass
+def lookup_weather(lat, lon, unit, temp):
+    return weather.Weather().lookup_weather(lat, lon, unit, temp)
 
-
-def update_configure_weather(config):
-    try:
-        pass
-    except ConnectionError:
-        bot.reply_to(message, "Cannot connect to OpenWeather API")
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, "HTTP Error")
-    else:
-        pass
-
-
-def lookup_group_weather(location):
-    try:
-        pass
-    except ConnectionError:
-        bot.reply_to(message, "Cannot connect to OpenWeather API")
-    except requests.exceptions.HTTPError:
-        bot.reply_to(message, "HTTP Error")
-    else:
-        pass
+def lookup_group_weather(city, unit, temp):
+    return weather.Weather().lookup_weather(city, unit, temp):
 """
 This is the END of -weatherbot- init code
 """
