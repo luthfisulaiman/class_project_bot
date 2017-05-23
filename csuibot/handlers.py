@@ -1028,11 +1028,13 @@ def process_add_step(message):
 def process_add_acronym_step(message):
     new__acronym = message.text
     acronym_dict['acronym'] = new__acronym 
+    print("Adding acronym")
     try:
         add__acronym = acronym_new(acronym_dict)
     except ValueError:
         bot.reply_to(message, 'Error found!')
     else:
+        print("added coy")
         bot.reply_to(message, add__acronym)
         acronym_dict.clear()
 
