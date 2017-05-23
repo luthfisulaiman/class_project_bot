@@ -1058,7 +1058,7 @@ def process_location_step(message):
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         app.logger.debug('{} {}'.format(lat, lon))
-        msg = bot.reply_to(message.chat.id, "OK, please enter a name for the location given")
+        msg = bot.reply_to("OK, please enter a name for the location given")
         bot.register_next_step_handler(msg, process_name_step)
 
 
@@ -1072,7 +1072,7 @@ def process_name_step(message):
         try:
             name = message.text
         except AttributeError:
-            msg = bot.reply_to(message.chat.id, "Please enter a name for the location given")
+            msg = bot.reply_to("Please enter a name for the location given")
         else:
             loc = locations[message.chat.id]
             loc.name = name
