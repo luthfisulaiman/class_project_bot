@@ -37,6 +37,7 @@ py==1.4.33
 py-translate==1.0.3
 pyasn1==0.1.9
 pycodestyle==2.3.1
+pyowm>=2.4.0
 pycosat==0.6.1
 pycountry==17.1.8
 pycparser==2.17

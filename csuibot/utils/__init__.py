@@ -26,7 +26,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
                            diceSim as dice, enterkomputer, fakenews,
-                           movie_cinema as movie, anison_radio)
+                           movie_cinema as movie, anison_radio, weather)
 
 
 def lookup_zodiac(month, day):
@@ -741,3 +741,11 @@ def lookup_random_hospital():
 def reply_random_hospital(id):
     rs = rsku.Hospital()
     return rs.get_by_id(id)
+
+
+def lookup_weather(lat, lon, unit, temp):
+    return weather.Weather().lookup_weather(lat, lon, unit, temp)
+
+
+def city_lookup_weather(city, unit, temp):
+    return weather.Weather().city_lookup_weather(city, unit, temp)
