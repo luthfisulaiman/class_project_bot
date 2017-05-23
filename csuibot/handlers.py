@@ -1050,8 +1050,7 @@ def anison_radio_add_song(message):
     bot.send_message(chat_id, output)
 
 
-@bot.message_handler(commands=["removesll"],
-                     func=lambda msg: len(msg.text.split()) > 1)
+@bot.message_handler(commands=["removesll"])
 def anison_radio_remove_song(message):
     app.logger.debug("'remove song' commands detected")
     chat_id = message.chat.id
@@ -1061,8 +1060,7 @@ def anison_radio_remove_song(message):
     bot.send_message(chat_id, output)
 
 
-@bot.message_handler(commands=["listensll"],
-                     func=lambda msg: len(msg.text.split()) > 1)
+@bot.message_handler(commands=["listensll"])
 def anison_radio_listen(message):
     app.logger.debug("'listen song' commands detected")
     chat_id = message.chat.id
