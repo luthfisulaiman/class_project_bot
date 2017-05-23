@@ -6,6 +6,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.idea/
 .Python
 env/
 build/
@@ -64,3 +65,11 @@ tags
 
 # OSX stuff
 .DS_Store
+
+# Notes for story-9
+notes.json
+.idea/
+dist.txt
+
+# story mediawiki
+.url_wiki
