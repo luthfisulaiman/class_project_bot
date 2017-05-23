@@ -21,6 +21,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_HotJapan100, get_crop, acronym_new, acronym_update,
                     acronym_delete)
 from requests.exceptions import ConnectionError
+from telebot import types
+from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 import datetime
 
 
@@ -1000,44 +1002,109 @@ def tagimage(message):
     else:
         bot.reply_to(message, tag)
 
+acronym_dict = {}
 
-@bot.message_handler(regexp=r'^/add_acronym$')
+@bot.message_handler(regexp=r'^.*/add_acronym(.|$).*$')
 def new_acronym(message):
     app.logger.debug("'/add_acronym' command detected")
-    acro = "belom nich"
-    new_acronym = "belom nih"
-    app.logger.debug('Adding {}'.format(new_acronym))
-    try:
-        add_new_acronym = acronym_new(new_acronym)
-    except ValueError:
-        bot.reply_to(message, 'Command /add_acronym doesn\'t need arguments')
+    if (len(message.split(" ")) > 1):
+        bot.reply_to(message, "/add_acronym has no arguments!")
     else:
-        bot.reply_to(message, add_new_acronym)
+        msg = bot.reply_to(message,"What would you like to add?")
+        bot.register_next_step_handler(msg, process_add_step) # RGB
 
 
-@bot.message_handler(regexp=r'^/update_acronym$')
+def process_add_step(message):
+    new__singkatan = message.text
+    new__singkatan_split = new__singkatan.split(" ")
+    if len(new__singkatan_split > 1):
+        bot.reply_to(message, "It has to be one word only!")
+    else:
+        acronym_dict['singkatan'] = new__singkatan
+        msg = bot.reply_to(message, 'What is the acronym?')
+        bot.register_next_step_handler(msg, process_add_acronym_step) # Red Green Blue
+
+
+def process_add_acronym_step(message):
+    new__acronym = message.text
+    acronym_dict['acronym'] = new__acronym 
+    try:
+        add__acronym = acronym_new(acronym_dict)
+    except ValueError:
+        bot.reply_to(message, 'Error found!')
+    else:
+        bot.reply_to(message, add__acronym)
+        acronym_dict.clear()
+
+
+@bot.message_handler(regexp=r'^.*/update_acronym(.|$).*$')
 def update_acronym(message):
     app.logger.debug("'/update_acronym' command detected")
-    acro = "belom nich"
-    update_acronym = "belom nih"
-    app.logger.debug('Adding {}'.format(update_acronym))
+    if (len(message.split(" ")) > 1):
+        bot.reply_to(message, "/update_acronym has no arguments!")
+    else:
+        msg = bot.reply_to(message, "What would you like to update?")
+        file = open('/app/csuibot/utils/acronym.json', 'r', encoding='UTF-8')
+        data = json.load(file)
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        
+        for key in data:
+            button_text = "{}".format(key)
+            print(key + " " + data[key]['singkatan'])
+            new_button = types.KeyboardButton(button_text)
+            markup.add(new_button)
+
+        reply = bot.send_message(message, text, reply_markup=markup)
+        bot.register_next_step_handler(reply, get_update_acronym)
+
+
+def get_update_acronym(message):
+    update__acronym = message.text
+    acronym_dict['singkatan'] = update__acronym
+    msg = bot.reply_to(message, 'What is {}\'s new acronym?'.format(update__acronym))
+    bot.register_next_step_handler(msg, process_update_step)
+
+
+def process_update_step(message):
+    update__acronym = message.text
+    acronym_dict['acronym'] = update__acronym
     try:
-        update__acronym = acronym_new(update_acronym)
+        update__acronym = acronym_update(acronym_dict)
     except ValueError:
         bot.reply_to(message, 'Command /update_acronym doesn\'t need arguments')
     else:
         bot.reply_to(message, update__acronym)
+        acronym_dict.clear()
 
 
-@bot.message_handler(regexp=r'^/delete_acronym$')
-def update_acronym(message):
+@bot.message_handler(regexp=r'^.*/delete_acronym(.|$).*$')
+def delete_acronym(message):
     app.logger.debug("'/delete_acronym' command detected")
-    acro = "belom nich"
-    delete_acronym = "belom nih"
-    app.logger.debug('Adding {}'.format(delete_acronym))
+    if (len(message.split(" ")) > 1):
+        bot.reply_to(message, "/delete_acronym has no arguments!")
+    else:
+        msg = bot.reply_to(message, "What would you like to remove?")
+        file = open('/app/csuibot/utils/acronym.json', 'r', encoding='UTF-8')
+        data = json.load(file)
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        
+        for key in data:
+            button_text = "{}".format(key)
+            print(key + " " + data[key]['singkatan'])
+            new_button = types.KeyboardButton(button_text)
+            markup.add(new_button)
+
+        reply = bot.send_message(message, text, reply_markup=markup)
+        bot.register_next_step_handler(reply, get_delete_acronym)
+
+
+def get_delete_acronym(message):
+    delete__acronym = message.text
+    acronym_dict['singkatan'] = delete__acronym
     try:
-        delete__acronym = acronym_new(delete_acronym)
+        delete__acronym = acronym_delete(acronym_dict)
     except ValueError:
-        bot.reply_to(message, 'Command /update_acronym doesn\'t need arguments')
+        bot.reply_to(message, 'Command /delete_acronym doesn\'t need arguments')
     else:
         bot.reply_to(message, delete__acronym)
+        acronym_dict.clear()
