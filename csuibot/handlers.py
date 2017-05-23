@@ -1,6 +1,7 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, get_nearest_hangout
 from telebot.types import KeyboardButton, ReplyKeyboardMarkup
+import os
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -68,7 +69,9 @@ def get_location(message):
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
-        bot.send_photo(message.chat.id, open(res['nearest'].image_dir, 'rb'))
+        path = os.path.dirname(os.path.abspath(__file__)) + '/handlers/utils/hangout_images/'
+
+        bot.send_photo(message.chat.id, open(path + res['nearest'].image_dir, 'rb'))
         bot.reply_to(message, res['message'])
 
 

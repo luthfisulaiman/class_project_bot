@@ -44,7 +44,7 @@ def create_hangout_list():
         h = Hangout()
         h.name = data['name']
         h.address = data['location']
-        h.image_dir = path + '/hangout_images/' + data['image']
+        h.image_dir = data['image']
         h.latitude = float(data['coordinate']['latitude'])
         h.longitude = float(data['coordinate']['longitude'])
         hangout_list.append(h)
