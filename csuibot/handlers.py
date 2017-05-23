@@ -1045,34 +1045,44 @@ def add_destination(message):
 
 def process_location_step(message):
     app.logger.debug('location step detected')
-    try:
-        lon = message.location.longitude
-        lat = message.location.latitude
-    except ValueError:
-        msg = bot.send_message(message.chat.id, "oops! please share your location")
-        bot.register_next_step_handler(msg, process_location_step)
-    else:
-        loc = Location(lat, lon)
-        locations[message.chat.id] = loc
-        app.logger.debug('{} {}'.format(lat, lon))
-        msg = bot.send_message(message.chat.id, "OK, please enter a name for the location given")
-        bot.register_next_step_handler(msg, process_name_step)
+    if(message.text == "/cancel"):
+        bot.send_message("adding location canceled")
+        return
+
+    if(message.text != "/add_destination"):
+        try:
+            lon = message.location.longitude
+            lat = message.location.latitude
+        except ValueError:
+            msg = bot.send_message(message.chat.id, "oops! please share your location")
+            bot.register_next_step_handler(msg, process_location_step)
+        else:
+            loc = Location(lat, lon)
+            locations[message.chat.id] = loc
+            app.logger.debug('{} {}'.format(lat, lon))
+            msg = bot.send_message(message.chat.id, "OK, please enter a name for the location given")
+            bot.register_next_step_handler(msg, process_name_step)
 
 
 def process_name_step(message):
     app.logger.debug('name step detected')
-    try:
-        name = message.text
-    except ValueError:
-        msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
-        bot.register_next_step_handler(msg, process_name_step)
-    else:
-        loc = locations[message.chat.id]
-        loc.name = name
-        app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
-        uber_add(loc)
-        bot.send_message(message.chat.id, "OK, location saved")
-        locations.pop(message.chat.id, None)
+    if(message.text == "/cancel"):
+        bot.send_message("adding location canceled")
+        return
+
+    if(message.text != "/add_destination"):
+        try:
+            name = message.text
+        except ValueError:
+            msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
+            bot.register_next_step_handler(msg, process_name_step)
+        else:
+            loc = locations[message.chat.id]
+            loc.name = name
+            app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
+            uber_add(loc)
+            bot.send_message(message.chat.id, "OK, location saved")
+            locations.pop(message.chat.id, None)
 
 
 @bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
@@ -1092,11 +1102,16 @@ def remove_destination(message):
 
 def process_delete_step(message):
     app.logger.debug("remove step detected")
-    try:
-        location_name = message.text
-    except ValueError:
-        msg = bot.send_message(message.chat.id, "Please select a location to be removed")
-        bot.register_next_step_handler(msg, process_delete_step)
-    else:
-        uber_remove(location_name)
-        bot.send_message(message.chat.id, "OK, location removed")
+    if(message.text == "/cancel"):
+        bot.send_message("removing location canceled")
+        return
+
+    if(message.text != "/remove_destination"):
+        try:
+            location_name = message.text
+        except ValueError:
+            msg = bot.send_message(message.chat.id, "Please select a location to be removed")
+            bot.register_next_step_handler(msg, process_delete_step)
+        else:
+            uber_remove(location_name)
+            bot.send_message(message.chat.id, "OK, location removed")
