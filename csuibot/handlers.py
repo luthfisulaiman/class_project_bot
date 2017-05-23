@@ -18,7 +18,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets, get_aqi_city, get_aqi_coord)
+                    lookup_HotJapan100, get_tweets, get_aqi_city, get_aqi_coord,
+                    manage_love_live_song)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1021,7 +1022,51 @@ def tagimage(message):
 @bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
 def anison_radio(message):
     app.logger.debug("'anison' commands detected")
-    pass
+    if message.chat.type == "private":
+        if "add_song" not in message.text:
+            markup = manage_love_live_song("list")
+            if type(markup) == str:
+                bot.reply_to(message, markup)
+                return
+
+        if "add_song" in message.text:
+            msg = bot.reply_to(message, "Enter song name:")
+            bot.register_next_step_handler(msg, anison_radio_add_song)
+        elif "remove_song" in message.text:
+            msg = bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
+            bot.register_next_step_handler(msg, anison_radio_remove_song)
+        elif "listen_song" in message.text:
+            msg = bot.reply_to(message, "Choose song to listen to:", reply_markup=markup)
+            bot.register_next_step_handler(msg, anison_radio_listen)
+    else:
+        bot.reply_to(message, "Please chat me to run this command")
+
+
+def anison_radio_add_song(message):
+    chat_id = message.chat.id
+    song_name = message.text
+
+    output = manage_love_live_song("add", song_name)
+    bot.send_message(chat_id, output)
+
+
+def anison_radio_remove_song(message):
+    chat_id = message.chat.id
+    song_name = message.text
+
+    output = manage_love_live_song("add", song_name)
+    bot.send_message(chat_id, output)
+
+
+def anison_radio_listen(message):
+    chat_id = message.chat.id
+    song_name = message.text
+
+    output = manage_love_live_song("clip", song_name)
+    if type(output) == str:
+        bot.send_message(chat_id, output)
+    else:
+        bot.send_audio(chat_id, output[2], performer=output[1], title=output[0])
 
 
 # TODO: tolong ini ditaro di paling bawah :)
