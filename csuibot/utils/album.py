@@ -10,7 +10,6 @@ class Facade:
 
     def operation(self):
         return self._subsystem.operation()
-        
 
 
 class Album:

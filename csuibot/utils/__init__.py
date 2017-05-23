@@ -25,7 +25,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
-                           diceSim as dice, enterkomputer, fakenews, album)
+                           diceSim as dice, enterkomputer, fakenews,
+                           movie_cinema as movie, anison_radio, weather, album)
 
 
 def lookup_zodiac(month, day):
@@ -595,6 +596,39 @@ def auto_tag(message):
     return tagging.Tagging(photoid).getTag()
 
 
+def manage_love_live_song(command, query=None, username="fersandi", type_=''):
+    if query is not None:
+        query = query.split('-')[0].strip()
+
+    if command == 'add':
+        return anison_radio.AnisonRadio.add_song(query)
+    elif command == 'remove':
+        return anison_radio.AnisonRadio.remove_song(query)
+    elif command == 'list':
+        return anison_radio.AnisonRadio.get_song_list(type_)
+    elif command == 'group':
+        return anison_radio.AnisonRadio.search_song(username, query)
+    elif command == 'clip':
+        return anison_radio.AnisonRadio.get_clip(query)
+
+
+def find_movies(message):
+    if message == '/cgv_gold_class':
+        return movie.Concrete_Cinema().template_find_method("gold class")
+    elif message == '/cgv_regular_2d':
+        return movie.Concrete_Cinema().template_find_method("regular 2d")
+    elif message == '/cgv_4dx_3d_cinema':
+        return movie.Concrete_Cinema().template_find_method("4dx 3d cinema")
+    elif message == '/cgv_velvet':
+        return movie.Concrete_Cinema().template_find_method("velvet")
+    else:
+        return movie.Concrete_Cinema().template_find_method("sweetbox")
+
+
+def change_cinema(nurl):
+    return movie.Concrete_Cinema().template_change_method(nurl)
+
+
 def check_fake_news(url, news_type=None):
     scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
     if scheme not in ['http', 'https']:
@@ -711,3 +745,11 @@ def lookup_random_hospital():
 def reply_random_hospital(id):
     rs = rsku.Hospital()
     return rs.get_by_id(id)
+
+
+def lookup_weather(lat, lon, unit, temp):
+    return weather.Weather().lookup_weather(lat, lon, unit, temp)
+
+
+def city_lookup_weather(city, unit, temp):
+    return weather.Weather().city_lookup_weather(city, unit, temp)

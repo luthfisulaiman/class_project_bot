@@ -22,10 +22,12 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
+                    manage_love_live_song, city_lookup_weather, lookup_weather,
                     airing_check, lookup_airing, fetch_apod, lookup_hospital,
                     lookup_random_hospital, reply_random_hospital, diceSimCoin,
                     diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
-                    check_fake_news, add_filter_news, lookup_album_price)
+                    check_fake_news, add_filter_news, change_cinema, find_movies,
+                    lookup_album_price)
 from requests.exceptions import ConnectionError
 import datetime
 from telebot import types
@@ -1230,6 +1232,135 @@ def tagimage(message):
         bot.reply_to(message, tag)
 
 
+@bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
+def anison_radio(message):
+    app.logger.debug("'anison' commands detected")
+    app.logger.debug(message.reply_to_message)
+    if message.chat.type == "private":
+        if "add_song" not in message.text:
+            markup = manage_love_live_song("list", type_=message.text)
+            if type(markup) == str:
+                bot.reply_to(message, markup)
+                return
+
+        if "add_song" in message.text:
+            msg = bot.reply_to(message, "Enter song name:")
+            bot.register_next_step_handler(msg, anison_radio_add_song)
+        elif "remove_song" in message.text:
+            bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
+        elif "listen_song" in message.text:
+            bot.reply_to(message, "Choose song to listen to:", reply_markup=markup)
+    else:
+        bot.reply_to(message, "Please chat me to run this command")
+
+
+def anison_radio_add_song(message):
+    app.logger.debug("'add song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text
+
+    output = manage_love_live_song("add", song_name)
+    bot.send_message(chat_id, output)
+
+
+@bot.message_handler(commands=["removesll"])
+def anison_radio_remove_song(message):
+    app.logger.debug("'remove song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text.split(' ', 1)[1]
+
+    output = manage_love_live_song("remove", song_name)
+    bot.send_message(chat_id, output)
+
+
+@bot.message_handler(commands=["listensll"])
+def anison_radio_listen(message):
+    app.logger.debug("'listen song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text.split(' ', 1)[1]
+
+    output = manage_love_live_song("clip", song_name)
+    if type(output) == str:
+        bot.send_message(chat_id, output)
+    else:
+        app.logger.debug(str(output))
+        bot.send_audio(chat_id, output[2], performer=output[1], title=output[0])
+
+
+@bot.message_handler(regexp=r'^/cgv_gold_class$')
+def cgv_gold(message):
+    app.logger.debug("'cgv_gold_class' command detected")
+    try:
+        gold = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, gold)
+
+
+@bot.message_handler(regexp=r'^/cgv_regular_2d$')
+def cgv_reg(message):
+    app.logger.debug("'cgv_regular' command detected")
+    try:
+        twod = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannoct connect to CGV Blitz")
+    else:
+        bot.reply_to(message, twod)
+
+
+@bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
+def cgv_3dcinema(message):
+    app.logger.debug("'cgv_4dx_3d_cinema' command detected")
+    try:
+        threed = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, threed)
+
+
+@bot.message_handler(regexp=r'^/cgv_velvet$')
+def cgv_velvet(message):
+    app.logger.debug("'cgv_velvet' command detected")
+    try:
+        velvet = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, velvet)
+
+
+@bot.message_handler(regexp=r'^/cgv_sweet_box$')
+def cgv_sweetbox(message):
+    app.logger.debug("'cgv_sweet_box' command detected")
+    try:
+        sweetbox = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, sweetbox)
+
+
+@bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
+def cgv_change(message):
+    app.logger.debug("'cgv_change_cinema' command detected")
+    cmd1, url = message.text.split(' ')
+
+    app.logger.debug("url is {}".format(url))
+    try:
+        if cmd1 == '/cgv_change_cinema':
+            changed = change_cinema(url)
+        else:
+            raise Exception
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    except Exception:
+        bot.reply_to(message, "Wrong command")
+    else:
+        bot.reply_to(message, changed)
+
+
 def is_private_message(message):
     return message.chat.type == 'private'
 
@@ -1563,3 +1694,127 @@ def ask_darurat_location(message):
     text = "Please share your location so we can get your nearest hospital!"
     msg = bot.send_message(chat_id, text)
     bot.register_next_step_handler(msg, get_user_location_hospital)
+
+
+"""
+This is the BEGINNING of -weatherbot- handler code
+"""
+WEATHER_UNIT_M = "metric"
+WEATHER_UNIT_I = "imperial"
+WT_KEL = "Kelvin"
+WT_FAH = "Fahrenheit"
+WT_CEL = "Celcius"
+WIND_UNIT = WEATHER_UNIT_M
+TEMP_UNIT = WT_CEL
+
+
+@bot.message_handler(commands=['weather'])
+def weather(message):
+    app.logger.debug("'weather' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share my location', request_location=True)
+    markup.row(button)
+    text = "Hello, we need your location to determine the weather in your region"
+    msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    bot.register_next_step_handler(msg, get_user_location_weather)
+
+
+def get_user_location_weather(message):
+    app.logger.debug("'get user location for weather' handler executed")
+    chat_id = message.chat.id
+    lat = message.location.latitude
+    lon = message.location.longitude
+    weather_result = lookup_weather(lon, lat, WIND_UNIT, TEMP_UNIT)
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(chat_id, weather_result, markup)
+
+
+@bot.message_handler(commands=['configure_weather'])
+def configure_weather(message):
+    app.logger.debug("'configure weather' command detected")
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.row(
+        types.InlineKeyboardButton('Temperature Unit', callback_data='set-temp'),
+        types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
+    )
+
+    bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def setting_callback(query):
+    data = query.data
+    if data.startswith('set-'):
+        get_ex_callback(query)
+
+
+def get_ex_callback(query):
+    bot.answer_callback_query(query.id)
+    setting_result(query.message, query.data[4:])
+
+
+def setting_result(message, ex_code):
+    bot.send_chat_action(message.chat.id, 'typing')
+    if (ex_code == "met"):
+        WIND_UNIT = WEATHER_UNIT_M
+        bot.reply_to(message, "Wind speed changed into " + WIND_UNIT)
+    if (ex_code == "imp"):
+        WIND_UNIT = WEATHER_UNIT_I
+        bot.reply_to(message, "Wind speed changed into " + WIND_UNIT)
+    if (ex_code == "celsius"):
+        TEMP_UNIT = WT_CEL
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
+    if (ex_code == "fahrenheit"):
+        TEMP_UNIT = WT_FAH
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
+    if (ex_code == "kelvin"):
+        TEMP_UNIT = WT_KEL
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
+    if (ex_code == "wind"):
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.row(
+            types.InlineKeyboardButton('meter/sec', callback_data='set-met'),
+            types.InlineKeyboardButton('miles/hours', callback_data='set-imp')
+        )
+        bot.send_message(message.chat.id, "Choose Wind Unit:", reply_markup=keyboard)
+    if (ex_code == "temp"):
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.row(
+            types.InlineKeyboardButton('Celsius', callback_data='set-celsius'),
+            types.InlineKeyboardButton('Fahrenheit', callback_data='set-fahrenheit'),
+            types.InlineKeyboardButton('Kelvin', callback_data='set-imperial')
+        )
+        bot.send_message(message.chat.id, "Choose Temperature Unit:", reply_markup=keyboard)
+
+
+# filter on message contains "cuaca di X" and chat type group
+@bot.message_handler(func=lambda message: message.text == "cuaca di "
+                     and message.chat.type == "group")
+def group_weather(message):
+    app.logger.debug("'cuaca di' message detected in a group")
+    s2 = "cuaca "
+
+    city = (message.text[message.text.index(s2) + len(s2):])
+    try:
+        weathercity = city_lookup_weather(city, WIND_UNIT, TEMP_UNIT)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        bot.reply_to(message, weathercity)
+
+# END of weather message handler =============================================================
+
+
+# TODO: tolong ini ditaro di paling bawah :)
+@bot.message_handler(func=lambda m: m.chat.type == "group")
+def anison_radio_group(message):
+    app.logger.debug("'anison in group' command detected")
+    app.logger.debug(message.text)
+    output = manage_love_live_song("group", message.text, message.from_user.username)
+
+    if output is not None:
+        bot.reply_to(message, output)
