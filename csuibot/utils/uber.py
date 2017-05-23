@@ -22,15 +22,14 @@ class Uber:
         def exportJSON(self):
             with open(self.locations_json_path, 'w') as locations_json:
                 json.dump(self.locations_dict, locations_json)
-            print("updated", self.locations_dict)
 
         def get_locations(self):
             return self.locations_dict
 
         def add_location(self, location):
-            self.locations_dict[location.name] = {}
-            self.locations_dict[location.name]['latitude'] = location.lat
-            self.locations_dict[location.name]['longitude'] = location.lon     
+            self.locations_dict['locations'][location.name] = {}
+            self.locations_dict['locations'][location.name]['latitude'] = location.lat
+            self.locations_dict['locations'][location.name]['longitude'] = location.lon     
             self.exportJSON()       
 
         def remove_location(self, location_name):
