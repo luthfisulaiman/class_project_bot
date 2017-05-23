@@ -24,7 +24,7 @@ from requests.exceptions import ConnectionError
 from telebot import types
 import datetime
 
-locations = {}
+globals locations = {}
 
 class Location:
     def __init__(self, lat, lon):
@@ -1164,7 +1164,7 @@ def process_delete_step(message):
             bot.register_next_step_handler(msg, process_delete_step)
         else:
             if(uber_remove(location_name)):
-                bot.send_message(message.chat.invalid_dayofdate, "OK, location removed")
+                bot.send_message(message.chat.id, "OK, location removed")
             else:
                 msg = bot.reply_to(message, "Location not found")
                 bot.register_next_step_handler(msg, process_delete_step)
