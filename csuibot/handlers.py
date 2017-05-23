@@ -54,7 +54,7 @@ def hangout_nearby(message):
     k_array.append(keyboard)
 
     reply_keyboard = ReplyKeyboardMarkup()
-    reply_keyboard.keyboard = k_array
+    reply_keyboard.add(keyboard)
 
     bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
     loc = get_location()
