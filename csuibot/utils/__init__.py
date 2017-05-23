@@ -531,8 +531,7 @@ def check_fake_news(url, news_type=None):
     if scheme not in ['http', 'https']:
         raise ValueError
     result = fakenews.FakeNews().check(hostname.lower())
-    type_keys = ['type', '2nd type', '3rd type']
-    type_list = [result[k].lower() for k in type_keys if k in result and result[k] != '']
+    type_list = [t for t in result if t != '']
     return news_type in type_list if news_type else type_list
 
 

@@ -42,10 +42,13 @@ class FakeNews(Borg):
         hostnames = ['.'.join(h) for h in
                      [split_hostname[k:]
                       for k in range(len(split_hostname) - 1)]]
+        result = set()
         for h in hostnames:
             if h in self.json:
-                return self.json[h]
-        return {'type': 'safe'}
+                result.add(self.json[h]['type'].lower())
+                result.add(self.json[h]['2nd type'].lower())
+                result.add(self.json[h]['3rd type'].lower())
+        return result if result != set() else {'safe'}
 
     def add_filter(self, hostname, news_type):
         self.__load_json()
