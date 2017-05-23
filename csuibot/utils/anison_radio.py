@@ -272,9 +272,8 @@ class AnisonRadio:
         markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
         for song in songs:
             command = ''
-            if "add_song" in comm:
-                command = '/addsll '
-            elif "remove_song" in comm:
+
+            if "remove_song" in comm:
                 command = '/removesll '
             elif "listen_song" in comm:
                 command = '/listensll '

@@ -1031,7 +1031,8 @@ def anison_radio(message):
                 return
 
         if "add_song" in message.text:
-            bot.reply_to(message, "Enter song name:")
+            msg = bot.reply_to(message, "Enter song name:")
+            bot.register_next_step_handler(msg, anison_radio_add_song)
         elif "remove_song" in message.text:
             bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
         elif "listen_song" in message.text:
@@ -1040,19 +1041,17 @@ def anison_radio(message):
         bot.reply_to(message, "Please chat me to run this command")
 
 
-@bot.message_handler(commands=["addsll"],
-                     func=lambda msg: len(msg.split()) > 1)
 def anison_radio_add_song(message):
     app.logger.debug("'add song' commands detected")
     chat_id = message.chat.id
-    song_name = message.text.split(' ', 1)[1]
+    song_name = message.text
 
     output = manage_love_live_song("add", song_name)
     bot.send_message(chat_id, output)
 
 
 @bot.message_handler(commands=["removesll"],
-                     func=lambda msg: len(msg.split()) > 1)
+                     func=lambda msg: len(msg.text.split()) > 1)
 def anison_radio_remove_song(message):
     app.logger.debug("'remove song' commands detected")
     chat_id = message.chat.id
@@ -1063,7 +1062,7 @@ def anison_radio_remove_song(message):
 
 
 @bot.message_handler(commands=["listensll"],
-                     func=lambda msg: len(msg.split()) > 1)
+                     func=lambda msg: len(msg.text.split()) > 1)
 def anison_radio_listen(message):
     app.logger.debug("'listen song' commands detected")
     chat_id = message.chat.id
