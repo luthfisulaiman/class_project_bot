@@ -46,4 +46,4 @@ def lookup_chinese_zodiac(year):
 
 
 def lookup_enter_item(category, item):
-    enterkomputer.Enterkomputer(category, item)
+    return enterkomputer.Enterkomputer(category, item)

@@ -64,7 +64,7 @@ def test_shio_invalid_year(mocker):
 
 
 def test_enterkomputer(mocker):
-    fake_result = 'DJI OSMO - Rp 6,990,000'
+    fake_result = 'DJI OSMO - Rp 6,990,000\n'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.enterkomputer')
     mock_message = Mock(text='/enterkomputer Drone DJI OSMO')
@@ -73,6 +73,17 @@ def test_enterkomputer(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
+
+
+def test_enterkomputer_multi_item(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Mouse Logitech')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
 
 
 def test_enterkomputer_no_category(mocker):
