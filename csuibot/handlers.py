@@ -1,4 +1,5 @@
 from . import app, bot
+from telebot import types
 import requests
 import re
 import urllib
@@ -18,9 +19,21 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
-                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    lookup_quran)
 from requests.exceptions import ConnectionError
 import datetime
+
+user_dict = {}
+
+
+class Quran:
+    def __init__(self, chapter):
+        self.chapter = chapter
+        self.verse = None
+
+    def setVerse(self, verse):
+        self.verse = verse
 
 
 def message_decorator(func):
@@ -1016,20 +1029,69 @@ def tagimage(message):
     else:
         bot.reply_to(message, tag)
 
+
 @bot.message_handler(regexp=r'^/qs$')
 def quran(message):
     app.logger.debug("'Quran' command detected")
     try:
-       pass
+        chat_id = message.chat.id
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        itembtn1 = types.KeyboardButton('An-Nas')
+        itembtn2 = types.KeyboardButton('Al-Falaq')
+        itembtn3 = types.KeyboardButton('Al-Ikhlaas')
+        itembtn4 = types.KeyboardButton('An-Nasr')
+        itembtn5 = types.KeyboardButton('Al-Kaafiroon')
+        markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
+        msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
+        bot.register_next_step_handler(msg, process_quran_button)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+
 
 @bot.message_handler(regexp=r'^/qs [0-9]+:[0-9]+$')
-def quran(message):
+def quran_c_v(message):
     app.logger.debug("'Quran C:V' command detected")
     try:
-       pass
+        command = message.text.split(' ')
+        cv = command[1].text.split(':')
+        chapter = cv[0]
+        verse = cv[1]
+        quran = lookup_quran(chapter, verse)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+    else:
+        bot.reply_to(message, quran)
+
 
 @bot.message_handler(regexp=r'ngaji( ?[a-z]*)')
-def quran(message):
+def quran_ngaji(message):
     app.logger.debug("'Ngaji C' command detected")
     try:
-       pass
+        pass
+    except IndexError:
+        pass
+
+
+def process_quran_button(message):
+    try:
+        chat_id = message.chat.id
+        chapter = message.text
+        quran = Quran(chapter)
+        user_dict[chat_id] = quran
+        msg = bot.reply_to(message, 'Please enter the verse (number only):')
+        bot.register_next_step_handler(msg, process_chapter)
+    except Exception as e:
+        bot.reply_to(message, 'oooops')
+
+
+def process_chapter(message):
+    try:
+        chat_id = message.chat.id
+        quran = user_dict[chat_id]
+        verse = message.text
+        quran.setVerse(verse)
+        qurantext = lookup_quran(quran.chapter, quran.verse)
+    except Exception as e:
+        bot.reply_to(message, 'oooops')
+    else:
+        bot.reply_to(message, qurantext)
