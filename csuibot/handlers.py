@@ -1052,13 +1052,13 @@ def process_location_step(message):
     try:
         lon = message.location.longitude
         lat = message.location.latitude
-    except ValueError:
-        msg = bot.send_message(message.chat.id, "oops! please share your location")
+    except AttributeError:
+        msg = bot.reply_to("oops! please share your location")
     else:
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         app.logger.debug('{} {}'.format(lat, lon))
-        msg = bot.send_message(message.chat.id, "OK, please enter a name for the location given")
+        msg = bot.reply_to(message.chat.id, "OK, please enter a name for the location given")
         bot.register_next_step_handler(msg, process_name_step)
 
 
@@ -1071,15 +1071,15 @@ def process_name_step(message):
     if(message.text != "/add_destination"):
         try:
             name = message.text
-        except ValueError:
-            msg = bot.send_message(message.chat.id, "Please enter a name for the location given")
+        except AttributeError:
+            msg = bot.reply_to(message.chat.id, "Please enter a name for the location given")
         else:
             loc = locations[message.chat.id]
             loc.name = name
             app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
             uber_add(loc)
-            bot.send_message(message.chat.id, "OK, location saved")
             locations.pop(message.chat.id, None)
+            bot.send_message(message.chat.id, "OK, location saved")
 
 
 @bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
@@ -1106,8 +1106,11 @@ def process_delete_step(message):
     if(message.text != "/remove_destination"):
         try:
             location_name = message.text
-        except ValueError:
+        except AttributeError:
             msg = bot.send_message(message.chat.id, "Please select a location to be removed")
         else:
-            uber_remove(location_name)
-            bot.send_message(message.chat.id, "OK, location removed")
+            if(uber_remove(location_name)):
+                bot.send_message(message.chat.id, "OK, location removed")
+            else:
+                msg = bot.send_message(message.chat.id, "Location not found")
+                bot.register_next_step_handler(msg, process_delete_step)
