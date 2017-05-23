@@ -1277,8 +1277,8 @@ class TestBillArtist:
     def test_billArtist_Rhoma_Irama(self):
         self.run_test('Rhoma Irama', "Rhoma Irama doesn't exist in bill200")
 
-    def test_billArtist_Pentatonix(self):
-        self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #126")
+    # def test_billArtist_Pentatonix(self):
+    #     self.run_test('Pentatonix', "Pentatonix\nPTX Vol. IV: Classics (EP)\nRank #126")
 
 
 class TestSimilar:

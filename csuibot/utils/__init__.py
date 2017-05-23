@@ -552,19 +552,19 @@ def auto_tag(message):
 
 def find_movies(message):
     if message == '/cgv_gold_class':
-        return movie.Movie_Cinema().find_gold()
+        return movie.Concrete_Cinema().template_find_method("gold class")
     elif message == '/cgv_regular_2d':
-        return movie.Movie_Cinema().find_reg2d()
+        return movie.Concrete_Cinema().template_find_method("regular 2d")
     elif message == '/cgv_4dx_3d_cinema':
-        return movie.Movie_Cinema().find_3d()
+        return movie.Concrete_Cinema().template_find_method("4dx 3d cinema")
     elif message == '/cgv_velvet':
-        return movie.Movie_Cinema().find_velvet()
+        return movie.Concrete_Cinema().template_find_method("velvet")
     else:
-        return movie.Movie_Cinema().find_sweetbox()
+        return movie.Concrete_Cinema().template_find_method("sweetbox")
 
 
 def change_cinema(nurl):
-    return movie.Movie_Cinema().change_cinema(nurl)
+    return movie.Concrete_Cinema().template_change_method(nurl)
 
 
 def airing_check(anime):

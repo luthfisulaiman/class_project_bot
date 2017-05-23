@@ -1,8 +1,9 @@
+import abc
 from bs4 import BeautifulSoup as bs
 import requests
 
 
-class Movie_Cinema:
+class Movie_Cinema(metaclass=abc.ABCMeta):
 
     def __init__(self):
         self.BASE_URL = "https://www.cgv.id/en/schedule/cinema/0200"
@@ -17,119 +18,35 @@ class Movie_Cinema:
     def set_base(self, new_url):
         self.BASE_URL = new_url
 
-    def find_gold(self):
+    def template_find_method(self, vals):
+        return self.find_movies(vals)
+
+    def template_change_method(self, url):
+        return self.change_cinema(url)
+
+    def find_movies(self, vals):
+        pass
+
+    def change_cinema(self, url):
+        pass
+
+
+class Concrete_Cinema(Movie_Cinema):
+
+    def find_movies(self, vals):
         req = requests.get(self.BASE_URL).text
         try:
             soup = bs(req, "html.parser")
             result = temp_result = ""
 
+            print()
             cinema = soup.find_all(id=self.cinema_id)
             for s_c in cinema:
                 result += 'Cinema: CGV Blitz ' + s_c.text + '\n'*2
 
             sched = soup.find_all(class_='schedule-type')
             for stype in sched:
-                if 'gold class' in stype.text.lower():
-                    temp_showtime = stype.findNext('ul').text.split('\n')
-                    movie = stype.findNext('a')['movietitle']
-                    temp_result = "('{}', {})".format(movie, temp_showtime[1:-1])
-                    result += temp_result + "\n"
-
-            if len(temp_result) == 0:
-                return "There is no schedule"
-            else:
-                return result
-        except:
-            return 'error retrieving'
-
-    def find_reg2d(self):
-        req = requests.get(self.BASE_URL).text
-        try:
-            soup = bs(req, "html.parser")
-            result = temp_result = ""
-
-            cinema = soup.find_all(id=self.cinema_id)
-            for s_c in cinema:
-                result += 'Cinema: CGV Blitz ' + s_c.text + '\n'*2
-
-            sched = soup.find_all(class_='schedule-type')
-            for stype in sched:
-                if 'regular 2d' in stype.text.lower():
-                    temp_showtime = stype.findNext('ul').text.split('\n')
-                    movie = stype.findNext('a')['movietitle']
-                    temp_result = "('{}', {})".format(movie, temp_showtime[1:-1])
-                    result += temp_result + "\n"
-
-            if len(temp_result) == 0:
-                return "There is no schedule"
-            else:
-                return result
-        except:
-            return 'error retrieving'
-
-    def find_3d(self):
-        req = requests.get(self.BASE_URL).text
-        try:
-            soup = bs(req, "html.parser")
-            result = temp_result = ""
-
-            cinema = soup.find_all(id=self.cinema_id)
-            for s_c in cinema:
-                result += 'Cinema: CGV Blitz ' + s_c.text + '\n'*2
-
-            sched = soup.find_all(class_='schedule-type')
-            for stype in sched:
-                if '4dx 3d cinema' in stype.text.lower():
-                    temp_showtime = stype.findNext('ul').text.split('\n')
-                    movie = stype.findNext('a')['movietitle']
-                    temp_result = "('{}', {})".format(movie, temp_showtime[1:-1])
-                    result += temp_result + "\n"
-
-            if len(temp_result) == 0:
-                return "There is no schedule"
-            else:
-                return result
-        except:
-            return 'error retrieving'
-
-    def find_velvet(self):
-        req = requests.get(self.BASE_URL).text
-        try:
-            soup = bs(req, "html.parser")
-            result = temp_result = ""
-
-            cinema = soup.find_all(id=self.cinema_id)
-            for s_c in cinema:
-                result += 'Cinema: CGV Blitz ' + s_c.text + '\n'*2
-
-            sched = soup.find_all(class_='schedule-type')
-            for stype in sched:
-                if 'velvet' in stype.text.lower():
-                    temp_showtime = stype.findNext('ul').text.split('\n')
-                    movie = stype.findNext('a')['movietitle']
-                    temp_result = "('{}', {})".format(movie, temp_showtime[1:-1])
-                    result += temp_result + "\n"
-
-            if len(temp_result) == 0:
-                return "There is no schedule"
-            else:
-                return result
-        except:
-            return 'error retrieving'
-
-    def find_sweetbox(self):
-        req = requests.get(self.BASE_URL).text
-        try:
-            soup = bs(req, "html.parser")
-            result = temp_result = ""
-
-            cinema = soup.find_all(id=self.cinema_id)
-            for s_c in cinema:
-                result += 'Cinema: CGV Blitz ' + s_c.text + '\n'*2
-
-            sched = soup.find_all(class_='schedule-type')
-            for stype in sched:
-                if 'sweetbox' in stype.text.lower():
+                if vals in stype.text.lower():
                     temp_showtime = stype.findNext('ul').text.split('\n')
                     movie = stype.findNext('a')['movietitle']
                     temp_result = "('{}', {})".format(movie, temp_showtime[1:-1])
