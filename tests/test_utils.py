@@ -1,12 +1,12 @@
 from csuibot import utils, config
-# from csuibot.utils import plant as p
-# from csuibot.utils import data_processor as processor
-# from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
-# import os
-# import re
-# from requests.exceptions import ConnectionError
-# import requests
-# import json
+from csuibot.utils import plant as p
+from csuibot.utils import data_processor as processor
+from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
+import os
+import re
+from requests.exceptions import ConnectionError
+import requests
+import json
 
 
 # class TestZodiac:
