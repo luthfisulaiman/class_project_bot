@@ -14,8 +14,8 @@ class quran:
         try:
             chapter = int(chapter)
             verse = int(verse)
-            ayat = self.quran['data']['surahs'][chapter-1]['ayahs'][verse]['text']
-            translation = self.qurantr['data']['surahs'][chapter-1]['ayahs'][verse]['text']
+            ayat = self.quran['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
+            translation = self.qurantr['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
             return ayat + "\n" + translation + "\n"
         except IndexError:
             return "Please enter the valid chapter and verse"
@@ -29,8 +29,8 @@ class quran:
         try:
             chapter = random.random() * 114
             verse = random.random() * len(self.quran['data']['surahs'][chapter]['ayahs'])
-            ayat = self.quran['data']['surahs'][chapter]['ayahs'][verse]['text']
-            translation = self.qurantr['data']['surahs'][chapter]['ayahs'][verse]['text']
+            ayat = self.quran['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
+            translation = self.qurantr['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
             return ayat + "\n" + translation + "\n"
         except IndexError:
             return "Please enter the valid chapter and verse"
