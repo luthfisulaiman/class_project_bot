@@ -9,7 +9,7 @@ class quran:
         file = open('csuibot/utils/quran-translation.json', 'r')
         self.qurantr = json.load(file)
 
-    def lookup_Quran(self, chapter, verse):
+    def lookup_quran(self, chapter, verse):
         try:
             ayat = self.quran['data']['surahs'][chapter]['ayahs'][verse]['text']
             translation = self.qurantr['data']['surahs'][chapter]['ayahs'][verse]['text']

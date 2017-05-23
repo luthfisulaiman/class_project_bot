@@ -969,7 +969,7 @@ def newage(message):
 
 @bot.message_handler(regexp=r'^/billboard bill200 (.*)$')
 def billArtist(message):
-    app.logger.debug("'billboard bill200' command detected")
+    app.logger.debug("'billboard' command detected")
     try:
         name = message.text[message.text.index("bill200") + len("bill200") + 1:]
         billArtist = lookup_billArtist(name)

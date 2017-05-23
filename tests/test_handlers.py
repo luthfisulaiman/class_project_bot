@@ -2072,7 +2072,6 @@ Tag : power , Confidence : 19'''
 def test_quran_keyboard_input(mocker):
     faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_quran', return_value=faker)
     mock_message = Mock(text='/qs')
 
     quran(mock_message)
@@ -2084,7 +2083,6 @@ def test_quran_keyboard_input(mocker):
 def test_quran_custom_input(mocker):
     faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_quran', return_value=faker)
     mock_message = Mock(text='/qs 144:1')
 
     quran(mock_message)
@@ -2095,7 +2093,6 @@ def test_quran_custom_input(mocker):
 
 def test_quran_ayat_not_found(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_quran', side_effect=ValueError)
     mock_message = Mock(text='/qs 0:0')
 
     quran(mock_message)
@@ -2105,9 +2102,7 @@ def test_quran_ayat_not_found(mocker):
 
 
 def test_quran_ngaji(mocker):
-    faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_quran', side_effect=faker)
     mock_message = Mock(text='kepengen ngaji alfatihah')
 
     quran(mock_message)
@@ -2117,9 +2112,7 @@ def test_quran_ngaji(mocker):
 
 
 def test_quran_ngaji_random(mocker):
-    faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.lookup_quran', side_effect=faker)
     mock_message = Mock(text='Kepengen ngaji dah')
 
     quran(mock_message)
