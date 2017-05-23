@@ -24,7 +24,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
                     airing_check, lookup_airing, fetch_apod, lookup_hospital,
                     lookup_random_hospital, reply_random_hospital, diceSimCoin,
-                    diceSimRoll, diceSimMultRoll, diceSimIsLucky)
+                    diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item)
 from requests.exceptions import ConnectionError
 import datetime
 from telebot import types
@@ -482,6 +482,24 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(commands=['enterkomputer'])
+def enterkomputer(message):
+    arr_input = message.text.split(" ", 2)
+    if(len(arr_input) < 3):
+        bot.reply_to(message, "Not enough arguments, please provide category"
+                              " and item name with the format /enterkomputer CATEGORY ITEM")
+    else:
+        category = arr_input[1]
+        item = arr_input[2]
+
+        try:
+            result = lookup_enter_item(category, item)
+        except ConnectionError:
+            bot.reply_to(message, 'Unable to connect to Enterkomputer')
+        else:
+            bot.reply_to(message, result)
 
 
 @bot.message_handler(func=lambda message: message.chat.type == "group", regexp="jadwal")
