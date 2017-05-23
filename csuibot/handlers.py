@@ -1079,7 +1079,7 @@ def process_name_step(message):
             app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
             uber_add(loc)
             locations.pop(message.chat.id, None)
-            bot.send_message(message.chat.id, "OK, location saved")
+            bot.reply_to(message, "OK, location saved")
 
 
 @bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
