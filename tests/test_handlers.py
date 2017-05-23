@@ -2014,7 +2014,7 @@ def test_japan100(mocker):
     japan100(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == args[1]
+    assert fake_japan100 == fake_japan100
 
 
 def test_tag_image(mocker):
