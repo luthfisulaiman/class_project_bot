@@ -6,38 +6,40 @@ import json
 
 class Acronym:
 
-    def getJSON(self):
-        file = open('/app/csuibot/utils/acronym.json', 'r', encoding='UTF-8')
-        data = json.load(file)
-        return data
-
     def add_acronym(self, message):
-        data = Acronym.getJSON(self)
+        file = open('/app/csuibot/utils/acronym.json', 'r')
+        data = json.load(file)
         acronym_dict = message
         if acronym_dict['singkatan'] in data:
             message = "Data is already in library!"
         else:
             print("Enter else in add_acronym --> Acronym")
-            data.append(acronym_dict['singkatan'])
-            data[acronym_dict['singkatan']].append({"singkatan":acronym_dict['singkatan']})
-            data[acronym_dict['singkatan']].append({"acronym":acronym_dict['acronym']})
+            data.update(acronym_dict['singkatan'])
+            data[acronym_dict['singkatan']].update({"singkatan": acronym_dict['singkatan']})
+            data[acronym_dict['singkatan']].update({"acronym": acronym_dict['acronym']})
+            with open("/app/csuibot/utils/acronym.json", 'w') as file:
+                data = json.dump(data, file)
 
-            message = "{} - {} has been added!".format(acronym_dict['singkatan'], acronym_dict['singkatan'])
+            message = "{} - {} has been added!" \
+                      .format(acronym_dict['singkatan'], acronym_dict['singkatan'])
         return message
 
-
     def update_acronym(self, message):
-        data = Acronym.getJSON(self)
+        file = open('/app/csuibot/utils/acronym.json', 'r')
+        data = json.load(file)
         acronym_dict = message
         old_acronym = data[acronym_dict['singkatan']]['acronym']
         data[acronym_dict['singkatan']]['acronym'] = acronym_dict['acronym']
+        with open("/app/csuibot/utils/acronym.json", 'w') as file:
+                data = json.dump(data, file)
 
-        message = "{} has been changed into {}!".format(old_acronym, data[acronym_dict['singkatan']])
+        message = "{} has been changed into {}!" \
+                  .format(old_acronym, data[acronym_dict['singkatan']])
         return message
 
-
     def delete_acronym(message):
-        data = Acronym.getJSON(self)
+        file = open('/app/csuibot/utils/acronym.json', 'r')
+        data = json.load(file)
         acronym_dict = message
         data.pop(acronym_dict['singkatan'], None)
 
