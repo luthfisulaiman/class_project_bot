@@ -25,7 +25,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
-                           diceSim as dice, fakenews)
+                           diceSim as dice, enterkomputer, fakenews)
 
 
 def lookup_zodiac(month, day):
@@ -70,6 +70,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_enter_item(category, item):
+    return enterkomputer.Enterkomputer(category, item)
 
 
 def generate_schedule(chat_id, date, time, desc):
