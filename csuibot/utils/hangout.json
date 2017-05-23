@@ -1,0 +1,137 @@
+[
+  {
+    "name": "SOUTHBOX",
+    "location": "Jl. Prapanca Raya No. 18, RT.2/RW.3, Kebayoran Baru, Pulo, Kebayoran Baru, RT.2/RW.3, Pulo, Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12160",
+    "coordinate": {
+      "longitude": "106.8071653",
+      "latitude": "-6.1775842"
+    },
+    "image": "southbox.jpg"
+  },
+  {
+    "name": "Lenggang Jakarta",
+    "location": "Jl. Medan Merdeka Sel., RT.5/RW.2, Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10110",
+    "coordinate": {
+      "longitude": "106.8239168",
+      "latitude": "-6.1775842"
+    },
+    "image": "lenggang_jakarta.jpg"
+  },
+  {
+    "name": "Pasar Santa",
+    "location": "Jl. Cipaku I No.19 A Petogogan Kby. Baru Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12170",
+    "coordinate": {
+      "longitude": "106.8118744",
+      "latitude": "-6.2398301"
+    },
+    "image": "pasar_santa.jpg"
+  },
+  {
+    "name": "Warung Nagih",
+    "location": "Jalan Kapten Tendean Kav. 41, Mampang, RT.2/RW.3, Kuningan Bar., Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12710, Indonesia",
+    "coordinate": {
+      "longitude": "106.8199074",
+      "latitude": "-6.2402073"
+    },
+    "image": "warung_nagih.jpg"
+  },
+  {
+    "name": "Anomali Coffee",
+    "location": "Setiabudi One Lt.1, Jl. HR Rasuna Said Kav.62, Karet Kuningan, Setia Budi, Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12920, Indonesia",
+    "coordinate": {
+      "longitude": "106.8280737",
+      "latitude": "-6.2157341"
+    },
+    "image": "anomali_coffee.jpg"
+  },
+  {
+    "name": "Waroeng SS",
+    "location": "Jl. H.Fatimah No.42, Kemiri Muka, Beji, Kota Depok, Jawa Barat 16423, Indonesia",
+    "coordinate": {
+      "longitude": "106.8295527",
+      "latitude": "-6.3783919"
+    },
+    "image": "waroeng_ss.jpg"
+  },
+  {
+    "name": "Sop Durian Margando",
+    "location": "Jalan Margonda Raya Gang Kober, Pondok Cina, Beji, Depok, Pancoran MAS, Kota Depok, Jawa Barat 16436, Indonesia",
+    "coordinate": {
+      "longitude": "106.8231183",
+      "latitude": "-6.390396"
+    },
+    "image": "sop_durian_margando.jpg"
+  },
+  {
+    "name": "OTW FoodStreet Depok",
+    "location": "Jl. Margonda Raya No.330, Kemiri Muka, Beji, Kota Depok, Jawa Barat 16424, Indonesia",
+    "coordinate": {
+      "longitude": "106.8302396",
+      "latitude": "-6.3749307"
+    },
+    "image": "otw_food_street.jpg"
+  },
+  {
+    "name": "Green T",
+    "location": "Main Library, Universitas Indonesia, Pd. Cina, Beji, Kota Depok, Jawa Barat, Indonesia",
+    "coordinate": {
+      "longitude": "106.8410871",
+      "latitude": "-6.3406987"
+    },
+    "image": "green_t.jpg"
+  },
+  {
+    "name": "Daebak Fan Cafe",
+    "location": "Jl. Margonda Raya No.239, Kemiri Muka, Beji, Kota Depok, Jawa Barat 16423, Indonesia",
+    "coordinate": {
+      "longitude": "106.8297948",
+      "latitude": "-6.3820428"
+    },
+    "image": "daebak.jpg"
+  },
+  {
+    "name": "Es Pocong",
+    "location": "Jl. Margonda Raya No.476, Pd. Cina, Beji, Kota Depok, Jawa Barat 16424, Indonesia",
+    "coordinate": {
+      "longitude": "106.8315343",
+      "latitude": "-6.362372"
+    },
+    "image": "es_pocong.jpg"
+  },
+  {
+    "name": "Delysh Coffee Shop",
+    "location": "Ruko Depok Mall, Jl. Margonda Raya No.88, Kemiri Muka, Beji, Kota Depok, Jawa Barat 16423, Indonesia",
+    "coordinate": {
+      "longitude": "106.8249825",
+      "latitude": "-6.3866633"
+    },
+    "image": "delysh_coffee.jpg"
+  },
+  {
+    "name": "Food Lab",
+    "location": "Jl. Kapten Tendean No.41, RT.2/RW.3, Kuningan Bar., Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12710, Indonesia",
+    "coordinate": {
+      "longitude": "106.8193433",
+      "latitude": "-6.240194"
+    },
+    "image": "food_lab.jpg"
+  },
+  {
+    "name": "Emax Cafe",
+    "location": "Jl. Jend. Sudirman Kav. 50 Karet Semanggi Setiabudi Jakarta Selatan DKI Jakarta, RT.1/RW.4, Karet Semanggi, Setia Budi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12930, Indonesia",
+    "coordinate": {
+      "longitude": "106.8122363",
+      "latitude": "-6.2199347"
+    },
+    "image": "emax_cafe.jpg"
+  },
+  {
+    "name": "Eat Happens",
+    "location": "Jl. Tebet Utara I A No.27, RT.9/RW.1, Tebet Tim., Tebet, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12820, Indonesia",
+    "coordinate": {
+      "longitude": "106.8552656",
+      "latitude": "-6.2279293"
+    },
+    "image": "eat_happens.jpg"
+  }
+]
