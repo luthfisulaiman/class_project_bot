@@ -1030,30 +1030,12 @@ def tagimage(message):
         bot.reply_to(message, tag)
 
 
-@bot.message_handler(regexp=r'^/qs$')
-def quran(message):
-    app.logger.debug("'Quran' command detected")
-    try:
-        chat_id = message.chat.id
-        markup = types.ReplyKeyboardMarkup(row_width=2)
-        itembtn1 = types.KeyboardButton('An-Nas')
-        itembtn2 = types.KeyboardButton('Al-Falaq')
-        itembtn3 = types.KeyboardButton('Al-Ikhlaas')
-        itembtn4 = types.KeyboardButton('An-Nasr')
-        itembtn5 = types.KeyboardButton('Al-Kaafiroon')
-        markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
-        msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
-        bot.register_next_step_handler(msg, process_quran_button)
-    except IndexError:
-        bot.reply_to(message, "Please enter the valid chapter and verse")
-
-
 @bot.message_handler(regexp=r'^/qs [0-9]+:[0-9]+$')
 def quran_c_v(message):
     app.logger.debug("'Quran C:V' command detected")
     try:
         command = message.text.split(' ')
-        cv = command[1].text.split(':')
+        cv = command[1].split(':')
         chapter = cv[0]
         verse = cv[1]
         quran = lookup_quran(chapter, verse)
@@ -1061,6 +1043,24 @@ def quran_c_v(message):
         bot.reply_to(message, "Please enter the valid chapter and verse")
     else:
         bot.reply_to(message, quran)
+
+
+# @bot.message_handler(regexp=r'^/qs$')
+# def quran(message):
+#     app.logger.debug("'Quran' command detected")
+#     try:
+#         chat_id = message.chat.id
+#         markup = types.ReplyKeyboardMarkup(row_width=2)
+#         itembtn1 = types.KeyboardButton('An-Nas')
+#         itembtn2 = types.KeyboardButton('Al-Falaq')
+#         itembtn3 = types.KeyboardButton('Al-Ikhlaas')
+#         itembtn4 = types.KeyboardButton('An-Nasr')
+#         itembtn5 = types.KeyboardButton('Al-Kaafiroon')
+#         markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
+#         msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
+#         bot.register_next_step_handler(msg, process_quran_button)
+#     except IndexError:
+#         bot.reply_to(message, "Please enter the valid chapter and verse")
 
 
 @bot.message_handler(regexp=r'ngaji( ?[a-z]*)')
