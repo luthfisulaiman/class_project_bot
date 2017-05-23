@@ -1,6 +1,6 @@
 from csuibot.utils import zodiac as z
 from bs4 import BeautifulSoup
-import datetime
+from datetime import datetime
 import requests
 
 
