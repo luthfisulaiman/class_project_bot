@@ -12,7 +12,7 @@ class Acronym:
         return data
 
     def add_acronym(self, message):
-        data = getJSON()
+        data = Acronym.getJSON()
         acronym_dict = message
         if acronym_dict['singkatan'] in data:
             message = "Data is already in library!"
@@ -26,7 +26,7 @@ class Acronym:
 
 
     def update_acronym(self, message):
-        data = getJSON()
+        data = Acronym.getJSON()
         acronym_dict = message
         old_acronym = data[acronym_dict['singkatan']]['acronym']
         data[acronym_dict['singkatan']]['acronym'] = acronym_dict['acronym']
@@ -36,7 +36,7 @@ class Acronym:
 
 
     def delete_acronym(message):
-        data = getJSON()
+        data = Acronym.getJSON()
         acronym_dict = message
         data.pop(acronym_dict['singkatan'], None)
 
