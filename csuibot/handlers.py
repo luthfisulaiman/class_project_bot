@@ -1080,7 +1080,6 @@ def process_name_step(message):
             loc.name = name
             app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
             uber_add(loc)
-            locations.pop(message.chat.id, None)
             bot.reply_to(message, "OK, location saved")
 
 
