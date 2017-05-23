@@ -1110,7 +1110,7 @@ def process_delete_step(message):
             msg = bot.send_message(message.chat.id, "Please select a location to be removed")
         else:
             if(uber_remove(location_name)):
-                bot.send_message(message.chat.id, "OK, location removed")
+                bot.reply_to(message, "OK, location removed")
             else:
                 msg = bot.reply_to(message.chat.id, "Location not found")
                 bot.register_next_step_handler(msg, process_delete_step)
