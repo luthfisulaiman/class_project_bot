@@ -214,7 +214,7 @@ def diceSimCoin():
 def diceSimRoll(x, y):
     dadu = dice.diceSim()
     try:
-        hasil = dadu.roll(x, y)
+        hasil = dadu.roll(int(x), int(y))
     except ValueError:
         return "value error"
     return hasil
@@ -223,7 +223,7 @@ def diceSimRoll(x, y):
 def diceSimMultRoll(x, y, z):
     dadu = dice.diceSim()
     try:
-        hasil = dadu.multiroll(x, y, z)
+        hasil = dadu.multiroll(int(x), int(y), int(z))
     except Exception as e:
         return "Error catched"
     return hasil
@@ -232,7 +232,7 @@ def diceSimMultRoll(x, y, z):
 def diceSimIsLucky(n, x, y):
     dadu = dice.diceSim()
     try:
-        hasil = dadu.is_lucky(n, x, y)
+        hasil = dadu.is_lucky(int(n), int(x), int(y))
     except Exception as e:
         return "Error catched"
     return hasil

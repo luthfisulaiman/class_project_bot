@@ -21,8 +21,6 @@ class diceSim:
         return possib[randint(0, 1)]
 
     def roll(self, x, y):
-        x = int(x)
-        y = int(y)
         hasil = "Result: " + str(x) + "d" + str(y)
         hasil += " ("
         hasil += str(randint(1, int(y)))
@@ -32,24 +30,18 @@ class diceSim:
             return hasil
 
     def multiroll(self, x, y, z):
-        x = int(x)
-        y = int(y)
-        z = int(z)
         hasil = ""
         for i in range(z):
             hasil += str(x) + "d" + str(y)
             hasil += " ("
             hasil += str(randint(1, int(y)))
             for q in range(x-1):
-                hasil += ", "+str(randint(1, int(y)))
-                hasil += ")\n"
+                hasil += ", " + str(randint(1, int(y)))
+            hasil += ")\n"
         return hasil
 
     @checkPossib
     def is_lucky(self, n, x, y):
-        x = int(x)
-        y = int(y)
-        n = int(x)
         arr = []
         flag = False
         counter = 0
