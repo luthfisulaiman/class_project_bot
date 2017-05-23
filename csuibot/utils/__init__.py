@@ -532,7 +532,7 @@ def auto_tag(message):
     return tagging.Tagging(photoid).getTag()
 
 
-def manage_love_live_song(command, query=None, username="fersandi"):
+def manage_love_live_song(command, query=None, username="fersandi", type_=''):
     if query is not None:
         query = query.split('-')[0].strip()
 
@@ -541,7 +541,7 @@ def manage_love_live_song(command, query=None, username="fersandi"):
     elif command == 'remove':
         return anison_radio.AnisonRadio.remove_song(query)
     elif command == 'list':
-        return anison_radio.AnisonRadio.get_song_list()
+        return anison_radio.AnisonRadio.get_song_list(type_)
     elif command == 'group':
         return anison_radio.AnisonRadio.search_song(username, query)
     elif command == 'clip':

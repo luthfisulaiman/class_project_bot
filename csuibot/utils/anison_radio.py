@@ -262,7 +262,7 @@ class AnisonRadio:
         return clip_handler.get_clip(query)
 
     @classmethod
-    def get_song_list(cls):
+    def get_song_list(cls, comm):
         clip_handler = ClipHandler()
         songs = clip_handler.get_all_songs()
 
@@ -271,7 +271,15 @@ class AnisonRadio:
 
         markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
         for song in songs:
-            btn = types.KeyboardButton(song[0] + ' - ' + song[1])
+            command = ''
+            if "add_song" in comm:
+                command = '/addsll '
+            elif "remove_song" in comm:
+                command = '/removesll '
+            elif "listen_song" in comm:
+                command = '/listensll '
+
+            btn = types.KeyboardButton(command + song[0] + ' - ' + song[1])
             markup.add(btn)
         return markup
 

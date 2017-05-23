@@ -1025,49 +1025,49 @@ def anison_radio(message):
     app.logger.debug(message.reply_to_message)
     if message.chat.type == "private":
         if "add_song" not in message.text:
-            markup = manage_love_live_song("list")
+            markup = manage_love_live_song("list", type_=message.text)
             if type(markup) == str:
                 bot.reply_to(message, markup)
                 return
 
         if "add_song" in message.text:
-            msg = bot.reply_to(message, "Enter song name:")
-            bot.register_next_step_handler(msg, anison_radio_add_song)
+            bot.reply_to(message, "Enter song name:")
         elif "remove_song" in message.text:
-            msg = bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
-            bot.register_next_step_handler(msg, anison_radio_remove_song)
+            bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
         elif "listen_song" in message.text:
-            msg = bot.reply_to(message, "Choose song to listen to:", reply_markup=markup)
-            bot.register_next_step_handler(msg, anison_radio_listen)
+            bot.reply_to(message, "Choose song to listen to:", reply_markup=markup)
     else:
         bot.reply_to(message, "Please chat me to run this command")
 
 
+@bot.message_handler(commands=["addsll"],
+                     func=lambda msg: len(msg.split()) > 1)
 def anison_radio_add_song(message):
     app.logger.debug("'add song' commands detected")
-    app.logger.debug(message.reply_to_message)
     chat_id = message.chat.id
-    song_name = message.text
+    song_name = message.text.split(' ', 1)[1]
 
     output = manage_love_live_song("add", song_name)
     bot.send_message(chat_id, output)
 
 
+@bot.message_handler(commands=["removesll"],
+                     func=lambda msg: len(msg.split()) > 1)
 def anison_radio_remove_song(message):
     app.logger.debug("'remove song' commands detected")
-    app.logger.debug(message.reply_to_message)
     chat_id = message.chat.id
-    song_name = message.text
+    song_name = message.text.split(' ', 1)[1]
 
     output = manage_love_live_song("add", song_name)
     bot.send_message(chat_id, output)
 
 
+@bot.message_handler(commands=["listensll"],
+                     func=lambda msg: len(msg.split()) > 1)
 def anison_radio_listen(message):
     app.logger.debug("'listen song' commands detected")
-    app.logger.debug(message.reply_to_message)
     chat_id = message.chat.id
-    song_name = message.text
+    song_name = message.text.split(' ', 1)[1]
 
     output = manage_love_live_song("clip", song_name)
     if type(output) == str:
@@ -1080,4 +1080,8 @@ def anison_radio_listen(message):
 # TODO: tolong ini ditaro di paling bawah :)
 @bot.message_handler(func=lambda m: m.chat.type == "group")
 def anison_radio_group(message):
-    pass
+    app.logger.debug("'anison in group' command detected")
+    output = manage_love_live_song("group", message.text)
+
+    if output is not None:
+        bot.reply_to(message, output)
