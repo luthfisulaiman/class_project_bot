@@ -111,9 +111,10 @@ def test_enterkomputer_no_item(mocker):
 def test_enterkomputer_insufficient_args(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.enterkomputer')
-    mock_message = Mock(text = '/enterkomputer')
+    mock_message = Mock(text='/enterkomputer')
 
     enterkomputer(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == "Not enough arguments, please provide category and item name with the format /enterkomputer CATEGORY ITEM"
+    assert args[1] == "Not enough arguments, please provide category and item " \
+                      "name with the format /enterkomputer CATEGORY ITEM"

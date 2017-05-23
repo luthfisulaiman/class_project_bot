@@ -45,14 +45,16 @@ def shio(message):
 def parse_date(text):
     return tuple(map(int, text.split('-')))
 
+
 @bot.message_handler(commands=['enterkomputer'])
 def enterkomputer(message):
     arr_input = message.text.split(" ", 2)
     if(len(arr_input) < 3):
-        bot.reply_to(message, "Not enough arguments, please provide category and item name with the format /enterkomputer CATEGORY ITEM")
+        bot.reply_to(message, "Not enough arguments, please provide category"
+                              " and item name with the format /enterkomputer CATEGORY ITEM")
     else:
-        category = arr_input[1];
-        item = arr_input[2];
+        category = arr_input[1]
+        item = arr_input[2]
 
         try:
             result = lookup_enter_item(category, item)
