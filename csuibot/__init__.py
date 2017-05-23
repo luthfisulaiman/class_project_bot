@@ -27,7 +27,10 @@ def webhook():
     if json_data is not None:
         app.logger.debug('Update received')
         update = telebot.types.Update.de_json(json_data)
-        bot.process_new_messages([update.message])
+        if update.callback_query is not None:
+            bot.process_new_callback_query([update.callback_query])
+        else:
+            bot.process_new_messages([update.message])
         return ''
     else:
         return abort(403)
