@@ -624,15 +624,9 @@ def fetch_apod():
     return apod.Apod().fetch_apod()
 
 
-"""
-This is the BEGINNING of -weatherbot- init code
-"""
-
 def lookup_weather(lat, lon, unit, temp):
     return weather.Weather().lookup_weather(lat, lon, unit, temp)
 
-def lookup_group_weather(city, unit, temp):
-    return weather.Weather().lookup_weather(city, unit, temp):
-"""
-This is the END of -weatherbot- init code
-"""
+
+def city_lookup_weather(city, unit, temp):
+    return weather.Weather().city_lookup_weather(city, unit, temp)
