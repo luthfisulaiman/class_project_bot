@@ -1053,12 +1053,12 @@ def process_location_step(message):
         lon = message.location.longitude
         lat = message.location.latitude
     except AttributeError:
-        msg = bot.reply_to("oops! please share your location")
+        msg = bot.reply_to(message, "oops! please share your location")
     else:
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         app.logger.debug('{} {}'.format(lat, lon))
-        msg = bot.reply_to("OK, please enter a name for the location given")
+        msg = bot.reply_to(message, "OK, please enter a name for the location given")
         bot.register_next_step_handler(msg, process_name_step)
 
 
@@ -1072,7 +1072,7 @@ def process_name_step(message):
         try:
             name = message.text
         except AttributeError:
-            msg = bot.reply_to("Please enter a name for the location given")
+            msg = bot.reply_to(message, "Please enter a name for the location given")
         else:
             loc = locations[message.chat.id]
             loc.name = name
@@ -1091,10 +1091,10 @@ def remove_destination(message):
     if(len(locations)):
         for name in locations:
             markup.row(name)
-        msg = bot.send_message(message.chat.id, "Please select a location to be removed", reply_markup=markup)
+        msg = bot.reply_to(message, "Please select a location to be removed", reply_markup=markup)
         bot.register_next_step_handler(msg, process_delete_step)
     else:
-        bot.send_message(message.chat.id, "No locations have been added, please add with /add_destination command")
+        bot.reply_to(message, "No locations have been added, please add with /add_destination command")
 
 
 def process_delete_step(message):
@@ -1112,5 +1112,5 @@ def process_delete_step(message):
             if(uber_remove(location_name)):
                 bot.send_message(message.chat.id, "OK, location removed")
             else:
-                msg = bot.send_message(message.chat.id, "Location not found")
+                msg = bot.reply_to(message.chat.id, "Location not found")
                 bot.register_next_step_handler(msg, process_delete_step)
