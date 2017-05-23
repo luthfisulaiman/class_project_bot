@@ -1091,7 +1091,7 @@ def process_chapter(message):
         verse = message.text
         quran.setVerse(verse)
         verse_num = verse.split(":")
-        qurantext = lookup_quran(quran.chapter, verse_num[1])
+        qurantext = lookup_quran(quran.chapter, verse_num[0])
     except Exception as e:
         bot.reply_to(message, 'oooops verse error')
     else:
