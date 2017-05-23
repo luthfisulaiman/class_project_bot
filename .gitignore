@@ -71,5 +71,8 @@ notes.json
 .idea/
 dist.txt
 
+# json cache for #86
+.sources_cache.json
+
 # story mediawiki
 .url_wiki

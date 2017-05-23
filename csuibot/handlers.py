@@ -23,8 +23,9 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
                     airing_check, lookup_airing, fetch_apod, lookup_hospital,
-                    lookup_random_hospital, reply_random_hospital,
-                    change_cinema, find_movies)
+                    lookup_random_hospital, reply_random_hospital, diceSimCoin,
+                    diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
+                    check_fake_news, add_filter_news, change_cinema, find_movies)
 from requests.exceptions import ConnectionError
 import datetime
 from telebot import types
@@ -223,6 +224,56 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, 'Unexpected Error catched')
     else:
         bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/coin$')
+def coinRandomHandler(message):
+    app.logger.debug("coin command detected")
+    try:
+        mes = diceSimCoin()
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/roll [0-9]+d[0-9]+$')
+def rollRandomHandler(message):
+    app.logger.debug("roll command detected")
+    _, info = message.text.split(' ')
+    x, y = info.split('d')
+    # try:
+    mes = diceSimRoll(x, y)
+    # except Exception as e:
+    #    bot.reply_to(message, 'Unexpected Error catched')
+    # else:
+    bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/multiroll [0-9]+ [0-9]+d[0-9]+$')
+def multRollRandomHandler(message):
+    app.logger.debug("multi roll command detected")
+    _, z, info = message.text.split(' ')
+    x, y = info.split('d')
+    try:
+        mes = diceSimMultRoll(x, y, z)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/is_lucky [0-9]+ [0-9]+d[0-9]+$')
+def is_luckyHandler(message):
+    app.logger.debug("is lucky command detected")
+    _, n, info = message.text.split(' ')
+    x, y = info.split('d')
+    try:
+        mes = diceSimIsLucky(n, x, y)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
 
 
 @bot.message_handler(regexp=r'^/checktropical.+$')
@@ -432,6 +483,24 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(commands=['enterkomputer'])
+def enterkomputer(message):
+    arr_input = message.text.split(" ", 2)
+    if(len(arr_input) < 3):
+        bot.reply_to(message, "Not enough arguments, please provide category"
+                              " and item name with the format /enterkomputer CATEGORY ITEM")
+    else:
+        category = arr_input[1]
+        item = arr_input[2]
+
+        try:
+            result = lookup_enter_item(category, item)
+        except ConnectionError:
+            bot.reply_to(message, 'Unable to connect to Enterkomputer')
+        else:
+            bot.reply_to(message, result)
 
 
 @bot.message_handler(func=lambda message: message.chat.type == "group", regexp="jadwal")
@@ -1221,6 +1290,81 @@ def cgv_change(message):
         bot.reply_to(message, "Wrong command")
     else:
         bot.reply_to(message, changed)
+
+
+def is_private_message(message):
+    return message.chat.type == 'private'
+
+
+def parse_check_fake_news_group(message):
+    return (any([e.type == 'url' for e in message.entities])
+            if (message.chat.type == 'group' and
+                message.text is not None and
+                message.entities is not None)
+            else False)
+
+
+POSSIBLE_NEWS_TYPES = ['fake', 'political', 'satire', 'unreliable', 'bias', 'conspiracy']
+
+
+@bot.message_handler(func=is_private_message,
+                     commands=["is_{}".format(news_type) for news_type in POSSIBLE_NEWS_TYPES])
+def check_fake_news_private(message):
+    app.logger.debug("'is_NEWS_TYPE' command detected")
+    try:
+        command, url = message.text.split()
+        news_type = command[4:]  # get type from '/is_{type}'
+        app.logger.debug("'is_{}' command detected".format(news_type))
+        is_of_type = check_fake_news(url, news_type)
+        app.logger.debug("The url is of type described: {}".format(is_of_type))
+    except ValueError as e:
+        app.logger.debug(e)
+        bot.reply_to(message, "Please provide url with HTTP format.")
+    else:
+        reply = ("The url is of type: {}".format(news_type) if is_of_type
+                 else "The url is not of type: {}".format(news_type))
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(func=is_private_message, commands=['add_filter'])
+def add_fake_news_filter_private(message):
+    app.logger.debug("'add_filter' command detected")
+    try:
+        app.logger.debug(message.text)
+        _, url, news_type = message.text.split()
+        news_type = news_type.lower()
+        if news_type not in POSSIBLE_NEWS_TYPES:
+            raise ValueError
+        add_filter_news(url, news_type)
+    except ValueError as e:
+        app.logger.debug(e)
+        reply = ("Please use the correct format: '/add_filter URL TYPE'\n"
+                 "Make sure the URL is in HTTP format,"
+                 " and the TYPE is one of [{}]".format(', '.join(POSSIBLE_NEWS_TYPES)))
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, "Added to filter list successfully.")
+
+
+@bot.message_handler(func=parse_check_fake_news_group)
+def check_fake_news_group(message):
+    # message is guaranteed to have an entity with type url
+    app.logger.debug("'url in group chat' scenario detected")
+    try:
+        # Find first entity with type url
+        index = [e.type for e in message.entities].index('url')
+        url_entity = message.entities[index]
+        url_offset = url_entity.offset
+        url_length = url_entity.length
+        url = message.text[url_offset:url_offset + url_length]
+        list_of_types = check_fake_news(url)
+        app.logger.debug(list_of_types)
+    except ValueError as e:
+        app.logger.debug(e)  # Do nothing since it is a group chat
+    else:
+        reply = ("The url is safe to visit" if 'safe' in list_of_types
+                 else "The url may not be safe to visit")
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(regexp=r'^/is_airing')

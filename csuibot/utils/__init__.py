@@ -7,6 +7,7 @@ import urllib.error
 import requests
 from pathlib import Path
 from bs4 import BeautifulSoup
+from urllib.parse import urlsplit
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -24,6 +25,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
+                           diceSim as dice, enterkomputer, fakenews,
                            movie_cinema as movie)
 
 
@@ -69,6 +71,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_enter_item(category, item):
+    return enterkomputer.Enterkomputer(category, item)
 
 
 def generate_schedule(chat_id, date, time, desc):
@@ -215,6 +221,42 @@ def takeSceleNotif():
 def checkTopTropical(artist):
     topTropical = trop.topTropicalBb()
     return topTropical.checkTopTropical(artist)
+
+
+def diceSimCoin():
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.coin()
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimRoll(x, y):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.roll(int(x), int(y))
+    except ValueError:
+        return "value error"
+    return hasil
+
+
+def diceSimMultRoll(x, y, z):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.multiroll(int(x), int(y), int(z))
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimIsLucky(n, x, y):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.is_lucky(int(n), int(x), int(y))
+    except Exception as e:
+        return "Error catched"
+    return hasil
 
 
 def getTopManga(year, month, day):
@@ -565,6 +607,23 @@ def find_movies(message):
 
 def change_cinema(nurl):
     return movie.Concrete_Cinema().template_change_method(nurl)
+
+
+def check_fake_news(url, news_type=None):
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    result = fakenews.FakeNews().check(hostname.lower())
+    type_list = [t for t in result if t != '']
+    return news_type in type_list if news_type else type_list
+
+
+def add_filter_news(url, news_type):
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    hostname = "{0.netloc}".format(urlsplit(url))
+    fakenews.FakeNews().add_filter(hostname.lower(), news_type)
 
 
 def airing_check(anime):
