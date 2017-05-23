@@ -1006,7 +1006,8 @@ acronym_dict = {}
 @bot.message_handler(regexp=r'^.*/add_acronym(.|$).*$')
 def new_acronym(message):
     app.logger.debug("'/add_acronym' command detected")
-    if (len(message.split(" ")) > 1):
+    split_msg = message.text.split(" ")
+    if (len(split_msg) > 1):
         bot.reply_to(message, "/add_acronym has no arguments!")
     else:
         msg = bot.reply_to(message,"What would you like to add?")
@@ -1039,7 +1040,7 @@ def process_add_acronym_step(message):
 @bot.message_handler(regexp=r'^.*/update_acronym(.|$).*$')
 def update_acronym(message):
     app.logger.debug("'/update_acronym' command detected")
-    if (len(message.split(" ")) > 1):
+    if (len(message.text.split(" ")) > 1):
         bot.reply_to(message, "/update_acronym has no arguments!")
     else:
         msg = bot.reply_to(message, "What would you like to update?")
@@ -1079,7 +1080,7 @@ def process_update_step(message):
 @bot.message_handler(regexp=r'^.*/delete_acronym(.|$).*$')
 def delete_acronym(message):
     app.logger.debug("'/delete_acronym' command detected")
-    if (len(message.split(" ")) > 1):
+    if (len(message.text.split(" ")) > 1):
         bot.reply_to(message, "/delete_acronym has no arguments!")
     else:
         msg = bot.reply_to(message, "What would you like to remove?")
