@@ -1,11 +1,12 @@
 from csuibot.utils import message_dist as md
 import json
+import urllib.request
 import re
 import time
 import urllib.error
 import requests
+from pathlib import Path
 from bs4 import BeautifulSoup
-from nltk.classify import NaiveBayesClassifier
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -21,7 +22,9 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, diceSim as dice)
+                           twitter_search as ts, aqi, issfw, mediawiki, schedule,
+                           anime_livechart, itunes, airing, apod, hospital as rsku,
+                           diceSim as dice)
 
 
 def lookup_zodiac(month, day):
@@ -68,12 +71,49 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
+def generate_schedule(chat_id, date, time, desc):
+    return schedule.Schedule().create_schedule(chat_id, date, time, desc)
+
+
+def get_available_schedules(chat_id, date):
+    return schedule.Schedule().get_available_schedules(chat_id, date)
+
+
+def get_schedules(chat_id):
+    return schedule.Schedule().get_schedules(chat_id)
+
+
+def lookup_sentiment_new(text):
+    base_url = 'https://westus.api.cognitive.microsoft.com/'
+    sentiment_api = 'text/analytics/v2.0/sentiment'
+    sentimentUri = base_url + sentiment_api
+    apiKey = '4c831ddf14ba43bd98d6f1aa527b3de6'
+    headers = {}
+    headers['Ocp-Apim-Subscription-Key'] = apiKey
+    headers['Content-Type'] = 'application/json'
+    headers['Accept'] = 'application/json'
+    postData1 = json.dumps({"documents": [{"id": "1", "language": "en", "text": text}]})
+    postData2 = postData1.encode('utf-8')
+    request2 = urllib.request.Request(sentimentUri, postData2, headers)
+    response2 = urllib.request.urlopen(request2)
+    response2json = json.loads(response2.read().decode('utf-8'))
+    sentiment = response2json['documents'][0]['score']
+    return ('Sentiment:  %f' % sentiment)
+
+
+def get_aqi_coord(coord):
+    return aqi.GetAQICoord(coord)
+
+
+def get_aqi_city(city):
+    return aqi.GetAQICity(city)
+
+
 def get_tweets(user):
     return ts.Twitter_Search().get_tweets(user)
 
 
 def define_sound(inputKey):
-
     title = inputKey.split(' ', 1)[1]
     soundtitle = title.replace(" ", "_") + ".mp3"
 
@@ -82,31 +122,6 @@ def define_sound(inputKey):
 
 def word_feats(words):
     return dict([(word, True) for word in words])
-
-
-def lookup_sentiment(word):
-    positive_vocab = (['good', 'nice', 'great', 'awesome', 'terrific',
-                      ':)', ':-)', 'like', 'love'])
-    negative_vocab = ['bad', 'terrible', 'crap', 'useless', 'hate', ':(', ':-(']
-    positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
-    negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
-    train_set = negative_features + positive_features
-    classifier = NaiveBayesClassifier.train(train_set)
-    neg = 0
-    pos = 0
-    words = word.split(' ')
-
-    for i in words:
-        classresult = classifier.classify(word_feats(i))
-        if classresult == 'neg':
-            neg = neg + 1
-        if classresult == 'pos':
-            pos = pos + 1
-    try:
-        return ('Positive: ' + str(float(pos)/len(words)) +
-                '\nNegative: ' + str(float(neg)/len(words)))
-    except KeyError:
-        return 'not found'
 
 
 def get_oricon_books(date):
@@ -243,7 +258,7 @@ def getTopManga(year, month, day):
     try:
         hasil = manga.getTopManga(str(year), str(month), str(day))
     except urllib.error.URLError as err:
-        if(err.code == 404):
+        if (err.code == 404):
             return "Page not found, you may gave incorrect date"
         else:
             return "unexpected Error Happened"
@@ -255,7 +270,7 @@ def getTopMangaMonthly(year, month):
     try:
         hasil = manga.getTopMangaMonthly(str(year), str(month))
     except urllib.error.URLError as err:
-        if(err.code == 404):
+        if (err.code == 404):
             return "Page not found, you may gave incorrect date"
         else:
             return "unexpected Error Happened"
@@ -263,7 +278,7 @@ def getTopMangaMonthly(year, month):
 
 
 def lookup_isUpWeb(url):
-    pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
+    pattern = re.compile(r"^(https?)://[^\s/$.?#].[^\s]*$")
     if (pattern.match(url)):
         return iuw.IsUpWeb(url).isUp()
     else:
@@ -471,8 +486,19 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def get_articles(message_text):
+def image_is_sfw(file_path):
+    try:
+        is_sfw = issfw.is_sfw(file_path)
+    except ValueError:
+        return 'An error prevented image from being categorized. Please try again'
+    else:
+        if is_sfw:
+            return 'image is SFW'
+        else:
+            return 'image is NSFW'
 
+
+def get_articles(message_text):
     articles = news.News().get_news(message_text)
 
     brackets = '========================='
@@ -493,10 +519,10 @@ def lookup_HotJapan100(html):
     artist = soup.find_all('artist')[1:11]
     for i in range(10):
         if i < 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-" + artist[i].string
+            string += '(' + str(i + 1) + ') ' + title[i].string[3:] + "-" + artist[i].string
             string += '\n'
         elif i == 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
+            string += '(' + str(i + 1) + ') ' + title[i].string[4:] + "-" + artist[i].string
             string += '\n'
     return (string)
 
@@ -558,3 +584,104 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def airing_check(anime):
+    manager = airing.AiringManager()
+    try:
+        manager.request(anime)
+        return manager.get_date()
+    except ValueError:
+        return "Can\'t find the requested anime"
+
+
+def lookup_airing():
+    manager = airing.AiringManager()
+    return manager.get_today_anime()
+
+
+def lookup_anime(genre, season, year):
+    genres = ['Action', 'Adventure', 'Cars', 'Comedy',
+              'Cyberpunk', 'Demons', 'Drama', 'Ecchi',
+              'Fantasy', 'Flash Animation', 'Game', 'Game Adaptation',
+              'Gender Bender', 'Harem', 'Historical', 'Horror',
+              'Josei', 'Kids', 'Light Novel Adaptation', 'Magic',
+              'Manga Adaptation', 'Martial Arts', 'Mecha', 'Military',
+              'Music', 'Mystery', 'ONA', 'Original Story', 'OVA',
+              'Parody', 'Police', 'Psychological', 'Romance', 'Samurai',
+              'School', 'Sci-Fi', 'Seinen', 'Sequel', 'Short Episodes',
+              'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Slice of Life',
+              'Space', 'Special', 'Sports', 'Streaming @ Crunchyroll',
+              'Streaming @ Daisuki', 'Streaming @ Funimation', 'Streaming @ Netflix',
+              'Supernatural', 'Super Power', 'Thriller', 'Vampire',
+              'Visual Novel Adaptation', 'Yaoi', 'Yuri']
+
+    seasons = ['spring', 'fall', 'summer', 'winter']
+    if genre not in genres:
+        return 'Invalid genre.'
+    if season not in seasons:
+        return 'Invalid season.'
+    anime_list = anime_livechart.get_anime_list(genre, season, year)
+    response = 'Here are anime(s) that matches with your genre:\n'
+    for i, anime in enumerate(anime_list):
+        if i >= 10:
+            break
+        info = '{}\n{}\n\n'.format(anime['title'], anime['synopsis'][:300])
+        response += info
+    return response
+
+
+def save_mediawiki_url(url):
+    if url is '':
+        raise ValueError('Command /add_wiki need an argument')
+    try:
+        mw = mediawiki.MediaWiki(url)
+    except Exception as e:
+        raise ConnectionError('Invalid url or url is not WikiMedia endpoint')
+    else:
+        return mw.save_url()
+
+
+def get_mediawiki(args):
+    url_wiki_file = Path('.url_wiki')
+    if not url_wiki_file.is_file():
+        raise EnvironmentError(
+            'WikiMedia url is not found. Please add wiki url'
+            ' with command /add_wiki [endpoint wiki url].'
+        )
+
+    with open(".url_wiki") as file:
+        mw = mediawiki.MediaWiki(file.read())
+        if args is '':
+            return mw.get_list_pages()
+        else:
+            return mw.get_page(args)
+
+
+def preview_music(artist):
+    try:
+        manager = itunes.Manager()
+        manager.get_preview(artist)
+        manager.download_url()
+        return "success"
+    except ValueError:
+        return "Can\'t found the requested artist"
+
+
+def fetch_apod():
+    return apod.Apod().fetch_apod()
+
+
+def lookup_hospital(long, lat):
+    rs = rsku.Hospital(long, lat)
+    return rs.calculate_dist_rumah_sakit()
+
+
+def lookup_random_hospital():
+    rs = rsku.Hospital()
+    return rs.get_random_rumah_sakit()
+
+
+def reply_random_hospital(id):
+    rs = rsku.Hospital()
+    return rs.get_by_id(id)
