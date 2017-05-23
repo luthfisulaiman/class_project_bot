@@ -1345,7 +1345,8 @@ def hospital(message):
     button = types.KeyboardButton('Share Location', request_location=True)
     markup.row(button)
     text = "Please share your location so we can get your nearest hospital!"
-    bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
 
 
 @bot.message_handler(regexp=r'^/random_hospital$')
@@ -1364,17 +1365,6 @@ def random_hospital(message):
     bot.send_message(chat_id, text, message_id, reply_markup=markup)
 
 
-def check_reply_hospital_location(message):
-    try:
-        text = "Please share your location so we can get your nearest hospital!"
-        is_location_reply = message.reply_to_message.text == text
-    except AttributeError:
-        return False
-    else:
-        return is_location_reply
-
-
-@bot.message_handler(content_types=['location'], func=check_reply_hospital_location)
 def get_user_location_hospital(message):
     app.logger.debug("'get user location for hospital' handler executed")
     chat_id = message.chat.id
@@ -1403,3 +1393,16 @@ def reply_hospital(chat_id, rs):
     bot.send_message(chat_id, rs['message'])
     if 'distance' in rs:
         bot.send_message(chat_id, rs['distance'])
+
+
+def check_from_group(message):
+    return message.chat.type == "group"
+
+
+@bot.message_handler(regexp=r'darurat', func=check_from_group)
+def ask_darurat_location(message):
+    app.logger.debug("'darurat' handler executed")
+    chat_id = message.chat.id
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
