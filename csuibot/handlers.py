@@ -1017,7 +1017,7 @@ def new_acronym(message):
 def process_add_step(message):
     new__singkatan = message.text
     new__singkatan_split = new__singkatan.split(" ")
-    if len(new__singkatan_split > 1):
+    if len(new__singkatan_split) > 1:
         bot.reply_to(message, "It has to be one word only!")
     else:
         acronym_dict['singkatan'] = new__singkatan
