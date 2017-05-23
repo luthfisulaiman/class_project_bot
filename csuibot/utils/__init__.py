@@ -213,10 +213,10 @@ def diceSimCoin():
 
 def diceSimRoll(x, y):
     dadu = dice.diceSim()
-    try:
-        hasil = dadu.roll(x, y)
-    except Exception as e:
-        return "Error catched"
+    # try:
+    hasil = dadu.roll(x, y)
+    # except Exception as e:
+    # return "Error catched"
     return hasil
 
 
