@@ -7,6 +7,7 @@ import re
 from requests.exceptions import ConnectionError
 import requests
 import json
+import pyowm
 
 
 class TestZodiac:
@@ -1971,4 +1972,66 @@ class TestWeather:
     def test_group_lookup_weather(self):
         res = (utils.weather.Weather().city_lookup_weather("Depok,ID",
                                                            "metric", "Celcius"))
+        assert res is not None
+
+    def test_emoji7(self):
+        res = (utils.weather.Weather().getEmoji(708))
+        assert res is not None
+
+    def test_emoji5(self):
+        res = (utils.weather.Weather().getEmoji(508))
+        assert res is not None
+
+    def test_emoji3(self):
+        res = (utils.weather.Weather().getEmoji(308))
+        assert res is not None
+
+    def test_emoji2(self):
+        res = (utils.weather.Weather().getEmoji(208))
+        assert res is not None
+
+    def test_emoji800(self):
+        res = (utils.weather.Weather().getEmoji(800))
+        assert res is not None
+
+    def test_emoji801(self):
+        res = (utils.weather.Weather().getEmoji(801))
+        assert res is not None
+
+    def test_emoji803(self):
+        res = (utils.weather.Weather().getEmoji(803))
+        assert res is not None
+
+    def test_emoji804(self):
+        res = (utils.weather.Weather().getEmoji(804))
+        assert res is not None
+
+    def test_emoji904(self):
+        res = (utils.weather.Weather().getEmoji(904))
+        assert res is not None
+
+    def test_emoji990(self):
+        res = (utils.weather.Weather().getEmoji(990))
+        assert res is not None
+
+    def test_windconversion(self):
+        res = (utils.weather.Weather().metric_wind_to_imperial(78))
+        assert res is not None
+
+    def test_output_builder_imperial_celcius(self):
+        owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
+        observation = owm.weather_at_place("Depok,ID")
+        res = utils.weather.Weather().output_builder(observation, "imperial", "Celcius")
+        assert res is not None
+
+    def test_output_builder_imperial_kelvin(self):
+        owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
+        observation = owm.weather_at_place("Depok,ID")
+        res = utils.weather.Weather().output_builder(observation, "imperial", "Kelvin")
+        assert res is not None
+
+    def test_output_builder_imperial_fahren(self):
+        owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
+        observation = owm.weather_at_place("Depok,ID")
+        res = utils.weather.Weather().output_builder(observation, "imperial", "Fahrenheit")
         assert res is not None
