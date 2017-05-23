@@ -1,5 +1,6 @@
 from csuibot.utils import zodiac as z
 from bs4 import BeautifulSoup
+import datetime
 import requests
 
 
@@ -45,11 +46,11 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
-    
+
 
 def lookup_album_price():
     album = requests.get('http://vgmdb.net/db/albums-search.php?do=results&action=upcoming')
-    soup = BeautifulSoup(recent.text, "html.parser")
+    soup = BeautifulSoup(album.text, "html.parser")
     title = soup.find_all('span', {'class': 'albumtitle', 'lang': 'en'})
     date = soup.find_all('td', {'style': 'padding: 4px; font-size:9pt; text-align: right'})
     result = ''
@@ -73,7 +74,7 @@ def lookup_album_price():
                 beautiful = BeautifulSoup(kurs.text, 'html.parser')
                 one_hundred = beautiful.find_all('input')[1]['value']
                 one = float(one_hundred)/100
-                total = satu * float(album_price[0])
+                total = one * float(album_price[0])
                 result += str(int(total)) + ' IDR\n'
             else:
                 result += 'Tidak Dijual\n'

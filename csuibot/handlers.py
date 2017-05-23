@@ -1,6 +1,5 @@
 from . import app, bot
 from .utils import lookup_zodiac, lookup_chinese_zodiac, lookup_album_price
-import urllib
 
 
 @bot.message_handler(regexp=r'^/about$')
