@@ -196,12 +196,12 @@ def rollRandomHandler(message):
     app.logger.debug("roll command detected")
     _, info = message.text.split(' ')
     x, y = info.split('d')
-    try:
-        mes = diceSimRoll(x, y)
-    except Exception as e:
-        bot.reply_to(message, 'Unexpected Error catched')
-    else:
-        bot.reply_to(message, mes)
+    # try:
+    mes = diceSimRoll(x, y)
+    # except Exception as e:
+    #    bot.reply_to(message, 'Unexpected Error catched')
+    # else:
+    bot.reply_to(message, mes)
 
 
 @bot.message_handler(regexp=r'^/multiroll [0-9]+ [0-9]+d[0-9]+$')
