@@ -266,7 +266,7 @@ class AnisonRadio:
         clip_handler = ClipHandler()
         songs = clip_handler.get_all_songs()
 
-        if songs is None:
+        if len(songs) == 0:
             return "Currently, you don't have any song"
 
         markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
