@@ -3,6 +3,7 @@ import psycopg2
 import dropbox
 
 from pydub import AudioSegment
+from telebot import types
 
 
 class DatabaseStorage:
@@ -38,7 +39,7 @@ class DatabaseStorage:
                      """
 
     ALL_QUERY = """
-                SELECT id, japan_name,  artist_name
+                SELECT japan_name,  artist_name
                 FROM love_live_song
                 """
 
@@ -139,7 +140,7 @@ class CloudStorage:
         return url
 
     def check_file(self, filename):
-        result = self.dbx.files_search('', filename)
+        result = self.dbx.files_search('', str(filename))
 
         if result.start == 0:
             return False
@@ -169,7 +170,7 @@ class ClipHandler:
 
         result = self.db.get_song(itunes_id)
         if result is not None:
-            return "This song is already added."
+            return "This song is already added"
 
         english_name = song['translated_name']
         romaji_name = song['romaji_name']
@@ -241,7 +242,7 @@ class ClipHandler:
 
         itunes_id = song['itunes_id']
         try:
-            url = self.db.get_song(itunes_id)[0]
+            url = self.db.get_song(itunes_id)
         except TypeError:
             return "Song not found"
         else:
@@ -263,7 +264,16 @@ class AnisonRadio:
     @classmethod
     def get_song_list(cls):
         clip_handler = ClipHandler()
-        return clip_handler.get_all_songs()
+        songs = clip_handler.get_all_songs()
+
+        if songs is None:
+            return "Currently, you don't have any song"
+
+        markup = types.ReplyKeyboardMarkup(row_width=1)
+        for song in songs:
+            btn = types.KeyboardButton(song[0] + ' - ' + song[1])
+            markup.add(btn)
+        return markup
 
     @classmethod
     def add_song(cls, query):
@@ -281,5 +291,5 @@ class AnisonRadio:
         res = clip_handler.search_song_in_db(query)
 
         if res is not None:
-            return "@{} , please chat me if you".format(username) +\
+            return "@{}, please chat me if you".format(username) +\
                    " want to listen to that song"

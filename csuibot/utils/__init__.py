@@ -21,7 +21,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi)
+                           twitter_search as ts, aqi, anison_radio)
 
 
 def lookup_zodiac(month, day):
@@ -533,4 +533,16 @@ def auto_tag(message):
 
 
 def manage_love_live_song(command, query=None, username="fersandi"):
-    pass
+    if query is not None:
+        query = query.split('-')[0].strip()
+
+    if command == 'add':
+        return anison_radio.AnisonRadio.add_song(query)
+    elif command == 'remove':
+        return anison_radio.AnisonRadio.remove_song(query)
+    elif command == 'list':
+        return anison_radio.AnisonRadio.get_song_list()
+    elif command == 'group':
+        return anison_radio.AnisonRadio.search_song(username, query)
+    elif command == 'clip':
+        return anison_radio.AnisonRadio.get_clip(query)

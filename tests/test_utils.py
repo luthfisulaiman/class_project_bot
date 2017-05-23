@@ -7,6 +7,7 @@ import re
 from requests.exceptions import ConnectionError
 import requests
 import json
+from telebot import types
 
 
 class TestZodiac:
@@ -1468,26 +1469,55 @@ class test_hot_japan_100:
 
 
 class TestAnisonRadio:
+    def test_remove_song_private(self):
+        output = utils.manage_love_live_song("remove", "snow halation - µ's")
+        assert output == "Song successfully deleted"
+
+    def test_add_song_private_success(self, mocker):
+        file = open("soundclip/587762397.mp3", 'rb')
+
+        mocker.patch(
+            "csuibot.utils.anison_radio.CloudStorage.check_file",
+            return_value=False
+            )
+
+        mocker.patch(
+            "csuibot.utils.anison_radio.ClipHandler.convert_m4a_to_mp3",
+            return_value=file
+            )
+
+        output = utils.manage_love_live_song("add", "snow halation - µ's")
+        assert output == "Song successfully added"
+
+    def test_add_song_already_added(self):
+        output = utils.manage_love_live_song("add", "snow halation - µ's")
+        assert output == "This song is already added"
+
     def test_detect_name_song_in_group(self):
         output = utils.manage_love_live_song("group", "snow halation")
         assert output == ("@fersandi, please chat me if you" +
-                          "want to listen to that song")
+                          " want to listen to that song")
 
     def test_song_name_not_found_in_group(self):
         output = utils.manage_love_live_song("group", "GO MY WAY!!")
         assert output is None
 
-    def test_add_song_private_success(self, mocker):
-        pass
+    def test_add_song_private_not_found(self):
+        output = utils.manage_love_live_song("add", "tachiagare - Wake up girls")
+        assert output == "This song not found or doesn't available in itunes :("
 
-    def test_add_song_private_not_found(self, mocker):
-        pass
+    def test_get_song_from_list(self):
+        output = utils.manage_love_live_song("list")
+        assert type(output) == types.ReplyKeyboardMarkup
 
-    def test_add_song_privete_itunesid_null(self, mocker):
-        pass
+    def test_get_list_song_zero(self, mocker):
+        mocker.patch(
+                     "csuibot.utils.anison_radio.ClipHandler.get_all_songs",
+                     return_value=None
+                    )
+        output = utils.manage_love_live_song("list")
+        assert output == "Currently, you don't have any song"
 
-    def test_remove_song_private(self):
-        pass
-
-    def test_get_song_from_list(self, mocker):
-        pass
+    def test_get_clip(self):
+        output = utils.manage_love_live_song("clip", "snow halation - µ's")
+        assert type(output) == tuple
