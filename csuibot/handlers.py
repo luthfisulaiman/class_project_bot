@@ -49,11 +49,9 @@ def parse_date(text):
 
 @bot.message_handler(regexp=r'^/vgmdb OST this month$')
 def album_price(message):
-    web_url = "http://vgmdb.net/db/calendar.php?year=2017&month=5"
-    html = urllib.request.urlopen(web_url).read()
-    html = str(html)
+    app.logger.debug("'vgmd' command detected")
     try:
-        reply = lookup_album_price(html)
+        reply = lookup_album_price()
     except ConnectionError:
         bot.reply_to(message, '''The connection error
 Please try again in a few minutes''')
