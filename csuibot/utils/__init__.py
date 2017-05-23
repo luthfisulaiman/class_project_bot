@@ -21,7 +21,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts)
+                           twitter_search as ts, diceSim as dice)
 
 
 def lookup_zodiac(month, day):
@@ -200,6 +200,42 @@ def takeSceleNotif():
 def checkTopTropical(artist):
     topTropical = trop.topTropicalBb()
     return topTropical.checkTopTropical(artist)
+
+
+def diceSimCoin():
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.coin()
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimRoll(x, y):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.roll(x, y)
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimMultRoll(x, y, z):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.multiroll(x, y, z)
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimIsLucky(n, x, y):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.is_lucky(n, x, y)
+    except Exception as e:
+        return "Error catched"
+    return hasil
 
 
 def getTopManga(year, month, day):

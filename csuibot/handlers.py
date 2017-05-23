@@ -18,7 +18,8 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_sentiment,
-                    lookup_HotJapan100, get_tweets)
+                    lookup_HotJapan100, get_tweets, diceSimCoin, diceSimRoll,
+                    diceSimMultRoll, diceSimIsLucky)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -178,45 +179,56 @@ def sceleNoticeHandler(message):
     else:
         bot.reply_to(message, notification)
 
+
 @bot.message_handler(regexp=r'^/coin$')
 def coinRandomHandler(message):
     app.logger.debug("coin command detected")
     try:
-        # notification = checkTopTropical(artist)
+        mes = diceSimCoin()
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:
-        bot.reply_to(message, "ini adalah koin")
+        bot.reply_to(message, mes)
 
-@bot.message_handler(regexp=r'^/roll$')
+
+@bot.message_handler(regexp=r'^/roll [0-9]+d[0-9]+$')
 def rollRandomHandler(message):
     app.logger.debug("roll command detected")
+    _, info = message.text.split(' ')
+    x, y = info.text.split('d')
     try:
-        # notification = checkTopTropical(artist)
+        mes = diceSimRoll(x, y)
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:
-        bot.reply_to(message, "ini adalah roll")
+        bot.reply_to(message, mes)
 
-@bot.message_handler(regexp=r'^/roll$')
+
+@bot.message_handler(regexp=r'^/multiroll [0-9]+ [0-9]+d[0-9]+$')
 def multRollRandomHandler(message):
     app.logger.debug("multi roll command detected")
+    _, z, info = message.text.split(' ')
+    x, y = info.text.split('d')
     try:
-        # notification = checkTopTropical(artist)
+        mes = diceSimMultRoll(x, y, z)
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:
-        bot.reply_to(message, "ini adalah multi roll")
+        bot.reply_to(message, mes)
 
-@bot.message_handler(regexp=r'^/roll$')
+
+@bot.message_handler(regexp=r'^/is_lucky [0-9]+ [0-9]+d[0-9]+$')
 def is_luckyHandler(message):
     app.logger.debug("is lucky command detected")
+    _, n, info = message.text.split(' ')
+    x, y = info.text.split('d')
     try:
-        # notification = checkTopTropical(artist)
+        mes = diceSimIsLucky(n, x, y)
     except Exception as e:
         bot.reply_to(message, 'Unexpected Error catched')
     else:
-        bot.reply_to(message, "ini adalah lucky")
+        bot.reply_to(message, mes)
+
 
 @bot.message_handler(regexp=r'^/checktropical.+$')
 def tropicalArtistHandler(message):

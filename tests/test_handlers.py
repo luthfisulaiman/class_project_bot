@@ -17,7 +17,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, sentiment, japan100,
-                              get_notif_twitter, coinRandomHandler)
+                              get_notif_twitter, coinRandomHandler, rollRandomHandler,
+                              multRollRandomHandler, is_luckyHandler)
 from requests.exceptions import ConnectionError
 
 
@@ -541,19 +542,20 @@ def test_coinRandom(mocker):
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_coin
 
+
 def test_rollRandom(mocker):
     fake_random = 'Result: 2d100 (25, 66)'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.rollRandomHandler', return_value=fake_coin)
+    mocker.patch('csuibot.handlers.rollRandomHandler', return_value=fake_random)
     mock_message = Mock(text='/roll 2d100')
     rollRandomHandler(mock_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_random
 
+
 def test_multRollRandom(mocker):
     fake_random = "2d6 (5, 2)\n2d6 (1, 3)"
-'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.multRollRandomHandler', return_value=fake_random)
     mock_message = Mock(text='/multiroll 2 2d6')
@@ -561,6 +563,7 @@ def test_multRollRandom(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_random
+
 
 def test_isLucky(mocker):
     fake_random = '3 appears 2'
@@ -571,6 +574,7 @@ def test_isLucky(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_random
+
 
 def test_topMangaOricon(mocker):
     fake_manga = 'judul-Mangaka'
