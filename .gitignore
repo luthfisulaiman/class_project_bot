@@ -68,8 +68,11 @@ tags
 
 # Notes for story-9
 notes.json
-.idea
+.idea/
 dist.txt
+
+# json cache for #86
+.sources_cache.json
 
 # story mediawiki
 .url_wiki

@@ -1,5 +1,4 @@
 from . import app, bot
-from telebot import types
 import requests
 import re
 import os
@@ -23,9 +22,14 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
-                    fetch_apod, city_lookup_weather, lookup_weather)
+                    manage_love_live_song, city_lookup_weather, lookup_weather,
+                    airing_check, lookup_airing, fetch_apod, lookup_hospital,
+                    lookup_random_hospital, reply_random_hospital, diceSimCoin,
+                    diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
+                    check_fake_news, add_filter_news, change_cinema, find_movies)
 from requests.exceptions import ConnectionError
 import datetime
+from telebot import types
 
 
 def message_decorator(func):
@@ -221,6 +225,56 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, 'Unexpected Error catched')
     else:
         bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/coin$')
+def coinRandomHandler(message):
+    app.logger.debug("coin command detected")
+    try:
+        mes = diceSimCoin()
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/roll [0-9]+d[0-9]+$')
+def rollRandomHandler(message):
+    app.logger.debug("roll command detected")
+    _, info = message.text.split(' ')
+    x, y = info.split('d')
+    # try:
+    mes = diceSimRoll(x, y)
+    # except Exception as e:
+    #    bot.reply_to(message, 'Unexpected Error catched')
+    # else:
+    bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/multiroll [0-9]+ [0-9]+d[0-9]+$')
+def multRollRandomHandler(message):
+    app.logger.debug("multi roll command detected")
+    _, z, info = message.text.split(' ')
+    x, y = info.split('d')
+    try:
+        mes = diceSimMultRoll(x, y, z)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/is_lucky [0-9]+ [0-9]+d[0-9]+$')
+def is_luckyHandler(message):
+    app.logger.debug("is lucky command detected")
+    _, n, info = message.text.split(' ')
+    x, y = info.split('d')
+    try:
+        mes = diceSimIsLucky(n, x, y)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
 
 
 @bot.message_handler(regexp=r'^/checktropical.+$')
@@ -432,6 +486,24 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(commands=['enterkomputer'])
+def enterkomputer(message):
+    arr_input = message.text.split(" ", 2)
+    if(len(arr_input) < 3):
+        bot.reply_to(message, "Not enough arguments, please provide category"
+                              " and item name with the format /enterkomputer CATEGORY ITEM")
+    else:
+        category = arr_input[1]
+        item = arr_input[2]
+
+        try:
+            result = lookup_enter_item(category, item)
+        except ConnectionError:
+            bot.reply_to(message, 'Unable to connect to Enterkomputer')
+        else:
+            bot.reply_to(message, result)
+
+
 @bot.message_handler(func=lambda message: message.chat.type == "group", regexp="jadwal")
 def jadwal(message):
     app.logger.debug("'jadwal' command detected")
@@ -573,7 +645,7 @@ def oricon_books(message):
     try:
         _, _, weekly, request_date = message.text.split(' ')
         if (weekly != 'weekly'):
-            top10 = 'Oricon books command currently only supports '\
+            top10 = 'Oricon books command currently only supports ' \
                     'weekly ratings at this time.'
         else:
             app.logger.debug("oricon command type is 'weekly'")
@@ -1147,6 +1219,251 @@ def tagimage(message):
         bot.reply_to(message, tag)
 
 
+@bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
+def anison_radio(message):
+    app.logger.debug("'anison' commands detected")
+    app.logger.debug(message.reply_to_message)
+    if message.chat.type == "private":
+        if "add_song" not in message.text:
+            markup = manage_love_live_song("list", type_=message.text)
+            if type(markup) == str:
+                bot.reply_to(message, markup)
+                return
+
+        if "add_song" in message.text:
+            msg = bot.reply_to(message, "Enter song name:")
+            bot.register_next_step_handler(msg, anison_radio_add_song)
+        elif "remove_song" in message.text:
+            bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
+        elif "listen_song" in message.text:
+            bot.reply_to(message, "Choose song to listen to:", reply_markup=markup)
+    else:
+        bot.reply_to(message, "Please chat me to run this command")
+
+
+def anison_radio_add_song(message):
+    app.logger.debug("'add song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text
+
+    output = manage_love_live_song("add", song_name)
+    bot.send_message(chat_id, output)
+
+
+@bot.message_handler(commands=["removesll"])
+def anison_radio_remove_song(message):
+    app.logger.debug("'remove song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text.split(' ', 1)[1]
+
+    output = manage_love_live_song("remove", song_name)
+    bot.send_message(chat_id, output)
+
+
+@bot.message_handler(commands=["listensll"])
+def anison_radio_listen(message):
+    app.logger.debug("'listen song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text.split(' ', 1)[1]
+
+    output = manage_love_live_song("clip", song_name)
+    if type(output) == str:
+        bot.send_message(chat_id, output)
+    else:
+        app.logger.debug(str(output))
+        bot.send_audio(chat_id, output[2], performer=output[1], title=output[0])
+
+
+@bot.message_handler(regexp=r'^/cgv_gold_class$')
+def cgv_gold(message):
+    app.logger.debug("'cgv_gold_class' command detected")
+    try:
+        gold = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, gold)
+
+
+@bot.message_handler(regexp=r'^/cgv_regular_2d$')
+def cgv_reg(message):
+    app.logger.debug("'cgv_regular' command detected")
+    try:
+        twod = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannoct connect to CGV Blitz")
+    else:
+        bot.reply_to(message, twod)
+
+
+@bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
+def cgv_3dcinema(message):
+    app.logger.debug("'cgv_4dx_3d_cinema' command detected")
+    try:
+        threed = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, threed)
+
+
+@bot.message_handler(regexp=r'^/cgv_velvet$')
+def cgv_velvet(message):
+    app.logger.debug("'cgv_velvet' command detected")
+    try:
+        velvet = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, velvet)
+
+
+@bot.message_handler(regexp=r'^/cgv_sweet_box$')
+def cgv_sweetbox(message):
+    app.logger.debug("'cgv_sweet_box' command detected")
+    try:
+        sweetbox = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, sweetbox)
+
+
+@bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
+def cgv_change(message):
+    app.logger.debug("'cgv_change_cinema' command detected")
+    cmd1, url = message.text.split(' ')
+
+    app.logger.debug("url is {}".format(url))
+    try:
+        if cmd1 == '/cgv_change_cinema':
+            changed = change_cinema(url)
+        else:
+            raise Exception
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    except Exception:
+        bot.reply_to(message, "Wrong command")
+    else:
+        bot.reply_to(message, changed)
+
+
+def is_private_message(message):
+    return message.chat.type == 'private'
+
+
+def parse_check_fake_news_group(message):
+    return (any([e.type == 'url' for e in message.entities])
+            if (message.chat.type == 'group' and
+                message.text is not None and
+                message.entities is not None)
+            else False)
+
+
+POSSIBLE_NEWS_TYPES = ['fake', 'political', 'satire', 'unreliable', 'bias', 'conspiracy']
+
+
+@bot.message_handler(func=is_private_message,
+                     commands=["is_{}".format(news_type) for news_type in POSSIBLE_NEWS_TYPES])
+def check_fake_news_private(message):
+    app.logger.debug("'is_NEWS_TYPE' command detected")
+    try:
+        command, url = message.text.split()
+        news_type = command[4:]  # get type from '/is_{type}'
+        app.logger.debug("'is_{}' command detected".format(news_type))
+        is_of_type = check_fake_news(url, news_type)
+        app.logger.debug("The url is of type described: {}".format(is_of_type))
+    except ValueError as e:
+        app.logger.debug(e)
+        bot.reply_to(message, "Please provide url with HTTP format.")
+    else:
+        reply = ("The url is of type: {}".format(news_type) if is_of_type
+                 else "The url is not of type: {}".format(news_type))
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(func=is_private_message, commands=['add_filter'])
+def add_fake_news_filter_private(message):
+    app.logger.debug("'add_filter' command detected")
+    try:
+        app.logger.debug(message.text)
+        _, url, news_type = message.text.split()
+        news_type = news_type.lower()
+        if news_type not in POSSIBLE_NEWS_TYPES:
+            raise ValueError
+        add_filter_news(url, news_type)
+    except ValueError as e:
+        app.logger.debug(e)
+        reply = ("Please use the correct format: '/add_filter URL TYPE'\n"
+                 "Make sure the URL is in HTTP format,"
+                 " and the TYPE is one of [{}]".format(', '.join(POSSIBLE_NEWS_TYPES)))
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, "Added to filter list successfully.")
+
+
+@bot.message_handler(func=parse_check_fake_news_group)
+def check_fake_news_group(message):
+    # message is guaranteed to have an entity with type url
+    app.logger.debug("'url in group chat' scenario detected")
+    try:
+        # Find first entity with type url
+        index = [e.type for e in message.entities].index('url')
+        url_entity = message.entities[index]
+        url_offset = url_entity.offset
+        url_length = url_entity.length
+        url = message.text[url_offset:url_offset + url_length]
+        list_of_types = check_fake_news(url)
+        app.logger.debug(list_of_types)
+    except ValueError as e:
+        app.logger.debug(e)  # Do nothing since it is a group chat
+    else:
+        reply = ("The url is safe to visit" if 'safe' in list_of_types
+                 else "The url may not be safe to visit")
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(regexp=r'^/is_airing')
+def airing(message):
+    if message.chat.type == "private":
+        app.logger.debug("'airing anime' command detected")
+        command = message.text.split(" ")
+        if len(command) == 2:
+            words = list(command[1])
+            anime = ""
+            for word in words:
+                if(word == "_"):
+                    anime += " "
+                else:
+                    anime += word
+            try:
+                res = airing_check(anime)
+            except requests.exceptions.HTTPError:
+                bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+            except ConnectionError:
+                bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+            else:
+                bot.reply_to(message, res)
+        else:
+            output = ('Command invalid, please use /is_airing <anime>'
+                      'format and replace space in <anime> with underscore (_)')
+            bot.reply_to(message, output)
+
+
+@bot.message_handler(regexp=r'hari ini nonton apa?')
+def lookup_today(message):
+    if message.chat.type == "group":
+        app.logger.debug("'lookup anime today' command detected")
+        try:
+            res = lookup_airing()
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        else:
+            bot.reply_to(message, res)
+
+
 @bot.message_handler(regexp=r'^/lookup_anime')
 def lookup_anime_livechart(message):
     app.logger.debug("'lookup_anime' command detected.")
@@ -1275,15 +1592,6 @@ def preview(message):
 def get_path(file):
     return os.path.abspath(os.path.join(os.path.dirname(__file__), file))
 
-# bot.remove_webhook()
-# while True:
-#     try:
-#         bot.polling(none_stop=True)
-#     except Exception as e:
-#         import time
-#         app.logger.debug(e)
-#         time.sleep(5)\
-
 
 @bot.message_handler(commands=['apod'])
 def apod(message):
@@ -1301,6 +1609,78 @@ def apod(message):
         bot.reply_to(message, '/apod doesn\'t need any arguments')
     else:
         bot.reply_to(message, apod)
+
+
+@bot.message_handler(regexp=r'^/hospital$')
+def hospital(message):
+    app.logger.debug("'hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
+
+
+@bot.message_handler(regexp=r'^/random_hospital$')
+def random_hospital(message):
+    app.logger.debug("'random_hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    rs_list = lookup_random_hospital()
+    markup = types.InlineKeyboardMarkup()
+    for rs in rs_list:
+        text = "Rumah Sakit " + rs['nama']
+        callback = "RS_ID=" + str(rs['id'])
+        butt = types.InlineKeyboardButton(text, callback_data=callback)
+        markup.add(butt)
+    text = "Please select one hospital below!"
+    bot.send_message(chat_id, text, message_id, reply_markup=markup)
+
+
+def get_user_location_hospital(message):
+    app.logger.debug("'get user location for hospital' handler executed")
+    chat_id = message.chat.id
+    lat = message.location.latitude
+    long = message.location.longitude
+    rs = lookup_hospital(long, lat)
+    reply_hospital(chat_id, rs)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def parse_callback(call):
+    message = call.message
+    data = call.data
+    chat_id = message.chat.id
+    if len(data.split("RS_ID=")) == 2:
+        rs_id = data.split("RS_ID=")[1]
+        rs = reply_random_hospital(rs_id)
+        reply_hospital(chat_id, rs)
+
+
+def reply_hospital(chat_id, rs):
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(chat_id, "Here is the result:", reply_markup=markup)
+    bot.send_location(chat_id, rs['lat'], rs['long'])
+    bot.send_photo(chat_id, urllib.request.urlopen(rs['image']).read())
+    bot.send_message(chat_id, rs['message'])
+    if 'distance' in rs:
+        bot.send_message(chat_id, rs['distance'])
+
+
+def check_from_group(message):
+    return message.chat.type == "group"
+
+
+@bot.message_handler(regexp=r'darurat', func=check_from_group)
+def ask_darurat_location(message):
+    app.logger.debug("'darurat' handler executed")
+    chat_id = message.chat.id
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
 
 
 """
@@ -1414,3 +1794,14 @@ def group_weather(message):
         bot.reply_to(message, weathercity)
 
 # END of weather message handler =============================================================
+
+
+# TODO: tolong ini ditaro di paling bawah :)
+@bot.message_handler(func=lambda m: m.chat.type == "group")
+def anison_radio_group(message):
+    app.logger.debug("'anison in group' command detected")
+    app.logger.debug(message.text)
+    output = manage_love_live_song("group", message.text, message.from_user.username)
+
+    if output is not None:
+        bot.reply_to(message, output)

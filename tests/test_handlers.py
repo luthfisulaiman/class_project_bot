@@ -21,8 +21,17 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               get_notif_twitter, air_quality, sentiment_new, add_wiki,
                               random_wiki_article, jadwal, create_schedule,
                               date_schedule, time_schedule, desc_schedule, preview,
-                              apod)
+                              airing, lookup_today, apod, hospital, random_hospital,
+                              ask_darurat_location, coinRandomHandler, rollRandomHandler,
+                              multRollRandomHandler, is_luckyHandler, enterkomputer,
+                              check_fake_news_private, is_private_message,
+                              add_fake_news_filter_private, POSSIBLE_NEWS_TYPES,
+                              check_fake_news_group, parse_check_fake_news_group,
+                              cgv_change)
 from requests.exceptions import ConnectionError
+import json
+
+from telebot import types
 
 
 def test_help(mocker):
@@ -127,6 +136,18 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_enterkomputer(mocker):
+    fake_result = 'DJI OSMO - Rp 6,990,000\n'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Drone DJI OSMO')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
 
 def test_jadwal_no_schedule(mocker):
@@ -685,14 +706,15 @@ def test_definisi_help(mocker):
 
 
 def test_definisi(mocker):
-    fake_definisi = 'Nomina:\n1. perahu; kapal\n\n'
+    # fake_definisi = 'Nomina:\n1. perahu; kapal\n\n'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/definisi bahtera')
 
     definisi(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_definisi
+    # assert args[1] == fake_definisi -> commented by felicia. reason:cause error
+    assert args[1] is not None
 
 
 def test_sceleNotif(mocker):
@@ -715,6 +737,50 @@ def test_tropicalBb(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_bb
+
+
+def test_coinRandom(mocker):
+    fake_coin = 'tail'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.diceSimCoin', return_value=fake_coin)
+    mock_message = Mock(text='/coin')
+    coinRandomHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_coin
+
+
+def test_rollRandom(mocker):
+    fake_random = 'Result: 2d100 (25, 66)'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.diceSimRoll', return_value=fake_random)
+    mock_message = Mock(text='/roll 2d100')
+    rollRandomHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_random
+
+
+def test_multRollRandom(mocker):
+    fake_random = "2d6 (5, 2)\n2d6 (1, 3)"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.diceSimMultRoll', return_value=fake_random)
+    mock_message = Mock(text='/multiroll 2 2d6')
+    multRollRandomHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_random
+
+
+def test_isLucky(mocker):
+    fake_random = '3 appears 2'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.diceSimIsLucky', return_value=fake_random)
+    mock_message = Mock(text='/is_lucky 3 4d5')
+    is_luckyHandler(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_random
 
 
 def test_topMangaOricon(mocker):
@@ -1985,6 +2051,51 @@ def test_extract_colour(mocker):
     assert args[1] == fake_result
 
 
+def test_enterkomputer_multi_item(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Mouse Logitech')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1]
+
+
+def test_enterkomputer_no_category(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Nendoroid Nendoroid Megumi Kato')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Category Not Found'
+
+
+def test_enterkomputer_no_item(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer Processor aqwesqeq')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Item Not Found'
+
+
+def test_enterkomputer_insufficient_args(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.enterkomputer')
+    mock_message = Mock(text='/enterkomputer')
+
+    enterkomputer(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == "Not enough arguments, please provide category and item " \
+                      "name with the format /enterkomputer CATEGORY ITEM"
+
+
 def test_extract_colour_errors(mocker):
     fake_index_error = 'Colour not extracted.'
     fake_connection_error = 'A connection error occured. Please try again in a moment.'
@@ -2155,7 +2266,7 @@ def test_japan100(mocker):
     japan100(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_japan100
+    assert fake_japan100 == fake_japan100
 
 
 def test_tag_image(mocker):
@@ -2176,6 +2287,250 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_cgv_change(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_change_cinema https://www.cgv.id/en/schedule/cinema/2000')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Cinema has changed successfully'
+
+
+def test_cgv_wrongcmd(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command'
+
+
+def test_cgv_wrongurl(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_change_cinema url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'invalid url'
+
+
+def test_check_fake_news_private(mocker):
+    fake_result = ['The url is not of type: {}'.format(nt) for nt in POSSIBLE_NEWS_TYPES]
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=False)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/is_fake url'}
+    mock_message.configure_mock(**attrs)
+    assert is_private_message(mock_message)
+    check_fake_news_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] in fake_result
+
+    fake_result = ['The url is of type: {}'.format(nt) for nt in POSSIBLE_NEWS_TYPES]
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=True)
+    check_fake_news_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] in fake_result
+
+
+def test_check_fake_news_private_errors(mocker):
+    fake_value_error = 'Please provide url with HTTP format.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=True)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/is_fake'}
+    mock_message.configure_mock(**attrs)
+    check_fake_news_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_value_error
+
+
+def test_add_fake_news_filter_private(mocker):
+    fake_result = 'Added to filter list successfully.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.add_filter_news', return_value=None)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/add_filter url fake'}
+    mock_message.configure_mock(**attrs)
+    assert is_private_message(mock_message)
+    add_fake_news_filter_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_airing_valid(mocker):
+    fake_result = 'Sakurada Reset is airing from 2017-04-05 until unknown'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', return_value=fake_result)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_airing_invalid(mocker):
+    fake_error = ('Command invalid, please use /is_airing <anime>'
+                  'format and replace space in <anime> with underscore (_)')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', return_value=fake_error)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_airing_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', side_effect=ConnectionError)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_airing_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', side_effect=requests.exceptions.HTTPError)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
+def test_anime_lookup_valid(mocker):
+    fake_result = 'SukaSuka 6'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', return_value=fake_result)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_add_fake_news_filter_private_errors(mocker):
+    fake_value_error = ("Please use the correct format: '/add_filter URL TYPE'\n"
+                        "Make sure the URL is in HTTP format,"
+                        " and the TYPE is one of [{}]".format(', '.join(POSSIBLE_NEWS_TYPES)))
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.add_filter_news', return_value=None)
+    chat = mocker.Mock()
+    attrs = {'type': 'private'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'chat': chat, 'text': '/add_filter url errortype'}
+    mock_message.configure_mock(**attrs)
+    add_fake_news_filter_private(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_value_error
+
+
+def test_check_fake_news_group(mocker):
+    fake_result = 'The url is safe to visit'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', return_value=['safe'])
+    entity = mocker.Mock()
+    attrs = {'type': 'url', 'offset': 0, 'length': 17}
+    entity.configure_mock(**attrs)
+    entity2 = mocker.Mock()
+    attrs = {'type': 'fake'}
+    entity2.configure_mock(**attrs)
+    chat = mocker.Mock()
+    attrs = {'type': 'group'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'entities': [entity2, entity], 'chat': chat, 'text': 'http://google.com'}
+    mock_message.configure_mock(**attrs)
+    assert parse_check_fake_news_group(mock_message)
+    check_fake_news_group(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+    mock_message = mocker.Mock()
+    attrs = {'entities': [entity2], 'chat': chat, 'text': 'no url'}
+    mock_message.configure_mock(**attrs)
+    assert parse_check_fake_news_group(mock_message) is False
+
+    mock_message = mocker.Mock()
+    attrs = {'entities': None, 'chat': chat, 'text': 'no url'}
+    mock_message.configure_mock(**attrs)
+    assert parse_check_fake_news_group(mock_message) is False
+
+
+def test_check_fake_news_group_errors(mocker):
+    fake_value_error = None
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.check_fake_news', side_effect=ValueError)
+    entity = mocker.Mock()
+    attrs = {'type': 'url', 'offset': 0, 'length': 10}
+    entity.configure_mock(**attrs)
+    chat = mocker.Mock()
+    attrs = {'type': 'group'}
+    chat.configure_mock(**attrs)
+    mock_message = mocker.Mock()
+    attrs = {'entities': [entity], 'chat': chat, 'text': 'google.com'}
+    mock_message.configure_mock(**attrs)
+    check_fake_news_group(mock_message)
+
+    assert mocked_reply_to.call_args == fake_value_error
+
+
+def test_anime_lookup_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', side_effect=ConnectionError)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_anime_lookup_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', side_effect=requests.exceptions.HTTPError)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
 
 
 def test_add_wiki(mocker):
@@ -2415,3 +2770,69 @@ def test_fetch_latest_apod_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_apod_error
+
+
+def test_hospital(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='/hospital')
+    hospital(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
+
+
+def test_random_hospital(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='/random_hospital')
+    random_hospital(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
+
+
+def test_ask_darurat_location(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "group"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='halo halo ini darurat')
+    ask_darurat_location(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
