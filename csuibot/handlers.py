@@ -1,5 +1,4 @@
 from . import app, bot
-from telebot import types
 import requests
 import re
 import os
@@ -23,9 +22,11 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
-                    airing_check, lookup_airing, fetch_apod)
+                    airing_check, lookup_airing, fetch_apod, lookup_hospital,
+                    lookup_random_hospital, reply_random_hospital)
 from requests.exceptions import ConnectionError
 import datetime
+from telebot import types
 
 
 def message_decorator(func):
@@ -573,7 +574,7 @@ def oricon_books(message):
     try:
         _, _, weekly, request_date = message.text.split(' ')
         if (weekly != 'weekly'):
-            top10 = 'Oricon books command currently only supports '\
+            top10 = 'Oricon books command currently only supports ' \
                     'weekly ratings at this time.'
         else:
             app.logger.debug("oricon command type is 'weekly'")
@@ -1316,15 +1317,6 @@ def preview(message):
 def get_path(file):
     return os.path.abspath(os.path.join(os.path.dirname(__file__), file))
 
-# bot.remove_webhook()
-# while True:
-#     try:
-#         bot.polling(none_stop=True)
-#     except Exception as e:
-#         import time
-#         app.logger.debug(e)
-#         time.sleep(5)\
-
 
 @bot.message_handler(commands=['apod'])
 def apod(message):
@@ -1342,3 +1334,75 @@ def apod(message):
         bot.reply_to(message, '/apod doesn\'t need any arguments')
     else:
         bot.reply_to(message, apod)
+
+
+@bot.message_handler(regexp=r'^/hospital$')
+def hospital(message):
+    app.logger.debug("'hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
+
+
+@bot.message_handler(regexp=r'^/random_hospital$')
+def random_hospital(message):
+    app.logger.debug("'random_hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    rs_list = lookup_random_hospital()
+    markup = types.InlineKeyboardMarkup()
+    for rs in rs_list:
+        text = "Rumah Sakit " + rs['nama']
+        callback = "RS_ID=" + str(rs['id'])
+        butt = types.InlineKeyboardButton(text, callback_data=callback)
+        markup.add(butt)
+    text = "Please select one hospital below!"
+    bot.send_message(chat_id, text, message_id, reply_markup=markup)
+
+
+def get_user_location_hospital(message):
+    app.logger.debug("'get user location for hospital' handler executed")
+    chat_id = message.chat.id
+    lat = message.location.latitude
+    long = message.location.longitude
+    rs = lookup_hospital(long, lat)
+    reply_hospital(chat_id, rs)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def parse_callback(call):
+    message = call.message
+    data = call.data
+    chat_id = message.chat.id
+    if len(data.split("RS_ID=")) == 2:
+        rs_id = data.split("RS_ID=")[1]
+        rs = reply_random_hospital(rs_id)
+        reply_hospital(chat_id, rs)
+
+
+def reply_hospital(chat_id, rs):
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(chat_id, "Here is the result:", reply_markup=markup)
+    bot.send_location(chat_id, rs['lat'], rs['long'])
+    bot.send_photo(chat_id, urllib.request.urlopen(rs['image']).read())
+    bot.send_message(chat_id, rs['message'])
+    if 'distance' in rs:
+        bot.send_message(chat_id, rs['distance'])
+
+
+def check_from_group(message):
+    return message.chat.type == "group"
+
+
+@bot.message_handler(regexp=r'darurat', func=check_from_group)
+def ask_darurat_location(message):
+    app.logger.debug("'darurat' handler executed")
+    chat_id = message.chat.id
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text)
+    bot.register_next_step_handler(msg, get_user_location_hospital)

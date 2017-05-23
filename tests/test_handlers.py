@@ -21,8 +21,12 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               get_notif_twitter, air_quality, sentiment_new, add_wiki,
                               random_wiki_article, jadwal, create_schedule,
                               date_schedule, time_schedule, desc_schedule, preview,
-                              airing, lookup_today, apod)
+                              airing, lookup_today, apod, hospital, random_hospital,
+                              ask_darurat_location)
 from requests.exceptions import ConnectionError
+import json
+
+from telebot import types
 
 
 def test_help(mocker):
@@ -2503,3 +2507,69 @@ def test_fetch_latest_apod_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_apod_error
+
+
+def test_hospital(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='/hospital')
+    hospital(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
+
+
+def test_random_hospital(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "private"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='/random_hospital')
+    random_hospital(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
+
+
+def test_ask_darurat_location(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.send_message')
+    msg = {}
+    chat = {}
+    chat['type'] = "group"
+    chat['last_name'] = "Divy"
+    chat['first_name'] = "Prakash"
+    chat['username'] = "prakash_divy"
+    chat['id'] = 121508145
+    chat['title'] = None
+    chat['all_members_are_administrators'] = None
+    msg['chat'] = chat
+    msg['date'] = 1495177065
+    msg['message_id'] = 4567
+    message = json.dumps(msg)
+    message = types.Message.de_json(message)
+    Mock(text='halo halo ini darurat')
+    ask_darurat_location(message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None

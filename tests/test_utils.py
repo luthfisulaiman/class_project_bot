@@ -406,7 +406,6 @@ class TestAirQuality:
 
 
 class TestTweet:
-
     def test_tweet_true(self):
         res = utils.get_tweets('qurratayuna')
         assert res == 'test 5\ntest 4\ntest 3\ntest 2\ntest 1\n'
@@ -789,7 +788,6 @@ class TestCustomChuckJoke:
 
 
 class TestOriconBooks:
-
     def test_books(self):
         res = utils.books.Books().get_top_10('2017-04-10')
 
@@ -1981,5 +1979,19 @@ class TestMediaWiki:
 class TestApod:
     def test_apod(self):
         res = utils.apod.Apod().fetch_apod()
+        assert res is not None
 
+
+class TestHospital:
+    def test_lookup_hospital(self):
+        res = utils.lookup_hospital(106.862265, -6.169425)
+        assert res is not None
+
+    def test_lookup_random_hospital(self):
+        res = utils.lookup_random_hospital()
+        assert res is not None
+
+    def test_reply_random_hospital(self):
+        id = "1"
+        res = utils.reply_random_hospital(id)
         assert res is not None
