@@ -1496,4 +1496,3 @@ class TestQuran:
     def test_quran_ngaji_random(self):
         expected = "foobar"
         self.run_test(expected)
->>>>>>> story-#92
