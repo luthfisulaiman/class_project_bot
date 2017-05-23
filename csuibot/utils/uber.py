@@ -22,7 +22,7 @@ class Uber:
         def exportJSON(self):
             with open(self.locations_json_path, 'w') as locations_json:
                 json.dump(self.locations_dict, locations_json)
-            print self.locations_dict
+            print("updated", self.locations_dict)
 
         def get_locations(self):
             return self.locations_dict
