@@ -27,7 +27,6 @@ nose==1.3.7
 oauthlib==2.0.2
 packaging==16.8
 pbr==1.10.0
-pkg-resources==0.0.0
 ply==3.4
 py==1.4.33
 py-translate==1.0.3
