@@ -1068,6 +1068,7 @@ def quran_ngaji(message):
     app.logger.debug("'Ngaji C' command detected")
     try:
         qurantext = random_quran()
+         bot.reply_to(message, "Ayok kita mengaji")
         bot.reply_to(message, qurantext)
     except IndexError:
         bot.reply_to(message, 'oooops')
