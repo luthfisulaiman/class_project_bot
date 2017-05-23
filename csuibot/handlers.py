@@ -1090,8 +1090,9 @@ def process_chapter(message):
         quran = user_dict[chat_id]
         verse = message.text
         quran.setVerse(verse)
-        verse_num = verse.split(":")
-        qurantext = lookup_quran(quran.chapter, verse_num[0])
+        chapter_num = quran.chapter.split(":")
+        chapter_num = chapter_num[0]
+        qurantext = lookup_quran(chapter_num, verse)
     except Exception as e:
         bot.reply_to(message, 'oooops verse error')
     else:
