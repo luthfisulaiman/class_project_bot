@@ -24,7 +24,7 @@ from requests.exceptions import ConnectionError
 from telebot import types
 import datetime
 
-globals locations = {}
+locations = {}
 
 class Location:
     def __init__(self, lat, lon):
