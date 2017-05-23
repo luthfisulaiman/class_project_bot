@@ -1,5 +1,6 @@
 import json
 import io
+import requests
 from os import path
 
 class Uber:
@@ -7,7 +8,6 @@ class Uber:
         def __init__(self):
             self.locations_json_path = \
             path.abspath(path.join(path.dirname(__file__), "locations.json"))
-            self.importJSON()
 
         def importJSON(self):
             try:
@@ -27,6 +27,7 @@ class Uber:
             return self.locations_dict
 
         def add_location(self, location):
+            self.importJSON()
             self.locations_dict['locations'][location.name] = {}
             self.locations_dict['locations'][location.name]['latitude'] = location.lat
             self.locations_dict['locations'][location.name]['longitude'] = location.lon     
@@ -40,6 +41,10 @@ class Uber:
             else:
                 self.exportJSON()
                 return True
+
+        def getRoute(self, location_from, location_to):
+
+
 
     instance = None
     def __new__(cls):
