@@ -23,7 +23,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
                     image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
-                    fetch_apod, lookup_weather, city_lookup_weather)
+                    fetch_apod, city_lookup_weather, lookup_weather)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1335,18 +1335,16 @@ def get_user_location_weather(message):
     lon = message.location.longitude
     weather_result = lookup_weather(lon, lat, WIND_UNIT, TEMP_UNIT)
     markup = types.ReplyKeyboardRemove(selective=False)
-    bot.send_message(chat_id, weather_result)
+    bot.send_message(chat_id, weather_result, markup)
 
 
 @bot.message_handler(commands=['configure_weather'])
 def configure_weather(message):
     app.logger.debug("'configure weather' command detected")
-    chat_id = message.chat.id
-    message_id = message.message_id
     keyboard = types.InlineKeyboardMarkup()
     keyboard.row(
-        telebot.types.InlineKeyboardButton('Temperature Unit', callback_data='set-temp'),
-        telebot.types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
+        types.InlineKeyboardButton('Temperature Unit', callback_data='set-temp'),
+        types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
     )
 
     bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
@@ -1368,38 +1366,39 @@ def setting_result(message, ex_code):
     bot.send_chat_action(message.chat.id, 'typing')
     if (ex_code == "met"):
         WIND_UNIT = WEATHER_UNIT_M
-        bot.reply_to(message, "Wind speed changed into meter/sec")
+        bot.reply_to(message, "Wind speed changed into " + WIND_UNIT)
     if (ex_code == "imp"):
         WIND_UNIT = WEATHER_UNIT_I
-        bot.reply_to(message, "Wind speed changed into miles/hour")
+        bot.reply_to(message, "Wind speed changed into " + WIND_UNIT)
     if (ex_code == "celsius"):
         TEMP_UNIT = WT_CEL
-        bot.reply_to(message, "Temperature changed into Celsius")
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
     if (ex_code == "fahrenheit"):
         TEMP_UNIT = WT_FAH
-        bot.reply_to(message, "Temperature changed into Fahrenheit")
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
     if (ex_code == "kelvin"):
         TEMP_UNIT = WT_KEL
-        bot.reply_to(message, "Temperature changed into Kelvin")
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
     if (ex_code == "wind"):
         keyboard = types.InlineKeyboardMarkup()
         keyboard.row(
-            telebot.types.InlineKeyboardButton('meter/sec', callback_data='set-met'),
-            telebot.types.InlineKeyboardButton('miles/hours', callback_data='set-imp')
+            types.InlineKeyboardButton('meter/sec', callback_data='set-met'),
+            types.InlineKeyboardButton('miles/hours', callback_data='set-imp')
         )
         bot.send_message(message.chat.id, "Choose Wind Unit:", reply_markup=keyboard)
     if (ex_code == "temp"):
         keyboard = types.InlineKeyboardMarkup()
         keyboard.row(
-            telebot.types.InlineKeyboardButton('Celsius', callback_data='set-celsius'),
-            telebot.types.InlineKeyboardButton('Fahrenheit', callback_data='set-fahrenheit'),
-            telebot.types.InlineKeyboardButton('Kelvin', callback_data='set-imperial')
+            types.InlineKeyboardButton('Celsius', callback_data='set-celsius'),
+            types.InlineKeyboardButton('Fahrenheit', callback_data='set-fahrenheit'),
+            types.InlineKeyboardButton('Kelvin', callback_data='set-imperial')
         )
         bot.send_message(message.chat.id, "Choose Temperature Unit:", reply_markup=keyboard)
 
 
 # filter on message contains "cuaca di X" and chat type group
-@bot.message_handler(func=lambda message: message.text == "cuaca di " and message.chat.type == “group”)
+@bot.message_handler(func=lambda message: message.text == "cuaca di "
+                     and message.chat.type == "group")
 def group_weather(message):
     app.logger.debug("'cuaca di' message detected in a group")
     s2 = "cuaca "
@@ -1407,7 +1406,6 @@ def group_weather(message):
     city = (message.text[message.text.index(s2) + len(s2):])
     try:
         weathercity = city_lookup_weather(city, WIND_UNIT, TEMP_UNIT)
-
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to OpenWeather API")
     except requests.exceptions.HTTPError:

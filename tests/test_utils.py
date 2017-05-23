@@ -1961,19 +1961,14 @@ class TestApod:
 
         assert res is not None
 
-"""
-This is the BEGINNING of -weatherbot- testutil code
-"""
+
 class TestWeather:
     def test_lookup_weather(self):
-        res = utils.lookup_weather(106.862265, -6.169425, "metric", "Celcius")
+        res = (utils.weather.Weather().
+               lookup_weather(106.862265, -6.169425, "metric", "Celcius"))
         assert res is not None
-
 
     def test_group_lookup_weather(self):
-        res = utils.lookup_weather("Depok,ID", "metric", "Celcius")
+        res = (utils.weather.Weather().city_lookup_weather("Depok,ID",
+                                                           "metric", "Celcius"))
         assert res is not None
-
-"""
-This is the END of -weatherbot- testutil code
-"""
