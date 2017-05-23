@@ -48,8 +48,8 @@ def lookup_chinese_zodiac(year):
 
 def get_nearest_hangout(user_lat, user_long):
     h_list = hangout.create_hangout_list()
-    nearest, dist = hangout.find_nearest_place(h_list, user_long, user_lat)
-    str_msg = '[' + nearest.name + ']' + '\n'
-    str_msg += 'Location: ' + '\n' + nearest.address + '\n'
-    str_msg += 'Distance: ' + dist + ' metres' + '\n'
-    return str_msg, nearest
+    res = hangout.find_nearest_place(h_list, user_long, user_lat)
+    str_msg = '[' + res['nearest'] + ']' + '\n'
+    str_msg += 'Location: ' + '\n' + res['nearest'].address + '\n'
+    str_msg += 'Distance: ' + res['n_dist'] + ' metres' + '\n'
+    return dict(message=str_msg, nearest=res['nearest'])

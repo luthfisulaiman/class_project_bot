@@ -64,12 +64,12 @@ def get_location(message):
     loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
 
     try:
-        msg, nearest = get_nearest_hangout(loc['longitude'], loc['latitude'])
+        res = get_nearest_hangout(loc['longitude'], loc['latitude'])
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
-        bot.send_photo(message.chat.id, nearest.image_dir)
-        bot.reply_to(message, msg)
+        bot.send_photo(message.chat.id, res['nearest'].image_dir)
+        bot.reply_to(message, res['message'])
 
 
 def parse_date(text):

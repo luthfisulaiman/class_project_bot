@@ -62,4 +62,4 @@ def find_nearest_place(hangout_list, user_long, user_lat):
             n_dist = x
             nearest = data
 
-    return nearest, n_dist
+    return dict(nearest=nearest, n_dist=n_dist)
