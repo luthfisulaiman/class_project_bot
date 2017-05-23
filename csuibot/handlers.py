@@ -1055,6 +1055,7 @@ def process_location_step(message):
         lat = message.location.latitude
     except AttributeError:
         msg = bot.reply_to(message, "oops! please share your location")
+        bot.register_next_step_handler(msg, process_name_step)
     else:
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
@@ -1075,6 +1076,7 @@ def process_name_step(message):
             name = message.text
         except AttributeError:
             msg = bot.reply_to(message, "Please enter a name for the location given")
+            bot.register_next_step_handler(msg, process_name_step)
         else:
             loc = locations[message.chat.id]
             loc.name = name
@@ -1110,6 +1112,7 @@ def process_delete_step(message):
             location_name = message.text
         except AttributeError:
             msg = bot.send_message(message.chat.id, "Please select a location to be removed")
+            bot.register_next_step_handler(msg, process_name_step)
         else:
             if(uber_remove(location_name)):
                 bot.send_message(message.chat.invalid_dayofdate, "OK, location removed")
