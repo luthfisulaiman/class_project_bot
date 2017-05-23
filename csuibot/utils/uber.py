@@ -43,9 +43,8 @@ class Uber:
                 return True
 
         def getRoute(self, location_from, location_to):
-
-
-
+            pass
+        
     instance = None
     def __new__(cls):
         if not Uber.instance:
