@@ -58,8 +58,8 @@ class Weather:
         humid = w.get_humidity()
 
         return ("Weather at your position ({}):\n{} {}\n{} {}\n{} {}\n{}%"
-                .format(city, weather, emoji, wind_speed,
-                wind_unt, temper, temper_unt, humid))
+                .format(str(city), str(weather), str(emoji), str(wind_speed),
+                        str(wind_unt), str(temper), str(temper_unt), str(humid)))
 
     def metric_wind_to_imperial(self, windinms):
         return windinms * MILES_PER_HOUR_FOR_ONE_METER_PER_SEC
