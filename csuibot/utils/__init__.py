@@ -51,5 +51,5 @@ def get_nearest_hangout(user_lat, user_long):
     res = hangout.find_nearest_place(h_list, user_long, user_lat)
     str_msg = '[' + res['nearest'].name + ']' + '\n'
     str_msg += 'Location: ' + '\n' + res['nearest'].address + '\n'
-    str_msg += 'Distance: ' + res['n_dist'] + ' metres' + '\n'
+    str_msg += 'Distance: ' + str(res['n_dist']) + ' metres' + '\n'
     return dict(message=str_msg, nearest=res['nearest'])
