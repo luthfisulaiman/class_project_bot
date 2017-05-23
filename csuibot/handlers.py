@@ -1051,11 +1051,11 @@ def quran(message):
     try:
         chat_id = message.chat.id
         markup = types.ReplyKeyboardMarkup(row_width=2)
-        itembtn1 = types.KeyboardButton('An-Nas')
-        itembtn2 = types.KeyboardButton('Al-Falaq')
-        itembtn3 = types.KeyboardButton('Al-Ikhlaas')
-        itembtn4 = types.KeyboardButton('An-Nasr')
-        itembtn5 = types.KeyboardButton('Al-Kaafiroon')
+        itembtn1 = types.KeyboardButton('114:An-Nas')
+        itembtn2 = types.KeyboardButton('113:Al-Falaq')
+        itembtn3 = types.KeyboardButton('112:Al-Ikhlaas')
+        itembtn4 = types.KeyboardButton('110:An-Nasr')
+        itembtn5 = types.KeyboardButton('109:Al-Kaafiroon')
         markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
         msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
         bot.register_next_step_handler(msg, process_quran_button)
@@ -1090,7 +1090,8 @@ def process_chapter(message):
         quran = user_dict[chat_id]
         verse = message.text
         quran.setVerse(verse)
-        qurantext = lookup_quran(quran.chapter, quran.verse)
+        verse_num = verse.split(":")
+        qurantext = lookup_quran(quran.chapter, verse_num)
     except Exception as e:
         bot.reply_to(message, 'oooops')
     else:
