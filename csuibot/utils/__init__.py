@@ -551,14 +551,13 @@ def auto_tag(message):
 
 
 def find_movies(message):
-    msg = message.text
-    if msg == '/cgv_gold_class':
+    if message == '/cgv_gold_class':
         return movie.Movie_Cinema().find_gold()
-    elif msg == '/cgv_regular_2d':
+    elif message == '/cgv_regular_2d':
         return movie.Movie_Cinema().find_reg2d()
-    elif msg == '/cgv_4dx_3d_cinema':
+    elif message == '/cgv_4dx_3d_cinema':
         return movie.Movie_Cinema().find_3d()
-    elif msg == '/cgv_velvet':
+    elif message == '/cgv_velvet':
         return movie.Movie_Cinema().find_velvet()
     else:
         return movie.Movie_Cinema().find_sweetbox()

@@ -1523,28 +1523,34 @@ class test_hot_japan_100:
         assert res != "ups, something wrong is going on"
 
 
-#this is a class to test CGV cinema
 class TestCgv:
     def test_gold(self):
-        pass
+        res = utils.find_movies('/cgv_gold_class')
+        assert res != 'Cannot connect to CGV Blitz'
 
     def test_2d(self):
-        pass
+        res = utils.find_movies('/cgv_regular_2d')
+        assert res != 'Cannot connect to CGV Blitz'
 
     def test_3d(self):
-        pass
+        res = utils.find_movies('/cgv_4dx_3d_cinema')
+        assert res != 'Cannot connect to CGV Blitz'
 
     def test_velvet(self):
-        pass
+        res = utils.find_movies('/cgv_velvet')
+        assert res != 'Cannot connect to CGV Blitz'
 
     def test_sweet(self):
-        pass
+        res = utils.find_movies('/cgv_sweet_box')
+        assert res != 'Cannot connect to CGV Blitz'
 
     def test_change(self):
-        pass
+        res = utils.change_cinema('https://www.cgv.id/en/schedule/cinema/2000')
+        assert res == 'Cinema has changed successfully'
 
     def test_wrongurl(self):
-        pass
+        res = utils.change_cinema('lalala.com')
+        assert res == 'invalid url'
 
 
 class TestAiring:

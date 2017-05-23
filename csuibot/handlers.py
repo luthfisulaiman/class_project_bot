@@ -24,7 +24,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     get_available_schedules, get_schedules, lookup_anime, preview_music,
                     airing_check, lookup_airing, fetch_apod, lookup_hospital,
                     lookup_random_hospital, reply_random_hospital,
-                    change_cinema)
+                    change_cinema, find_movies)
 from requests.exceptions import ConnectionError
 import datetime
 from telebot import types
@@ -1153,7 +1153,7 @@ def tagimage(message):
 def cgv_gold(message):
     app.logger.debug("'cgv_gold_class' command detected")
     try:
-        gold = find_movies(message)
+        gold = find_movies(message.text)
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to CGV Blitz")
     else:
@@ -1164,7 +1164,7 @@ def cgv_gold(message):
 def cgv_reg(message):
     app.logger.debug("'cgv_regular' command detected")
     try:
-        twod = find_movies(message)
+        twod = find_movies(message.text)
     except ConnectionError:
         bot.reply_to(message, "Cannoct connect to CGV Blitz")
     else:
@@ -1175,7 +1175,7 @@ def cgv_reg(message):
 def cgv_3dcinema(message):
     app.logger.debug("'cgv_4dx_3d_cinema' command detected")
     try:
-        threed = find_movies(message)
+        threed = find_movies(message.text)
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to CGV Blitz")
     else:
@@ -1186,7 +1186,7 @@ def cgv_3dcinema(message):
 def cgv_velvet(message):
     app.logger.debug("'cgv_velvet' command detected")
     try:
-        velvet = find_movies(message)
+        velvet = find_movies(message.text)
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to CGV Blitz")
     else:
@@ -1197,7 +1197,7 @@ def cgv_velvet(message):
 def cgv_sweetbox(message):
     app.logger.debug("'cgv_sweet_box' command detected")
     try:
-        sweetbox = find_movies(message)
+        sweetbox = find_movies(message.text)
     except ConnectionError:
         bot.reply_to(message, "Cannot connect to CGV Blitz")
     else:

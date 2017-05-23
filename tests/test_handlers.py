@@ -22,8 +22,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               random_wiki_article, jadwal, create_schedule,
                               date_schedule, time_schedule, desc_schedule, preview,
                               airing, lookup_today, apod, hospital, random_hospital,
-                              ask_darurat_location, cgv_gold, cgv_reg, cgv_3dcinema, cgv_velvet, cgv_sweetbox,
-                              cgv_change)
+                              ask_darurat_location, cgv_change)
 from requests.exceptions import ConnectionError
 import json
 
@@ -2183,64 +2182,14 @@ Tag : power , Confidence : 19'''
     assert args[1] == 'HTTP Error'
 
 
-def test_cgv_gold(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/cgv_gold_class')
-
-    cgv_gold(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
-
-
-def test_cgv_reg(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/cgv_regular_2d')
-
-    cgv_reg(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
-
-
-def test_cgv_3dcinema(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/cgv_4dx_3d_cinema')
-
-    cgv_3dcinema(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
-
-
-def test_cgv_velvet(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/cgv_velvet')
-
-    cgv_gold(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
-
-
-def test_cgv_sweetbox(mocker):
-    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/cgv_sweet_box')
-
-    cgv_sweetbox(mock_message)
-
-    args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
-
-
 def test_cgv_change(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mock_message = Mock(text='/cgv_change_cinema url')
+    mock_message = Mock(text='/cgv_change_cinema https://www.cgv.id/en/schedule/cinema/2000')
 
     cgv_change(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == '' #this has to be something
+    assert args[1] == 'Cinema has changed successfully'
 
 
 def test_cgv_wrongcmd(mocker):
@@ -2654,4 +2603,3 @@ def test_ask_darurat_location(mocker):
     ask_darurat_location(message)
     args, _ = mocked_reply_to.call_args
     assert args[1] is not None
-
