@@ -1,4 +1,5 @@
 import requests
+import io
 from unittest.mock import Mock
 from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               colour, xkcd, yelkomputer, meme, hipsteripsum, ip,
@@ -18,7 +19,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
                               get_notif_twitter, air_quality, sentiment_new, add_wiki,
-                              random_wiki_article, hospital, random_hospital)
+                              random_wiki_article, jadwal, create_schedule,
+                              date_schedule, time_schedule, desc_schedule, preview,
+                              airing, lookup_today, apod, hospital, random_hospital)
 from requests.exceptions import ConnectionError
 import json
 
@@ -127,6 +130,111 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_jadwal_no_schedule(mocker):
+    fake_schedule = 'No future schedules are found.'
+    mocked_send_message = mocker.patch('csuibot.handlers.bot.send_message')
+    mocker.patch('csuibot.handlers.get_schedules', return_value=[])
+    mock_message = Mock(text='/jadwal', chat=Mock(id='foobar', type='group'))
+
+    jadwal(mock_message)
+
+    args, _ = mocked_send_message.call_args
+    assert args[1] == fake_schedule
+
+
+def test_jadwal_with_schedule(mocker):
+    fake_schedule = "2017-05-25 jam 09.00: Breakfast at Tiffany's."
+    mocked_send_message = mocker.patch('csuibot.handlers.bot.send_message')
+    mocker.patch('csuibot.handlers.get_schedules',
+                 return_value=["2017-05-25 jam 09.00: Breakfast at Tiffany's."])
+    mock_message = Mock(text='/jadwal', chat=Mock(id='foobar'))
+
+    jadwal(mock_message)
+
+    args, _ = mocked_send_message.call_args
+    assert args[1] == fake_schedule
+
+
+def test_create_schedule(mocker):
+    fake_response = 'When should the schedule be created?'
+    mocked_send_message = mocker.patch('csuibot.handlers.bot.send_message')
+    mock_message = Mock(text='desc', chat=Mock(id='foobar'), from_user=Mock(id='foobar'))
+
+    create_schedule(mock_message)
+
+    args, _ = mocked_send_message.call_args
+    assert args[1] == fake_response
+
+
+def test_date_schedule_cancel(mocker):
+    fake_response = 'create_schedule canceled.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch.dict('csuibot.handlers.schedules', {'foobar': 'foobar'})
+    mock_message = Mock(text='/cancel', from_user=Mock(id='foobar'))
+
+    date_schedule(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_date_schedule_invalid_date(mocker):
+    fake_response = 'The requested date is invalid. Try again.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='9999-9999-9999')
+
+    date_schedule(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_date_schedule_past_date(mocker):
+    fake_response = 'You cannot make a schedule for the past. Try again.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='2000-01-01')
+
+    date_schedule(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_date_schedule_unavailable_date(mocker):
+    fake_response = "That date's full. Try another date or use /cancel to cancel."
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_available_schedules', return_value=[])
+    mock_message = Mock(text='2017-05-25', from_user=Mock(id='foobar'))
+
+    date_schedule(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_date_schedule_success(mocker):
+    fake_response = 'Here are the available hours for 2017-05-25.'
+    mocked_send_message = mocker.patch('csuibot.handlers.bot.send_message')
+    mocker.patch('csuibot.handlers.get_available_schedules', return_value=['foobar'])
+    mock_message = Mock(text='2017-05-25', from_user=Mock(id='foobar'))
+
+    date_schedule(mock_message)
+
+    args, _ = mocked_send_message.call_args
+    assert args[1] == fake_response
+
+
+def test_time_schedule_cancel(mocker):
+    fake_response = 'create_schedule canceled.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch.dict('csuibot.handlers.schedules', {'foobar': 'foobar'})
+    mock_message = Mock(text='/cancel', from_user=Mock(id='foobar'))
+
+    time_schedule(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
 
 
 def test_sentiment_new(mocker):
@@ -2073,6 +2181,94 @@ Tag : power , Confidence : 19'''
     assert args[1] == 'HTTP Error'
 
 
+def test_airing_valid(mocker):
+    fake_result = 'Sakurada Reset is airing from 2017-04-05 until unknown'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', return_value=fake_result)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_airing_invalid(mocker):
+    fake_error = ('Command invalid, please use /is_airing <anime>'
+                  'format and replace space in <anime> with underscore (_)')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', return_value=fake_error)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_airing_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', side_effect=ConnectionError)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_airing_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.airing_check', side_effect=requests.exceptions.HTTPError)
+    mock_type = Mock(type='private')
+    mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
+
+    airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
+def test_anime_lookup_valid(mocker):
+    fake_result = 'SukaSuka 6'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', return_value=fake_result)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_anime_lookup_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', side_effect=ConnectionError)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_anime_lookup_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.lookup_airing', side_effect=requests.exceptions.HTTPError)
+    mock_type = Mock(type='group')
+    mock_message = Mock(text='hari ini nonton apa?', chat=mock_type)
+
+    lookup_today(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
 def test_add_wiki(mocker):
     fake_response = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -2081,6 +2277,18 @@ def test_add_wiki(mocker):
 
     add_wiki(mock_message)
 
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_time_schedule_success(mocker):
+    fake_response = 'Give a description for this schedule.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch.dict('csuibot.handlers.schedules',
+                      {'foobar': Mock(group='test_create_schedule', date='date')})
+    mock_message = Mock(text='desc', from_user=Mock(id='foobar'))
+
+    time_schedule(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_response
 
@@ -2114,6 +2322,17 @@ def test_add_wiki_invalid_url(mocker):
     assert args[1] == fake_response
 
 
+def test_desc_schedule_cancel(mocker):
+    fake_response = 'create_schedule canceled.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch.dict('csuibot.handlers.schedules', {'foobar': 'foobar'})
+    mock_message = Mock(text='/cancel', from_user=Mock(id='foobar'))
+
+    desc_schedule(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
 def test_random_wiki_article(mocker):
     fake_response = 'foo bar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
@@ -2122,6 +2341,20 @@ def test_random_wiki_article(mocker):
 
     random_wiki_article(mock_message)
 
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_desc_schedule_success(mocker):
+    fake_response = 'Schedule created successfully.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.bot.send_message')
+    mocker.patch('csuibot.handlers.generate_schedule')
+    mocker.patch.dict('csuibot.handlers.schedules',
+                      {'foobar': Mock(group='test_create_schedule', date='date', time='time')})
+    mock_message = Mock(text='desc', from_user=Mock(id='foobar'))
+
+    desc_schedule(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_response
 
@@ -2151,6 +2384,128 @@ def test_random_wiki_article_environment_error(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_response
+
+
+def test_preview_valid(mocker):
+    fake_response = "success"
+    mocked_send_audio = mocker.patch('csuibot.handlers.bot.send_audio')
+    mocker.patch('csuibot.handlers.bot.send_photo')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_send_audio.call_args
+    assert type(args[1]) == io.BufferedReader
+
+
+def test_preview_cant_find(mocker):
+    fake_response = "Can\'t found the requested artist"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_response)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_response
+
+
+def test_preview_invalid(mocker):
+    fake_error = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', return_value=fake_error)
+    mock_message = Mock(text='/itunes_preview Jack Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_error
+
+
+def test_preview_http_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'HTTP error occurs, please try again in a minute'
+
+
+def test_preview_connection_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=ConnectionError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Connection error occurs, please try again in a minute'
+
+
+def test_preview_permission_error(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.preview_music', side_effect=PermissionError)
+    mock_message = Mock(text='/itunes_preview Jack_Johnson')
+
+    preview(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please stop the audio file before requesting new file'
+
+
+def test_fetch_apod(mocker):
+    fake_apod = 'foo img'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod', return_value=fake_apod)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod
+
+
+def test_fetch_apod_connection_error(mocker):
+    fake_apod_error = 'A connection error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod',
+                 side_effect=requests.exceptions.ConnectionError)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod_error
+
+
+def test_fetch_latest_apod_http_error(mocker):
+    fake_apod_error = 'An HTTP error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod',
+                 side_effect=requests.exceptions.HTTPError)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod_error
+
+
+def test_fetch_latest_apod_error(mocker):
+    fake_apod_error = 'An error occured. Please try again in a moment.'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.fetch_apod',
+                 side_effect=requests.exceptions.RequestException)
+    mock_message = Mock(text='/apod')
+
+    apod(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_apod_error
 
 
 def test_hospital(mocker):
