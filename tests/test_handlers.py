@@ -26,7 +26,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               multRollRandomHandler, is_luckyHandler, enterkomputer,
                               check_fake_news_private, is_private_message,
                               add_fake_news_filter_private, POSSIBLE_NEWS_TYPES,
-                              check_fake_news_group, parse_check_fake_news_group)
+                              check_fake_news_group, parse_check_fake_news_group,
+                              cgv_change)
 from requests.exceptions import ConnectionError
 import json
 
@@ -2285,6 +2286,36 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_cgv_change(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_change_cinema https://www.cgv.id/en/schedule/cinema/2000')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Cinema has changed successfully'
+
+
+def test_cgv_wrongcmd(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Wrong command'
+
+
+def test_cgv_wrongurl(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/cgv_change_cinema url')
+
+    cgv_change(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'invalid url'
 
 
 def test_check_fake_news_private(mocker):

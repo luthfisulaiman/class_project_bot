@@ -1546,6 +1546,36 @@ class test_hot_japan_100:
         assert res != "ups, something wrong is going on"
 
 
+class TestCgv:
+    def test_gold(self):
+        res = utils.find_movies('/cgv_gold_class')
+        assert res != 'Cannot connect to CGV Blitz'
+
+    def test_2d(self):
+        res = utils.find_movies('/cgv_regular_2d')
+        assert res != 'Cannot connect to CGV Blitz'
+
+    def test_3d(self):
+        res = utils.find_movies('/cgv_4dx_3d_cinema')
+        assert res != 'Cannot connect to CGV Blitz'
+
+    def test_velvet(self):
+        res = utils.find_movies('/cgv_velvet')
+        assert res != 'Cannot connect to CGV Blitz'
+
+    def test_sweet(self):
+        res = utils.find_movies('/cgv_sweet_box')
+        assert res != 'Cannot connect to CGV Blitz'
+
+    def test_change(self):
+        res = utils.change_cinema('https://www.cgv.id/en/schedule/cinema/2000')
+        assert res == 'Cinema has changed successfully'
+
+    def test_wrongurl(self):
+        res = utils.change_cinema('lalala.com')
+        assert res == 'invalid url'
+
+
 class TestFakeNews:
     TEST_JSON_LOC = 'csuibot/utils/.test_sources.json'
     JSON_SAMPLE = {"abeldanger.net": {

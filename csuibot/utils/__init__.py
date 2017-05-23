@@ -25,7 +25,8 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
-                           diceSim as dice, enterkomputer, fakenews)
+                           diceSim as dice, enterkomputer, fakenews,
+                           movie_cinema as movie)
 
 
 def lookup_zodiac(month, day):
@@ -589,6 +590,23 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def find_movies(message):
+    if message == '/cgv_gold_class':
+        return movie.Concrete_Cinema().template_find_method("gold class")
+    elif message == '/cgv_regular_2d':
+        return movie.Concrete_Cinema().template_find_method("regular 2d")
+    elif message == '/cgv_4dx_3d_cinema':
+        return movie.Concrete_Cinema().template_find_method("4dx 3d cinema")
+    elif message == '/cgv_velvet':
+        return movie.Concrete_Cinema().template_find_method("velvet")
+    else:
+        return movie.Concrete_Cinema().template_find_method("sweetbox")
+
+
+def change_cinema(nurl):
+    return movie.Concrete_Cinema().template_change_method(nurl)
 
 
 def check_fake_news(url, news_type=None):

@@ -25,7 +25,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     airing_check, lookup_airing, fetch_apod, lookup_hospital,
                     lookup_random_hospital, reply_random_hospital, diceSimCoin,
                     diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
-                    check_fake_news, add_filter_news)
+                    check_fake_news, add_filter_news, change_cinema, find_movies)
 from requests.exceptions import ConnectionError
 import datetime
 from telebot import types
@@ -1216,6 +1216,80 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/cgv_gold_class$')
+def cgv_gold(message):
+    app.logger.debug("'cgv_gold_class' command detected")
+    try:
+        gold = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, gold)
+
+
+@bot.message_handler(regexp=r'^/cgv_regular_2d$')
+def cgv_reg(message):
+    app.logger.debug("'cgv_regular' command detected")
+    try:
+        twod = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannoct connect to CGV Blitz")
+    else:
+        bot.reply_to(message, twod)
+
+
+@bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
+def cgv_3dcinema(message):
+    app.logger.debug("'cgv_4dx_3d_cinema' command detected")
+    try:
+        threed = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, threed)
+
+
+@bot.message_handler(regexp=r'^/cgv_velvet$')
+def cgv_velvet(message):
+    app.logger.debug("'cgv_velvet' command detected")
+    try:
+        velvet = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, velvet)
+
+
+@bot.message_handler(regexp=r'^/cgv_sweet_box$')
+def cgv_sweetbox(message):
+    app.logger.debug("'cgv_sweet_box' command detected")
+    try:
+        sweetbox = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, sweetbox)
+
+
+@bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
+def cgv_change(message):
+    app.logger.debug("'cgv_change_cinema' command detected")
+    cmd1, url = message.text.split(' ')
+
+    app.logger.debug("url is {}".format(url))
+    try:
+        if cmd1 == '/cgv_change_cinema':
+            changed = change_cinema(url)
+        else:
+            raise Exception
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    except Exception:
+        bot.reply_to(message, "Wrong command")
+    else:
+        bot.reply_to(message, changed)
 
 
 def is_private_message(message):
