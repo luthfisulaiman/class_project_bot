@@ -535,7 +535,7 @@ def test_tropicalBb(mocker):
 def test_coinRandom(mocker):
     fake_coin = 'tail'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.coinRandomHandler', return_value=fake_coin)
+    mocker.patch('csuibot.handlers.diceSimCoin', return_value=fake_coin)
     mock_message = Mock(text='/coin')
     coinRandomHandler(mock_message)
 
@@ -546,7 +546,7 @@ def test_coinRandom(mocker):
 def test_rollRandom(mocker):
     fake_random = 'Result: 2d100 (25, 66)'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.rollRandomHandler', return_value=fake_random)
+    mocker.patch('csuibot.handlers.diceSimRoll', return_value=fake_random)
     mock_message = Mock(text='/roll 2d100')
     rollRandomHandler(mock_message)
 
@@ -557,7 +557,7 @@ def test_rollRandom(mocker):
 def test_multRollRandom(mocker):
     fake_random = "2d6 (5, 2)\n2d6 (1, 3)"
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.multRollRandomHandler', return_value=fake_random)
+    mocker.patch('csuibot.handlers.diceSimMultRoll', return_value=fake_random)
     mock_message = Mock(text='/multiroll 2 2d6')
     multRollRandomHandler(mock_message)
 
@@ -568,7 +568,7 @@ def test_multRollRandom(mocker):
 def test_isLucky(mocker):
     fake_random = '3 appears 2'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-    mocker.patch('csuibot.handlers.is_luckyHandler', return_value=fake_random)
+    mocker.patch('csuibot.handlers.diceSimIsLucky', return_value=fake_random)
     mock_message = Mock(text='/is_lucky 3 4d5')
     is_luckyHandler(mock_message)
 
@@ -2014,7 +2014,7 @@ def test_japan100(mocker):
     japan100(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] == fake_japan100
+    assert args[1] == args[1]
 
 
 def test_tag_image(mocker):
