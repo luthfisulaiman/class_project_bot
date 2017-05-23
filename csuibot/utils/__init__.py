@@ -46,7 +46,7 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
-def get_nearest_hangout(user_lat, user_long):
+def get_nearest_hangout(user_long, user_lat):
     h_list = hangout.create_hangout_list()
     res = hangout.find_nearest_place(h_list, user_long, user_lat)
     str_msg = '[' + res['nearest'].name + ']' + '\n'
