@@ -56,10 +56,10 @@ class Uber:
             client = UberRidesClient(session)
 
             response = client.get_price_estimates(
-                start_lat = location_from.lat,
-                start_lon = location_from.lon,
-                end_lat = destination['latitude'],
-                end_lon = destination['longitude'],
+                start_latitude = location_from.lat,
+                start_longitude = location_from.lon,
+                end_latitude = destination['latitude'],
+                end_longitude = destination['longitude'],
                 seat_count = 2
             )
             print(response)
