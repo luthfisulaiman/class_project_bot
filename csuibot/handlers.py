@@ -69,8 +69,8 @@ def get_location(message):
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
-        path = os.path.dirname(os.path.abspath(__file__)) + '/test.jpg'
-        bot.send_photo(message.chat.id, open(path , 'rb'))
+        path = os.path.dirname(os.path.abspath(__file__)) + '/utils/hangout_images/' + res['nearest'].image_dir
+        bot.send_photo(message.chat.id, open(path, 'rb'))
         bot.reply_to(message, res['message'])
 
 
