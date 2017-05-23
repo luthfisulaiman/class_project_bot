@@ -1047,7 +1047,7 @@ def add_destination(message):
 def process_location_step(message):
     app.logger.debug('location step detected')
     if(message.text == "/cancel"):
-        bot.send_message("adding location canceled")
+        bot.send_message(message.chat.id,"removing location canceled")
         return
 
     try:
@@ -1067,7 +1067,7 @@ def process_location_step(message):
 def process_name_step(message):
     app.logger.debug('name step detected')
     if(message.text == "/cancel"):
-        bot.send_message("adding location canceled")
+        bot.send_message(message.chat.id,"removing location canceled")
         return
 
     if(message.text != "/add_destination"):
@@ -1102,7 +1102,7 @@ def remove_destination(message):
 def process_delete_step(message):
     app.logger.debug("remove step detected")
     if(message.text == "/cancel"):
-        bot.send_message("removing location canceled")
+        bot.send_message(message.chat.id,"removing location canceled")
         return
 
     if(message.text != "/remove_destination"):
