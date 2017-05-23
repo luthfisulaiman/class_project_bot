@@ -531,3 +531,10 @@ def lookup_quran(chapter, verse):
         return quran_obj.lookup_quran(chapter, verse)
     except IndexError:
         return "Please insert the valid chapter and verse"
+
+def random_quran(chapter, verse):
+    try:
+        quran_obj = quran.quran()
+        return quran_obj.get_random_ayah()
+    except IndexError:
+        return "Please insert the valid chapter and verse"

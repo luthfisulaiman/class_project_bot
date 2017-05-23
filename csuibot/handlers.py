@@ -20,7 +20,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
-                    lookup_quran)
+                    lookup_quran, random_quran)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -1081,7 +1081,7 @@ def process_quran_button(message):
         msg = bot.reply_to(message, 'Please enter the verse (number only):')
         bot.register_next_step_handler(msg, process_chapter)
     except Exception as e:
-        bot.reply_to(message, 'oooops chapter error')
+        bot.reply_to(message, 'oooops chapter cant found')
 
 
 def process_chapter(message):
@@ -1094,6 +1094,6 @@ def process_chapter(message):
         chapter_num = chapter_num[0]
         qurantext = lookup_quran(chapter_num, verse)
     except Exception as e:
-        bot.reply_to(message, 'oooops verse error')
+        bot.reply_to(message, 'oooops verse cant found')
     else:
         bot.reply_to(message, qurantext)
