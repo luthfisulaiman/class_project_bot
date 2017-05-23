@@ -1043,6 +1043,7 @@ def anison_radio(message):
 
 
 def anison_radio_add_song(message):
+    app.logger.debug("'add song' commands detected")
     chat_id = message.chat.id
     song_name = message.text
 
@@ -1051,6 +1052,7 @@ def anison_radio_add_song(message):
 
 
 def anison_radio_remove_song(message):
+    app.logger.debug("'remove song' commands detected")
     chat_id = message.chat.id
     song_name = message.text
 
@@ -1058,7 +1060,8 @@ def anison_radio_remove_song(message):
     bot.send_message(chat_id, output)
 
 
-def anison_radio_listen(message):
+def anison_radio_listen(message)
+    app.logger.debug("'listen song' commands detected"):
     chat_id = message.chat.id
     song_name = message.text
 
