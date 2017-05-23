@@ -528,7 +528,7 @@ def auto_tag(message):
 
 
 def acronym_new(message):
-    return acronym.Acronym().new_acronym(message)
+    return acronym.Acronym().add_acronym(message)
 
 
 def acronym_update(message):
