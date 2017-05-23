@@ -61,3 +61,10 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+def test_album_price(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/vgmdb OST this months')
+    album_price(mock_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None

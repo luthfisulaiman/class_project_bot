@@ -257,5 +257,5 @@ class TestChineseZodiac:
 
 class TestAlbumPrice:
     def test_album_exist(self):
-        res = utils.lookup_album_price('http://vgmdb.net/db/calendar.php?year=2017&month=5')
-        asert res != ""    
+        res = utils.lookup_album_price('http://vgmdb.net/db/albums-search.php?do=results&action=upcoming')
+        asert res != "ups, something wrong is going on"
