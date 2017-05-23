@@ -62,7 +62,19 @@ class Uber:
                 end_longitude = destination['longitude'],
                 seat_count = 2
             )
-            print(response)
+            
+            estimates = response.json['prices']
+            res = 'Destination: {} ({} kilometers from current position)\n\n'.\
+                    format(location_to, estimates[0]["distance"])
+            res += 'Estimated travel time and fares for each Uber services:\n- UberX ({} minutes, {} rupiah)'\
+                   .format(estimates[3]["duration"], estimates[3]["high_estimate"])
+            res += '- UberPool ({} minutes, {} rupiah)\n'.\
+                   format(estimates[2]["duration"], estimates[2]["high_estimate"])
+            res += '- UberBlack ({} minutes, {} rupiah)\n'.\
+                   format(estimates[4]["duration"], estimates[4]["high_estimate"])
+            res += '- UberMotor ({} minutes, {} rupiah)\n\nData provided by [Uber] (https://www.uber.com)'.\
+                   format(estimates[1]["duration"], estimates[1]["high_estimate"])
+            return res
 
     instance = None
     def __new__(cls):
