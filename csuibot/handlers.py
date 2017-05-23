@@ -1047,7 +1047,7 @@ def add_destination(message):
 def process_location_step(message):
     app.logger.debug('location step detected')
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"removing location canceled")
+        bot.send_message(message.chat.id,"adding location canceled")
         return
 
     try:
@@ -1067,7 +1067,7 @@ def process_location_step(message):
 def process_name_step(message):
     app.logger.debug('name step detected')
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"removing location canceled")
+        bot.send_message(message.chat.id,"adding location canceled")
         return
 
     if(message.text != "/add_destination"):
@@ -1112,7 +1112,7 @@ def process_delete_step(message):
             msg = bot.send_message(message.chat.id, "Please select a location to be removed")
         else:
             if(uber_remove(location_name)):
-                bot.send_message(message.chat.id, "OK, location removed")
+                bot.send_message(message.chat.invalid_dayofdate, "OK, location removed")
             else:
                 msg = bot.reply_to(message, "Location not found")
                 bot.register_next_step_handler(msg, process_delete_step)
