@@ -2074,7 +2074,7 @@ def test_uber(mocker):
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
-    mocked_message = Mock('\uber')
+    mocked_message = Mock('\\uber')
     
     uber(mocked_message)
 
@@ -2088,7 +2088,7 @@ def test_add_destination(mocker):
     fake_result = 'Please share a location to be added'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
-    mocked_message = Mock('\add_destination')
+    mocked_message = Mock('\\add_destination')
     
     uber(mocked_message)
 
@@ -2101,7 +2101,7 @@ def test_remove_destination(mocker):
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
-    mocked_message = Mock('\remove_destination')
+    mocked_message = Mock('\\remove_destination')
     
     uber(mocked_message)
 

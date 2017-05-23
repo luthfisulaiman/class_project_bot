@@ -2,6 +2,8 @@ import json
 import io
 import requests
 from os import path
+from uber_rides.session import Session
+from uber_rides.client import UberRidesClient
 
 class Uber:
     class __Uber:
@@ -43,8 +45,24 @@ class Uber:
                 self.exportJSON()
                 return True
 
-        def getRoute(self, location_from, location_to):
-            pass
+        def get_route_info(self, location_from, location_to):
+            try:
+                destination = self.locations_dict['locations'][location_to]
+            except KeyError:
+                return False
+
+            server_token = "LQFjEH6XwvteSodBvsTOh0wskzA6XnVAsASUqYSl"
+            session = Session(server_token = server_token)
+            client = UberRidesClient(session)
+
+            response = client.get_price_estimates(
+                start_lat = location_from.lat,
+                start_lon = location_from.lon,
+                end_lat = destination.lat,
+                end_lon = destination.lon,
+                seat_count = 1
+            )
+            print(response)
 
     instance = None
     def __new__(cls):
