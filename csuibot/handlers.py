@@ -20,11 +20,12 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
                     get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
-                    lookup_quran, random_quran)
+                    lookup_quran, random_quran, get_chapter)
 from requests.exceptions import ConnectionError
 import datetime
 
 user_dict = {}
+correct = ""
 
 
 class Quran:
@@ -1067,11 +1068,29 @@ def quran(message):
 def quran_ngaji(message):
     app.logger.debug("'Ngaji C' command detected")
     try:
-        qurantext = random_quran()
+        qurantext = random_quran().split("@")
+        correct = qurantext[0]
+        quranmsg = qurantext[1]
         bot.reply_to(message, "Ayok kita mengaji")
         bot.reply_to(message, qurantext)
+        bot.register_next_step_handler(message, process_ngaji)
     except IndexError:
         bot.reply_to(message, 'oooops')
+
+
+def process_ngaji(message):
+    try:
+        chat_id = message.chat.id
+        answer = message.text
+        user_dict[chat_id] = answer
+        list_chapter = get_chapter()
+        if answer in list_chapter:
+            if(answer == correct):
+                bot.reply_to(message, "You are correct")
+            else:
+                bot.reply_to(message, "Try Again")
+    except Exception as e:
+        bot.reply_to(message, 'oooops answer cant found')
 
 
 def process_quran_button(message):

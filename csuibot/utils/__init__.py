@@ -538,3 +538,7 @@ def random_quran():
         return quran_obj.get_random_ayah()
     except IndexError:
         return "Please insert the valid chapter and verse"
+
+def get_chapter():
+    quran_obj = quran.quran()
+    return quran_obj.get_chapter()
