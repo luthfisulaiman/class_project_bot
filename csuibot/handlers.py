@@ -1072,7 +1072,7 @@ def quran_ngaji(message):
         correct = qurantext[0]
         quranmsg = qurantext[1]
         bot.reply_to(message, "Ayok kita mengaji")
-        bot.reply_to(message, qurantext)
+        bot.reply_to(message, quranmsg)
         bot.register_next_step_handler(message, process_ngaji)
     except IndexError:
         bot.reply_to(message, 'oooops')
