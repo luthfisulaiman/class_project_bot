@@ -27,8 +27,8 @@ class quran:
 
     def get_random_ayah(self):
         try:
-            chapter = random.random() * 114
-            verse = random.random() * len(self.quran['data']['surahs'][chapter]['ayahs'])
+            chapter = int(random.random() * 114)
+            verse = int(random.random()) * len(self.quran['data']['surahs'][chapter]['ayahs'])
             ayat = self.quran['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
             translation = self.qurantr['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
             return ayat + "\n" + translation + "\n"

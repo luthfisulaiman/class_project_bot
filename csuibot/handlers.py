@@ -1063,7 +1063,7 @@ def quran(message):
         bot.reply_to(message, "Please enter the valid chapter and verse")
 
 
-@bot.message_handler(regexp=r'ngaji( ?[a-z]*)')
+@bot.message_handler(regexp=r'ngaji')
 def quran_ngaji(message):
     app.logger.debug("'Ngaji C' command detected")
     try:

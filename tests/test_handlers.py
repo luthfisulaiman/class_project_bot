@@ -17,7 +17,8 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new, quran_c_v)
+                              get_notif_twitter, air_quality, sentiment_new, quran_ngaji,
+                              quran_c_v)
 from requests.exceptions import ConnectionError
 
 
@@ -2101,14 +2102,14 @@ def test_quran_ayat_not_found(mocker):
     assert args[1] == 'Please enter the valid chapter and verse'
 
 
-# def test_quran_ngaji(mocker):
-#     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
-#     mock_message = Mock(text='kepengen ngaji alfatihah')
+def test_quran_ngaji(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='kepengen ngaji alfatihah')
 
-#     quran(mock_message)
+    quran_ngaji(mock_message)
 
-#     args, _ = mocked_reply_to.call_args
-#     assert args[1] == 'Please input valid chapter and verse'
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == 'Please input valid chapter and verse'
 
 
 # def test_quran_ngaji_random(mocker):
