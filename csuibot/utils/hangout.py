@@ -12,6 +12,8 @@ class Hangout:
         self.longitude = 0
         self.latitude = 0
 
+        self.distance = 0
+
     def count_distance(self, user_long, user_lat):
         earth_radius = 6371
         d_lat = self.deg2rad(self.latitude - user_lat)
@@ -28,6 +30,9 @@ class Hangout:
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         d = (earth_radius * c) * 1000
         return d
+
+    def set_distance(self, user_long, user_lat):
+        self.distance = self.count_distance(user_long, user_lat)
 
     def deg2rad(self, deg):
         return deg * (math.pi / 180)

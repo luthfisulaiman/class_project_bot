@@ -6,7 +6,6 @@ from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 import os
 
 request_hangout = -1
-user_location = {}
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -96,12 +95,11 @@ def hangout_keyboard(message):
             msg = msg + ' ' + str_tmp
 
     res = get_hangout(msg[1:])
-    dist = res.count_distance(user_location['longitude'], user_location['latitude'])
 
     nearest_path = '/utils/hangout_images/' + res.image_dir
     path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
     bot.send_photo(message.chat.id, open(path, 'rb'))
-    bot.reply_to(message, print_message(res, dist))
+    bot.reply_to(message, print_message(res, res.distance))
 
 
 @bot.message_handler(content_types=['location'])
@@ -115,7 +113,7 @@ def get_nearest_location(message):
         if req == 0:
             res = get_nearest_hangout(loc['longitude'], loc['latitude'])
         elif req == 1:
-            res = get_random_hangout(5)
+            res = get_random_hangout(5, loc['longitude'], loc['latitude'])
 
     except ValueError:
         bot.reply_to(message, 'input is invalid')
@@ -137,9 +135,6 @@ def get_nearest_location(message):
 
             bot.send_message(chat_id=message.chat.id, text=str_msg,
                              reply_markup=reply_keyboard)
-
-            global user_location
-            user_location = loc
 
         request_hangout = -1
 
