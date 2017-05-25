@@ -1,7 +1,9 @@
 from . import app, bot
 import csuibot
+from telebot import types
 import requests
 import re
+import os
 import urllib
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
@@ -19,10 +21,40 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_billArtist, lookup_weton, get_oricon_books,
                     lookup_url, lookup_artist, extract_colour, checkTopTropical,
                     getTopManga, getTopMangaMonthly, auto_tag, lookup_HotJapan100,
-                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new)
-
+                    get_tweets, get_aqi_city, get_aqi_coord, lookup_sentiment_new,
+                    image_is_sfw, get_mediawiki, save_mediawiki_url, generate_schedule,
+                    get_available_schedules, get_schedules, lookup_anime, preview_music,
+                    manage_love_live_song, city_lookup_weather, lookup_weather,
+                    airing_check, lookup_airing, fetch_apod, lookup_hospital,
+                    lookup_random_hospital, reply_random_hospital, diceSimCoin,
+                    diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
+                    check_fake_news, add_filter_news, change_cinema, find_movies,
+                    lookup_quran, random_quran, get_chapter, uber_add,
+                    uber_remove, uber_info, uber_get, lookup_album_price)
 from requests.exceptions import ConnectionError
 import datetime
+
+locations = {}
+
+
+class Location:
+    def __init__(self, lat, lon):
+        self.lat = lat
+        self.lon = lon
+        self.name = None
+
+
+user_dict = {}
+correct = ""
+
+
+class Quran:
+    def __init__(self, chapter):
+        self.chapter = chapter
+        self.verse = None
+
+    def setVerse(self, verse):
+        self.verse = verse
 
 
 def message_decorator(func):
@@ -34,6 +66,17 @@ def message_decorator(func):
         return func(message)
 
     return wrapper
+
+
+schedules = {}
+lookup_anime_property = {}
+
+
+class EntrySchedule:
+    def __init__(self, group):
+        self.group = group
+        self.date = None
+        self.time = None
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -218,6 +261,56 @@ def sceleNoticeHandler(message):
         bot.reply_to(message, 'Unexpected Error catched')
     else:
         bot.reply_to(message, notification)
+
+
+@bot.message_handler(regexp=r'^/coin$')
+def coinRandomHandler(message):
+    app.logger.debug("coin command detected")
+    try:
+        mes = diceSimCoin()
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/roll [0-9]+d[0-9]+$')
+def rollRandomHandler(message):
+    app.logger.debug("roll command detected")
+    _, info = message.text.split(' ')
+    x, y = info.split('d')
+    # try:
+    mes = diceSimRoll(x, y)
+    # except Exception as e:
+    #    bot.reply_to(message, 'Unexpected Error catched')
+    # else:
+    bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/multiroll [0-9]+ [0-9]+d[0-9]+$')
+def multRollRandomHandler(message):
+    app.logger.debug("multi roll command detected")
+    _, z, info = message.text.split(' ')
+    x, y = info.split('d')
+    try:
+        mes = diceSimMultRoll(x, y, z)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
+
+
+@bot.message_handler(regexp=r'^/is_lucky [0-9]+ [0-9]+d[0-9]+$')
+def is_luckyHandler(message):
+    app.logger.debug("is lucky command detected")
+    _, n, info = message.text.split(' ')
+    x, y = info.split('d')
+    try:
+        mes = diceSimIsLucky(n, x, y)
+    except Exception as e:
+        bot.reply_to(message, 'Unexpected Error catched')
+    else:
+        bot.reply_to(message, mes)
 
 
 @bot.message_handler(regexp=r'^/checktropical.+$')
@@ -429,6 +522,128 @@ def parse_date(text):
     return tuple(map(int, text.split('-')))
 
 
+@bot.message_handler(regexp=r'^/vgmdb OST this month$')
+def album_price(message):
+    app.logger.debug("'vgmd' command detected")
+    try:
+        reply = lookup_album_price()
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(commands=['enterkomputer'])
+def enterkomputer(message):
+    arr_input = message.text.split(" ", 2)
+    if(len(arr_input) < 3):
+        bot.reply_to(message, "Not enough arguments, please provide category"
+                              " and item name with the format /enterkomputer CATEGORY ITEM")
+    else:
+        category = arr_input[1]
+        item = arr_input[2]
+
+        try:
+            result = lookup_enter_item(category, item)
+        except ConnectionError:
+            bot.reply_to(message, 'Unable to connect to Enterkomputer')
+        else:
+            bot.reply_to(message, result)
+
+
+@bot.message_handler(func=lambda message: message.chat.type == "group", regexp="jadwal")
+def jadwal(message):
+    app.logger.debug("'jadwal' command detected")
+    future_schedules = get_schedules(message.chat.id)
+    if len(future_schedules) > 0:
+        for schedule in future_schedules:
+            bot.send_message(message.chat.id, schedule)
+    else:
+        bot.send_message(message.chat.id, 'No future schedules are found.')
+
+
+@bot.message_handler(commands=['create_schedule'],
+                     func=lambda message: message.chat.type == "group")
+def create_schedule(message):
+    app.logger.debug("'create_schedule' command detected")
+    entry = EntrySchedule(message.chat.id)
+    schedules[message.from_user.id] = entry
+    msg = bot.send_message(message.from_user.id, 'When should the schedule be created?')
+    bot.register_next_step_handler(msg, date_schedule)
+
+
+def date_schedule(date_message):
+    app.logger.debug("date of schedule step started")
+    if date_message.text == '/cancel':
+        schedules.pop(date_message.from_user.id)
+        bot.reply_to(date_message, 'create_schedule canceled.')
+        return
+
+    try:
+        y, m, d = parse_date(date_message.text)
+        if datetime.date(y, m, d) >= datetime.datetime.now().date():
+            entry = schedules[date_message.from_user.id]
+
+            avl_hours = get_available_schedules(entry.group, date_message.text)
+            avl_hours.sort()
+            if len(avl_hours) <= 0:
+                error_text = "That date's full. Try another date or use /cancel to cancel."
+                msg = bot.reply_to(date_message, error_text)
+                bot.register_next_step_handler(msg, date_schedule)
+                return
+
+            app.logger.debug("date of schedule is {}".format(date_message.text))
+            entry.date = date_message.text
+            markup = types.ReplyKeyboardMarkup()
+            for avl_hour in avl_hours:
+                markup.add(types.KeyboardButton("{}.00".format(avl_hour)))
+            msg = bot.send_message(date_message.from_user.id,
+                                   'Here are the available hours for {}.'.format(
+                                        date_message.text),
+                                   reply_markup=markup)
+            bot.register_next_step_handler(msg, time_schedule)
+        else:
+            msg = bot.reply_to(date_message,
+                               'You cannot make a schedule for the past. Try again.')
+            bot.register_next_step_handler(msg, date_schedule)
+    except ValueError:
+        msg = bot.reply_to(date_message, 'The requested date is invalid. Try again.')
+        bot.register_next_step_handler(msg, date_schedule)
+
+
+def time_schedule(time_message):
+    app.logger.debug("time of schedule started")
+    if time_message.text == '/cancel':
+        schedules.pop(time_message.from_user.id)
+        bot.reply_to(time_message, 'create_schedule canceled.')
+        return
+
+    app.logger.debug("time of schedule is {}".format(time_message.text))
+    entry = schedules[time_message.from_user.id]
+    entry.time = time_message.text.split('.')[0]
+    msg = bot.reply_to(time_message, 'Give a description for this schedule.',
+                       reply_markup=types.ReplyKeyboardRemove())
+    bot.register_next_step_handler(msg, desc_schedule)
+
+
+def desc_schedule(desc_message):
+    app.logger.debug("desc of schedule started")
+    if desc_message.text == '/cancel':
+        schedules.pop(desc_message.from_user.id)
+        bot.reply_to(desc_message, 'create_schedule canceled.')
+        return
+
+    app.logger.debug("desc of schedule is {}".format(desc_message.text))
+    entry = schedules[desc_message.from_user.id]
+    generate_schedule(entry.group, entry.date, entry.time, desc_message.text)
+    bot.reply_to(desc_message, 'Schedule created successfully.')
+    bot.send_message(entry.group, 'A schedule has been created.')
+    bot.send_message(entry.group,
+                     "{} jam {}.00: {}".format(entry.date, entry.time, desc_message.text))
+    schedules.pop(desc_message.from_user.id)
+
+
 @bot.message_handler(commands=['sentiment'])
 def sentiment_new(message):
     app.logger.debug("'sentiment' command detected")
@@ -478,7 +693,7 @@ def oricon_books(message):
     try:
         _, _, weekly, request_date = message.text.split(' ')
         if (weekly != 'weekly'):
-            top10 = 'Oricon books command currently only supports '\
+            top10 = 'Oricon books command currently only supports ' \
                     'weekly ratings at this time.'
         else:
             app.logger.debug("oricon command type is 'weekly'")
@@ -749,7 +964,29 @@ def marsfasilkom(message):
         bot.reply_to(message, marsfasilkom)
 
 
-@bot.message_handler(regexp=r'^/news [a-z A-Z 0-9]*$')
+@bot.message_handler(regexp=r'/is_sfw( .*)?')
+def check_sfw_command(message):
+    app.logger.debug("invalid is_sfw command detected")
+
+    bot.reply_to(message, 'to use is_sfw command, send photo caption with /is_sfw')
+
+
+def is_caption_image(message):
+    sfw_captions = ['/is_sfw']
+    return message.caption in sfw_captions
+
+
+@bot.message_handler(func=is_caption_image, content_types=['photo'])
+def check_sfw_image(message):
+    app.logger.debug("'is_sfw' command detected with photo sent")
+
+    photo_file_path = bot.get_file(message.photo[1].file_id).file_path
+    app.logger.debug(photo_file_path)
+    sfw_check = image_is_sfw(photo_file_path)
+    bot.reply_to(message, sfw_check)
+
+
+@bot.message_handler(regexp=r'^/getnews [a-z A-Z 0-9]*$')
 def news(message):
     app.logger.debug("'get news' command detected")
     command, keyword = message.text.split(' ', 1)
@@ -1028,3 +1265,833 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(commands=['uber'],
+                     func=lambda message: message.chat.type == "private")
+def uber(message):
+    app.logger.debug("uber command detected")
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    msg = bot.reply_to(message, "Please share your location", reply_markup=markup)
+    bot.register_next_step_handler(msg, process_location_from_step)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_location_from_step(message):
+    app.logger.debug('from location step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "uber command canceled")
+        return
+    try:
+        lon = message.location.longitude
+        lat = message.location.latitude
+    except AttributeError:
+        msg = bot.reply_to(message, "oops! please share your location")
+        bot.register_next_step_handler(msg, process_location_from_step)
+    else:
+        loc = Location(lat, lon)
+        locations[message.chat.id] = loc
+        app.logger.debug('{} {}'.format(lat, lon))
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+        locations_list = uber_get()['locations']
+        app.logger.debug(locations_list)
+        if(len(locations_list)):
+            for name in locations_list:
+                markup.row(name)
+            msg = bot.reply_to(message, "Please select your destination", reply_markup=markup)
+            bot.register_next_step_handler(msg, process_location_to_step)
+        else:
+            bot.send_message(message.chat.id,
+                             "No locations have been added,"
+                             "please add with /add_destination command")
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_location_to_step(message):
+    app.logger.debug('to location step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "uber command canceled")
+        return
+
+    loc_from = locations[message.chat.id]
+    loc_to = message.text
+    try:
+        res = uber_info(loc_from, loc_to)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Uber API")
+    else:
+        bot.send_message(message.chat.id, res)
+
+
+@bot.message_handler(commands=['add_destination'],
+                     func=lambda message: message.chat.type == "private")
+def add_destination(message):
+    app.logger.debug('add_destination command detected')
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    msg = bot.reply_to(message, "Please share your location", reply_markup=markup)
+    bot.register_next_step_handler(msg, process_location_step)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_location_step(message):
+    app.logger.debug('location step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "adding location canceled")
+        return
+
+    try:
+        lon = message.location.longitude
+        lat = message.location.latitude
+
+    except AttributeError:
+        msg = bot.reply_to(message, "oops! please share your location")
+        bot.register_next_step_handler(msg, process_location_step)
+    else:
+        loc = Location(lat, lon)
+        locations[message.chat.id] = loc
+        app.logger.debug('{} {}'.format(lat, lon))
+        msg = bot.reply_to(message, "OK, please enter a name for the location given")
+        bot.register_next_step_handler(msg, process_name_step)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_name_step(message):
+    app.logger.debug('name step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "adding location canceled")
+        return
+
+    if(message.text != "/add_destination"):
+        try:
+            name = message.text
+        except AttributeError:
+            msg = bot.reply_to(message, "Please enter a name for the location given")
+            bot.register_next_step_handler(msg, process_name_step)
+        else:
+            loc = locations[message.chat.id]
+            loc.name = name
+            app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
+            uber_add(loc)
+            bot.reply_to(message, "OK, location saved")
+
+
+@bot.message_handler(commands=['remove_destination'],
+                     func=lambda message: message.chat.type == "private")
+def remove_destination(message):
+    app.logger.debug("remove_destination command detected")
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    locations = uber_get()['locations']
+    app.logger.debug(locations)
+    if(len(locations)):
+        for name in locations:
+            markup.row(name)
+        msg = bot.reply_to(message, "Please select a location to be removed",
+                           reply_markup=markup)
+        bot.register_next_step_handler(msg, process_delete_step)
+    else:
+        bot.reply_to(message, "No locations have been added, please add with "
+                              "/add_destination command")
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_delete_step(message):
+    app.logger.debug("remove step detected")
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "removing location canceled")
+        return
+
+    if(message.text != "/remove_destination"):
+        try:
+            location_name = message.text
+        except AttributeError:
+            msg = bot.send_message(message.chat.id, "Please select a location to be removed")
+            bot.register_next_step_handler(msg, process_delete_step)
+        else:
+            if(uber_remove(location_name)):
+                bot.send_message(message.chat.id, "OK, location removed")
+            else:
+                msg = bot.reply_to(message, "Location not found")
+                bot.register_next_step_handler(msg, process_delete_step)
+
+
+@bot.message_handler(regexp=r'^/qs [0-9]+:[0-9]+$')
+def quran_c_v(message):
+    app.logger.debug("'Quran C:V' command detected")
+    try:
+        command = message.text.split(' ')
+        cv = command[1].split(':')
+        chapter = cv[0]
+        verse = cv[1]
+        quran = lookup_quran(chapter, verse)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+    else:
+        bot.reply_to(message, quran)
+
+
+@bot.message_handler(regexp=r'^/qs$')
+def quran(message):
+    app.logger.debug("'Quran' command detected")
+    try:
+        chat_id = message.chat.id
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        itembtn1 = types.KeyboardButton('114:An-Nas')
+        itembtn2 = types.KeyboardButton('113:Al-Falaq')
+        itembtn3 = types.KeyboardButton('112:Al-Ikhlaas')
+        itembtn4 = types.KeyboardButton('110:An-Nasr')
+        itembtn5 = types.KeyboardButton('109:Al-Kaafiroon')
+        markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
+        msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
+        bot.register_next_step_handler(msg, process_quran_button)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+
+
+@bot.message_handler(regexp=r'ngaji')
+def quran_ngaji(message):
+    app.logger.debug("'Ngaji C' command detected")
+    try:
+        qurantext = random_quran().split("@")
+        correct = qurantext[0]
+        quranmsg = qurantext[1]
+        app.logger.debug(correct)
+        bot.reply_to(message, "Ayok kita mengaji")
+        bot.reply_to(message, quranmsg)
+        bot.register_next_step_handler(message, process_ngaji)
+    except IndexError:
+        bot.reply_to(message, 'oooops')
+
+
+def process_ngaji(message):
+    try:
+        chat_id = message.chat.id
+        answer = message.text
+        user_dict[chat_id] = answer
+        list_chapter = get_chapter()
+        if answer in list_chapter:
+            if(answer == correct):
+                bot.reply_to(message, "You are correct")
+            else:
+                bot.reply_to(message, "Try Again")
+    except Exception as e:
+        bot.reply_to(message, 'oooops answer cant found')
+
+
+def process_quran_button(message):
+    try:
+        chat_id = message.chat.id
+        chapter = message.text
+        quran = Quran(chapter)
+        user_dict[chat_id] = quran
+        msg = bot.reply_to(message, 'Please enter the verse (number only):')
+        bot.register_next_step_handler(msg, process_chapter)
+    except Exception as e:
+        bot.reply_to(message, 'oooops chapter cant found')
+
+
+def process_chapter(message):
+    try:
+        chat_id = message.chat.id
+        quran = user_dict[chat_id]
+        verse = message.text
+        quran.setVerse(verse)
+        chapter_num = quran.chapter.split(":")
+        chapter_num = chapter_num[0]
+        qurantext = lookup_quran(chapter_num, verse)
+    except Exception as e:
+        bot.reply_to(message, 'oooops verse cant found')
+    else:
+        bot.reply_to(message, qurantext)
+
+
+@bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
+def anison_radio(message):
+    app.logger.debug("'anison' commands detected")
+    app.logger.debug(message.reply_to_message)
+    if message.chat.type == "private":
+        if "add_song" not in message.text:
+            markup = manage_love_live_song("list", type_=message.text)
+            if type(markup) == str:
+                bot.reply_to(message, markup)
+                return
+
+        if "add_song" in message.text:
+            msg = bot.reply_to(message, "Enter song name:")
+            bot.register_next_step_handler(msg, anison_radio_add_song)
+        elif "remove_song" in message.text:
+            bot.reply_to(message, "Choose song to remove:", reply_markup=markup)
+        elif "listen_song" in message.text:
+            bot.reply_to(message, "Choose song to listen to:", reply_markup=markup)
+    else:
+        bot.reply_to(message, "Please chat me to run this command")
+
+
+def anison_radio_add_song(message):
+    app.logger.debug("'add song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text
+
+    output = manage_love_live_song("add", song_name)
+    bot.send_message(chat_id, output)
+
+
+@bot.message_handler(commands=["removesll"])
+def anison_radio_remove_song(message):
+    app.logger.debug("'remove song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text.split(' ', 1)[1]
+
+    output = manage_love_live_song("remove", song_name)
+    bot.send_message(chat_id, output)
+
+
+@bot.message_handler(commands=["listensll"])
+def anison_radio_listen(message):
+    app.logger.debug("'listen song' commands detected")
+    chat_id = message.chat.id
+    song_name = message.text.split(' ', 1)[1]
+
+    output = manage_love_live_song("clip", song_name)
+    if type(output) == str:
+        bot.send_message(chat_id, output)
+    else:
+        app.logger.debug(str(output))
+        bot.send_audio(chat_id, output[2], performer=output[1], title=output[0])
+
+
+@bot.message_handler(regexp=r'^/cgv_gold_class$')
+def cgv_gold(message):
+    app.logger.debug("'cgv_gold_class' command detected")
+    try:
+        gold = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, gold)
+
+
+@bot.message_handler(regexp=r'^/cgv_regular_2d$')
+def cgv_reg(message):
+    app.logger.debug("'cgv_regular' command detected")
+    try:
+        twod = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannoct connect to CGV Blitz")
+    else:
+        bot.reply_to(message, twod)
+
+
+@bot.message_handler(regexp=r'^/cgv_4dx_3d_cinema$')
+def cgv_3dcinema(message):
+    app.logger.debug("'cgv_4dx_3d_cinema' command detected")
+    try:
+        threed = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, threed)
+
+
+@bot.message_handler(regexp=r'^/cgv_velvet$')
+def cgv_velvet(message):
+    app.logger.debug("'cgv_velvet' command detected")
+    try:
+        velvet = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, velvet)
+
+
+@bot.message_handler(regexp=r'^/cgv_sweet_box$')
+def cgv_sweetbox(message):
+    app.logger.debug("'cgv_sweet_box' command detected")
+    try:
+        sweetbox = find_movies(message.text)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    else:
+        bot.reply_to(message, sweetbox)
+
+
+@bot.message_handler(regexp=r'^/cgv_change_cinema ?.*$')
+def cgv_change(message):
+    app.logger.debug("'cgv_change_cinema' command detected")
+    cmd1, url = message.text.split(' ')
+
+    app.logger.debug("url is {}".format(url))
+    try:
+        if cmd1 == '/cgv_change_cinema':
+            changed = change_cinema(url)
+        else:
+            raise Exception
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to CGV Blitz")
+    except Exception:
+        bot.reply_to(message, "Wrong command")
+    else:
+        bot.reply_to(message, changed)
+
+
+def is_private_message(message):
+    return message.chat.type == 'private'
+
+
+def parse_check_fake_news_group(message):
+    return (any([e.type == 'url' for e in message.entities])
+            if (message.chat.type == 'group' and
+                message.text is not None and
+                message.entities is not None)
+            else False)
+
+
+POSSIBLE_NEWS_TYPES = ['fake', 'political', 'satire', 'unreliable', 'bias', 'conspiracy']
+
+
+@bot.message_handler(func=is_private_message,
+                     commands=["is_{}".format(news_type) for news_type in POSSIBLE_NEWS_TYPES])
+def check_fake_news_private(message):
+    app.logger.debug("'is_NEWS_TYPE' command detected")
+    try:
+        command, url = message.text.split()
+        news_type = command[4:]  # get type from '/is_{type}'
+        app.logger.debug("'is_{}' command detected".format(news_type))
+        is_of_type = check_fake_news(url, news_type)
+        app.logger.debug("The url is of type described: {}".format(is_of_type))
+    except ValueError as e:
+        app.logger.debug(e)
+        bot.reply_to(message, "Please provide url with HTTP format.")
+    else:
+        reply = ("The url is of type: {}".format(news_type) if is_of_type
+                 else "The url is not of type: {}".format(news_type))
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(func=is_private_message, commands=['add_filter'])
+def add_fake_news_filter_private(message):
+    app.logger.debug("'add_filter' command detected")
+    try:
+        app.logger.debug(message.text)
+        _, url, news_type = message.text.split()
+        news_type = news_type.lower()
+        if news_type not in POSSIBLE_NEWS_TYPES:
+            raise ValueError
+        add_filter_news(url, news_type)
+    except ValueError as e:
+        app.logger.debug(e)
+        reply = ("Please use the correct format: '/add_filter URL TYPE'\n"
+                 "Make sure the URL is in HTTP format,"
+                 " and the TYPE is one of [{}]".format(', '.join(POSSIBLE_NEWS_TYPES)))
+        bot.reply_to(message, reply)
+    else:
+        bot.reply_to(message, "Added to filter list successfully.")
+
+
+@bot.message_handler(func=parse_check_fake_news_group)
+def check_fake_news_group(message):
+    # message is guaranteed to have an entity with type url
+    app.logger.debug("'url in group chat' scenario detected")
+    try:
+        # Find first entity with type url
+        index = [e.type for e in message.entities].index('url')
+        url_entity = message.entities[index]
+        url_offset = url_entity.offset
+        url_length = url_entity.length
+        url = message.text[url_offset:url_offset + url_length]
+        list_of_types = check_fake_news(url)
+        app.logger.debug(list_of_types)
+    except ValueError as e:
+        app.logger.debug(e)  # Do nothing since it is a group chat
+    else:
+        reply = ("The url is safe to visit" if 'safe' in list_of_types
+                 else "The url may not be safe to visit")
+        bot.reply_to(message, reply)
+
+
+@bot.message_handler(regexp=r'^/is_airing')
+def airing(message):
+    if message.chat.type == "private":
+        app.logger.debug("'airing anime' command detected")
+        command = message.text.split(" ")
+        if len(command) == 2:
+            words = list(command[1])
+            anime = ""
+            for word in words:
+                if(word == "_"):
+                    anime += " "
+                else:
+                    anime += word
+            try:
+                res = airing_check(anime)
+            except requests.exceptions.HTTPError:
+                bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+            except ConnectionError:
+                bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+            else:
+                bot.reply_to(message, res)
+        else:
+            output = ('Command invalid, please use /is_airing <anime>'
+                      'format and replace space in <anime> with underscore (_)')
+            bot.reply_to(message, output)
+
+
+@bot.message_handler(regexp=r'hari ini nonton apa?')
+def lookup_today(message):
+    if message.chat.type == "group":
+        app.logger.debug("'lookup anime today' command detected")
+        try:
+            res = lookup_airing()
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        else:
+            bot.reply_to(message, res)
+
+
+@bot.message_handler(regexp=r'^/lookup_anime')
+def lookup_anime_livechart(message):
+    app.logger.debug("'lookup_anime' command detected.")
+    markup = types.ReplyKeyboardMarkup()
+    lookup_anime_property[message.from_user.id] = {}
+    try:
+        for year in range(2001, 2017):
+            markup.add(types.KeyboardButton('{}'.format(str(year))))
+        msg = bot.send_message(message.from_user.id, 'Choose year', reply_markup=markup)
+        bot.register_next_step_handler(msg, lookup_anime_season)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_season(message):
+    app.logger.debug("'lookup_anime' Choose season")
+    year = message.text
+    lookup_anime_property[message.from_user.id]['year'] = year
+    seasons = ['spring', 'fall', 'summer', 'winter']
+    markup = types.ReplyKeyboardMarkup()
+    for s in seasons:
+        markup.add(types.KeyboardButton(s))
+    try:
+        msg = bot.reply_to(message, 'Choose season', reply_markup=markup)
+        bot.register_next_step_handler(msg, lookup_anime_genre)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_genre(message):
+    season = message.text
+    lookup_anime_property[message.from_user.id]['season'] = str(season)
+    app.logger.debug("'lookup_anime' Type genre")
+    try:
+        msg = bot.reply_to(message, 'Type genre')
+        app.logger.debug('Choosed genre {}'.format(msg.text))
+        bot.register_next_step_handler(msg, lookup_anime_list)
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+
+
+def lookup_anime_list(message):
+    try:
+        year = lookup_anime_property[message.from_user.id]['year']
+        season = lookup_anime_property[message.from_user.id]['season']
+        genre = message.text
+        app.logger.debug('::: {} {} {} '.format(year, season, genre))
+        result = lookup_anime(genre, season, year)
+    except ConnectionError as e:
+        bot.reply_to(message, 'Request timeout {} '.format(str(e)),
+                     reply_markup=types.ReplyKeyboardRemove())
+    except Exception:
+        bot.reply_to(message, 'cannot find anime that matches with user',
+                     reply_markup=types.ReplyKeyboardRemove())
+    else:
+        bot.reply_to(message, result,
+                     reply_markup=types.ReplyKeyboardRemove())
+
+
+@bot.message_handler(commands=['add_wiki'])
+def add_wiki(message):
+    app.logger.debug("'add_wiki' command detected")
+    url = " ".join(message.text.split()[1:])
+    try:
+        result = save_mediawiki_url(url)
+    except ValueError as e:
+        bot.reply_to(message, str(e))
+    except ConnectionError as e:
+        bot.reply_to(message, str(e))
+    else:
+        bot.reply_to(message, result)
+
+
+@bot.message_handler(commands=['random_wiki_article'])
+def random_wiki_article(message):
+    app.logger.debug("'random_wiki_article' command detected")
+    args = " ".join(message.text.split()[1:])
+    try:
+        result = get_mediawiki(args)
+    except EnvironmentError as e:
+        bot.reply_to(message, str(e))
+    else:
+        if args is '':
+            keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, row_width=1)
+            for title in result:
+                keyboard.add(title)
+            bot.send_message(message.chat.id, 'Select an article...', reply_markup=keyboard)
+        else:
+            bot.reply_to(message, result)
+
+
+@bot.message_handler(regexp=r'^/itunes_preview')
+def preview(message):
+    app.logger.debug("'itunes preview' command detected")
+    command = message.text.split(' ')
+    if (len(command) != 2):
+        output = ('Command invalid, please use /itunes_preview'
+                  ' <artist> format, and seperate word in artist name with _')
+        bot.reply_to(message, output)
+    else:
+        words = list(command[1])
+        artist = ""
+        for word in words:
+            if(word == "_"):
+                artist += " "
+            else:
+                artist += word
+        try:
+            res = preview_music(artist)
+        except requests.exceptions.HTTPError:
+            bot.reply_to(message, 'HTTP error occurs, please try again in a minute')
+        except ConnectionError:
+            bot.reply_to(message, 'Connection error occurs, please try again in a minute')
+        except PermissionError:
+            bot.reply_to(message, 'Please stop the audio file before requesting new file')
+        else:
+            if res == "success":
+                photo = open(get_path('utils/itunes-logo.png'), 'rb')
+                audio = open(get_path('utils/preview.mp3'), 'rb')
+                bot.send_photo(message.chat.id, photo)
+                bot.send_audio(message.chat.id, audio)
+            else:
+                bot.reply_to(message, res)
+
+
+def get_path(file):
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), file))
+
+
+@bot.message_handler(commands=['apod'])
+def apod(message):
+    app.logger.debug("'apod' command detected")
+
+    try:
+        apod = fetch_apod()
+    except requests.exceptions.ConnectionError:
+        bot.reply_to(message, 'A connection error occured. Please try again in a moment.')
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, 'An HTTP error occured. Please try again in a moment.')
+    except requests.exceptions.RequestException:
+        bot.reply_to(message, 'An error occured. Please try again in a moment.')
+    except ValueError as e:
+        bot.reply_to(message, '/apod doesn\'t need any arguments')
+    else:
+        bot.reply_to(message, apod)
+
+
+@bot.message_handler(regexp=r'^/hospital$')
+def hospital(message):
+    app.logger.debug("'hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
+
+
+@bot.message_handler(regexp=r'^/random_hospital$')
+def random_hospital(message):
+    app.logger.debug("'random_hospital' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    rs_list = lookup_random_hospital()
+    markup = types.InlineKeyboardMarkup()
+    for rs in rs_list:
+        text = "Rumah Sakit " + rs['nama']
+        callback = "RS_ID=" + str(rs['id'])
+        butt = types.InlineKeyboardButton(text, callback_data=callback)
+        markup.add(butt)
+    text = "Please select one hospital below!"
+    bot.send_message(chat_id, text, message_id, reply_markup=markup)
+
+
+def get_user_location_hospital(message):
+    app.logger.debug("'get user location for hospital' handler executed")
+    chat_id = message.chat.id
+    lat = message.location.latitude
+    long = message.location.longitude
+    rs = lookup_hospital(long, lat)
+    reply_hospital(chat_id, rs)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def parse_callback(call):
+    message = call.message
+    data = call.data
+    chat_id = message.chat.id
+    if len(data.split("RS_ID=")) == 2:
+        rs_id = data.split("RS_ID=")[1]
+        rs = reply_random_hospital(rs_id)
+        reply_hospital(chat_id, rs)
+
+
+def reply_hospital(chat_id, rs):
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(chat_id, "Here is the result:", reply_markup=markup)
+    bot.send_location(chat_id, rs['lat'], rs['long'])
+    bot.send_photo(chat_id, urllib.request.urlopen(rs['image']).read())
+    bot.send_message(chat_id, rs['message'])
+    if 'distance' in rs:
+        bot.send_message(chat_id, rs['distance'])
+
+
+def check_from_group(message):
+    return message.chat.type == "group"
+
+
+@bot.message_handler(regexp=r'darurat', func=check_from_group)
+def ask_darurat_location(message):
+    app.logger.debug("'darurat' handler executed")
+    chat_id = message.chat.id
+    text = "Please share your location so we can get your nearest hospital!"
+    msg = bot.send_message(chat_id, text)
+    bot.register_next_step_handler(msg, get_user_location_hospital)
+
+
+"""
+This is the BEGINNING of -weatherbot- handler code
+"""
+WEATHER_UNIT_M = "metric"
+WEATHER_UNIT_I = "imperial"
+WT_KEL = "Kelvin"
+WT_FAH = "Fahrenheit"
+WT_CEL = "Celcius"
+WIND_UNIT = WEATHER_UNIT_M
+TEMP_UNIT = WT_CEL
+
+
+@bot.message_handler(commands=['weather'])
+def weather(message):
+    app.logger.debug("'weather' command detected")
+    chat_id = message.chat.id
+    message_id = message.message_id
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    button = types.KeyboardButton('Share my location', request_location=True)
+    markup.row(button)
+    text = "Hello, we need your location to determine the weather in your region"
+    msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
+    bot.register_next_step_handler(msg, get_user_location_weather)
+
+
+def get_user_location_weather(message):
+    app.logger.debug("'get user location for weather' handler executed")
+    chat_id = message.chat.id
+    lat = message.location.latitude
+    lon = message.location.longitude
+    weather_result = lookup_weather(lon, lat, WIND_UNIT, TEMP_UNIT)
+    markup = types.ReplyKeyboardRemove(selective=False)
+    bot.send_message(chat_id, weather_result, markup)
+
+
+@bot.message_handler(commands=['configure_weather'])
+def configure_weather(message):
+    app.logger.debug("'configure weather' command detected")
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.row(
+        types.InlineKeyboardButton('Temperature Unit', callback_data='set-temp'),
+        types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
+    )
+
+    bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def setting_callback(query):
+    data = query.data
+    if data.startswith('set-'):
+        get_ex_callback(query)
+
+
+def get_ex_callback(query):
+    bot.answer_callback_query(query.id)
+    setting_result(query.message, query.data[4:])
+
+
+def setting_result(message, ex_code):
+    bot.send_chat_action(message.chat.id, 'typing')
+    if (ex_code == "met"):
+        WIND_UNIT = WEATHER_UNIT_M
+        bot.reply_to(message, "Wind speed changed into " + WIND_UNIT)
+    if (ex_code == "imp"):
+        WIND_UNIT = WEATHER_UNIT_I
+        bot.reply_to(message, "Wind speed changed into " + WIND_UNIT)
+    if (ex_code == "celsius"):
+        TEMP_UNIT = WT_CEL
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
+    if (ex_code == "fahrenheit"):
+        TEMP_UNIT = WT_FAH
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
+    if (ex_code == "kelvin"):
+        TEMP_UNIT = WT_KEL
+        bot.reply_to(message, "Temperature changed into " + TEMP_UNIT)
+    if (ex_code == "wind"):
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.row(
+            types.InlineKeyboardButton('meter/sec', callback_data='set-met'),
+            types.InlineKeyboardButton('miles/hours', callback_data='set-imp')
+        )
+        bot.send_message(message.chat.id, "Choose Wind Unit:", reply_markup=keyboard)
+    if (ex_code == "temp"):
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.row(
+            types.InlineKeyboardButton('Celsius', callback_data='set-celsius'),
+            types.InlineKeyboardButton('Fahrenheit', callback_data='set-fahrenheit'),
+            types.InlineKeyboardButton('Kelvin', callback_data='set-imperial')
+        )
+        bot.send_message(message.chat.id, "Choose Temperature Unit:", reply_markup=keyboard)
+
+
+# filter on message contains "cuaca di X" and chat type group
+@bot.message_handler(func=lambda message: message.text == "cuaca di "
+                     and message.chat.type == "group")
+def group_weather(message):
+    app.logger.debug("'cuaca di' message detected in a group")
+    s2 = "cuaca "
+
+    city = (message.text[message.text.index(s2) + len(s2):])
+    try:
+        weathercity = city_lookup_weather(city, WIND_UNIT, TEMP_UNIT)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to OpenWeather API")
+    except requests.exceptions.HTTPError:
+        bot.reply_to(message, "HTTP Error")
+    else:
+        bot.reply_to(message, weathercity)
+
+# END of weather message handler =============================================================
+
+
+# TODO: tolong ini ditaro di paling bawah :)
+@bot.message_handler(func=lambda m: m.chat.type == "group")
+def anison_radio_group(message):
+    app.logger.debug("'anison in group' command detected")
+    app.logger.debug(message.text)
+    output = manage_love_live_song("group", message.text, message.from_user.username)
+
+    if output is not None:
+        bot.reply_to(message, output)
