@@ -26,7 +26,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
                            diceSim as dice, enterkomputer, fakenews,
-                           movie_cinema as movie, anison_radio, weather, quran, uber)
+                           movie_cinema as movie, anison_radio, weather, quran, uber, album)
 
 
 def lookup_zodiac(month, day):
@@ -71,6 +71,10 @@ def lookup_chinese_zodiac(year):
         return zodiacs[ix]
     except KeyError:
         return 'Unknown zodiac'
+
+
+def lookup_album_price():
+    return album.Facade().operation()
 
 
 def lookup_enter_item(category, item):

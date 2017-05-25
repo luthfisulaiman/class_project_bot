@@ -29,12 +29,11 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               check_fake_news_group, parse_check_fake_news_group,
                               cgv_change, quran_ngaji, quran_c_v,
                               uber, process_location_step,
-                              add_destination, remove_destination)
+                              add_destination, remove_destination, album_price)
 # from csuibot.handlers import (definisi, kelaskata)
 # kateglo API down
 from requests.exceptions import ConnectionError
 import json
-
 from telebot import types
 
 
@@ -140,6 +139,15 @@ def test_shio_invalid_year(mocker):
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'Year is invalid'
+
+
+def test_album_price(mocker):
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mock_message = Mock(text='/vgmdb OST this months')
+    album_price(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] is not None
 
 
 def test_enterkomputer(mocker):

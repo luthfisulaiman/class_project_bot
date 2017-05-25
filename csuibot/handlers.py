@@ -29,7 +29,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
                     check_fake_news, add_filter_news, change_cinema, find_movies,
                     lookup_quran, random_quran, get_chapter, uber_add,
-                    uber_remove, uber_info, uber_get)
+                    uber_remove, uber_info, uber_get, lookup_album_price)
 from requests.exceptions import ConnectionError
 import datetime
 
@@ -508,6 +508,18 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/vgmdb OST this month$')
+def album_price(message):
+    app.logger.debug("'vgmd' command detected")
+    try:
+        reply = lookup_album_price()
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(commands=['enterkomputer'])
