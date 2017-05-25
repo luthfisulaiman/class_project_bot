@@ -60,8 +60,7 @@ def hangout_nearby(message):
 
     bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
 
-    global request_hangout
-    request_hangout = 0
+    set_request_hangout(0)
 
 
 @bot.message_handler(regexp=r'^/random_hangout_kuy$')
@@ -76,8 +75,7 @@ def hangout_random(message):
 
     bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
 
-    global request_hangout
-    request_hangout = 1
+    set_request_hangout(1)
 
 
 @bot.message_handler(regexp=r'^/hangout')
@@ -87,10 +85,13 @@ def hangout_keyboard(message):
 
     tmp_msg = message.text.split(' ')
     msg = ''
+    dist = ''
 
     for index, str_tmp in enumerate(tmp_msg):
         if index == 0:
             continue
+        elif index == len(tmp_msg) - 1:
+            dist = str_tmp
         else:
             msg = msg + ' ' + str_tmp
 
@@ -99,21 +100,20 @@ def hangout_keyboard(message):
     nearest_path = '/utils/hangout_images/' + res.image_dir
     path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
     bot.send_photo(message.chat.id, open(path, 'rb'))
-    bot.reply_to(message, print_message(res, res.distance))
+    bot.reply_to(message, print_message(res, dist))
 
 
 @bot.message_handler(content_types=['location'])
 def get_nearest_location(message):
 
     loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
-    global request_hangout
-    req = request_hangout
+    req = get_request_hangout()
 
     try:
         if req == 0:
             res = get_nearest_hangout(loc['longitude'], loc['latitude'])
         elif req == 1:
-            res = get_random_hangout(5, loc['longitude'], loc['latitude'])
+            res = get_random_hangout(5)
 
     except ValueError:
         bot.reply_to(message, 'input is invalid')
@@ -130,13 +130,23 @@ def get_nearest_location(message):
             reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
 
             for data in res:
-                keyboard = KeyboardButton(text='/hangout ' + data.name)
+                data.set_distance = data.set_distance(loc['longitude'], loc['latitude'])
+                keyboard = KeyboardButton(text='/hangout ' + data.name + ' ' + data.distance)
                 reply_keyboard.add(keyboard)
 
             bot.send_message(chat_id=message.chat.id, text=str_msg,
                              reply_markup=reply_keyboard)
 
-        request_hangout = -1
+        set_request_hangout(-1)
+
+
+def set_request_hangout(num):
+    global request_hangout
+    request_hangout = num
+
+
+def get_request_hangout():
+    return request_hangout
 
 
 def parse_date(text):

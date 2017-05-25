@@ -63,14 +63,13 @@ def get_hangout(name):
     return None
 
 
-def get_random_hangout(amount, u_long, u_lat):
+def get_random_hangout(amount):
     h_list = hangout.create_hangout_list()
     result = []
 
     while amount > 0:
         x = randint(0, len(h_list) - 1)
         tmp = h_list.pop(x)
-        tmp.set_distance(u_long, u_lat)
         result.append(tmp)
         amount -= 1
 
