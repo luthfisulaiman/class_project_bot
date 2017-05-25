@@ -1,4 +1,5 @@
 from . import app, bot
+from telebot import types
 import requests
 import re
 import os
@@ -27,10 +28,21 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_random_hospital, reply_random_hospital, diceSimCoin,
                     diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
                     check_fake_news, add_filter_news, change_cinema, find_movies,
-                    lookup_album_price)
+                    lookup_quran, random_quran, get_chapter, lookup_album_price)
 from requests.exceptions import ConnectionError
 import datetime
-from telebot import types
+
+user_dict = {}
+correct = ""
+
+
+class Quran:
+    def __init__(self, chapter):
+        self.chapter = chapter
+        self.verse = None
+
+    def setVerse(self, verse):
+        self.verse = verse
 
 
 def message_decorator(func):
@@ -1230,6 +1242,96 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/qs [0-9]+:[0-9]+$')
+def quran_c_v(message):
+    app.logger.debug("'Quran C:V' command detected")
+    try:
+        command = message.text.split(' ')
+        cv = command[1].split(':')
+        chapter = cv[0]
+        verse = cv[1]
+        quran = lookup_quran(chapter, verse)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+    else:
+        bot.reply_to(message, quran)
+
+
+@bot.message_handler(regexp=r'^/qs$')
+def quran(message):
+    app.logger.debug("'Quran' command detected")
+    try:
+        chat_id = message.chat.id
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        itembtn1 = types.KeyboardButton('114:An-Nas')
+        itembtn2 = types.KeyboardButton('113:Al-Falaq')
+        itembtn3 = types.KeyboardButton('112:Al-Ikhlaas')
+        itembtn4 = types.KeyboardButton('110:An-Nasr')
+        itembtn5 = types.KeyboardButton('109:Al-Kaafiroon')
+        markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
+        msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
+        bot.register_next_step_handler(msg, process_quran_button)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+
+
+@bot.message_handler(regexp=r'ngaji')
+def quran_ngaji(message):
+    app.logger.debug("'Ngaji C' command detected")
+    try:
+        qurantext = random_quran().split("@")
+        correct = qurantext[0]
+        quranmsg = qurantext[1]
+        app.logger.debug(correct)
+        bot.reply_to(message, "Ayok kita mengaji")
+        bot.reply_to(message, quranmsg)
+        bot.register_next_step_handler(message, process_ngaji)
+    except IndexError:
+        bot.reply_to(message, 'oooops')
+
+
+def process_ngaji(message):
+    try:
+        chat_id = message.chat.id
+        answer = message.text
+        user_dict[chat_id] = answer
+        list_chapter = get_chapter()
+        if answer in list_chapter:
+            if(answer == correct):
+                bot.reply_to(message, "You are correct")
+            else:
+                bot.reply_to(message, "Try Again")
+    except Exception as e:
+        bot.reply_to(message, 'oooops answer cant found')
+
+
+def process_quran_button(message):
+    try:
+        chat_id = message.chat.id
+        chapter = message.text
+        quran = Quran(chapter)
+        user_dict[chat_id] = quran
+        msg = bot.reply_to(message, 'Please enter the verse (number only):')
+        bot.register_next_step_handler(msg, process_chapter)
+    except Exception as e:
+        bot.reply_to(message, 'oooops chapter cant found')
+
+
+def process_chapter(message):
+    try:
+        chat_id = message.chat.id
+        quran = user_dict[chat_id]
+        verse = message.text
+        quran.setVerse(verse)
+        chapter_num = quran.chapter.split(":")
+        chapter_num = chapter_num[0]
+        qurantext = lookup_quran(chapter_num, verse)
+    except Exception as e:
+        bot.reply_to(message, 'oooops verse cant found')
+    else:
+        bot.reply_to(message, qurantext)
 
 
 @bot.message_handler(commands=["add_song", "remove_song", "listen_song"])

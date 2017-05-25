@@ -26,7 +26,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
                            diceSim as dice, enterkomputer, fakenews,
-                           movie_cinema as movie, anison_radio, weather, album)
+                           movie_cinema as movie, anison_radio, weather, quran, album)
 
 
 def lookup_zodiac(month, day):
@@ -594,6 +594,27 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def lookup_quran(chapter, verse):
+    try:
+        quran_obj = quran.quran()
+        return quran_obj.lookup_quran(chapter, verse)
+    except IndexError:
+        return "Please insert the valid chapter and verse"
+
+
+def random_quran():
+    try:
+        quran_obj = quran.quran()
+        return quran_obj.get_random_ayah()
+    except IndexError:
+        return "Please insert the valid chapter and verse"
+
+
+def get_chapter():
+    quran_obj = quran.quran()
+    return quran_obj.get_chapter()
 
 
 def manage_love_live_song(command, query=None, username="fersandi", type_=''):
