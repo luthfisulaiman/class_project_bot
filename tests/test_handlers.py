@@ -14,10 +14,12 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               oricon_cd, billboard_chart, hotcountry, newage,
                               fake_json, detect_lang, billArtist, primbon, oricon_books,
                               japanartist, extract_colour_from_image, check_caption_colour,
-                              tropicalArtistHandler, uber, add_destination, remove_destination,
+                              tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new)
+                              get_notif_twitter, air_quality, sentiment_new,
+                              uber, process_name_step, process_location_step,
+                              add_destination, remove_destination)
 from requests.exceptions import ConnectionError
 
 
@@ -2075,35 +2077,45 @@ def test_uber(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
     mocked_message = Mock('\\uber')
-    
+
     uber(mocked_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
 
 
-
-def test_add_destination(mocker):
-
-    fake_result = 'Please share a location to be added'
+def test_add_destination(mocker):    
+    fake_result = 'Please share your location'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
     mocked_message = Mock('\\add_destination')
-    
-    uber(mocked_message)
-
+    add_destination(mocked_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result
 
+    fake_result = "OK, please enter a name for the location given"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    location = Mock()
+    attrs = {'latitude': -6.360285, 'longitude': 107.832650}
+    location.configure_mock(**attrs)
+    mocked_location = Mock()
+    attrs = {'location' : location, 'text': ''}
+    mocked_location.configure_mock(**attrs)
+    process_location_step(mocked_location)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
 def test_remove_destination(mocker):
 
-    fake_result = 'Please share a location to be removed'
+    fake_result = 'No locations have been added, please add with /add_destination command'
 
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mocker.patch('csuibot.handlers.uber', return_value=fake_result)
     mocked_message = Mock('\\remove_destination')
-    
-    uber(mocked_message)
+
+    remove_destination(mocked_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result

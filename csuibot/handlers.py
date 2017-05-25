@@ -26,6 +26,7 @@ import datetime
 
 locations = {}
 
+
 class Location:
     def __init__(self, lat, lon):
         self.lat = lat
@@ -1027,7 +1028,8 @@ def tagimage(message):
         bot.reply_to(message, tag)
 
 
-@bot.message_handler(commands=['uber'], func=lambda message: message.chat.type == "private")
+@bot.message_handler(commands=['uber'],
+                     func=lambda message: message.chat.type == "private")
 def uber(message):
     app.logger.debug("uber command detected")
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -1037,11 +1039,11 @@ def uber(message):
     bot.register_next_step_handler(msg, process_location_from_step)
 
 
-@bot.callback_query_handler(func=lambda call:true)
+@bot.callback_query_handler(func=lambda call: True)
 def process_location_from_step(message):
     app.logger.debug('from location step detected')
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"uber command canceled")
+        bot.send_message(message.chat.id, "uber command canceled")
         return
     try:
         lon = message.location.longitude
@@ -1053,7 +1055,7 @@ def process_location_from_step(message):
         loc = Location(lat, lon)
         locations[message.chat.id] = loc
         app.logger.debug('{} {}'.format(lat, lon))
-        
+
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
         locations_list = uber_get()['locations']
         app.logger.debug(locations_list)
@@ -1063,14 +1065,16 @@ def process_location_from_step(message):
             msg = bot.reply_to(message, "Please select your destination", reply_markup=markup)
             bot.register_next_step_handler(msg, process_location_to_step)
         else:
-            bot.send_message(message.chat.id, "No locations have been added, please add with /add_destination command")
+            bot.send_message(message.chat.id,
+                             "No locations have been added,\
+                              please add with /add_destination command")
 
 
-@bot.callback_query_handler(func=lambda call:true)
+@bot.callback_query_handler(func=lambda call: True)
 def process_location_to_step(message):
     app.logger.debug('to location step detected')
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"uber command canceled")
+        bot.send_message(message.chat.id, "uber command canceled")
         return
 
     loc_from = locations[message.chat.id]
@@ -1083,7 +1087,8 @@ def process_location_to_step(message):
         bot.send_message(message.chat.id, res)
 
 
-@bot.message_handler(commands=['add_destination'], func=lambda message: message.chat.type == "private")
+@bot.message_handler(commands=['add_destination'],
+                     func=lambda message: message.chat.type == "private")
 def add_destination(message):
     app.logger.debug('add_destination command detected')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -1097,11 +1102,13 @@ def add_destination(message):
 def process_location_step(message):
     app.logger.debug('location step detected')
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"adding location canceled")
+        bot.send_message(message.chat.id, "adding location canceled")
         return
+
     try:
         lon = message.location.longitude
         lat = message.location.latitude
+
     except AttributeError:
         msg = bot.reply_to(message, "oops! please share your location")
         bot.register_next_step_handler(msg, process_location_step)
@@ -1117,7 +1124,7 @@ def process_location_step(message):
 def process_name_step(message):
     app.logger.debug('name step detected')
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"adding location canceled")
+        bot.send_message(message.chat.id, "adding location canceled")
         return
 
     if(message.text != "/add_destination"):
@@ -1134,7 +1141,8 @@ def process_name_step(message):
             bot.reply_to(message, "OK, location saved")
 
 
-@bot.message_handler(regexp=r'^\/remove_destination\s*$', func=lambda message: message.chat.type == "private")
+@bot.message_handler(commands=['remove_destination'],
+                     func=lambda message: message.chat.type == "private")
 def remove_destination(message):
     app.logger.debug("remove_destination command detected")
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
@@ -1143,17 +1151,19 @@ def remove_destination(message):
     if(len(locations)):
         for name in locations:
             markup.row(name)
-        msg = bot.reply_to(message, "Please select a location to be removed", reply_markup=markup)
+        msg = bot.reply_to(message, "Please select a location to be removed",
+                           reply_markup=markup)
         bot.register_next_step_handler(msg, process_delete_step)
     else:
-        bot.reply_to(message, "No locations have been added, please add with /add_destination command")
+        bot.reply_to(message, "No locations have been added, please add with "\
+                     "/add_destination command")
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def process_delete_step(message):
     app.logger.debug("remove step detected")
     if(message.text == "/cancel"):
-        bot.send_message(message.chat.id,"removing location canceled")
+        bot.send_message(message.chat.id, "removing location canceled")
         return
 
     if(message.text != "/remove_destination"):
