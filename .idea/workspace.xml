@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f80b4271-a418-4928-a553-be525a9e8009" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/handlers.py" afterPath="$PROJECT_DIR$/csuibot/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/utils/__init__.py" afterPath="$PROJECT_DIR$/csuibot/utils/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/utils/hangout.py" afterPath="$PROJECT_DIR$/csuibot/utils/hangout.py" />
-    </list>
+    <list default="true" id="f80b4271-a418-4928-a553-be525a9e8009" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
