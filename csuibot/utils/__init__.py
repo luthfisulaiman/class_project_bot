@@ -26,7 +26,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
                            diceSim as dice, enterkomputer, fakenews,
-                           movie_cinema as movie, anison_radio, weather, quran)
+                           movie_cinema as movie, anison_radio, weather, quran, uber)
 
 
 def lookup_zodiac(month, day):
@@ -590,6 +590,22 @@ def lookup_weton(year, month, day):
 def auto_tag(message):
     photoid = message.photo[-1].file_id
     return tagging.Tagging(photoid).getTag()
+
+
+def uber_info(location_from, location_to):
+    return uber.Uber().get_route_info(location_from, location_to)
+
+
+def uber_get():
+    return uber.Uber().get_locations()
+
+
+def uber_add(location):
+    return uber.Uber().add_location(location)
+
+
+def uber_remove(location):
+    return uber.Uber().remove_location(location)
 
 
 def lookup_quran(chapter, verse):

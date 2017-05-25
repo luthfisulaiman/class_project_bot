@@ -27,7 +27,9 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               check_fake_news_private, is_private_message,
                               add_fake_news_filter_private, POSSIBLE_NEWS_TYPES,
                               check_fake_news_group, parse_check_fake_news_group,
-                              cgv_change, quran_ngaji, quran_c_v)
+                              cgv_change, quran_ngaji, quran_c_v,
+                              uber, process_location_step,
+                              add_destination, remove_destination)
 # from csuibot.handlers import (definisi, kelaskata)
 # kateglo API down
 from requests.exceptions import ConnectionError
@@ -2291,6 +2293,40 @@ Tag : power , Confidence : 19'''
     assert args[1] == 'HTTP Error'
 
 
+def test_uber(mocker):
+    fake_result = 'Please share your location'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    mocked_message = Mock('\\uber')
+
+    uber(mocked_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_add_destination(mocker):
+    fake_result = 'Please share your location'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    mocked_message = Mock('\\add_destination')
+    add_destination(mocked_message)
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+    fake_result = "OK, please enter a name for the location given"
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    location = Mock()
+    attrs = {'latitude': -6.360285, 'longitude': 107.832650}
+    location.configure_mock(**attrs)
+    mocked_location = Mock()
+    attrs = {'location': location, 'text': ''}
+    mocked_location.configure_mock(**attrs)
+    process_location_step(mocked_location)
+
+
 def test_quran_keyboard_input(mocker):
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/qs')
@@ -2430,6 +2466,20 @@ def test_airing_valid(mocker):
     mock_message = Mock(text='/is_airing Sagrada_Reset', chat=mock_type)
 
     airing(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
+
+
+def test_remove_destination(mocker):
+
+    fake_result = 'No locations have been added, please add with /add_destination command'
+
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.uber', return_value=fake_result)
+    mocked_message = Mock('\\remove_destination')
+
+    remove_destination(mocked_message)
 
     args, _ = mocked_reply_to.call_args
     assert args[1] == fake_result

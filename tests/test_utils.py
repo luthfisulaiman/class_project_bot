@@ -1,3 +1,4 @@
+
 from csuibot import utils, config
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
@@ -1541,6 +1542,59 @@ class TestWeton:
     def test_weton_value_error(self):
         look = utils.lookup_weton(1995, 12, 32)
         assert look == "Year/Month/Day is invalid"
+
+
+class TestUber:
+    class Location:
+            def __init__(self, lat, lon):
+                self.lat = lat
+                self.lon = lon
+                self.name = None
+
+    def test_uber_add_destination(self):
+
+        location = TestUber.Location(-6.186866, 106.750857)
+        location.name = 'A'
+        try:
+            utils.uber_add(location)
+        except ConnectionError:
+            pass
+
+    def test_uber_get_info(self):
+        location = TestUber.Location(-6.362913, 106.832488)
+        location.name = 'B'
+        try:
+            res = utils.uber_info(location, 'A')
+        except ConnectionError:
+            pass
+        else:
+            assert res is not None
+
+    def test_uber_get_info_no_location(self):
+        location = TestUber.Location(-6.362913, 106.832488)
+        location.name = 'B'
+        try:
+            res = utils.uber_info(location, 'XYZ')
+        except ConnectionError:
+            pass
+        else:
+            assert res is False
+
+    def test_uber_remove_destination(self):
+        try:
+            res = utils.uber_remove('A')
+        except ConnectionError:
+            pass
+        else:
+            assert res is True
+
+    def test_uber_remove_no_destination(self):
+        try:
+            res = utils.uber_remove('B')
+        except ConnectionError:
+            pass
+        else:
+            assert res is False
 
 
 class test_hot_japan_100:
