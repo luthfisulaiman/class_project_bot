@@ -1,11 +1,12 @@
 from . import app, bot
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, get_nearest_hangout,
-                    get_random_hangout)
+                    get_random_hangout, get_hangout, print_message)
 
 from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 import os
 
 request_hangout = -1
+user_location = {}
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -80,10 +81,34 @@ def hangout_random(message):
     request_hangout = 1
 
 
+@bot.message_handler(regexp=r'^/hangout')
+def hangout_keyboard(message):
+
+    app.logger.debug("'hangout' command detected")
+
+    tmp_msg = message.text.split(' ')
+    msg = ''
+
+    for index, str_tmp in enumerate(tmp_msg):
+        if index == 0:
+            continue
+        else:
+            msg = msg + " " + str_tmp
+
+    res = get_hangout(msg)
+    dist = res.count_distance(user_location['longitude'], user_location['latitude'])
+
+    nearest_path = '/utils/hangout_images/' + res.image_dir
+    path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
+    bot.send_photo(message.chat.id, open(path, 'rb'))
+    bot.reply_to(message, print_message(res, dist))
+
+
 @bot.message_handler(content_types=['location'])
 def get_nearest_location(message):
 
     loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
+    global request_hangout
     req = request_hangout
 
     try:
@@ -112,6 +137,11 @@ def get_nearest_location(message):
 
             bot.send_message(chat_id=message.chat.id, text=str_msg,
                              reply_markup=reply_keyboard)
+
+            global user_location
+            user_location = loc
+
+        request_hangout = -1
 
 
 def parse_date(text):

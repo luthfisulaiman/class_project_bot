@@ -291,3 +291,11 @@ class TestHangout:
     def test_get_random_hangout(self):
         res = utils.get_random_hangout(5)
         assert len(res) == 5
+
+    def test_get_hangout(self):
+        res = utils.get_hangout('SOUTHBOX')
+        assert res is not None
+
+    def test_get_hangout_none(self):
+        res = utils.get_hangout('Not exist')
+        assert res is None

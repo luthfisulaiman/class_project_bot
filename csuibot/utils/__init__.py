@@ -54,6 +54,15 @@ def get_nearest_hangout(user_long, user_lat):
     return dict(message=str_msg, nearest=res['nearest'])
 
 
+def get_hangout(name):
+    h_list = hangout.create_hangout_list()
+    for data in h_list:
+        if name in data.name:
+            return data
+
+    return None
+
+
 def get_random_hangout(amount):
     h_list = hangout.create_hangout_list()
     result = []
