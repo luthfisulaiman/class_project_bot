@@ -283,3 +283,11 @@ class TestHangout:
         h.longitude = 10
         dist = h.count_distance(10, 10)
         assert dist == 0
+
+    def test_nearest_hangout_place(self):
+        res = utils.get_nearest_hangout(0, 0)
+        assert res is not None
+
+    def test_get_random_hangout(self):
+        res = utils.get_random_hangout(5)
+        assert len(res) == 5

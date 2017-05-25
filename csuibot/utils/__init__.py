@@ -1,5 +1,6 @@
 from csuibot.utils import zodiac as z
 from csuibot.utils import hangout
+from random import randint
 
 
 def lookup_zodiac(month, day):
@@ -49,7 +50,25 @@ def lookup_chinese_zodiac(year):
 def get_nearest_hangout(user_long, user_lat):
     h_list = hangout.create_hangout_list()
     res = hangout.find_nearest_place(h_list, user_long, user_lat)
-    str_msg = '[' + res['nearest'].name + ']' + '\n'
-    str_msg += 'Location: ' + '\n' + res['nearest'].address + '\n'
-    str_msg += 'Distance: ' + str(int(res['n_dist'])) + ' metres' + '\n'
+    str_msg = print_message(res['nearest'], res['n_dist'])
     return dict(message=str_msg, nearest=res['nearest'])
+
+
+def get_random_hangout(amount):
+    h_list = hangout.create_hangout_list()
+    result = []
+
+    while amount > 0:
+        x = randint(0, len(h_list) - 1)
+        tmp = h_list.pop(x)
+        result.append(tmp)
+        amount -= 1
+
+    return result
+
+
+def print_message(hangout_data, dist=None):
+    str_msg = '[' + hangout_data.name + ']' + '\n'
+    str_msg += 'Location: ' + '\n' + hangout_data.address + '\n'
+    str_msg += 'Distance: ' + str(int(dist)) + ' metres' + '\n'
+    return str_msg
