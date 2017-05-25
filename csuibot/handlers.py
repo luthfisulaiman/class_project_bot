@@ -93,8 +93,9 @@ def hangout_keyboard(message):
         if index == 0:
             continue
         else:
-            msg = msg + " " + str_tmp
+            msg = msg + ' ' + str_tmp
 
+    print(msg)
     res = get_hangout(msg)
     dist = res.count_distance(user_location['longitude'], user_location['latitude'])
 
