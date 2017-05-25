@@ -57,7 +57,10 @@ def get_nearest_hangout(user_long, user_lat):
 def get_hangout(name):
     h_list = hangout.create_hangout_list()
     for data in h_list:
+        print(data.name)
         if name in data.name:
+            print('yeay')
+            print(data.name)
             return data
 
     return None
