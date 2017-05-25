@@ -13,8 +13,8 @@ class quran:
 
     def lookup_quran(self, chapter, verse):
         try:
-            chapter = int(chapter)
             verse = int(verse)
+            chapter = int(chapter)
             ayat = self.quran['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
             translation = self.qurantr['data']['surahs'][chapter-1]['ayahs'][verse-1]['text']
             return ayat + "\n" + translation + "\n"
