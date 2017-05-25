@@ -95,8 +95,8 @@ def hangout_keyboard(message):
         else:
             msg = msg + ' ' + str_tmp
 
-    print(msg)
     res = get_hangout(msg)
+    print(type(res))
     dist = res.count_distance(user_location['longitude'], user_location['latitude'])
 
     nearest_path = '/utils/hangout_images/' + res.image_dir
