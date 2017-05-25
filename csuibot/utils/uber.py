@@ -18,7 +18,7 @@ class Uber:
         def exportJSON(self):
             with open(self.locations_json_path, 'w') as locations_json:
                 json.dump(self.locations_dict, locations_json)
-            return 
+            return
 
         def get_locations(self):
             return self.locations_dict
@@ -60,7 +60,7 @@ class Uber:
                 end_longitude=destination['longitude'],
                 seat_count=2
             )
-            
+
             estimates = response.json['prices']
             print(response.json)
             print(estimates)
@@ -84,4 +84,3 @@ class Uber:
         if not Uber.instance:
             Uber.instance = Uber.__Uber()
         return Uber.instance
-

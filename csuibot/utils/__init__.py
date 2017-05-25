@@ -5,7 +5,9 @@ import re
 import time
 import urllib.error
 import requests
+from pathlib import Path
 from bs4 import BeautifulSoup
+from urllib.parse import urlsplit
 from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            loremipsum as li, hex2rgb as h, xkcd as x, meme,
                            password as pw, custom_chuck as cc, kelaskata as k,
@@ -21,7 +23,10 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            newage as na, fakejson, detectlang, billArtist as ba, weton,
                            books, youtube, japanartist as ja, extractcolour,
                            topTropical as trop, mangaTopOricon as mto, tagging,
-                           twitter_search as ts, aqi, uber)
+                           twitter_search as ts, aqi, issfw, mediawiki, schedule,
+                           anime_livechart, itunes, airing, apod, hospital as rsku,
+                           diceSim as dice, enterkomputer, fakenews,
+                           movie_cinema as movie, anison_radio, weather, quran, uber)
 
 
 def lookup_zodiac(month, day):
@@ -68,6 +73,22 @@ def lookup_chinese_zodiac(year):
         return 'Unknown zodiac'
 
 
+def lookup_enter_item(category, item):
+    return enterkomputer.Enterkomputer(category, item)
+
+
+def generate_schedule(chat_id, date, time, desc):
+    return schedule.Schedule().create_schedule(chat_id, date, time, desc)
+
+
+def get_available_schedules(chat_id, date):
+    return schedule.Schedule().get_available_schedules(chat_id, date)
+
+
+def get_schedules(chat_id):
+    return schedule.Schedule().get_schedules(chat_id)
+
+
 def lookup_sentiment_new(text):
     base_url = 'https://westus.api.cognitive.microsoft.com/'
     sentiment_api = 'text/analytics/v2.0/sentiment'
@@ -99,7 +120,6 @@ def get_tweets(user):
 
 
 def define_sound(inputKey):
-
     title = inputKey.split(' ', 1)[1]
     soundtitle = title.replace(" ", "_") + ".mp3"
 
@@ -203,12 +223,48 @@ def checkTopTropical(artist):
     return topTropical.checkTopTropical(artist)
 
 
+def diceSimCoin():
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.coin()
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimRoll(x, y):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.roll(int(x), int(y))
+    except ValueError:
+        return "value error"
+    return hasil
+
+
+def diceSimMultRoll(x, y, z):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.multiroll(int(x), int(y), int(z))
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
+def diceSimIsLucky(n, x, y):
+    dadu = dice.diceSim()
+    try:
+        hasil = dadu.is_lucky(int(n), int(x), int(y))
+    except Exception as e:
+        return "Error catched"
+    return hasil
+
+
 def getTopManga(year, month, day):
     manga = mto.mangaTopOricon()
     try:
         hasil = manga.getTopManga(str(year), str(month), str(day))
     except urllib.error.URLError as err:
-        if(err.code == 404):
+        if (err.code == 404):
             return "Page not found, you may gave incorrect date"
         else:
             return "unexpected Error Happened"
@@ -220,7 +276,7 @@ def getTopMangaMonthly(year, month):
     try:
         hasil = manga.getTopMangaMonthly(str(year), str(month))
     except urllib.error.URLError as err:
-        if(err.code == 404):
+        if (err.code == 404):
             return "Page not found, you may gave incorrect date"
         else:
             return "unexpected Error Happened"
@@ -228,7 +284,7 @@ def getTopMangaMonthly(year, month):
 
 
 def lookup_isUpWeb(url):
-    pattern = re.compile("^(https?)://[^\s/$.?#].[^\s]*$")
+    pattern = re.compile(r"^(https?)://[^\s/$.?#].[^\s]*$")
     if (pattern.match(url)):
         return iuw.IsUpWeb(url).isUp()
     else:
@@ -436,8 +492,19 @@ def get_chuck(message_text):
         raise ValueError('Command /chuck doesn\'t need any arguments')
 
 
-def get_articles(message_text):
+def image_is_sfw(file_path):
+    try:
+        is_sfw = issfw.is_sfw(file_path)
+    except ValueError:
+        return 'An error prevented image from being categorized. Please try again'
+    else:
+        if is_sfw:
+            return 'image is SFW'
+        else:
+            return 'image is NSFW'
 
+
+def get_articles(message_text):
     articles = news.News().get_news(message_text)
 
     brackets = '========================='
@@ -458,10 +525,10 @@ def lookup_HotJapan100(html):
     artist = soup.find_all('artist')[1:11]
     for i in range(10):
         if i < 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[3:] + "-" + artist[i].string
+            string += '(' + str(i + 1) + ') ' + title[i].string[3:] + "-" + artist[i].string
             string += '\n'
         elif i == 9:
-            string += '(' + str(i+1) + ') ' + title[i].string[4:] + "-" + artist[i].string
+            string += '(' + str(i + 1) + ') ' + title[i].string[4:] + "-" + artist[i].string
             string += '\n'
     return (string)
 
@@ -539,3 +606,183 @@ def uber_add(location):
 
 def uber_remove(location):
     return uber.Uber().remove_location(location)
+
+
+def lookup_quran(chapter, verse):
+    try:
+        quran_obj = quran.quran()
+        return quran_obj.lookup_quran(chapter, verse)
+    except IndexError:
+        return "Please insert the valid chapter and verse"
+
+
+def random_quran():
+    try:
+        quran_obj = quran.quran()
+        return quran_obj.get_random_ayah()
+    except IndexError:
+        return "Please insert the valid chapter and verse"
+
+
+def get_chapter():
+    quran_obj = quran.quran()
+    return quran_obj.get_chapter()
+
+
+def manage_love_live_song(command, query=None, username="fersandi", type_=''):
+    if query is not None:
+        query = query.split('-')[0].strip()
+
+    if command == 'add':
+        return anison_radio.AnisonRadio.add_song(query)
+    elif command == 'remove':
+        return anison_radio.AnisonRadio.remove_song(query)
+    elif command == 'list':
+        return anison_radio.AnisonRadio.get_song_list(type_)
+    elif command == 'group':
+        return anison_radio.AnisonRadio.search_song(username, query)
+    elif command == 'clip':
+        return anison_radio.AnisonRadio.get_clip(query)
+
+
+def find_movies(message):
+    if message == '/cgv_gold_class':
+        return movie.Concrete_Cinema().template_find_method("gold class")
+    elif message == '/cgv_regular_2d':
+        return movie.Concrete_Cinema().template_find_method("regular 2d")
+    elif message == '/cgv_4dx_3d_cinema':
+        return movie.Concrete_Cinema().template_find_method("4dx 3d cinema")
+    elif message == '/cgv_velvet':
+        return movie.Concrete_Cinema().template_find_method("velvet")
+    else:
+        return movie.Concrete_Cinema().template_find_method("sweetbox")
+
+
+def change_cinema(nurl):
+    return movie.Concrete_Cinema().template_change_method(nurl)
+
+
+def check_fake_news(url, news_type=None):
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    result = fakenews.FakeNews().check(hostname.lower())
+    type_list = [t for t in result if t != '']
+    return news_type in type_list if news_type else type_list
+
+
+def add_filter_news(url, news_type):
+    scheme, hostname = "{0.scheme} {0.netloc}".format(urlsplit(url)).split()
+    if scheme not in ['http', 'https']:
+        raise ValueError
+    hostname = "{0.netloc}".format(urlsplit(url))
+    fakenews.FakeNews().add_filter(hostname.lower(), news_type)
+
+
+def airing_check(anime):
+    manager = airing.AiringManager()
+    try:
+        manager.request(anime)
+        return manager.get_date()
+    except ValueError:
+        return "Can\'t find the requested anime"
+
+
+def lookup_airing():
+    manager = airing.AiringManager()
+    return manager.get_today_anime()
+
+
+def lookup_anime(genre, season, year):
+    genres = ['Action', 'Adventure', 'Cars', 'Comedy',
+              'Cyberpunk', 'Demons', 'Drama', 'Ecchi',
+              'Fantasy', 'Flash Animation', 'Game', 'Game Adaptation',
+              'Gender Bender', 'Harem', 'Historical', 'Horror',
+              'Josei', 'Kids', 'Light Novel Adaptation', 'Magic',
+              'Manga Adaptation', 'Martial Arts', 'Mecha', 'Military',
+              'Music', 'Mystery', 'ONA', 'Original Story', 'OVA',
+              'Parody', 'Police', 'Psychological', 'Romance', 'Samurai',
+              'School', 'Sci-Fi', 'Seinen', 'Sequel', 'Short Episodes',
+              'Shoujo', 'Shoujo Ai', 'Shounen', 'Shounen Ai', 'Slice of Life',
+              'Space', 'Special', 'Sports', 'Streaming @ Crunchyroll',
+              'Streaming @ Daisuki', 'Streaming @ Funimation', 'Streaming @ Netflix',
+              'Supernatural', 'Super Power', 'Thriller', 'Vampire',
+              'Visual Novel Adaptation', 'Yaoi', 'Yuri']
+
+    seasons = ['spring', 'fall', 'summer', 'winter']
+    if genre not in genres:
+        return 'Invalid genre.'
+    if season not in seasons:
+        return 'Invalid season.'
+    anime_list = anime_livechart.get_anime_list(genre, season, year)
+    response = 'Here are anime(s) that matches with your genre:\n'
+    for i, anime in enumerate(anime_list):
+        if i >= 10:
+            break
+        info = '{}\n{}\n\n'.format(anime['title'], anime['synopsis'][:300])
+        response += info
+    return response
+
+
+def save_mediawiki_url(url):
+    if url is '':
+        raise ValueError('Command /add_wiki need an argument')
+    try:
+        mw = mediawiki.MediaWiki(url)
+    except Exception as e:
+        raise ConnectionError('Invalid url or url is not WikiMedia endpoint')
+    else:
+        return mw.save_url()
+
+
+def get_mediawiki(args):
+    url_wiki_file = Path('.url_wiki')
+    if not url_wiki_file.is_file():
+        raise EnvironmentError(
+            'WikiMedia url is not found. Please add wiki url'
+            ' with command /add_wiki [endpoint wiki url].'
+        )
+
+    with open(".url_wiki") as file:
+        mw = mediawiki.MediaWiki(file.read())
+        if args is '':
+            return mw.get_list_pages()
+        else:
+            return mw.get_page(args)
+
+
+def preview_music(artist):
+    try:
+        manager = itunes.Manager()
+        manager.get_preview(artist)
+        manager.download_url()
+        return "success"
+    except ValueError:
+        return "Can\'t found the requested artist"
+
+
+def fetch_apod():
+    return apod.Apod().fetch_apod()
+
+
+def lookup_hospital(long, lat):
+    rs = rsku.Hospital(long, lat)
+    return rs.calculate_dist_rumah_sakit()
+
+
+def lookup_random_hospital():
+    rs = rsku.Hospital()
+    return rs.get_random_rumah_sakit()
+
+
+def reply_random_hospital(id):
+    rs = rsku.Hospital()
+    return rs.get_by_id(id)
+
+
+def lookup_weather(lat, lon, unit, temp):
+    return weather.Weather().lookup_weather(lat, lon, unit, temp)
+
+
+def city_lookup_weather(city, unit, temp):
+    return weather.Weather().city_lookup_weather(city, unit, temp)
