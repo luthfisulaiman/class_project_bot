@@ -660,7 +660,7 @@ class TestNotes:
 class TestDefinisi:
     def run_test(self, word, expected_output):
         mean = utils.lookup_definisi(word)
-        assert mean != None
+        assert mean is not None
 
     def test_found(self):
         self.run_test('bahtera', 'Nomina:\n1. perahu; kapal\n\n')
@@ -1482,9 +1482,7 @@ class TestQuran:
             assert str(e) == ('Cannot connect to Quran API')
 
     def test_quran_alfatihah(self):
-        expected = "foobar"
-        self.run_test(0,0)
+        self.run_test(0, 0)
 
     def test_quran_verse_not_found(self):
-        expected = "foobar"
-        self.run_test(1000,1000)
+        self.run_test(1000, 1000)

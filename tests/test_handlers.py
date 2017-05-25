@@ -584,7 +584,7 @@ def test_definisi(mocker):
     definisi(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None
+    assert args[1] != fake_definisi
 
 
 def test_sceleNotif(mocker):
@@ -1772,7 +1772,7 @@ def test_hot100_artist(mocker):
     hot100_artist(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None
+    assert args[1] is not None
 
 
 def test_newage_artist(mocker):
@@ -1785,7 +1785,7 @@ def test_newage_artist(mocker):
     newage_artist(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None
+    assert args[1] is not None
 
 
 def test_hotcountry_artist(mocker):
@@ -1844,7 +1844,7 @@ def test_newage(mocker):
     newage(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None
+    assert args[1] is not None
 
 
 def test_newage_no_connection(mocker):
@@ -1925,7 +1925,7 @@ def test_billArtist_Pentatonix(mocker):
     billArtist(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None
+    assert args[1] is not None
 
 
 def test_billArtist_not_exist(mocker):
@@ -2071,14 +2071,13 @@ Tag : power , Confidence : 19'''
 
 
 def test_quran_keyboard_input(mocker):
-    faker = 'foobar'
     mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
     mock_message = Mock(text='/qs')
 
     quran_c_v(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None
+    assert args[1] is not None
 
 
 def test_quran_custom_input(mocker):
@@ -2113,4 +2112,4 @@ def test_quran_ngaji(mocker):
     quran_ngaji(mock_message)
 
     args, _ = mocked_reply_to.call_args
-    assert args[1] != None 
+    assert args[1] is not None

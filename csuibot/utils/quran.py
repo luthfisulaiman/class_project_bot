@@ -4,9 +4,11 @@ import random
 
 class quran:
     def __init__(self):
-        with open('csuibot/utils/quran.json', 'r', encoding='utf-8') as quran_json:
+        linkq = 'csuibot/utils/quran.json'
+        linkqtr = 'csuibot/utils/quran-translation.json'
+        with open(linkq, 'r', encoding='utf-8') as quran_json:
             self.quran = json.load(quran_json)
-        with open('csuibot/utils/quran-translation.json', 'r', encoding='utf-8') as qurantr_json:
+        with open(linkqtr, 'r', encoding='utf-8') as qurantr_json:
             self.qurantr = json.load(qurantr_json)
 
     def lookup_quran(self, chapter, verse):

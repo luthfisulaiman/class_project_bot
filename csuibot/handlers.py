@@ -1071,6 +1071,7 @@ def quran_ngaji(message):
         qurantext = random_quran().split("@")
         correct = qurantext[0]
         quranmsg = qurantext[1]
+        app.logger.debug(correct)
         bot.reply_to(message, "Ayok kita mengaji")
         bot.reply_to(message, quranmsg)
         bot.register_next_step_handler(message, process_ngaji)
