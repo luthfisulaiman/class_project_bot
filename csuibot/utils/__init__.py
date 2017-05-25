@@ -58,6 +58,7 @@ def get_hangout(name):
     h_list = hangout.create_hangout_list()
     for data in h_list:
         print(data.name)
+        print(name)
         if name in data.name:
             print('yeay')
             print(data.name)
