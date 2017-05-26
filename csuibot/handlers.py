@@ -1,4 +1,5 @@
 from . import app, bot
+import csuibot
 from telebot import types
 import requests
 import re
@@ -11,9 +12,9 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    define_sound, get_articles,
-                    lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
-                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, count_posters,
+                    define_sound, get_articles, lookup_message_dist, add_message_dist,
+                    lookup_wiki, get_comic, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
@@ -178,6 +179,17 @@ def plant_ask(message):
     try:
         txt = message.text
         msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^/topposters$')
+def top_poster(message):
+    app.logger.debug("'topposters' command detected")
+    try:
+        msg = count_posters(csuibot.last_update)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:

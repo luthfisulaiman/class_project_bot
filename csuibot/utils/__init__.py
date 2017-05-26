@@ -13,10 +13,9 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            password as pw, custom_chuck as cc, kelaskata as k,
                            define as d, yelkomputer, soundcomposer as sc,
                            calculate_binary as cb, isUpWeb as iuw, notifTaker as n,
-                           compute as co, definisi, note, dayofdate as dod, news,
-                           chuck, discretemath as dm, marsfasilkom, yelfasilkom,
-                           wiki, xkcd2 as x2, similar,
-                           billboard_hot100_artist as felh,
+                           chuck, discretemath as dm, marsfasilkom, yelfasilkom, topposter,
+                           compute as co, definisi, note, dayofdate as dod, news, wiki,
+                           xkcd2 as x2, similar, billboard_hot100_artist as felh,
                            billboard_newage_artist as feln,
                            billboard_hotcountry_artist as felhc,
                            oricon_cd as ocd, billboard as b, hotcountry as hot,
@@ -494,6 +493,10 @@ def get_chuck(message_text):
         return chuck.Chuck().get_chuck()
     else:
         raise ValueError('Command /chuck doesn\'t need any arguments')
+
+
+def count_posters(update):
+    return topposter.TopPoster(update).count_posters()
 
 
 def image_is_sfw(file_path):
