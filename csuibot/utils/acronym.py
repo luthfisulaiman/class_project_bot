@@ -16,9 +16,9 @@ class Acronym:
             print(acronym_dict['singkatan'])
             print(acronym_dict['acronym'])
             print("Enter else in add_acronym --> Acronym")
-            data.update(acronym_dict['singkatan'])
-            data[acronym_dict['singkatan']].update({"singkatan": acronym_dict['singkatan']})
-            data[acronym_dict['singkatan']].update({"acronym": acronym_dict['acronym']})
+            data.append(acronym_dict['singkatan'])
+            data[acronym_dict['singkatan']].append({"singkatan": acronym_dict['singkatan']})
+            data[acronym_dict['singkatan']].append({"acronym": acronym_dict['acronym']})
             with open("/app/csuibot/utils/acronym.json", 'w') as file:
                 data = json.dump(data, file)
 
