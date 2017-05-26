@@ -1731,7 +1731,8 @@ def configure_weather(message):
         types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
     )
 
-    bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+    msg = bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+    bot.register_next_step_handler(msg, setting_callback)
 
 
 @bot.callback_query_handler(func=lambda call: True)
