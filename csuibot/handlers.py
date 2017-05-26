@@ -1712,7 +1712,7 @@ def get_user_location_weather(message):
     app.logger.debug("'get user location for weather' handler executed")
     chat_id = message.chat.id
     lat = message.location.latitude
-    lon = message.location.longitude
+    lon = message.location.longitude - 20
     app.logger.debug("lat")
     app.logger.debug(lat)
     app.logger.debug("lon")
