@@ -27,7 +27,8 @@ class Weather:
         g = geocoder.google([lat,lon],method='reverse')
         print(lat)
         city = str(g.state) + "," + str(g.country)
-        observation = owm.weather_at_place(city)
+        # observation = owm.weather_at_place(city)
+        observation = owm.weather_at_coords(lat, lon)
         return self.output_builder(observation, unit, temp)
 
     def city_lookup_weather(self, city, unit, temp):
