@@ -1,6 +1,7 @@
 from csuibot import utils, config
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
+from csuibot.utils import bible
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
 import os
 import re
@@ -1473,6 +1474,22 @@ class test_hot_japan_100:
         assert res != "ups, something wrong is going on"
 
 
-class Test_Bible:
-    def test_bible_verse(self):
-        pass
+class TestBible:
+    def test_verse(self):
+        res = bible.Bible().get_verse("john", 3, 16)
+        john316 = ("For God so loved the world, that he gave his only begotten Son, "
+                   "that whosoever believeth in him should not perish, \
+                   but have everlasting life.")
+        assert res == john316
+
+    def test_total_chapter(self):
+        res = bible.Bible().get_total_chapter("john")
+        assert res == 21
+
+    def test_total_verse(self):
+        res = bible.Bible().get_total_verse("john", 3)
+        assert res == 36
+
+    def test_random_verse(self):
+        random_verse = bible.Bible().random_verse()
+        assert random_verse != ""

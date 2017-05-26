@@ -17,7 +17,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, japan100,
-                              get_notif_twitter, air_quality, sentiment_new)
+                              get_notif_twitter, air_quality, sentiment_new, get_bible_verse)
 from requests.exceptions import ConnectionError
 
 
@@ -2069,9 +2069,13 @@ Tag : power , Confidence : 19'''
     assert args[1] == 'HTTP Error'
 
 
-def test_bible(mocker):
-    pass
+def test_verse(mocker):
+    fake_result = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_verse', return_value=fake_result)
+    mock_message = Mock(text='/bible john 3:16')
 
+    get_bible_verse(mock_message)
 
-def test_bible_verse_not_found(mocker):
-    pass
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
