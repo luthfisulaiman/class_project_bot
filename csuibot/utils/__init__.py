@@ -25,7 +25,7 @@ from csuibot.utils import (zodiac as z, ip, palindrome as p, hipster as hp,
                            topTropical as trop, mangaTopOricon as mto, tagging,
                            twitter_search as ts, aqi, issfw, mediawiki, schedule,
                            anime_livechart, itunes, airing, apod, hospital as rsku,
-                           diceSim as dice, enterkomputer, fakenews, hangout,
+                           diceSim as dice, enterkomputer, fakenews, hangout, bible,
                            movie_cinema as movie, anison_radio, weather, quran, uber, album)
 
 
@@ -830,3 +830,19 @@ def lookup_weather(lat, lon, unit, temp):
 
 def city_lookup_weather(city, unit, temp):
     return weather.Weather().city_lookup_weather(city, unit, temp)
+
+
+def get_verse(self, book, chapter_num, verse_num):
+    return bible.Bible.get_verse(book, chapter_num, verse_num)
+
+
+def get_total_chapter(self, book):
+    return bible.Bible.get_total_chapter(book)
+
+
+def get_total_verse(self, book, chapter_num):
+    return bible.Bible.get_total_chapter(book, chapter_num)
+
+
+def get_random_verse(self):
+    return bible.Bible.random_verse()
