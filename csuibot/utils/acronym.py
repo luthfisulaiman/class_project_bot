@@ -7,8 +7,10 @@ import json
 class Acronym:
 
     def add_acronym(self, message):
+        print("hehe")
         with open('/app/csuibot/utils/acronym.json', 'r', encoding='utf-8') as file:
             data = json.load(file)
+        print(data)
         acronym_dict = message
         if acronym_dict['singkatan'] in data:
             message = "Data is already in library!"
