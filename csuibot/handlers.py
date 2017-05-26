@@ -2138,6 +2138,7 @@ def weather(message):
     msg = bot.send_message(chat_id, text, message_id, reply_markup=markup)
     bot.register_next_step_handler(msg, get_user_location_weather)
 
+
 @bot.callback_query_handler(func=lambda call: True)
 def get_user_location_weather(message):
     app.logger.debug("'get user location for weather' handler executed")

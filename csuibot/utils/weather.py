@@ -24,11 +24,11 @@ class Weather:
         self.temp = WT_CEL
 
     def lookup_weather(self, lat, lon, unit, temp):
-        g = geocoder.google([lat,lon],method='reverse')
+        g = geocoder.google([lat, lon], method='reverse')
         print(lat)
         city = str(g.state) + "," + str(g.country)
         # observation = owm.weather_at_place(city)
-        observation = owm.weather_at_coords(lat, lon -20)
+        observation = owm.weather_at_coords(lat, lon - 20)
         return self.output_builder(observation, city, unit, temp)
 
     def city_lookup_weather(self, city, unit, temp):
@@ -38,7 +38,7 @@ class Weather:
     def output_builder(self, observation, city, unit, temp):
 
         w = observation.get_weather()
-        l = observation.get_location()
+        # l = observation.get_location()
 
         weather = w.get_status()
         wid = w.get_weather_code()
