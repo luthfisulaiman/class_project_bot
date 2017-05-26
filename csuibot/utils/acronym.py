@@ -22,6 +22,7 @@ class Acronym:
 
             message = "{} - {} has been added!" \
                       .format(acronym_dict['singkatan'], acronym_dict['singkatan'])
+            print(message)
         return message
 
     def update_acronym(self, message):
