@@ -29,6 +29,7 @@ class Uber:
             self.locations_dict['locations'][location.name]['longitude'] = location.lon
             self.exportJSON()
 
+
         def remove_location(self, location_name):
             try:
                 self.locations_dict['locations'].pop(location_name)
@@ -64,13 +65,13 @@ class Uber:
             res = 'Destination: {} ({} kilometers from current position)\n\n'.\
                     format(location_to, estimates[0]["distance"])
             res += 'Estimated travel time and fares for each Uber services:\n- UberX ({} minutes, {} rupiah)'\
-                   .format(estimates[3]["duration"], estimates[3]["high_estimate"])
+                   .format(estimates[2]["duration"], estimates[3]["high_estimate"])
             res += '- UberPool ({} minutes, {} rupiah)\n'.\
-                   format(estimates[2]["duration"], estimates[2]["high_estimate"])
+                   format(estimates[1]["duration"], estimates[2]["high_estimate"])
             res += '- UberBlack ({} minutes, {} rupiah)\n'.\
-                   format(estimates[4]["duration"], estimates[4]["high_estimate"])
+                   format(estimates[3]["duration"], estimates[4]["high_estimate"])
             res += '- UberMotor ({} minutes, {} rupiah)\n\nData provided by [Uber] (https://www.uber.com)'.\
-                   format(estimates[1]["duration"], estimates[1]["high_estimate"])
+                   format(estimates[0]["duration"], estimates[1]["high_estimate"])
             return res
 
     instance = None

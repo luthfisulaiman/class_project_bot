@@ -1,4 +1,6 @@
 from . import app, bot
+from telebot.types import KeyboardButton, ReplyKeyboardMarkup
+import csuibot
 from telebot import types
 import requests
 import re
@@ -11,9 +13,9 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    define_sound, get_articles,
-                    lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
-                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, count_posters,
+                    define_sound, get_articles, lookup_message_dist, add_message_dist,
+                    lookup_wiki, get_comic, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
@@ -29,11 +31,14 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
                     check_fake_news, add_filter_news, change_cinema, find_movies,
                     lookup_quran, random_quran, get_chapter, uber_add,
-                    uber_remove, uber_info, uber_get)
+                    uber_remove, uber_info, uber_get, lookup_album_price, get_nearest_hangout,
+                    get_random_hangout, get_hangout, print_message)
 from requests.exceptions import ConnectionError
 import datetime
 
 locations = {}
+request_hangout = -1
+spec_dist = 0
 
 
 class Location:
@@ -118,6 +123,143 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+@bot.message_handler(regexp=r'^/hangout_kuy$')
+def hangout_nearby(message):
+
+    app.logger.debug("'hangout_kuy' command detected")
+    str_msg = 'Tap to get your location and get nearby hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    set_request_hangout(0)
+
+
+@bot.message_handler(regexp=r'^/random_hangout_kuy$')
+def hangout_random(message):
+
+    app.logger.debug("'random_hangout_kuy$' command detected")
+    str_msg = 'Tap to get your location and get random hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    set_request_hangout(1)
+
+
+@bot.message_handler(regexp=r'^/nearby_hangout_kuy \d+$')
+def hangout_nearby_specified(message):
+
+    app.logger.debug("'nearby_hangout_kuy' command detected")
+    str_msg = 'Tap to get your location and get specified radius hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    tmp_msg = message.text.split(' ')
+    dist = int(tmp_msg[1])
+
+    set_specified_distance(dist)
+    set_request_hangout(2)
+
+
+@bot.message_handler(regexp=r'^/hangout')
+def hangout_keyboard(message):
+
+    app.logger.debug("'hangout' command detected")
+
+    tmp_msg = message.text.split(' ')
+    msg = ''
+    dist = ''
+
+    for index, str_tmp in enumerate(tmp_msg):
+        if index == 0:
+            continue
+        elif index == len(tmp_msg) - 1:
+            dist = str_tmp
+        else:
+            msg = msg + ' ' + str_tmp
+
+    res = get_hangout(msg[1:])
+
+    nearest_path = '/utils/hangout_images/' + res.image_dir
+    path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
+    bot.send_photo(message.chat.id, open(path, 'rb'))
+    bot.reply_to(message, print_message(res, dist))
+
+
+@bot.message_handler(content_types=['location'])
+def get_nearest_location(message):
+
+    loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
+    req = get_request_hangout()
+
+    try:
+        if req == 0:
+            res = get_nearest_hangout(loc['longitude'], loc['latitude'])
+        elif req == 1:
+            res = get_random_hangout(5)
+        elif req == 2:
+            res = get_nearest_hangout(loc['longitude'], loc['latitude'])
+            sp_dist = get_specified_distance()
+
+            if res['nearest'].distance > sp_dist:
+                bot.reply_to(message, 'There is no hangout place within specified radius!')
+                return
+
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+
+    else:
+        if req == 0 or req == 2:
+            nearest_path = '/utils/hangout_images/' + res['nearest'].image_dir
+            path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
+            bot.send_photo(message.chat.id, open(path, 'rb'))
+            bot.reply_to(message, res['message'])
+        elif req == 1:
+
+            str_msg = 'Choose one hangout place!'
+            reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+
+            for data in res:
+                data.set_distance = data.set_distance(loc['longitude'], loc['latitude'])
+                key_text = '/hangout ' + data.name + ' ' + str(int(data.distance))
+                keyboard = KeyboardButton(text=key_text)
+                reply_keyboard.add(keyboard)
+
+            bot.send_message(chat_id=message.chat.id, text=str_msg,
+                             reply_markup=reply_keyboard)
+
+        set_request_hangout(-1)
+
+
+def set_request_hangout(num):
+    global request_hangout
+    request_hangout = num
+
+
+def get_request_hangout():
+    return request_hangout
+
+
+def set_specified_distance(num):
+    global spec_dist
+    spec_dist = num
+
+
+def get_specified_distance():
+    return spec_dist
+
+
 @bot.message_handler(commands=['aqi'])
 def air_quality(message):
     app.logger.debug("'aqi' command detected")
@@ -178,6 +320,17 @@ def plant_ask(message):
     try:
         txt = message.text
         msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^/topposters$')
+def top_poster(message):
+    app.logger.debug("'topposters' command detected")
+    try:
+        msg = count_posters(csuibot.last_update)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
@@ -508,6 +661,18 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/vgmdb OST this month$')
+def album_price(message):
+    app.logger.debug("'vgmd' command detected")
+    try:
+        reply = lookup_album_price()
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(commands=['enterkomputer'])
@@ -1974,12 +2139,13 @@ def weather(message):
     bot.register_next_step_handler(msg, get_user_location_weather)
 
 
+@bot.callback_query_handler(func=lambda call: True)
 def get_user_location_weather(message):
     app.logger.debug("'get user location for weather' handler executed")
     chat_id = message.chat.id
     lat = message.location.latitude
     lon = message.location.longitude
-    weather_result = lookup_weather(lon, lat, WIND_UNIT, TEMP_UNIT)
+    weather_result = lookup_weather(lat, lon, WIND_UNIT, TEMP_UNIT)
     markup = types.ReplyKeyboardRemove(selective=False)
     bot.send_message(chat_id, weather_result, markup)
 
@@ -1993,18 +2159,23 @@ def configure_weather(message):
         types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
     )
 
-    bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+    msg = bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+    bot.register_next_step_handler(msg, setting_callback)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def setting_callback(query):
     data = query.data
+    app.logger.debug(data)
+    app.logger.debug("'setting' command detected")
     if data.startswith('set-'):
+        app.logger.debug(query.data[4:])
         get_ex_callback(query)
 
 
 def get_ex_callback(query):
     bot.answer_callback_query(query.id)
+    app.logger.debug(query.data[4:])
     setting_result(query.message, query.data[4:])
 
 
