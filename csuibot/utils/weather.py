@@ -1,6 +1,5 @@
 import pyowm
 import geocoder
-import app
 
 METRIC_UNIT = "meter/sec"
 IMPER_UNIT = "miles/hour"
@@ -26,7 +25,7 @@ class Weather:
 
     def lookup_weather(self, lat, lon, unit, temp):
         g = geocoder.google([lat,lon],method='reverse')
-        app.logger.debug(lat)
+        print(lat)
         city = str(g.state) + "," + str(g.country)
         observation = owm.weather_at_place(city)
         return self.output_builder(observation, unit, temp)
