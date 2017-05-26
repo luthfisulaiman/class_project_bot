@@ -1,116 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d10d8758-455b-480e-b2d4-da2df661d65c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/587762397.m4a" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/itunes-logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/preview.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/preview.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/soundclip/587762397.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/soundclip/goofy.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/soundclip/tom_pain.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/soundclip/tom_scream.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/soundclip/wilhelm.mp3" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/airing.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/album.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/anime_livechart.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/anison_radio.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/apod.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/aqi.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/billArtist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/billboard.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/billboard_hot100_artist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/billboard_hotcountry_artist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/billboard_newage_artist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/books.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/calculate_binary.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/chuck.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/compute.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/custom_chuck.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/data.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/data_processor.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/dayofdate.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/define.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/definisi.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/detectlang.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/diceSim.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/discretemath.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/enterkomputer.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/extractcolour.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/fakejson.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/fakenews.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/hangout_data.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/hex2rgb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/hipster.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/hospital.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/hotcountry.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/id_list.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/ip.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/isUpWeb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/issfw.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/itunes.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/japanartist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/kelaskata.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/list_rs.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/locations.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/loremipsum.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/mangaTopOricon.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/marsfasilkom.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/mediawiki.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/meme.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/message_dist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/movie_cinema.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/newage.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/news.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/note.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/notifTaker.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/oricon_cd.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/palindrome.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/password.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/plant.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/posters_data.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/quran-translation.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/quran.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/quran.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/response.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/schedule.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/similar.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/soundcomposer.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/tagging.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/test.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/topTropical.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/topposter.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/twitter_search.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/uber.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/weather.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/weton.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/wiki.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/xkcd.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/xkcd2.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/yelfasilkom.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/yelkomputer.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/csuibot/utils/youtube.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dist.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/schedules/tes.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.env.example" afterPath="$PROJECT_DIR$/.env.example" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitlab-ci.yml" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/csui-bot-2.iml" afterPath="$PROJECT_DIR$/.idea/csui-bot-2.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/__init__.py" afterPath="$PROJECT_DIR$/csuibot/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/config.py" afterPath="$PROJECT_DIR$/csuibot/config.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/handlers.py" afterPath="$PROJECT_DIR$/csuibot/handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/utils/__init__.py" afterPath="$PROJECT_DIR$/csuibot/utils/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/csuibot/utils/zodiac.py" afterPath="$PROJECT_DIR$/csuibot/utils/zodiac.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/manage.py" afterPath="$PROJECT_DIR$/manage.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requirements.txt" afterPath="$PROJECT_DIR$/requirements.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime.txt" afterPath="$PROJECT_DIR$/runtime.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_csuibot.py" afterPath="$PROJECT_DIR$/tests/test_csuibot.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_handlers.py" afterPath="$PROJECT_DIR$/tests/test_handlers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_utils.py" afterPath="$PROJECT_DIR$/tests/test_utils.py" />
-    </list>
+    <list default="true" id="d10d8758-455b-480e-b2d4-da2df661d65c" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -173,8 +64,8 @@
       <file leaf-file-name="test_utils.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/test_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="2417" column="0" lean-forward="false" selection-start-line="2417" selection-start-column="0" selection-end-line="2417" selection-end-column="0" />
+            <state relative-caret-position="383">
+              <caret line="2429" column="0" lean-forward="true" selection-start-line="2429" selection-start-column="0" selection-end-line="2429" selection-end-column="0" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -342,7 +233,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="754" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24963397" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -438,8 +329,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="2417" column="0" lean-forward="false" selection-start-line="2417" selection-start-column="0" selection-end-line="2417" selection-end-column="0" />
+        <state relative-caret-position="383">
+          <caret line="2429" column="0" lean-forward="true" selection-start-line="2429" selection-start-column="0" selection-end-line="2429" selection-end-column="0" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
           </folding>
