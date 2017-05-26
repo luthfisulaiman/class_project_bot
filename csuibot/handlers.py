@@ -1031,7 +1031,7 @@ def process_add_acronym_step(message):
     print("Adding acronym")
     try:
         add__acronym = acronym_new(acronym_dict)
-        print(add_acronym)
+        print(add__acronym)
     except ValueError:
         bot.reply_to(message, 'Error found!')
     else:
