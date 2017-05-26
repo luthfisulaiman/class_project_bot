@@ -65,17 +65,17 @@ class Uber:
             print(response.json)
             print(estimates)
             res = 'Destination: {} ({} kilometers from current position)\n\n'\
-                  .format(location_to, estimates[0]["distance"])
+                  .format(location_to, estimates[0]["distance"]*1.6)
             res += 'Estimated travel time and fares for each Uber services:\n'
             res += '- UberX ({} minutes, {} rupiah)\n'\
-                   .format(estimates[3]["duration"], estimates[3]["high_estimate"])
+                   .format(estimates[3]["duration"]//60, estimates[3]["estimate"])
             res += '- UberPool ({} minutes, {} rupiah)\n'\
-                   .format(estimates[2]["duration"], estimates[2]["high_estimate"])
+                   .format(estimates[2]["duration"]//60, estimates[2]["estimate"])
             res += '- UberBlack ({} minutes, {} rupiah)\n'\
-                   .format(estimates[4]["duration"], estimates[4]["high_estimate"])
-            res += '- UberMotor ({} minutes, {} rupiah)\n\n'
-            res += 'Data provided by [Uber] (https://www.uber.com)'\
-                   .format(estimates[1]["duration"], estimates[1]["high_estimate"])
+                   .format(estimates[4]["duration"]//60, estimates[4]["estimate"])
+            res += '- UberMotor ({} minutes, {} rupiah)\n\n'\
+                   .format(estimates[1]["duration"]//60, estimates[1]["estimate"])
+            res += 'Data provided by [Uber] (https://www.uber.com)'
             return res
 
     instance = None
