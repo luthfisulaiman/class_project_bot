@@ -1,6 +1,6 @@
 import pyowm
 import geocoder
-from . import app
+import app
 
 METRIC_UNIT = "meter/sec"
 IMPER_UNIT = "miles/hour"
