@@ -2441,17 +2441,20 @@ class TestWeather:
     def test_output_builder_imperial_celcius(self):
         owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
         observation = owm.weather_at_place("Depok,ID")
-        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imperial", "Celcius")
+        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imp\
+            erial", "Celcius")
         assert res is not None
 
     def test_output_builder_imperial_kelvin(self):
         owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
         observation = owm.weather_at_place("Depok,ID")
-        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imperial", "Kelvin")
+        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imp\
+            erial", "Kelvin")
         assert res is not None
 
     def test_output_builder_imperial_fahren(self):
         owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
         observation = owm.weather_at_place("Depok,ID")
-        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imperial", "Fahrenheit")
+        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imp\
+            erial", "Fahrenheit")
         assert res is not None

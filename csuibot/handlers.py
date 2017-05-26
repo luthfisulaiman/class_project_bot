@@ -1,7 +1,6 @@
 from . import app, bot
 from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 import csuibot
-from telebot import types
 import requests
 import re
 import os
@@ -33,7 +32,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     check_fake_news, add_filter_news, change_cinema, find_movies,
                     lookup_quran, random_quran, get_chapter, uber_add,
                     uber_remove, uber_info, uber_get, lookup_album_price, get_nearest_hangout,
-                    get_random_hangout, get_hangout, print_message, image_is_sfw)
+                    get_random_hangout, get_hangout, print_message)
 from .utils import get_verse, get_total_chapter, get_total_verse, get_random_verse
 from requests.exceptions import ConnectionError
 import datetime
