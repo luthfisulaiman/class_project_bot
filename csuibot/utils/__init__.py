@@ -79,5 +79,5 @@ def get_random_hangout(amount):
 def print_message(hangout_data, dist=None):
     str_msg = '[' + hangout_data.name + ']' + '\n'
     str_msg += 'Location: ' + '\n' + hangout_data.address + '\n'
-    str_msg += 'Distance: ' + str(int(dist)) + ' metres' + '\n'
+    str_msg += 'Distance: ' + str(float(dist)) + ' metres' + '\n'
     return str_msg

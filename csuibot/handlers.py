@@ -131,7 +131,8 @@ def get_nearest_location(message):
 
             for data in res:
                 data.set_distance = data.set_distance(loc['longitude'], loc['latitude'])
-                keyboard = KeyboardButton(text='/hangout ' + data.name + ' ' + str(int(data.distance)))
+                key_text = '/hangout ' + data.name + ' ' + str(int(data.distance))
+                keyboard = KeyboardButton(text=key_text)
                 reply_keyboard.add(keyboard)
 
             bot.send_message(chat_id=message.chat.id, text=str_msg,
