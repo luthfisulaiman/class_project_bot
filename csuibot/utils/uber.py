@@ -18,7 +18,6 @@ class Uber:
         def exportJSON(self):
             with open(self.locations_json_path, 'w') as locations_json:
                 json.dump(self.locations_dict, locations_json)
-            return
 
         def get_locations(self):
             return self.locations_dict
