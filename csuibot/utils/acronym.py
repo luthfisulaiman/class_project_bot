@@ -13,6 +13,8 @@ class Acronym:
         if acronym_dict['singkatan'] in data:
             message = "Data is already in library!"
         else:
+            print(acronym_dict['singkatan'])
+            print(acronym_dict['acronym'])
             print("Enter else in add_acronym --> Acronym")
             data.update(acronym_dict['singkatan'])
             data[acronym_dict['singkatan']].update({"singkatan": acronym_dict['singkatan']})
