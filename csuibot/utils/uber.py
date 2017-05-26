@@ -59,22 +59,18 @@ class Uber:
                 end_longitude=destination['longitude'],
                 seat_count=2
             )
-
+            
             estimates = response.json['prices']
-            print(response.json)
-            print(estimates)
-            res = 'Destination: {} ({} kilometers from current position)\n\n'\
-                  .format(location_to, estimates[0]["distance"]*1.6)
-            res += 'Estimated travel time and fares for each Uber services:\n'
-            res += '- UberX ({} minutes, {} rupiah)\n'\
-                   .format(estimates[3]["duration"]//60, estimates[3]["estimate"])
-            res += '- UberPool ({} minutes, {} rupiah)\n'\
-                   .format(estimates[2]["duration"]//60, estimates[2]["estimate"])
-            res += '- UberBlack ({} minutes, {} rupiah)\n'\
-                   .format(estimates[4]["duration"]//60, estimates[4]["estimate"])
-            res += '- UberMotor ({} minutes, {} rupiah)\n\n'\
-                   .format(estimates[1]["duration"]//60, estimates[1]["estimate"])
-            res += 'Data provided by [Uber] (https://www.uber.com)'
+            res = 'Destination: {} ({} kilometers from current position)\n\n'.\
+                    format(location_to, estimates[0]["distance"])
+            res += 'Estimated travel time and fares for each Uber services:\n- UberX ({} minutes, {} rupiah)'\
+                   .format(estimates[3]["duration"], estimates[3]["high_estimate"])
+            res += '- UberPool ({} minutes, {} rupiah)\n'.\
+                   format(estimates[2]["duration"], estimates[2]["high_estimate"])
+            res += '- UberBlack ({} minutes, {} rupiah)\n'.\
+                   format(estimates[4]["duration"], estimates[4]["high_estimate"])
+            res += '- UberMotor ({} minutes, {} rupiah)\n\nData provided by [Uber] (https://www.uber.com)'.\
+                   format(estimates[1]["duration"], estimates[1]["high_estimate"])
             return res
 
     instance = None
