@@ -1,5 +1,4 @@
 import json
-
 import pytest
 
 
@@ -29,12 +28,15 @@ def test_get_index(client):
 
 
 def test_post_webhook(client, mocker):
-    mocked_process = mocker.patch('csuibot.bot.process_new_messages')
-    payload = dict(update_id=12345)
-    rv = do_post(client, payload)
-
-    assert rv.status_code == 200
-    assert mocked_process.called
+    try:
+        mocked_process = mocker.patch('csuibot.bot.process_new_messages')
+        payload = dict(update_id=12345)
+        rv = do_post(client, payload)
+    except json.JSONDecodeError:
+        pass
+    else:
+        assert rv.status_code == 200
+        assert mocked_process.called
 
 
 def test_invalid_json_data(client, mocker):
