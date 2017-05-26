@@ -8,7 +8,7 @@ class Acronym:
 
     def add_acronym(self, message):
         print("hehe")
-        with open('/app/csuibot/utils/acronym.json', 'r', encoding='utf-8') as file:
+        with open('/app/csuibot/utils/acronym.json', 'r') as file:
             data = json.load(file)
         print(data)
         acronym_dict = message
@@ -18,7 +18,7 @@ class Acronym:
             print(acronym_dict['singkatan'])
             print(acronym_dict['acronym'])
             print("Enter else in add_acronym --> Acronym")
-            with open("/app/csuibot/utils/acronym.json", 'w', encoding='utf-8') as file:
+            with open("/app/csuibot/utils/acronym.json", 'w') as file:
                 entry = {acronym_dict['singkatan']: {"singkatan": acronym_dict['singkatan'], "acronym": acronym_dict['acronym']}}
                 data.append(entry)
                 json.dump(data, file)
