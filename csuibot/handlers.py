@@ -1713,10 +1713,6 @@ def get_user_location_weather(message):
     chat_id = message.chat.id
     lat = message.location.latitude
     lon = message.location.longitude
-    app.logger.debug("lat")
-    app.logger.debug(lat)
-    app.logger.debug("lon")
-    app.logger.debug(lon)
     weather_result = lookup_weather(lat, lon, WIND_UNIT, TEMP_UNIT)
     markup = types.ReplyKeyboardRemove(selective=False)
     bot.send_message(chat_id, weather_result, markup)
@@ -1731,18 +1727,23 @@ def configure_weather(message):
         types.InlineKeyboardButton('Wind Unit', callback_data='set-wind')
     )
 
-    bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+    msg = bot.send_message(message.chat.id, "Setting yang tersedia:", reply_markup=keyboard)
+    bot.register_next_step_handler(msg, setting_callback)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def setting_callback(query):
     data = query.data
+    app.logger.debug(data)
+    app.logger.debug("'setting' command detected")
     if data.startswith('set-'):
+        app.logger.debug(query.data[4:])
         get_ex_callback(query)
 
 
 def get_ex_callback(query):
     bot.answer_callback_query(query.id)
+    app.logger.debug(query.data[4:])
     setting_result(query.message, query.data[4:])
 
 
