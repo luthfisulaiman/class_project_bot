@@ -1,11 +1,11 @@
 from . import app, bot
 from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 import csuibot
-from telebot import types
 import requests
 import re
 import os
 import urllib
+from telebot import types
 from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     call_lorem_ipsum, lookup_yelkomputer, get_public_ip,
                     convert_hex2rgb, fetch_latest_xkcd, make_hipster,
@@ -33,8 +33,11 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_quran, random_quran, get_chapter, uber_add,
                     uber_remove, uber_info, uber_get, lookup_album_price, get_nearest_hangout,
                     get_random_hangout, get_hangout, print_message)
+from .utils import get_verse, get_total_chapter, get_total_verse, get_random_verse
 from requests.exceptions import ConnectionError
 import datetime
+
+user_dict = {}
 
 locations = {}
 request_hangout = -1
@@ -1406,6 +1409,112 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(regexp=r'^/bible$')
+def talk_bible_verse(message):
+    app.logger.debug("'bible chat' command detected")
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, row_width=2)
+    matthew_button = types.KeyboardButton("Matthew")
+    mark_button = types.KeyboardButton("Mark")
+    luke_button = types.KeyboardButton("Luke")
+    john_button = types.KeyboardButton("John")
+    markup.add(matthew_button, mark_button, luke_button, john_button)
+    msg = bot.reply_to(message, "Choose one Gospel:", reply_markup=markup)
+    bot.register_next_step_handler(msg, get_chapternum)
+    types.ReplyKeyboardRemove(selective=False)
+
+
+def get_chapternum(message):
+    try:
+        book_name = message.text.lower()
+        user_dict["book"] = book_name
+        total_chapter = get_total_chapter(book_name)
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        for i in range(total_chapter):
+            markup.row(types.KeyboardButton(str(i+1)))
+        msg = bot.reply_to(message, "Choose one chapter:", reply_markup=markup)
+        bot.register_next_step_handler(msg, get_verse_num)
+    except Exception as err:
+        bot.reply_to(message, "oops1")
+        bot.reply_to(message, str(err))
+
+
+def get_verse_num(message):
+    try:
+        book_name = user_dict["book"]
+        chapternum = message.text
+        user_dict["chapternum"] = chapternum
+        total_verse = get_total_verse(book_name, chapternum)
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+        for i in range(total_verse):
+            markup.row(types.KeyboardButton(str(i+1)))
+        msg = bot.reply_to(message, "Choose one verse:", reply_markup=markup)
+        bot.register_next_step_handler(msg, get_verse_text)
+    except Exception as err:
+        bot.reply_to(message, "oops2")
+        bot.reply_to(message, str(err))
+
+
+def get_verse_text(message):
+    try:
+        book_name = user_dict["book"]
+        chapternum = user_dict["chapternum"]
+        verse_num = message.text
+        verse = get_verse(book_name, chapternum, verse_num)
+        bot.reply_to(message, verse)
+    except Exception as err:
+        bot.reply_to(message, "oops3")
+        bot.reply_to(message, str(err))
+
+
+@bot.message_handler(regexp=r'^/bible (.*) \d{1,2}\:\d{1,2}$')
+def get_bible_verse(message):
+    # if(message.chat.type == "private"):
+    app.logger.debug("'bible' command detected")
+    list_of_message = message.text.split()
+    book = list_of_message[1]
+    num_details = list_of_message[2].split(":")
+    chapternum = num_details[0]
+    verse_num = num_details[1]
+    app.logger.debug('book = {}, chapter = {}, verse = {}'.format(book, chapternum, verse_num))
+
+    try:
+        verse = get_verse(book, chapternum, verse_num)
+    except ValueError:
+        bot.reply_to(message, 'Verse is invalid')
+    else:
+        bot.reply_to(message, verse)
+
+
+@bot.message_handler(regexp=r'gospel')
+def bible_quiz(message):
+    # if(message.chat.type == "group"):
+    try:
+        app.logger.debug("'bible quiz' command detected")
+        bot.reply_to(message, "quiz time")
+        random_verse = get_random_verse()
+        answer = random_verse[0]
+        verse = random_verse[1]
+        user_dict["answer"] = answer
+        msg = bot.reply_to(message, verse+"\nIn what book is this verse?")
+        bot.register_next_step_handler(msg, get_answer)
+    except Exception as err:
+        bot.reply_to(message, "oops4")
+        bot.reply_to(message, str(err))
+
+
+def get_answer(message):
+    try:
+        answer = message.text.lower()
+        if(answer == user_dict["answer"]):
+            bot.reply_to(message, "You are correct")
+        else:
+            msg = bot.reply_to(message, "Try again")
+            bot.register_next_step_handler(msg, get_answer)
+    except Exception as err:
+        bot.reply_to(message, "oops5")
+        bot.reply_to(message, str(err))
 
 
 @bot.message_handler(commands=['uber'],

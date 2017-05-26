@@ -28,7 +28,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               add_fake_news_filter_private, POSSIBLE_NEWS_TYPES,
                               check_fake_news_group, parse_check_fake_news_group,
                               cgv_change, quran_ngaji, quran_c_v,
-                              uber, process_location_step,
+                              uber, process_location_step, get_bible_verse,
                               add_destination, remove_destination, album_price)
 # from csuibot.handlers import (definisi, kelaskata)
 # kateglo API down
@@ -2305,6 +2305,18 @@ Tag : power , Confidence : 19'''
     tagimage(mock_message)
     args, _ = mocked_reply_to.call_args
     assert args[1] == 'HTTP Error'
+
+
+def test_verse(mocker):
+    fake_result = 'foo bar'
+    mocked_reply_to = mocker.patch('csuibot.handlers.bot.reply_to')
+    mocker.patch('csuibot.handlers.get_verse', return_value=fake_result)
+    mock_message = Mock(text='/bible john 3:16')
+
+    get_bible_verse(mock_message)
+
+    args, _ = mocked_reply_to.call_args
+    assert args[1] == fake_result
 
 
 def test_uber(mocker):

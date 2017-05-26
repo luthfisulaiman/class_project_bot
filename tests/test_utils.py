@@ -2,6 +2,7 @@ from csuibot.utils import hangout
 from csuibot import utils, config
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
+from csuibot.utils import bible
 from csuibot.utils.message_dist import add_message_to_dist, get_message_dist
 import os
 import re
@@ -1679,6 +1680,27 @@ class test_hot_japan_100:
         assert res != "ups, something wrong is going on"
 
 
+class TestBible:
+    def test_verse(self):
+        res = bible.Bible().get_verse("john", 3, 16)
+        john316 = ("For God so loved the world, that he gave his only begotten Son, "
+                   "that whosoever believeth in him should not perish, \
+                   but have everlasting life.")
+        assert res == john316
+
+    def test_total_chapter(self):
+        res = bible.Bible().get_total_chapter("john")
+        assert res == 21
+
+    def test_total_verse(self):
+        res = bible.Bible().get_total_verse("john", 3)
+        assert res == 36
+
+    def test_random_verse(self):
+        random_verse = bible.Bible().random_verse()
+        assert random_verse != ""
+
+
 class TestQuran:
     def run_test(self, chapter, verse):
         try:
@@ -2419,17 +2441,20 @@ class TestWeather:
     def test_output_builder_imperial_celcius(self):
         owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
         observation = owm.weather_at_place("Depok,ID")
-        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imperial", "Celcius")
+        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imp\
+            erial", "Celcius")
         assert res is not None
 
     def test_output_builder_imperial_kelvin(self):
         owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
         observation = owm.weather_at_place("Depok,ID")
-        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imperial", "Kelvin")
+        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imp\
+            erial", "Kelvin")
         assert res is not None
 
     def test_output_builder_imperial_fahren(self):
         owm = pyowm.OWM('0b88353793f692bb5e20255c89cb7f1e')
         observation = owm.weather_at_place("Depok,ID")
-        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imperial", "Fahrenheit")
+        res = utils.weather.Weather().output_builder(observation, "Depok,ID", "imp\
+            erial", "Fahrenheit")
         assert res is not None
