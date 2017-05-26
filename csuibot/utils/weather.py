@@ -57,7 +57,7 @@ class Weather:
             temper_unt = WT_FAH
         if (temp == WT_CEL):
             temper = str(w.get_temperature('celsius').get('temp'))
-            temper_unt = WT_FAH
+            temper_unt = WT_CEL
         humid = w.get_humidity()
 
         return ("Weather at your position ({}):\n{} {}\n{} {}\n{} {}\n{}%"
