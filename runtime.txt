@@ -1,1 +1,5 @@
-python-3.5.0
+<<<<<<< HEAD
+python-3.5.1
+=======
+python-3.6.0
+>>>>>>> 9fc9e35e3398c275f36746cfa6326fe3f9bb8d2c
