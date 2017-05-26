@@ -18,7 +18,7 @@ class Acronym:
             print("Enter else in add_acronym --> Acronym")
             file_append = open("/app/csuibot/utils/acronym.json", 'w', encoding='utf-8')
             entry = {acronym_dict['singkatan']: {"singkatan": acronym_dict['singkatan'], "acronym": acronym_dict['acronym']}}
-            data.append(entry)
+            data.update(entry)
             json.dump(data, file_append)
 
             message = "{} - {} has been added!" \
