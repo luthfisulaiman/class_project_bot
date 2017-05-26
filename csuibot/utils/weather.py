@@ -1,5 +1,5 @@
 import pyowm
-
+from geopy.geocoders import Nominatim
 
 METRIC_UNIT = "meter/sec"
 IMPER_UNIT = "miles/hour"
@@ -24,7 +24,9 @@ class Weather:
         self.temp = WT_CEL
 
     def lookup_weather(self, lat, lon, unit, temp):
-        observation = owm.weather_at_coords(lat, lon)
+        geolocator = Nominatim()
+        location = geolocator.reverse(lat,lon)
+        observation = owm.weather_at_place(location.address)
         return self.output_builder(observation, unit, temp)
 
     def city_lookup_weather(self, city, unit, temp):
