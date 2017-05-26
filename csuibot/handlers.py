@@ -91,7 +91,7 @@ def hangout_nearby_specified(message):
 
     bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
 
-    tmp_msg = message.split(' ')
+    tmp_msg = message.text.split(' ')
     dist = int(tmp_msg[1])
 
     set_specified_distance(dist)
