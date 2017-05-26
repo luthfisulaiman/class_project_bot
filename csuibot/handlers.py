@@ -6,6 +6,7 @@ from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 import os
 
 request_hangout = -1
+spec_dist = 0
 
 
 @bot.message_handler(regexp=r'^/about$')
@@ -78,6 +79,25 @@ def hangout_random(message):
     set_request_hangout(1)
 
 
+@bot.message_handler(regexp=r'^/nearby_hangout_kuy \d+$')
+def hangout_nearby_specified(message):
+
+    app.logger.debug("'nearby_hangout_kuy' command detected")
+    str_msg = 'Tap to get your location and get specified radius hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    tmp_msg = message.split(' ')
+    dist = int(tmp_msg[1])
+
+    set_specified_distance(dist)
+    set_request_hangout(2)
+
+
 @bot.message_handler(regexp=r'^/hangout')
 def hangout_keyboard(message):
 
@@ -114,12 +134,19 @@ def get_nearest_location(message):
             res = get_nearest_hangout(loc['longitude'], loc['latitude'])
         elif req == 1:
             res = get_random_hangout(5)
+        elif req == 2:
+            res = get_nearest_hangout(loc['longitude'], loc['latitude'])
+            sp_dist = get_specified_distance()
+
+            if res['nearest'].distance > sp_dist:
+                bot.reply_to(message, 'There is no hangout place within specified radius!')
+                return
 
     except ValueError:
         bot.reply_to(message, 'input is invalid')
 
     else:
-        if req == 0:
+        if req == 0 or req == 2:
             nearest_path = '/utils/hangout_images/' + res['nearest'].image_dir
             path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
             bot.send_photo(message.chat.id, open(path, 'rb'))
@@ -148,6 +175,15 @@ def set_request_hangout(num):
 
 def get_request_hangout():
     return request_hangout
+
+
+def set_specified_distance(num):
+    global spec_dist
+    spec_dist = num
+
+
+def get_specified_distance():
+    return spec_dist
 
 
 def parse_date(text):
