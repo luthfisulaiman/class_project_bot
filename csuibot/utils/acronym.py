@@ -22,7 +22,7 @@ class Acronym:
             json.dump(data, file_append)
 
             message = "{} - {} has been added!" \
-                      .format(acronym_dict['singkatan'], acronym_dict['singkatan'])
+                      .format(acronym_dict['singkatan'], acronym_dict['acronym'])
             print(message)
         return message
 
@@ -32,8 +32,8 @@ class Acronym:
         acronym_dict = message
         old_acronym = data[acronym_dict['singkatan']]['acronym']
         data[acronym_dict['singkatan']]['acronym'] = acronym_dict['acronym']
-        with open("/app/csuibot/utils/acronym.json", 'w') as file:
-                data = json.dump(data, file)
+        new_file = open("/app/csuibot/utils/acronym.json", 'w')
+        data = json.dump(data, new_file)
 
         message = "{} has been changed into {}!" \
                   .format(old_acronym, data[acronym_dict['singkatan']])
