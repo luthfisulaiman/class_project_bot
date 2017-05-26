@@ -1468,7 +1468,6 @@ class TestAcronym:
         else:
             assert res is not None
 
-
     def test_update_acronym(self):
         try:
             res = utils.acronym_update('/update_acronym')

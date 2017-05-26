@@ -1002,7 +1002,9 @@ def tagimage(message):
     else:
         bot.reply_to(message, tag)
 
+
 acronym_dict = {}
+
 
 @bot.message_handler(regexp=r'^.*/add_acronym(.|$).*$')
 def new_acronym(message):
@@ -1011,8 +1013,8 @@ def new_acronym(message):
     if (len(split_msg) > 1):
         bot.reply_to(message, "/add_acronym has no arguments!")
     else:
-        msg = bot.reply_to(message,"What would you like to add?")
-        bot.register_next_step_handler(msg, process_add_step) # RGB
+        msg = bot.reply_to(message, "What would you like to add?")
+        bot.register_next_step_handler(msg, process_add_step)
 
 
 def process_add_step(message):
@@ -1023,12 +1025,12 @@ def process_add_step(message):
     else:
         acronym_dict['singkatan'] = new__singkatan
         msg = bot.reply_to(message, 'What is the acronym?')
-        bot.register_next_step_handler(msg, process_add_acronym_step) # Red Green Blue
+        bot.register_next_step_handler(msg, process_add_acronym_step)
 
 
 def process_add_acronym_step(message):
     new__acronym = message.text
-    acronym_dict['acronym'] = new__acronym 
+    acronym_dict['acronym'] = new__acronym
     print("Adding acronym")
     try:
         add__acronym = acronym_new(acronym_dict)
@@ -1047,18 +1049,18 @@ def update_acronym(message):
     if (len(message.text.split(" ")) > 1):
         bot.reply_to(message, "/update_acronym has no arguments!")
     else:
-        msg = bot.reply_to(message, "What would you like to update?")
-        file = open('/app/csuibot/utils/acronym.json', 'r', encoding='UTF-8')
+        bot.reply_to(message, "What would you like to update?")
+        file = open('csuibot/utils/acronym.json', 'r', encoding='UTF-8')
         data = json.load(file)
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        
+
         for key in data:
             button_text = "{}".format(key)
             print(key + " " + data[key]['singkatan'])
             new_button = types.KeyboardButton(button_text)
             markup.add(new_button)
 
-        reply = bot.send_message(message, text, reply_markup=markup)
+        reply = bot.send_message(message, new_button, reply_markup=markup)
         bot.register_next_step_handler(reply, get_update_acronym)
 
 
@@ -1087,18 +1089,17 @@ def delete_acronym(message):
     if (len(message.text.split(" ")) > 1):
         bot.reply_to(message, "/delete_acronym has no arguments!")
     else:
-        msg = bot.reply_to(message, "What would you like to remove?")
-        file = open('/app/csuibot/utils/acronym.json', 'r', encoding='UTF-8')
+        bot.reply_to(message, "What would you like to remove?")
+        file = open('csuibot/utils/acronym.json', 'r', encoding='UTF-8')
         data = json.load(file)
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        
         for key in data:
             button_text = "{}".format(key)
             print(key + " " + data[key]['singkatan'])
             new_button = types.KeyboardButton(button_text)
             markup.add(new_button)
 
-        reply = bot.send_message(message, text, reply_markup=markup)
+        reply = bot.send_message(message, new_button, reply_markup=markup)
         bot.register_next_step_handler(reply, get_delete_acronym)
 
 

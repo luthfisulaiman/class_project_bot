@@ -17,7 +17,7 @@ from csuibot.handlers import (help, zodiac, shio, is_palindrome, loremipsum,
                               tropicalArtistHandler,
                               oriconMangaHandler, oriconMangaMonthlyHandler,
                               tagimage, check_caption_tag, sentiment, japan100,
-                              crop_no_image, crop_arguments)
+                              crop_no_image, crop_arguments, new_acronym)
 from requests.exceptions import ConnectionError
 
 
