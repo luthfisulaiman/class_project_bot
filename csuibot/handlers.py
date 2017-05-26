@@ -33,8 +33,7 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_quran, random_quran, get_chapter, uber_add,
                     uber_remove, uber_info, uber_get, lookup_album_price, get_nearest_hangout,
                     get_random_hangout, get_hangout, print_message)
-from csuibot.utils import bible
-from bible import get_verse, get_total_chapter, get_total_verse, get_random_verse
+from csuibot.utils.bible import get_verse, get_total_chapter, get_total_verse, get_random_verse
 from requests.exceptions import ConnectionError
 import datetime
 
