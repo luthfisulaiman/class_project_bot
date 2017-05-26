@@ -1058,7 +1058,7 @@ def update_acronym(message):
             new_button = types.KeyboardButton(button_text)
             markup.add(new_button)
 
-        reply = bot.send_message(message, button_text, reply_markup=markup)
+        reply = bot.send_message(message, text, reply_markup=markup)
         bot.register_next_step_handler(reply, get_update_acronym)
 
 
@@ -1098,7 +1098,7 @@ def delete_acronym(message):
             new_button = types.KeyboardButton(button_text)
             markup.add(new_button)
 
-        reply = bot.send_message(message, button_text, reply_markup=markup)
+        reply = bot.send_message(message, text, reply_markup=markup)
         bot.register_next_step_handler(reply, get_delete_acronym)
 
 
