@@ -1741,11 +1741,13 @@ def setting_callback(query):
     app.logger.debug(data)
     app.logger.debug("'setting' command detected")
     if data.startswith('set-'):
+        app.logger.debug(query.data[4:])
         get_ex_callback(query)
 
 
 def get_ex_callback(query):
     bot.answer_callback_query(query.id)
+    app.logger.debug(query.data[4:])
     setting_result(query.message, query.data[4:])
 
 
