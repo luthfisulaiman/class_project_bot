@@ -1,4 +1,4 @@
-
+from csuibot.utils import hangout
 from csuibot import utils, config
 from csuibot.utils import plant as p
 from csuibot.utils import data_processor as processor
@@ -367,6 +367,51 @@ class TestChineseZodiac:
     def test_unknown_zodiac(self):
         years = [2005, 1993, 1981, 1969, 2017, 2029]
         self.run_test('Unknown zodiac', years)
+
+
+class TestHangout:
+    def test_hangout_list(self):
+        test_list = hangout.create_hangout_list()
+        assert test_list is not None
+
+    def test_find_nearest_place(self):
+        hangout_list = []
+        h = hangout.Hangout()
+        h.name = 'test'
+        h.address = 'test_address'
+        h.image_dir = 'test_image'
+        h.latitude = 10
+        h.longitude = 10
+        hangout_list.append(h)
+
+        res = hangout.find_nearest_place(hangout_list, 0, 0)
+        assert res is not None
+
+    def test_distance(self):
+        h = hangout.Hangout()
+        h.name = 'test'
+        h.address = 'test_address'
+        h.image_dir = 'test_image'
+        h.latitude = 10
+        h.longitude = 10
+        dist = h.count_distance(10, 10)
+        assert dist == 0
+
+    def test_nearest_hangout_place(self):
+        res = utils.get_nearest_hangout(0, 0)
+        assert res is not None
+
+    def test_get_random_hangout(self):
+        res = utils.get_random_hangout(5)
+        assert len(res) == 5
+
+    def test_get_hangout(self):
+        res = utils.get_hangout('SOUTHBOX')
+        assert res is not None
+
+    def test_get_hangout_none(self):
+        res = utils.get_hangout('Not exist')
+        assert res is None
 
 
 class TestAlbumPrice:
