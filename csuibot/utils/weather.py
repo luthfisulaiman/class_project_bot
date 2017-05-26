@@ -28,19 +28,18 @@ class Weather:
         print(lat)
         city = str(g.state) + "," + str(g.country)
         # observation = owm.weather_at_place(city)
-        observation = owm.weather_at_coords(lat, lon)
-        return self.output_builder(observation, unit, temp)
+        observation = owm.weather_at_coords(lat, lon -20)
+        return self.output_builder(observation, city, unit, temp)
 
     def city_lookup_weather(self, city, unit, temp):
         observation = owm.weather_at_place(city)
-        return self.output_builder(observation, unit, temp)
+        return self.output_builder(observation, city, unit, temp)
 
-    def output_builder(self, observation, unit, temp):
+    def output_builder(self, observation, city, unit, temp):
 
         w = observation.get_weather()
         l = observation.get_location()
 
-        city = l.get_name()
         weather = w.get_status()
         wid = w.get_weather_code()
         emoji = self.getEmoji(wid)
