@@ -1737,6 +1737,7 @@ def configure_weather(message):
 @bot.callback_query_handler(func=lambda call: True)
 def setting_callback(query):
     data = query.data
+    app.logger.debug("'setting' command detected" + query.data)
     if data.startswith('set-'):
         get_ex_callback(query)
 
