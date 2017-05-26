@@ -1,4 +1,7 @@
 from . import app, bot
+from telebot.types import KeyboardButton, ReplyKeyboardMarkup
+import csuibot
+from telebot import types
 import requests
 import re
 import os
@@ -10,9 +13,9 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     lookup_define, lookup_kelaskata, call_composer, calculate_binary,
                     remind_me, lookup_isUpWeb, takeSceleNotif, lookup_definisi,
                     manage_notes, lookup_dayofdate, compute, call_discrete_material,
-                    define_sound, get_articles,
-                    lookup_message_dist, add_message_dist, lookup_wiki, get_comic,
-                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, similar_text,
+                    lookup_marsfasilkom, lookup_yelfasilkom, data_processor, count_posters,
+                    define_sound, get_articles, lookup_message_dist, add_message_dist,
+                    lookup_wiki, get_comic, similar_text,
                     find_hot100_artist, find_newage_artist, find_hotcountry_artist,
                     top_ten_cd_oricon, lookup_top10_billboard_chart,
                     lookup_hotcountry, lookup_newage, get_fake_json, lookup_lang,
@@ -26,10 +29,36 @@ from .utils import (lookup_zodiac, lookup_chinese_zodiac, check_palindrome,
                     airing_check, lookup_airing, fetch_apod, lookup_hospital,
                     lookup_random_hospital, reply_random_hospital, diceSimCoin,
                     diceSimRoll, diceSimMultRoll, diceSimIsLucky, lookup_enter_item,
-                    check_fake_news, add_filter_news, change_cinema, find_movies)
+                    check_fake_news, add_filter_news, change_cinema, find_movies,
+                    lookup_quran, random_quran, get_chapter, uber_add,
+                    uber_remove, uber_info, uber_get, lookup_album_price, get_nearest_hangout,
+                    get_random_hangout, get_hangout, print_message)
 from requests.exceptions import ConnectionError
 import datetime
-from telebot import types
+
+locations = {}
+request_hangout = -1
+spec_dist = 0
+
+
+class Location:
+    def __init__(self, lat, lon):
+        self.lat = lat
+        self.lon = lon
+        self.name = None
+
+
+user_dict = {}
+correct = ""
+
+
+class Quran:
+    def __init__(self, chapter):
+        self.chapter = chapter
+        self.verse = None
+
+    def setVerse(self, verse):
+        self.verse = verse
 
 
 def message_decorator(func):
@@ -94,6 +123,143 @@ def shio(message):
         bot.reply_to(message, zodiac)
 
 
+@bot.message_handler(regexp=r'^/hangout_kuy$')
+def hangout_nearby(message):
+
+    app.logger.debug("'hangout_kuy' command detected")
+    str_msg = 'Tap to get your location and get nearby hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    set_request_hangout(0)
+
+
+@bot.message_handler(regexp=r'^/random_hangout_kuy$')
+def hangout_random(message):
+
+    app.logger.debug("'random_hangout_kuy$' command detected")
+    str_msg = 'Tap to get your location and get random hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    set_request_hangout(1)
+
+
+@bot.message_handler(regexp=r'^/nearby_hangout_kuy \d+$')
+def hangout_nearby_specified(message):
+
+    app.logger.debug("'nearby_hangout_kuy' command detected")
+    str_msg = 'Tap to get your location and get specified radius hangout place!'
+
+    keyboard = KeyboardButton('Go!', request_location=True)
+    reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+    reply_keyboard.add(keyboard)
+
+    bot.send_message(chat_id=message.chat.id, text=str_msg, reply_markup=reply_keyboard)
+
+    tmp_msg = message.text.split(' ')
+    dist = int(tmp_msg[1])
+
+    set_specified_distance(dist)
+    set_request_hangout(2)
+
+
+@bot.message_handler(regexp=r'^/hangout')
+def hangout_keyboard(message):
+
+    app.logger.debug("'hangout' command detected")
+
+    tmp_msg = message.text.split(' ')
+    msg = ''
+    dist = ''
+
+    for index, str_tmp in enumerate(tmp_msg):
+        if index == 0:
+            continue
+        elif index == len(tmp_msg) - 1:
+            dist = str_tmp
+        else:
+            msg = msg + ' ' + str_tmp
+
+    res = get_hangout(msg[1:])
+
+    nearest_path = '/utils/hangout_images/' + res.image_dir
+    path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
+    bot.send_photo(message.chat.id, open(path, 'rb'))
+    bot.reply_to(message, print_message(res, dist))
+
+
+@bot.message_handler(content_types=['location'])
+def get_nearest_location(message):
+
+    loc = dict(latitude=message.location.latitude, longitude=message.location.longitude)
+    req = get_request_hangout()
+
+    try:
+        if req == 0:
+            res = get_nearest_hangout(loc['longitude'], loc['latitude'])
+        elif req == 1:
+            res = get_random_hangout(5)
+        elif req == 2:
+            res = get_nearest_hangout(loc['longitude'], loc['latitude'])
+            sp_dist = get_specified_distance()
+
+            if res['nearest'].distance > sp_dist:
+                bot.reply_to(message, 'There is no hangout place within specified radius!')
+                return
+
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+
+    else:
+        if req == 0 or req == 2:
+            nearest_path = '/utils/hangout_images/' + res['nearest'].image_dir
+            path = os.path.dirname(os.path.abspath(__file__)) + nearest_path
+            bot.send_photo(message.chat.id, open(path, 'rb'))
+            bot.reply_to(message, res['message'])
+        elif req == 1:
+
+            str_msg = 'Choose one hangout place!'
+            reply_keyboard = ReplyKeyboardMarkup(one_time_keyboard=True)
+
+            for data in res:
+                data.set_distance = data.set_distance(loc['longitude'], loc['latitude'])
+                key_text = '/hangout ' + data.name + ' ' + str(int(data.distance))
+                keyboard = KeyboardButton(text=key_text)
+                reply_keyboard.add(keyboard)
+
+            bot.send_message(chat_id=message.chat.id, text=str_msg,
+                             reply_markup=reply_keyboard)
+
+        set_request_hangout(-1)
+
+
+def set_request_hangout(num):
+    global request_hangout
+    request_hangout = num
+
+
+def get_request_hangout():
+    return request_hangout
+
+
+def set_specified_distance(num):
+    global spec_dist
+    spec_dist = num
+
+
+def get_specified_distance():
+    return spec_dist
+
+
 @bot.message_handler(commands=['aqi'])
 def air_quality(message):
     app.logger.debug("'aqi' command detected")
@@ -154,6 +320,17 @@ def plant_ask(message):
     try:
         txt = message.text
         msg = data_processor.fetch_user_input(txt)
+    except ValueError:
+        bot.reply_to(message, 'input is invalid')
+    else:
+        bot.reply_to(message, msg)
+
+
+@bot.message_handler(regexp=r'^/topposters$')
+def top_poster(message):
+    app.logger.debug("'topposters' command detected")
+    try:
+        msg = count_posters(csuibot.last_update)
     except ValueError:
         bot.reply_to(message, 'input is invalid')
     else:
@@ -484,6 +661,18 @@ def invalid_dayofdate(message):
 
 def parse_date(text):
     return tuple(map(int, text.split('-')))
+
+
+@bot.message_handler(regexp=r'^/vgmdb OST this month$')
+def album_price(message):
+    app.logger.debug("'vgmd' command detected")
+    try:
+        reply = lookup_album_price()
+    except ConnectionError:
+        bot.reply_to(message, '''The connection error
+Please try again in a few minutes''')
+    else:
+        bot.reply_to(message, reply)
 
 
 @bot.message_handler(commands=['enterkomputer'])
@@ -1217,6 +1406,248 @@ def tagimage(message):
         bot.reply_to(message, "HTTP Error")
     else:
         bot.reply_to(message, tag)
+
+
+@bot.message_handler(commands=['uber'],
+                     func=lambda message: message.chat.type == "private")
+def uber(message):
+    app.logger.debug("uber command detected")
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    msg = bot.reply_to(message, "Please share your location", reply_markup=markup)
+    bot.register_next_step_handler(msg, process_location_from_step)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_location_from_step(message):
+    app.logger.debug('from location step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "uber command canceled")
+        return
+    try:
+        lon = message.location.longitude
+        lat = message.location.latitude
+    except AttributeError:
+        msg = bot.reply_to(message, "oops! please share your location")
+        bot.register_next_step_handler(msg, process_location_from_step)
+    else:
+        loc = Location(lat, lon)
+        locations[message.chat.id] = loc
+        app.logger.debug('{} {}'.format(lat, lon))
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+        locations_list = uber_get()['locations']
+        app.logger.debug(locations_list)
+        if(len(locations_list)):
+            for name in locations_list:
+                markup.row(name)
+            msg = bot.reply_to(message, "Please select your destination", reply_markup=markup)
+            bot.register_next_step_handler(msg, process_location_to_step)
+        else:
+            bot.send_message(message.chat.id,
+                             "No locations have been added,"
+                             "please add with /add_destination command")
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_location_to_step(message):
+    app.logger.debug('to location step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "uber command canceled")
+        return
+
+    loc_from = locations[message.chat.id]
+    loc_to = message.text
+    try:
+        res = uber_info(loc_from, loc_to)
+    except ConnectionError:
+        bot.reply_to(message, "Cannot connect to Uber API")
+    else:
+        bot.send_message(message.chat.id, res)
+
+
+@bot.message_handler(commands=['add_destination'],
+                     func=lambda message: message.chat.type == "private")
+def add_destination(message):
+    app.logger.debug('add_destination command detected')
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    button = types.KeyboardButton('Share Location', request_location=True)
+    markup.row(button)
+    msg = bot.reply_to(message, "Please share your location", reply_markup=markup)
+    bot.register_next_step_handler(msg, process_location_step)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_location_step(message):
+    app.logger.debug('location step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "adding location canceled")
+        return
+
+    try:
+        lon = message.location.longitude
+        lat = message.location.latitude
+
+    except AttributeError:
+        msg = bot.reply_to(message, "oops! please share your location")
+        bot.register_next_step_handler(msg, process_location_step)
+    else:
+        loc = Location(lat, lon)
+        locations[message.chat.id] = loc
+        app.logger.debug('{} {}'.format(lat, lon))
+        msg = bot.reply_to(message, "OK, please enter a name for the location given")
+        bot.register_next_step_handler(msg, process_name_step)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_name_step(message):
+    app.logger.debug('name step detected')
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "adding location canceled")
+        return
+
+    if(message.text != "/add_destination"):
+        try:
+            name = message.text
+        except AttributeError:
+            msg = bot.reply_to(message, "Please enter a name for the location given")
+            bot.register_next_step_handler(msg, process_name_step)
+        else:
+            loc = locations[message.chat.id]
+            loc.name = name
+            app.logger.debug('inserting locations {} {} {}'.format(loc.lat, loc.lon, loc.name))
+            uber_add(loc)
+            bot.reply_to(message, "OK, location saved")
+
+
+@bot.message_handler(commands=['remove_destination'],
+                     func=lambda message: message.chat.type == "private")
+def remove_destination(message):
+    app.logger.debug("remove_destination command detected")
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    locations = uber_get()['locations']
+    app.logger.debug(locations)
+    if(len(locations)):
+        for name in locations:
+            markup.row(name)
+        msg = bot.reply_to(message, "Please select a location to be removed",
+                           reply_markup=markup)
+        bot.register_next_step_handler(msg, process_delete_step)
+    else:
+        bot.reply_to(message, "No locations have been added, please add with "
+                              "/add_destination command")
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def process_delete_step(message):
+    app.logger.debug("remove step detected")
+    if(message.text == "/cancel"):
+        bot.send_message(message.chat.id, "removing location canceled")
+        return
+
+    if(message.text != "/remove_destination"):
+        try:
+            location_name = message.text
+        except AttributeError:
+            msg = bot.send_message(message.chat.id, "Please select a location to be removed")
+            bot.register_next_step_handler(msg, process_delete_step)
+        else:
+            if(uber_remove(location_name)):
+                bot.send_message(message.chat.id, "OK, location removed")
+            else:
+                msg = bot.reply_to(message, "Location not found")
+                bot.register_next_step_handler(msg, process_delete_step)
+
+
+@bot.message_handler(regexp=r'^/qs [0-9]+:[0-9]+$')
+def quran_c_v(message):
+    app.logger.debug("'Quran C:V' command detected")
+    try:
+        command = message.text.split(' ')
+        cv = command[1].split(':')
+        chapter = cv[0]
+        verse = cv[1]
+        quran = lookup_quran(chapter, verse)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+    else:
+        bot.reply_to(message, quran)
+
+
+@bot.message_handler(regexp=r'^/qs$')
+def quran(message):
+    app.logger.debug("'Quran' command detected")
+    try:
+        chat_id = message.chat.id
+        markup = types.ReplyKeyboardMarkup(row_width=2)
+        itembtn1 = types.KeyboardButton('114:An-Nas')
+        itembtn2 = types.KeyboardButton('113:Al-Falaq')
+        itembtn3 = types.KeyboardButton('112:Al-Ikhlaas')
+        itembtn4 = types.KeyboardButton('110:An-Nasr')
+        itembtn5 = types.KeyboardButton('109:Al-Kaafiroon')
+        markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5)
+        msg = bot.send_message(chat_id, "Choose the chapter:", reply_markup=markup)
+        bot.register_next_step_handler(msg, process_quran_button)
+    except IndexError:
+        bot.reply_to(message, "Please enter the valid chapter and verse")
+
+
+@bot.message_handler(regexp=r'ngaji')
+def quran_ngaji(message):
+    app.logger.debug("'Ngaji C' command detected")
+    try:
+        qurantext = random_quran().split("@")
+        correct = qurantext[0]
+        quranmsg = qurantext[1]
+        app.logger.debug(correct)
+        bot.reply_to(message, "Ayok kita mengaji")
+        bot.reply_to(message, quranmsg)
+        bot.register_next_step_handler(message, process_ngaji)
+    except IndexError:
+        bot.reply_to(message, 'oooops')
+
+
+def process_ngaji(message):
+    try:
+        chat_id = message.chat.id
+        answer = message.text
+        user_dict[chat_id] = answer
+        list_chapter = get_chapter()
+        if answer in list_chapter:
+            if(answer == correct):
+                bot.reply_to(message, "You are correct")
+            else:
+                bot.reply_to(message, "Try Again")
+    except Exception as e:
+        bot.reply_to(message, 'oooops answer cant found')
+
+
+def process_quran_button(message):
+    try:
+        chat_id = message.chat.id
+        chapter = message.text
+        quran = Quran(chapter)
+        user_dict[chat_id] = quran
+        msg = bot.reply_to(message, 'Please enter the verse (number only):')
+        bot.register_next_step_handler(msg, process_chapter)
+    except Exception as e:
+        bot.reply_to(message, 'oooops chapter cant found')
+
+
+def process_chapter(message):
+    try:
+        chat_id = message.chat.id
+        quran = user_dict[chat_id]
+        verse = message.text
+        quran.setVerse(verse)
+        chapter_num = quran.chapter.split(":")
+        chapter_num = chapter_num[0]
+        qurantext = lookup_quran(chapter_num, verse)
+    except Exception as e:
+        bot.reply_to(message, 'oooops verse cant found')
+    else:
+        bot.reply_to(message, qurantext)
 
 
 @bot.message_handler(commands=["add_song", "remove_song", "listen_song"])
