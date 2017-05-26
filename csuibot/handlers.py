@@ -1713,10 +1713,6 @@ def get_user_location_weather(message):
     chat_id = message.chat.id
     lat = message.location.latitude
     lon = message.location.longitude
-    app.logger.debug("lat")
-    app.logger.debug(lat)
-    app.logger.debug("lon")
-    app.logger.debug(lon)
     weather_result = lookup_weather(lat, lon, WIND_UNIT, TEMP_UNIT)
     markup = types.ReplyKeyboardRemove(selective=False)
     bot.send_message(chat_id, weather_result, markup)
